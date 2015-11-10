@@ -39,17 +39,25 @@ get_grooves <- function(bullet) {
 }
 
 fit_loess <- function(bullet, groove) {
-    
     bullet_filter <- subset(bullet, !is.na(value) & y > groove$groove[1] & y < groove$groove[2])
     my.loess <- loess(value ~ y, data = bullet_filter)
     bullet_filter$fitted <- fitted(my.loess)
     bullet_filter$resid <- resid(my.loess)
     
+    # filter out most extreme residuals
+    bullet_filter$abs_resid <-  abs(bullet_filter$resid)
+    cutoff <- quantile(bullet_filter$abs_resid, probs = c(0.995))
+    bullet_filter$chop <- bullet_filter$abs_resid > cutoff
+
+    qplot(data = bullet_filter, y, resid, colour = chop) +
+      theme_bw() 
+    bullet_filter <- subset(bullet_filter, chop != TRUE)
+    
     qplot(data = bullet_filter, y, value) +
         theme_bw() + coord_equal() +
         geom_smooth()
     
-    qplot(data = bullet_filter, y, resid) +
+    qplot(data = bullet_filter, y, resid, geom="line") +
         theme_bw()
 }
 
