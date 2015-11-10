@@ -179,6 +179,7 @@ Rough todo list:
 \item Walkthrough of the process
 \end{enumerate}
 
+Bullet matching is a process in forensic science done to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of the conviction of criminals in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone some more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely describe other casings which are similar.
 
 \bibliographystyle{abbrv}
 %%use following if all content of bibtex file should be shown
