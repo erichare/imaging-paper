@@ -7,6 +7,7 @@ library(dplyr)
 library(zoo)
 library(gridExtra)
 library(plotly)
+library(pastecs)
 
 Sys.setenv("plotly_username" = "erichare")
 Sys.setenv("plotly_api_key" = "xd0oxpeept")
@@ -24,11 +25,34 @@ get_grooves <- function(bullet) {
     left <- subset(bullet, y <= 500)
     right <- subset(bullet, y > 500)
     
-    leftsmooth <- c(NA, NA, rollapply(left$value, 5, function(x) mean(x, na.rm = TRUE)), NA, NA)
-    rightsmooth <- c(NA, NA, rollapply(right$value, 5, function(x) mean(x, na.rm = TRUE)), NA, NA)
+    #for (i in nrow(left):2) {
+    #    if (is.na(left$value[i - 1])) left$value[i - 1] <- left$value[i]
+    #}
+    #for (i in 2:nrow(right)) {
+    #    if (is.na(right$value[i])) right$value[i] <- right$value[i - 1]
+    #}
     
-    final.left <- left[which.min(leftsmooth[-(1:100)]) + 100,]
-    final.right <- right[which.min(rightsmooth[-((length(rightsmooth) - 99):length(rightsmooth))]),]
+    left.loess <- loess(value ~ y, data = left, span = 0.4)
+    lefttp <- which(rank(-diff(diff(fitted(left.loess)))) %in% 1:10)
+    
+    qplot(1:length(fitted(left.loess)), fitted(left.loess)) +
+        geom_vline(xintercept = lefttp, colour = "red")
+
+    qplot(left$y, left$value) +
+        geom_vline(xintercept = left$y[lefttp][which.min(left$value[lefttp])], colour = "red") +
+        geom_smooth(span = 0.1)
+    
+    right.loess <- loess(value ~ y, data = right, span = 0.1)
+    righttp <- which(rank(diff(diff(fitted(right.loess)))) %in% 1)
+    
+    qplot(1:length(fitted(right.loess)), fitted(right.loess)) +
+        geom_vline(xintercept = righttp, colour = "red")
+    
+    qplot(right$y, right$value) +
+        geom_vline(xintercept = right$y[righttp][which.min(right$value[righttp])], colour = "red")
+    
+    final.left <- left[left$y == left$y[lefttp][which.min(left$value[lefttp])],]
+    final.right <- right[right$y == right$y[righttp][which.min(right$value[righttp])],]
     
     p <- qplot(data=bullet, y, value) +
         theme_bw() + coord_equal() +
@@ -81,6 +105,12 @@ grid.arrange(list_of_plots[[1]], list_of_plots[[2]], list_of_plots[[3]],
              list_of_plots[[7]], list_of_plots[[8]], list_of_plots[[9]],
              list_of_plots[[10]], list_of_plots[[11]], list_of_plots[[12]], ncol = 3)
 
-br111 <- get_bullet(file.path("images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-1.x3p"))
+br111 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-1.x3p"))
 br111.groove <- get_grooves(br111)
-plot_3d_land(file.path("images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-1.x3p"), br111, br111.groove)
+plot_3d_land(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-1.x3p"), br111, br111.groove)
+
+br112 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-2.x3p"))
+br113 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-3.x3p"))
+br114 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-4.x3p"))
+br115 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-5.x3p"))
+br116 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-6.x3p"))
