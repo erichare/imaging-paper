@@ -33,7 +33,8 @@ get_grooves <- function(bullet, trim = 125) {
         geom_vline(xintercept = bullet$y[min.left + trim], colour = "red") +
         geom_vline(xintercept = bullet$y[min.right + trim + (length(subsmooth) %/% 2)], colour = "blue")
     
-    return(list(groove = c(final.left$y, final.right$y), plot = p))
+    return(list(groove = c(bullet$y[min.left + trim], 
+                           bullet$y[min.right + trim + (length(subsmooth) %/% 2)]), plot = p))
 }
 
 fit_loess <- function(bullet, groove) {
@@ -60,11 +61,12 @@ fit_loess <- function(bullet, groove) {
 }
 
 plot_3d_land <- function(path, bullet, groove, x = 99.84) {
-    br111 <- read.x3p(file.path("images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-1.x3p"))
-    inds <- which(bullet$y > groove$groove[1] & bullet$y < groove$groove[2])
+    br111 <- read.x3p(path)
+#    inds <- which(bullet$y > groove$groove[1] & bullet$y < groove$groove[2])
     surfmat <- br111$surface.matrix
 
-    plot_ly(z = surfmat[inds,], type = "surface")
+#    plot_ly(z = surfmat[inds,], type = "surface")
+    plot_ly(z = surfmat, aspect = c(1, 0.3, 0.2),  type = "surface")
 }
 
 list_of_plots <- lapply(dir("images/Hamby252_3DX3P1of2"), function(file) {
