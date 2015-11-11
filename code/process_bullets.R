@@ -21,43 +21,17 @@ get_bullet <- function(path, x = 99.84) {
     return(dbr111.fixx)
 }
 
-get_grooves <- function(bullet) {
-    left <- subset(bullet, y <= 500)
-    right <- subset(bullet, y > 500)
+get_grooves <- function(bullet, trim = 125) {
+    smoothed <- c(rep(NA, 10), rollapply(bullet$value, 21, function(x) mean(x, na.rm = TRUE)), rep(NA, 10))
+    subsmooth <- tail(head(smoothed, n = -trim), n = -trim)
     
-    #for (i in nrow(left):2) {
-    #    if (is.na(left$value[i - 1])) left$value[i - 1] <- left$value[i]
-    #}
-    #for (i in 2:nrow(right)) {
-    #    if (is.na(right$value[i])) right$value[i] <- right$value[i - 1]
-    #}
-    
-    left.loess <- loess(value ~ y, data = left, span = 0.4)
-    lefttp <- which(rank(-diff(diff(fitted(left.loess)))) %in% 1:10)
-    
-    qplot(1:length(fitted(left.loess)), fitted(left.loess)) +
-        geom_vline(xintercept = lefttp, colour = "red")
-
-    qplot(left$y, left$value) +
-        geom_vline(xintercept = left$y[lefttp][which.min(left$value[lefttp])], colour = "red") +
-        geom_smooth(span = 0.1)
-    
-    right.loess <- loess(value ~ y, data = right, span = 0.1)
-    righttp <- which(rank(diff(diff(fitted(right.loess)))) %in% 1)
-    
-    qplot(1:length(fitted(right.loess)), fitted(right.loess)) +
-        geom_vline(xintercept = righttp, colour = "red")
-    
-    qplot(right$y, right$value) +
-        geom_vline(xintercept = right$y[righttp][which.min(right$value[righttp])], colour = "red")
-    
-    final.left <- left[left$y == left$y[lefttp][which.min(left$value[lefttp])],]
-    final.right <- right[right$y == right$y[righttp][which.min(right$value[righttp])],]
-    
+    min.left <- which.min(subsmooth[1:(length(subsmooth) %/% 2)])
+    min.right <- which.min(subsmooth[(length(subsmooth) %/% 2):length(subsmooth)])
+        
     p <- qplot(data=bullet, y, value) +
         theme_bw() + coord_equal() +
-        geom_vline(xintercept = final.left$y, colour = "red") +
-        geom_vline(xintercept = final.right$y, colour = "blue")
+        geom_vline(xintercept = bullet$y[min.left + trim], colour = "red") +
+        geom_vline(xintercept = bullet$y[min.right + trim + (length(subsmooth) %/% 2)], colour = "blue")
     
     return(list(groove = c(final.left$y, final.right$y), plot = p))
 }
