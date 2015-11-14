@@ -89,3 +89,48 @@ br113 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1o
 br114 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-4.x3p"))
 br115 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-5.x3p"))
 br116 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-6.x3p"))
+
+
+path <- file.path("images", "Hamby252_3DX3P1of2", dir("images/Hamby252_3DX3P1of2")[5])
+br111 <- read.x3p(path)
+crosscuts <- unique(fortify_x3p(br111)$x)
+crosscuts <- crosscuts[crosscuts > 50]
+crosscuts <- crosscuts[crosscuts < 150]
+
+list_of_fits <- lapply(crosscuts, function(x) {
+  br111 <- get_bullet(path, x)
+  br111.groove <- get_grooves(br111)
+  br111.groove$plot
+  fit_loess(br111, br111.groove)
+})
+
+lof <- lapply(list_of_fits, function(x) x$data) %>% bind_rows
+qplot(x, y, fill = resid, data=lof, geom="tile") + 
+  scale_fill_gradient2() + theme_bw()
+
+path <- file.path("images", "Hamby252_3DX3P1of2", dir("images/Hamby252_3DX3P1of2")[7])
+br111 <- read.x3p(path)
+crosscuts <- unique(fortify_x3p(br111)$x)
+crosscuts <- crosscuts[crosscuts > 50]
+crosscuts <- crosscuts[crosscuts < 150]
+
+list_of_fits2 <- lapply(crosscuts, function(x) {
+  br111 <- get_bullet(path, x)
+  br111.groove <- get_grooves(br111)
+  br111.groove$plot
+  fit_loess(br111, br111.groove)
+})
+
+lof2 <- lapply(list_of_fits2, function(x) x$data) %>% bind_rows
+lof$bullet <- 1
+lof2$bullet <- 2
+
+LOF <- rbind(lof, lof2)
+qplot(x, y, fill = resid, data=LOF, geom="tile", facets=~bullet) + 
+  scale_fill_gradient2(limits=c(-5,5)) + theme_bw()
+
+qplot(y, resid, colour=resid, data=subset(LOF, x == 99.84), facets=~bullet) + 
+  scale_colour_gradient2(limits=c(-5,5)) + theme_bw()
+
+qplot(y, resid, geom="line", data=subset(LOF, x == 99.84), group = bullet, colour= factor(bullet)) +
+  scale_colour_brewer(palette="Set1") + theme_bw()
