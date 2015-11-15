@@ -196,7 +196,7 @@ x3p is a container format conforming to the ISO5436-2 standard\footnote{\url{htt
 %The x3p format was developed as a means for forensic examiners to easily exchange images in a standard format. 
 x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium), a group of academic, industry, and government Firearm Forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
 
-In the Hamby Study, x3p files were created using a NanoFocus lens at 20x resolution. \hh{not sure where this sentences best goes.}
+In the Hamby Study, x3p files were created using a NanoFocus lens at 20x magnification. \hh{not sure where this sentences best goes.}
 
 Each fired bullet is provided as a set of six x3p files, where each file is a surface scan between two bullet grooves, called a ``land". An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}, which show side and top profiles of the land respectively.
 
