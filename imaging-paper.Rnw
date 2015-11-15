@@ -188,9 +188,15 @@ The new scrutiny of the procedure culminated with the 2009 National Academy of S
 % Statement of the problem
 
 % Methodology
-Throughout this section, we will work with images from the James Hamby Consecutively Rifled Ruger Barrel Study. Ten Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 3D topographical images are provided in format called x3p. The x3p format was developed as a means for forensic examiners to easily exchange images in a standard format. It was adopted by the OpenFMC (Open Forensic Metrology Consortium), a group of academic, industry, and government Firearm Forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
+Throughout this section, we will work with images from the James Hamby Consecutively Rifled Ruger Barrel Study \cite{hamby:2009}. Ten Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
+3D topographical images are provided on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). 
+x3p is a container format conforming to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. 
+%The x3p format was developed as a means for forensic examiners to easily exchange images in a standard format. 
+x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium), a group of academic, industry, and government Firearm Forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
 
-Each fired bullet is provided as a set of six x3p files, where each file is a surface scan between two bullet grooves, called a ``land". An example of plotting one of these lands is given in Figures \ref{fig:sidex3p} and \ref{fig:topx3p}, which show side and top profiles of the land respectively.
+In the Hamby Study, x3p files were created using a NanoFocus lens at 20x resolution. \hh{not sure where this sentences best goes.}
+
+Each fired bullet is provided as a set of six x3p files, where each file is a surface scan between two bullet grooves, called a ``land". An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}, which show side and top profiles of the land respectively.
 
 \begin{figure}
   \centering
