@@ -186,6 +186,11 @@ The new scrutiny of the procedure culminated with the 2009 National Academy of S
 
 % Statement of the problem
 
+% Methodology
+
+% Application
+
+% Conclusion
 
 \bibliographystyle{abbrv}
 %%use following if all content of bibtex file should be shown
