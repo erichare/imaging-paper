@@ -44,6 +44,8 @@
 \usepackage[cmex10]{amsmath}
 \usepackage{amssymb}
 \usepackage{color}
+
+\newcommand{\hh}[1]{{\color{magenta} #1}}
 % \usepackage[dvipsnames,svgnames]{xcolor}
 % \usepackage{ulem}
 % \usepackage[section]{placeins}
