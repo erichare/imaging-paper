@@ -28,6 +28,7 @@
 \usepackage{mathptmx}
 \usepackage{graphicx}
 \usepackage{times}
+\usepackage{float}
 
 %% We encourage the use of mathptmx for consistent usage of times font
 %% throughout the proceedings. However, if you encounter conflicts
@@ -204,6 +205,39 @@ Each fired bullet is provided as a set of six x3p files, where each file is a su
   \caption{An example of a scan of a bullet land, viewed from the top.}
   \label{fig:topx3p}
 \end{figure}
+
+The primary goal in this type of forensic analysis is to identify markings. Gun barrels should produce similar markings on bullets fired consecutively, and the careful analysis of these surface images can help us determine whether two bullets are a match. However, this process has traditionally required forensic experts to perform the analysis, also required physical examination of the bullets. We've produced a framework which, in software, allows for the analysis of the surface topologies, and also transcribes the markings into a 2D plotting framework which we believe makes identification of matches easier for the lay person.
+
+An initial naive approach leads us to fixing a particular value of a coordinate, and then producing a plot of the heights across values of the other coordinate. Figure \ref{fig:fixedX} gives a plot resulting from such a procedure. It can be seem that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
+
+<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.width=6, out.width='\\textwidth', fig.pos='t!', fig.cap='Side profile of the height values of a bullet land across fixed x values. Note that the global features dominate any deviations, which would correspond to markings.'>>=
+library(RColorBrewer)
+library(ggplot2)
+library(dplyr)
+library(x3pr)
+library(x3prplus)
+
+datadir <- "~/GitHub/x3prproto/images/Hamby252_3DX3P1of2/"
+
+br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
+dbr111 <- fortify_x3p(br111)
+
+pars <- data.frame(getCircle(dbr111$y, dbr111$value))
+dbr111$theta <- acos((dbr111$y-pars$x0)/pars$radius)/pi*180
+dbr111 <- dbr111 %>% mutate(
+  xpred = cos(theta/180*pi)*pars$radius + pars$x0,
+  ypred = sin(theta/180*pi)*pars$radius + pars$y0
+)
+
+qplot(data=subset(dbr111, x <= 100 & x >= 95), y, value, colour=factor(x)) +
+  geom_line(aes(x=xpred, y=ypred, group=x), 
+            colour="black", size=0.25) +
+  scale_colour_brewer("x", palette="Paired") + 
+  theme_bw() + 
+  theme(legend.position="bottom") + coord_equal()
+@
+
+It's clear that our next approach must be to model the signal in order to focus on the noise, given that the noise should correspond to bullet markings.
 
 % Application
 
