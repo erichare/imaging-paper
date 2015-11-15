@@ -129,6 +129,25 @@ LOF <- rbind(lof, lof2)
 qplot(x, y, fill = resid, data=LOF, geom="tile", facets=~bullet) + 
   scale_fill_gradient2(limits=c(-5,5)) + theme_bw()
 
+qplot(x, y, fill = resid, data=LOF, geom="tile", facets=~bullet) + 
+  scale_fill_gradient(limits=c(-5,5), low = "grey5", high="grey95") + theme_bw()
+
+qplot(x, y, fill = resid, data=LOF, geom="tile", facets=~bullet) + 
+  scale_fill_gradient(limits=c(-5,5), low = "grey5", high="darkgoldenrod1") + theme_bw()
+
+subLOF1 <- LOF %>% filter(bullet == 1, x <= 75)
+subLOF2 <- LOF %>% filter(bullet == 2, x > 75, x < 100)
+
+subLOF$y <- subLOF$y %/% .64
+#subLOF1$y <- subLOF1$y + 11 # why doesn't this work??
+subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
+
+qplot(x, y, fill = resid, colour=I(NA), data=filter(subLOF, y >450, y < 550), geom="tile") + 
+  scale_fill_gradient(limits=c(-5,5), low = "grey5", high="darkgoldenrod1") +
+#  scale_colour_gradient(limits=c(-5,5), low = "grey5", high="darkgoldenrod1") +
+  theme_bw()
+
+
 qplot(y, resid, colour=resid, data=subset(LOF, x == 99.84), facets=~bullet) + 
   scale_colour_gradient2(limits=c(-5,5)) + theme_bw()
 
