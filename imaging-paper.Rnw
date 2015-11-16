@@ -246,6 +246,8 @@ qplot(data=subset(dbr111, x <= 100 & x >= 95), y, value, colour=factor(x)) +
 @
 
 It's clear that our next approach must be to model the signal in order to focus on the noise, given that the noise should correspond to bullet markings.
+\hh{XXX let's not call the markings noise - that has the conotation of them being random. The markings are also a signal, it is just dominated by the stronger signal of the land structure. We often go through a process of multiple steps to get close to the more interesting, smaller signal. }
+\hh{XXX on a side note - I've got a different relative path to the x3p bullet files ... should we assume a data directory inside the folder? Then we don't have to push the files on a github repo again, but are using the same file structure?}
 
 % Application
 
