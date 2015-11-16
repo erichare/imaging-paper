@@ -218,7 +218,7 @@ The primary goal in this type of forensic analysis is to identify markings. Gun 
 
 An initial naive approach leads us to fixing a particular value of a coordinate, and then producing a plot of the heights across values of the other coordinate. Figure \ref{fig:fixedX} gives a plot resulting from such a procedure. It can be seem that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
-<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.width=6, out.width='\\textwidth', fig.pos='t!', fig.cap='Side profile of the height values of a bullet land across fixed x values. Note that the global features dominate any deviations, which would correspond to markings.'>>=
+<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.width=6, out.width='\\linewidth', fig.pos='t!', fig.cap='Side profile of the height values of a bullet land across fixed x values. Note that the global features dominate any deviations, which would correspond to markings.'>>=
 library(RColorBrewer)
 library(ggplot2)
 library(dplyr)
@@ -245,8 +245,26 @@ qplot(data=subset(dbr111, x <= 100 & x >= 95), y, value, colour=factor(x)) +
   theme(legend.position="bottom") + coord_equal()
 @
 
-It's clear that our next approach must be to model the signal in order to focus on the noise, given that the noise should correspond to bullet markings.
-\hh{XXX let's not call the markings noise - that has the conotation of them being random. The markings are also a signal, it is just dominated by the stronger signal of the land structure. We often go through a process of multiple steps to get close to the more interesting, smaller signal. }
+It's clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
+
+\subsection{Cylindrical Fit}
+
+One reasonable approach is to fit a circle to the curve and compute the residuals from this fit. The scatterplot below shows the residuals of such a fit. The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For cross sections of $x$ values between 75 and 80, there is a residual circular structure that does not show up for all cross sections. 
+
+<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
+qplot(data=subset(dbr111, x <= 80 & x >=75), y, value-ypred, colour=factor(x)) +
+  scale_colour_brewer("x", palette="Paired") + 
+  theme_bw() + 
+  theme(legend.position="bottom")
+@
+
+<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
+qplot(data=subset(dbr111, x <= 5), y, value-ypred, colour=factor(x)) +
+  scale_colour_brewer("x", palette="Paired") + 
+  theme_bw() + 
+  theme(legend.position="bottom")
+@
+
 \hh{XXX on a side note - I've got a different relative path to the x3p bullet files ... should we assume a data directory inside the folder? Then we don't have to push the files on a github repo again, but are using the same file structure?}
 
 % Application
