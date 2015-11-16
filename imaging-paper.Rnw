@@ -265,6 +265,47 @@ qplot(data=subset(dbr111, x <= 5), y, value-ypred, colour=factor(x)) +
   theme(legend.position="bottom")
 @
 
+A single cylinder as a fit is unlikely to be a particularly good fit; because there seem to be quite massive deformations in vertical direction. We therefore fit a circle for each cross section of the bullet, and compare the figure again:
+
+<<bullet1, echo=FALSE, cache=TRUE>>=
+db1 <- NULL
+for (i in 1:6) {
+  bname <- sprintf(file.path(datadir, "Br1 Bullet 1-%d.x3p"), i)
+  dbi <- fortify_x3p(read.x3p(bname))
+  dbi$part <- i
+  db1 <- rbind(db1, dbi)
+}
+
+db1 <- db1 %>% group_by(part, x) %>% do (
+    data.frame(., predCircle(.$y, .$value))
+  )
+@
+
+<<bullet2, echo=FALSE, cache=TRUE>>=
+db2 <- NULL
+for (i in 1:6) {
+  bname <- sprintf(file.path(datadir, "Br1 Bullet 2-%d.x3p"), i)
+  dbi <- fortify_x3p(read.x3p(bname))
+  dbi$part <- i
+  db2 <- rbind(db2, dbi)
+}
+
+db2 <- db2 %>% group_by(part, x) %>% do (
+    data.frame(., predCircle(.$y, .$value))
+  )
+
+@
+
+First attempt to match - something is wrong with  piece 3 of bullet 2.
+
+<<echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
+qplot(y, resid, data=subset(db2, x <= 80 & x >=75), colour=factor(x)) + 
+  facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
+  theme_bw() + theme(legend.position="bottom") + 
+  geom_point(aes(y, resid), colour="black", size=1, alpha=0.2, 
+             data = filter(db1, part==1, x <= 80, x >=75)[,c("y", "resid")]) + ggtitle("Part 1 of Bullet 1 in black")
+@
+
 \hh{XXX on a side note - I've got a different relative path to the x3p bullet files ... should we assume a data directory inside the folder? Then we don't have to push the files on a github repo again, but are using the same file structure?}
 
 % Application
