@@ -109,13 +109,22 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
                        values = c(0,0.5, 0.75, 0.9, 1)) +
   theme_bw()
 
+ggsave("../code/images/side-by-side-manual-match.png", width=5, height=5)
 
+library(reshape2)
+z <- acast(data=subLOF, x~y, value.var="resid")
+nbcol = 256
+color = rev(rainbow(256, start = 0/6, end = 2/6))
+zcol = cut(z, nbcol)
+persp3d(z, type="surface", col=color[zcol], aspect=c(1,1,0.2))
 
 qplot(x, y, fill = 5*sign(resid)*sqrt(abs(resid/5)), colour=I(NA), data=subLOF, geom="tile") + 
   scale_fill_gradientn(limits=c(-5,5), 
                        colors=c("grey5", "gold4","darkgoldenrod1","lightgoldenrod1", "lemonchiffon"),
                        values = c(0,0.5, 0.75, 0.9, 1)) +
   theme_bw()
+
+
 
 qplot(y, resid, colour=resid, data=subset(LOF, x == 99.84), facets=~bullet) + 
   scale_colour_gradient2(limits=c(-5,5)) + theme_bw()

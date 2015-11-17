@@ -351,9 +351,64 @@ my.loess$resid
 @
 
 \begin{figure}
+<<side-by-side, echo=FALSE, eval=FALSE>>=
+paths <- file.path(datadir, dir(datadir))
+
+br111 <- read.x3p(paths[5])
+crosscuts <- unique(fortify_x3p(br111)$x)
+crosscuts <- crosscuts[crosscuts > 50]
+crosscuts <- crosscuts[crosscuts < 150]
+
+list_of_fits <- lapply(crosscuts, function(x) {
+  br111 <- get_bullet(paths[5], x = x)
+  br111.groove <- get_grooves(br111)
+  br111.groove$plot
+  fit_loess(br111, br111.groove)
+})
+
+lof <- lapply(list_of_fits, function(x) x$resid$data) %>% bind_rows
+
+br111 <- read.x3p(paths[7])
+crosscuts <- unique(fortify_x3p(br111)$x)
+crosscuts <- crosscuts[crosscuts > 50]
+crosscuts <- crosscuts[crosscuts < 150]
+
+list_of_fits2 <- lapply(crosscuts, function(x) {
+  br111 <- get_bullet(paths[7], x)
+  br111.groove <- get_grooves(br111)
+  br111.groove$plot
+  fit_loess(br111, br111.groove)
+})
+
+lof2 <- lapply(list_of_fits2, function(x) x$resid$data) %>% bind_rows
+lof$bullet <- 1
+lof2$bullet <- 2
+
+LOF <- rbind(lof, lof2)
+
+subLOF1 <- LOF %>% filter(bullet == 1, x <= 100)
+subLOF2 <- LOF %>% filter(bullet == 2, x > 100)
+
+subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
+subLOF1$y <- subLOF1$y + 19*1.5625 # working now!!!
+subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
+
+qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") + 
+  scale_fill_gradientn(limits=c(-5,5), 
+                       colors=c("grey5", "gold4","darkgoldenrod1","lightgoldenrod1", "lemonchiffon"),
+                       values = c(0,0.5, 0.75, 0.9, 1)) +
+  theme_bw()
+@
+
 \includegraphics[width=\columnwidth]{images/side-by-side-manual-match.png}
 \caption{\label{fig:manualmatch}\hh{Manually adjusted side-by-side comparison of two lands from different bullets.}}
 \end{figure}
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{images/match-rgl.png}
+\caption{\label{fig:manualmatch}\hh{Different view of the manually adjusted side-by-side comparison of two lands from different bullets.}}
+\end{figure}
+
 \section{Application}
 
 \section{Conclusion}
