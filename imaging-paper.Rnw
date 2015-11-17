@@ -351,7 +351,7 @@ my.loess$resid
 @
 
 \begin{figure}
-\includegraphics[width=\textwidth]{images/side-by-side-manual-match.png}
+\includegraphics[width=\columnwidth]{images/side-by-side-manual-match.png}
 \caption{\label{fig:manualmatch}\hh{Manually adjusted side-by-side comparison of two lands from different bullets.}}
 \end{figure}
 \section{Application}
