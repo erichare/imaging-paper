@@ -323,11 +323,30 @@ It can be seen pretty clearly at this point that the deviations resulting from t
 
 To improve upon the previous algorithm, the first step must be to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match. Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent. Because a bullet is scanned groove to groove, the groove should appear within approximately scan points from each end. That is, on y coordinate system ranging from 0 to 1000 as these images, are, the grooves will appear between $y \in \{0, 100\}$ and $y \in \{900, 1000\}$. Hence, the algorith for removing the grooves can be described as follows:
 
-1. Fix an x coordinate value.
-2. Remove values from $y \in \{0, 100\}$ and $y \in \{900, 1000\}$.
-3. For each y value from 100 to 900, compute a rolling average to smooth out any deviations occurring near the minimums.
-4. Determine the minimum in the first half (corresponding to the left groove) and the minimum in the right half (corresponding to the right groove)
-5. Remove all y values below the minimum and above the maximum
+\begin{enumerate}
+    \item Fix an x coordinate value.
+    \item Remove values from $y \in \{0, 100\}$ and $y \in \{900, 1000\}$.
+    \item For each y value from 100 to 900, compute a rolling average to smooth out any deviations occurring near the minimums.
+    \item Determine the minimum in the first half (corresponding to the left groove) and the minimum in the right half (corresponding to the right groove)
+    \item Remove all y values below the minimum and above the maximum
+\end{enumerate}
+
+Next, we fit a Loess regression to the data
+
+<<loess_fit, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Loess fit for part 1 of bullet 1', fig.pos='H', message=FALSE>>=
+br111 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-1.x3p"))
+br111.groove <- get_grooves(br111)
+
+my.loess <- fit_loess(br111, br111.groove)
+
+my.loess$fitted
+@
+
+<<loess_resid, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Loess fit residuals for part 1 of bullet 1', fig.pos='H'>>=
+my.loess <- fit_loess(br111, br111.groove)
+
+my.loess$resid
+@
 
 \section{Application}
 
