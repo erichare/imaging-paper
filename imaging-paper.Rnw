@@ -333,4 +333,58 @@ It can be seen pretty clearly at this point that the deviations resulting from t
 %\nocite{*}
 \bibliography{references}
 
+\section{Circular Fit}
+
+Assume, $n$ data points $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$ are given that are (approximately) located on a circle. We want to estimate the location of the center and radius of the best fitting circle.
+
+We minimize the following expression:
+\begin{equation}\label{eq:circle}
+D = \sum_{i=1}^n \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right)^2
+\end{equation}
+We do this by differentiating $D$ with respect to $r, a,$ and $b$:
+let us assume that $x_i$ and $y_i$ are centralized (i.e. $\sum x_i = \sum_i y_i = 0$). Note, if they are not, make a note of the current means, subtract them now and add them to $(\hat{a}, \hat{b})$ at the end. 
+
+\noindent
+The  derivate of $D$ with respect to $r$ is:
+\begin{eqnarray*}
+\frac{d}{dr} D &=& 2 \sum_i \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right) 2 r = \\
+&=& 4 r \left( n r^2 - \sum_i (x_i-a)^2 - \sum_i(y_i-b)^2 \right) 
+\end{eqnarray*}
+For a minimum then holds:
+\begin{equation}\label{eq:rmin}
+\frac{d}{dr} D = 0 \stackrel{r \neq 0}{\iff} nr^2  = \sum_i (x_i-a)^2 + \sum_i(y_i-b)^2 
+\end{equation}
+%
+%
+The  derivative of $D$ with respect to $a$ is:
+\begin{eqnarray*}
+\frac{d}{da} D &=& 2 \sum_i \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right) 2 (x_i - a) = \\
+&=& -4 \left[ a \cdot nr^2 + \sum_i (x_i - a)^3  + \sum_i (x_i - a) (y_i - b)^2 \right]
+\end{eqnarray*}
+Using (\ref{eq:rmin}) for $nr^2$  in the equation above we get:
+\begin{eqnarray*}
+\frac{d}{da} D &=& -4 \left[  \sum_i a(x_i-a)^2 +  \sum_i a(y_i-b)^2  + \right. \\
+&& \phantom{-4 \ \ } \left . \sum_i (x_i - a)^3  + \sum_i (x_i - a) (y_i - b)^2 \right]  = \\
+&=& -4 \left[ \sum_i (x_i-a)^2 (a + x_i - a)  + \sum_i (x_i - a + a) (y_i - b)^2 \right] = \\
+&=& -4 \left[ \sum_i (x_i-a)^2 x_i   + \sum_i x_i  (y_i - b)^2 \right] \stackrel{\sum_i x_i = \sum_i y_i = 0}{=} \\
+&=& -4 \left[ \sum_i x_i^3   + \sum_i x_i y_i^2  - 2a s_{xx} - 2b s_{xy} \right], 
+\end{eqnarray*}
+where $s_{xx} = \sum_i x_i^2, s_{xy} = \sum_i x_i y_i$ and $s_{yy} = \sum_i y_i^2$.
+
+\noindent
+Likewise, we get for the derivative of $D$ with respect to $b$:
+\begin{eqnarray*}
+\frac{d}{db} D &=& -4 \left[ \sum_i y_i^3   + \sum_i x_i^2 y_i - 2a s_{xy} - 2b s_{yy} \right] 
+\end{eqnarray*}
+For the minimum we therefore get a system of two linear equations in $a$ and $b$:
+\begin{eqnarray*}
+2 s_{xx} a + 2 s_{xy} b = c_1 && \text{ with } c_1 = \sum_i x_i^3 + x_i y_i^2 \\
+2 s_{xy} a + 2 s_{yy} b = c_2 &&\text{ with } c_2 = \sum_i x_i^2 y_i + y_i^3.
+\end{eqnarray*}
+This resolves to 
+\begin{eqnarray*}
+\hat{a} &=& \frac{c_1 s_{yy} - c_2 s_{xy}}{2 s_{xx} s_{yy} - 2 s_{xy}^2},\\
+\hat{b} &=& \frac{c_2 s_{xx} - c_1 s_{xy}}{2 s_{xx} s_{yy} - 2 s_{xy}^2}, \text{ and}\\
+\hat{r^2} &=& \frac{1}{n}s_{xx} + \frac{1}{n}s_{yy} + \hat{a}^2 + \hat{b}^2.
+\end{eqnarray*}
 \end{document}
