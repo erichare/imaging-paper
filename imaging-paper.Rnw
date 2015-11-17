@@ -175,12 +175,14 @@ options(replace.assign=TRUE,scipen=3)
 
 \maketitle
 
-Rough todo list:
+Rough outline:
 \begin{enumerate}
 \item Description of the problem: Standard operating practice, 2009 NAS report
 \item Description of the Results
 \item Walkthrough of the process
 \end{enumerate}
+
+\hh{I'm putting in footnotes for URLs at the moment, they should probably be included properly in the references.}
 
 % Quick Intro
 Bullet matching is a process in forensic science done to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of the conviction of criminals in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone some more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely describe other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence.
@@ -190,15 +192,17 @@ The new scrutiny of the procedure culminated with the 2009 National Academy of S
 % Statement of the problem
 
 % Methodology
-Throughout this section, we will work with images from the James Hamby Consecutively Rifled Ruger Barrel Study \cite{hamby:2009}. Ten Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
-3D topographical images are provided on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). 
+Throughout this section, we will work with images from the James Hamby Consecutively Rifled Ruger Barrel Study \cite{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
+
+\hh{XXX here's a paragraph missing: rifling in the barrel is creating striation marks on the bullet during the firing process. These marks are claimed to be unique to the barrel - we need to find a citation for that from the SOP manual.  }
+
+3D topographical images were taken of these bullets using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). 
 x3p is a container format conforming to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. 
 %The x3p format was developed as a means for forensic examiners to easily exchange images in a standard format. 
-x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium), a group of academic, industry, and government Firearm Forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
+x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government Firearm Forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
 
-In the Hamby Study, x3p files were created using a NanoFocus lens at 20x magnification. \hh{not sure where this sentences best goes.}
 
-Each fired bullet is provided as a set of six x3p files, where each file is a surface scan between two bullet grooves, called a ``land". An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}, which show side and top profiles of the land respectively.
+Each fired bullet is provided as a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}, which show side and top profiles of the land respectively.
 
 \begin{figure}
   \centering
@@ -225,7 +229,7 @@ library(dplyr)
 library(x3pr)
 library(x3prplus)
 
-datadir <- "~/GitHub/x3prproto/images/Hamby252_3DX3P1of2/"
+#datadir <- "~/GitHub/x3prproto/images/Hamby252_3DX3P1of2/"
 
 br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
 dbr111 <- fortify_x3p(br111)
@@ -305,8 +309,6 @@ qplot(y, resid, data=subset(db2, x <= 80 & x >=75), colour=factor(x)) +
   geom_point(aes(y, resid), colour="black", size=1, alpha=0.2, 
              data = filter(db1, part==1, x <= 80, x >=75)[,c("y", "resid")]) + ggtitle("Part 1 of Bullet 1 in black")
 @
-
-\hh{XXX on a side note - I've got a different relative path to the x3p bullet files ... should we assume a data directory inside the folder? Then we don't have to push the files on a github repo again, but are using the same file structure?}
 
 % Application
 
