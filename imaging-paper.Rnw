@@ -229,7 +229,7 @@ library(dplyr)
 library(x3pr)
 library(x3prplus)
 
-#datadir <- "~/GitHub/x3prproto/images/Hamby252_3DX3P1of2/"
+datadir <- "~/GitHub/x3prproto/images/Hamby252_3DX3P1of2/"
 
 br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
 dbr111 <- fortify_x3p(br111)
@@ -269,7 +269,7 @@ qplot(data=subset(dbr111, x <= 5), y, value-ypred, colour=factor(x)) +
   theme(legend.position="bottom")
 @
 
-A single cylinder as a fit is unlikely to be a particularly good fit; because there seem to be quite massive deformations in vertical direction. We therefore fit a circle for each cross section of the bullet, and compare the figure again:
+A single cylinder as a fit is unlikely to be a particularly good fit, because there seem to be quite massive deformations in vertical direction. We therefore fit a circle for each cross section of the bullet. Figure \ref{fig:circlefits} illustrates an attempt at matching one of the six lands to the first part of bullet 1, which is shown as a black line. There is some global structure evident that makes focusing on the deviations a bit challenging.
 
 <<bullet1, echo=FALSE, cache=TRUE>>=
 db1 <- NULL
@@ -300,15 +300,29 @@ db2 <- db2 %>% group_by(part, x) %>% do (
 
 @
 
-First attempt to match - something is wrong with  piece 3 of bullet 2.
-
-<<echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
+<<circlefits, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Circle fit for each cross section of bullet 2, with part 1 of bullet 1 overlayed.', fig.pos='H'>>=
 qplot(y, resid, data=subset(db2, x <= 80 & x >=75), colour=factor(x)) + 
   facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
   geom_point(aes(y, resid), colour="black", size=1, alpha=0.2, 
              data = filter(db1, part==1, x <= 80, x >=75)[,c("y", "resid")]) + ggtitle("Part 1 of Bullet 1 in black")
 @
+
+If we perform a similar routine for part 2 of bullet 1, we obtain the figure give in Figure \ref{fig:circlefits2}. 
+
+<<circlefits2, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Circle fit for each cross section of bullet 2, with part 2 of bullet 1 overlayed.', fig.pos='H'>>=
+qplot(y, resid, data=subset(db2, x <= 80 & x >=75), colour=factor(x)) + 
+  facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
+  theme_bw() + theme(legend.position="bottom") + 
+  geom_point(aes(y, resid), colour="black", size=1, alpha=0.2, 
+             data = filter(db1, part==2, x <= 80, x >=75)[,c("y", "resid")]) + ggtitle("Part 2 of Bullet 1 in black")
+@
+
+It can be seen pretty clearly at this point that the deviations resulting from the grooves dominates the residual structure that would correspond to markings. This is unfortunate, as the grooves themselves will not typically contain markings produced by a gun barrel. We can also see the residual circular structure which suggests our circle fit is not entirely appropriate.
+
+\subsection{Loess Fit}
+
+
 
 % Application
 
