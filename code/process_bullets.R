@@ -43,13 +43,13 @@ crosscuts <- crosscuts[crosscuts > 50]
 crosscuts <- crosscuts[crosscuts < 150]
 
 list_of_fits <- lapply(crosscuts, function(x) {
-  br111 <- get_bullet(path, x)
+  br111 <- get_bullet(path, x = x)
   br111.groove <- get_grooves(br111)
   br111.groove$plot
   fit_loess(br111, br111.groove)
 })
 
-lof <- lapply(list_of_fits, function(x) x$data) %>% bind_rows
+lof <- lapply(list_of_fits, function(x) x$resid$data) %>% bind_rows
 qplot(x, y, fill = resid, data=lof, geom="tile") + 
   scale_fill_gradient2() + theme_bw()
 
@@ -66,7 +66,7 @@ list_of_fits2 <- lapply(crosscuts, function(x) {
   fit_loess(br111, br111.groove)
 })
 
-lof2 <- lapply(list_of_fits2, function(x) x$data) %>% bind_rows
+lof2 <- lapply(list_of_fits2, function(x) x$resid$data) %>% bind_rows
 lof$bullet <- 1
 lof2$bullet <- 2
 
@@ -88,11 +88,9 @@ qplot(x, y, fill = resid, data=LOF, geom="tile", facets=~bullet) +
                        values = c(0,0.5, 0.75, 0.9, 1)) + theme_bw()
 
 
-subLOF1 <- LOF %>% filter(bullet == 1, x <= 75)
-subLOF2 <- LOF %>% filter(bullet == 2, x > 75, x < 100)
+subLOF1 <- LOF %>% filter(bullet == 1, x <= 100)
+subLOF2 <- LOF %>% filter(bullet == 2, x > 100)
 
-#subLOF$y <- subLOF$y %/% .64
-#subLOF1$y <- subLOF1$y + 11 # why doesn't this work??
 subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
 
 qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") + 
@@ -100,6 +98,18 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
                        colors=c("grey5", "gold4","darkgoldenrod1","lightgoldenrod1", "lemonchiffon"),
                        values = c(0,0.5, 0.75, 0.9, 1)) +
   theme_bw()
+
+#subLOF$y <- subLOF$y %/% .64
+subLOF1$y <- subLOF1$y + 19*1.5625 # working now!!!
+subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
+
+qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") + 
+  scale_fill_gradientn(limits=c(-5,5), 
+                       colors=c("grey5", "gold4","darkgoldenrod1","lightgoldenrod1", "lemonchiffon"),
+                       values = c(0,0.5, 0.75, 0.9, 1)) +
+  theme_bw()
+
+
 
 qplot(x, y, fill = 5*sign(resid)*sqrt(abs(resid/5)), colour=I(NA), data=subLOF, geom="tile") + 
   scale_fill_gradientn(limits=c(-5,5), 

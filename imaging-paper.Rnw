@@ -323,7 +323,7 @@ It can be seen pretty clearly at this point that the deviations resulting from t
 
 \subsection{Loess Fit}
 
-To improve upon the previous algorithm, the first step must be to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match. Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent. Because a bullet is scanned groove to groove, the groove should appear within approximately scan points from each end. That is, on y coordinate system ranging from 0 to 1000 as these images, are, the grooves will appear between $y \in \{0, 100\}$ and $y \in \{900, 1000\}$. Hence, the algorith for removing the grooves can be described as follows:
+To improve upon the previous algorithm, the first step must be to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match. Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent. Because a bullet is scanned groove to groove, the groove should appear within approximately scan points from each end. That is, on y coordinate system ranging from 0 to 1000 as these images, are, the grooves will appear between $y \in \{0, 100\}$ and $y \in \{900, 1000\}$. Hence, the algorithm for removing the grooves can be described as follows:
 
 \begin{enumerate}
     \item Fix an x coordinate value.
@@ -350,6 +350,10 @@ my.loess <- fit_loess(br111, br111.groove)
 my.loess$resid
 @
 
+\begin{figure}
+\includegraphics[width=\textwidth]{images/side-by-side-manual-match.png}
+\caption{\label{fig:manualmatch}\hh{Manually adjusted side-by-side comparison of two lands from different bullets.}}
+\end{figure}
 \section{Application}
 
 \section{Conclusion}
