@@ -241,10 +241,11 @@ dbr111 <- dbr111 %>% mutate(
   ypred = sin(theta/180*pi)*pars$radius + pars$y0
 )
 
-qplot(data=subset(dbr111, x <= 100 & x >= 95), y, value, colour=factor(x)) +
+qplot(data=subset(dbr111, x <= 100 & x >= 95), y, value, colour=factor(x), geom="line", size=I(1)) +
   geom_line(aes(x=xpred, y=ypred, group=x), 
-            colour="black", size=0.25) +
-  scale_colour_brewer("x", palette="Paired") + 
+            colour="grey30", size=0.25) +
+  scale_colour_brewer("Cross-sections at x", palette="Paired") + 
+  ylab(expression(paste("Surface Measurements (in ",mu,m,")"))) + 
   theme_bw() + 
   theme(legend.position="bottom") + coord_equal()
 @
@@ -256,14 +257,15 @@ It's clear that our next approach must be to model the overall structure in orde
 One reasonable approach is to fit a circle to the curve and compute the residuals from this fit. The scatterplot below shows the residuals of such a fit. The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For cross sections of $x$ values between 75 and 80, there is a residual circular structure that does not show up for all cross sections. 
 
 <<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
-qplot(data=subset(dbr111, x <= 80 & x >=75), y, value-ypred, colour=factor(x)) +
+qplot(data=subset(dbr111, x <= 80 & x >=75), y, value-ypred, colour=factor(x), geom="line", size=I(1)) +
   scale_colour_brewer("x", palette="Paired") + 
   theme_bw() + 
   theme(legend.position="bottom")
 @
 
 <<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
-qplot(data=subset(dbr111, x <= 5), y, value-ypred, colour=factor(x)) +
+qplot(data=subset(dbr111, x <= 5), y, value-ypred, colour=factor(x),
+      geom="line", size=I(1)) +
   scale_colour_brewer("x", palette="Paired") + 
   theme_bw() + 
   theme(legend.position="bottom")
@@ -301,21 +303,21 @@ db2 <- db2 %>% group_by(part, x) %>% do (
 @
 
 <<circlefits, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Circle fit for each cross section of bullet 2, with part 1 of bullet 1 overlayed.', fig.pos='H'>>=
-qplot(y, resid, data=subset(db2, x <= 80 & x >=75), colour=factor(x)) + 
+qplot(y, resid, data=subset(db2, x <= 80 & x >=75), colour=factor(x), geom="line", size=I(1)) + 
   facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
-  geom_point(aes(y, resid), colour="black", size=1, alpha=0.2, 
-             data = filter(db1, part==1, x <= 80, x >=75)[,c("y", "resid")]) + ggtitle("Part 1 of Bullet 1 in black")
+  geom_line(aes(y, resid, group = x), colour="black", size=1, alpha=0.2, 
+             data = filter(db1, part==1, x <= 80, x >=75)[,c("y", "resid", "x")]) + ggtitle("Part 1 of Bullet 1 in black")
 @
 
-If we perform a similar routine for part 2 of bullet 1, we obtain the figure give in Figure \ref{fig:circlefits2}. 
+If we perform a similar routine for part 2 of bullet 1, we obtain the figure given in Figure \ref{fig:circlefits2}. 
 
 <<circlefits2, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Circle fit for each cross section of bullet 2, with part 2 of bullet 1 overlayed.', fig.pos='H'>>=
-qplot(y, resid, data=subset(db2, x <= 80 & x >=75), colour=factor(x)) + 
+qplot(y, resid, data=subset(db2, x <= 80 & x >=75), colour=factor(x), geom="line", size=I(1)) + 
   facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
-  geom_point(aes(y, resid), colour="black", size=1, alpha=0.2, 
-             data = filter(db1, part==2, x <= 80, x >=75)[,c("y", "resid")]) + ggtitle("Part 2 of Bullet 1 in black")
+  geom_line(aes(y, resid, group =x), colour="black", size=1, alpha=0.2, 
+             data = filter(db1, part==2, x <= 80, x >=75)[,c("y", "resid", "x")]) + ggtitle("Part 2 of Bullet 1 in black")
 @
 
 It can be seen pretty clearly at this point that the deviations resulting from the grooves dominates the residual structure that would correspond to markings. This is unfortunate, as the grooves themselves will not typically contain markings produced by a gun barrel. We can also see the residual circular structure which suggests our circle fit is not entirely appropriate.
