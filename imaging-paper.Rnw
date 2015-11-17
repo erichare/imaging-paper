@@ -184,14 +184,14 @@ Rough outline:
 
 \hh{I'm putting in footnotes for URLs at the moment, they should probably be included properly in the references.}
 
-% Quick Intro
+\section{Introduction}
 Bullet matching is a process in forensic science done to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of the conviction of criminals in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone some more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely describe other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence.
 
 The new scrutiny of the procedure culminated with the 2009 National Academy of Sciences report \cite{NAS:2009}. The report concluded that minimal research had been done exploring the reliability of these ballistic identification methods. In fact, the report says the forensic evidence ``including, for example, bite marks and rearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
 
-% Statement of the problem
+\section{Problem Statement}
 
-% Methodology
+\section{Methodology}
 Throughout this section, we will work with images from the James Hamby Consecutively Rifled Ruger Barrel Study \cite{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
 
 \hh{XXX here's a paragraph missing: rifling in the barrel is creating striation marks on the bullet during the firing process (and grooves). These marks are claimed to be unique to the barrel - we need to find a citation for that from the SOP manual. Roger Thompson's writeup on firearm identification cites AFTE 1992 procedures.\footnote{\url{https://www.ncjrs.gov/app/publications/Abstract.aspx?id=254151}}, \footnote{AFTE 1992 theory of identification \url{http://projects.nfstc.org/firearms/module09/fir_m09_t05_05.htm}} includes the following statements, both on page 34: `The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in ``sufficient agreement".' (my highlighting) and `Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows.'}
@@ -200,7 +200,6 @@ Throughout this section, we will work with images from the James Hamby Consecuti
 x3p is a container format conforming to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. 
 %The x3p format was developed as a means for forensic examiners to easily exchange images in a standard format. 
 x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government Firearm Forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
-
 
 Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}, which show side and top profiles of the land respectively.
 
@@ -229,7 +228,7 @@ library(dplyr)
 library(x3pr)
 library(x3prplus)
 
-#datadir <- "~/GitHub/x3prproto/images/Hamby252_3DX3P1of2/"
+datadir <- "~/GitHub/x3prproto/images/Hamby252_3DX3P1of2/"
 
 br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
 dbr111 <- fortify_x3p(br111)
@@ -322,11 +321,17 @@ It can be seen pretty clearly at this point that the deviations resulting from t
 
 \subsection{Loess Fit}
 
+To improve upon the previous algorithm, the first step must be to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match. Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent. Because a bullet is scanned groove to groove, the groove should appear within approximately scan points from each end. That is, on y coordinate system ranging from 0 to 1000 as these images, are, the grooves will appear between $y \in \{0, 100\}$ and $y \in \{900, 1000\}$. Hence, the algorith for removing the grooves can be described as follows:
 
+1. Fix an x coordinate value.
+2. Remove values from $y \in \{0, 100\}$ and $y \in \{900, 1000\}$.
+3. For each y value from 100 to 900, compute a rolling average to smooth out any deviations occurring near the minimums.
+4. Determine the minimum in the first half (corresponding to the left groove) and the minimum in the right half (corresponding to the right groove)
+5. Remove all y values below the minimum and above the maximum
 
-% Application
+\section{Application}
 
-% Conclusion
+\section{Conclusion}
 
 \bibliographystyle{abbrv}
 %%use following if all content of bibtex file should be shown
