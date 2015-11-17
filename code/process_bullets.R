@@ -133,20 +133,34 @@ qplot(x, y, fill = resid, data=LOF, geom="tile", facets=~bullet) +
   scale_fill_gradient(limits=c(-5,5), low = "grey5", high="grey95") + theme_bw()
 
 qplot(x, y, fill = resid, data=LOF, geom="tile", facets=~bullet) + 
-  scale_fill_gradient(limits=c(-5,5), low = "grey5", high="darkgoldenrod1") + theme_bw()
+  scale_fill_gradient2(limits=c(-5,5), low = "grey5", mid = "gold4", #mid="darkgoldenrod1", 
+                       high = "lightgoldenrod1") + theme_bw()
+
+
+qplot(x, y, fill = resid, data=LOF, geom="tile", facets=~bullet) + 
+  scale_fill_gradientn(limits=c(-5,5), 
+                       colors=c("grey5", "gold4","darkgoldenrod1","lightgoldenrod1", "lemonchiffon"),
+                       values = c(0,0.5, 0.75, 0.9, 1)) + theme_bw()
+
 
 subLOF1 <- LOF %>% filter(bullet == 1, x <= 75)
 subLOF2 <- LOF %>% filter(bullet == 2, x > 75, x < 100)
 
-subLOF$y <- subLOF$y %/% .64
+#subLOF$y <- subLOF$y %/% .64
 #subLOF1$y <- subLOF1$y + 11 # why doesn't this work??
 subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
 
-qplot(x, y, fill = resid, colour=I(NA), data=filter(subLOF, y >450, y < 550), geom="tile") + 
-  scale_fill_gradient(limits=c(-5,5), low = "grey5", high="darkgoldenrod1") +
-#  scale_colour_gradient(limits=c(-5,5), low = "grey5", high="darkgoldenrod1") +
+qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") + 
+  scale_fill_gradientn(limits=c(-5,5), 
+                       colors=c("grey5", "gold4","darkgoldenrod1","lightgoldenrod1", "lemonchiffon"),
+                       values = c(0,0.5, 0.75, 0.9, 1)) +
   theme_bw()
 
+qplot(x, y, fill = 5*sign(resid)*sqrt(abs(resid/5)), colour=I(NA), data=subLOF, geom="tile") + 
+  scale_fill_gradientn(limits=c(-5,5), 
+                       colors=c("grey5", "gold4","darkgoldenrod1","lightgoldenrod1", "lemonchiffon"),
+                       values = c(0,0.5, 0.75, 0.9, 1)) +
+  theme_bw()
 
 qplot(y, resid, colour=resid, data=subset(LOF, x == 99.84), facets=~bullet) + 
   scale_colour_gradient2(limits=c(-5,5)) + theme_bw()
