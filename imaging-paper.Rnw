@@ -405,7 +405,7 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=\columnwidth]{images/match-rgl.png}
+\includegraphics[width=\columnwidth]{images/matchup-rgl.png}
 \caption{\label{fig:manualmatch}\hh{Different view of the manually adjusted side-by-side comparison of two lands from different bullets.}}
 \end{figure}
 
