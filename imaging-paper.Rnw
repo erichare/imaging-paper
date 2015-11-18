@@ -226,7 +226,7 @@ library(dplyr)
 library(x3pr)
 library(x3prplus)
 
-datadir <- "~/GitHub/x3prproto/images/Hamby252_3DX3P1of2/"
+datadir <- "app/images/Hamby252_3DX3P1of2/"
 
 br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
 dbr111 <- fortify_x3p(br111)
