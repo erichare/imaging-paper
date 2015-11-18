@@ -27,7 +27,7 @@ shinyUI(fluidPage(theme = shinytheme("cerulean"),
             hr(),
             
             h4("Residuals"),
-            sliderInput("xcoord", "X Coordinate", min = 1, max = 1000, value = 99, step = 1),
+            sliderInput("xcoord", "X Coordinate", min = 1, max = 1000, value = 136, step = 1),
             
             actionButton("compute", "Compute Residuals")
         ),

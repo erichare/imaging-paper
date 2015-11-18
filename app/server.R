@@ -10,39 +10,6 @@ source(system.file("gui/view", "helpers.R", package = "x3pr"))
 Sys.setenv("plotly_username" = "erichare")
 Sys.setenv("plotly_api_key" = "xd0oxpeept")
 
-get_grooves <- function(bullet) {
-    left <- subset(bullet, y <= 500)
-    right <- subset(bullet, y > 500)
-    
-    leftsmooth <- c(NA, NA, rollapply(left$value, 5, function(x) mean(x, na.rm = TRUE)), NA, NA)
-    rightsmooth <- c(NA, NA, rollapply(right$value, 5, function(x) mean(x, na.rm = TRUE)), NA, NA)
-    
-    final.left <- left[which.min(leftsmooth[-(1:100)]) + 100,]
-    final.right <- right[which.min(rightsmooth[-((length(rightsmooth) - 99):length(rightsmooth))]),]
-    
-    p <- qplot(data = bullet, y, value) +
-        theme_bw() + coord_equal() +
-        geom_vline(xintercept = final.left$y, colour = "red") +
-        geom_vline(xintercept = final.right$y, colour = "blue")
-    
-    return(list(groove = c(final.left$y, final.right$y), plot = p))
-}
-
-fit_loess <- function(bullet, groove) {
-    
-    bullet_filter <- subset(bullet, !is.na(value) & y > groove$groove[1] & y < groove$groove[2])
-    my.loess <- loess(value ~ y, data = bullet_filter)
-    bullet_filter$fitted <- fitted(my.loess)
-    bullet_filter$resid <- resid(my.loess)
-    
-    #qplot(data = bullet_filter, y, value) +
-    #    theme_bw() + coord_equal() +
-    #    geom_smooth()
-    
-    qplot(data = bullet_filter, y, resid) +
-        theme_bw()
-}
-
 shinyServer(function(input, output, session) {
     
     bullet1 <- reactive({
@@ -112,10 +79,16 @@ shinyServer(function(input, output, session) {
         b1.groove <- get_grooves(values$fort1_fixed)
         b2.groove <- get_grooves(values$fort2_fixed)
         
-        p1 <- fit_loess(values$fort1_fixed, b1.groove)
-        p2 <- fit_loess(values$fort2_fixed, b2.groove)
+        l1 <- fit_loess(values$fort1_fixed, b1.groove)
+        l2 <- fit_loess(values$fort2_fixed, b2.groove)
         
-        grid.arrange(p1, p2)
+        my.dat <- data.frame(y = c(l1$data$y, l2$data$y),
+                        resid = c(l1$data$resid, l2$data$resid),
+                        bullet = factor(c(rep(1, length(l1$data$y)), rep(2, length(l2$data$y)))))
+        
+        qplot(y, resid, data = my.dat, geom = "line", colour = bullet, group = bullet, size = I(1.3), alpha = I(0.8)) +
+            theme_bw() +
+            theme(legend.position = "bottom")
     })
     
 })
