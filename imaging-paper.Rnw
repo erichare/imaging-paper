@@ -210,7 +210,7 @@ x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url
     \subfloat[View from the top.\label{fig:topx3p}]{%
     \includegraphics[width=\linewidth]{images/topx3p.png}
     }
-\caption{An example of a scan of a bullet land.}
+\caption{An example of a scan of a bullet land. \hh{XXX is the code for these pictures somewhere in the code folder? Let's put a link/note to it here. The aspect ratio of these 3D files should be adjusted such that it faithfully shows the actual geography. That should happen in the function plot3D.x3p.file }}
 \end{figure}
 Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}, which show side and top profiles of the land respectively.
 
