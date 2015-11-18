@@ -146,9 +146,9 @@ Teaser image wouldn't be bad, let's see whether there is  space
 library(extrafont)
 library(knitr)
 opts_chunk$set(fig.path='Figure/fig-', cache.path='cache/', fig.align='center', fig.width=5, fig.height=5, fig.show='hold', par=TRUE, cache=F, tidy=T, concordance=TRUE, autodep=TRUE, root.dir="../", comment="|", dev="CairoPDF")
-datadir <- "data"
 imgdir <- "Figure/"
 codedir <- "code"
+datadir <- "app/images/Hamby252_3DX3P1of2/"
 
 options(replace.assign=TRUE,scipen=3)
 @
@@ -226,7 +226,6 @@ library(dplyr)
 library(x3pr)
 library(x3prplus)
 
-datadir <- "app/images/Hamby252_3DX3P1of2/"
 
 br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
 dbr111 <- fortify_x3p(br111)
