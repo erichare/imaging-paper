@@ -1,5 +1,5 @@
 library(shiny)
-library(x3pr)
+library(XML)
 library(x3prplus)
 library(plotly)
 library(gridExtra)
@@ -46,13 +46,13 @@ fit_loess <- function(bullet, groove) {
 shinyServer(function(input, output, session) {
     
     bullet1 <- reactive({
-        if (is.null(input$file1)) return(read.x3p("images/Hamby252_3DX3P1of2/Br1 Bullet 2-5.x3p"))
-        else return(read.x3p(input$file1$datapath))
+        if (is.null(input$file1)) return(x3pr::read.x3p("images/Hamby252_3DX3P1of2/Br1 Bullet 2-5.x3p"))
+        else return(x3pr::read.x3p(input$file1$datapath))
     })
     
     bullet2 <- reactive({
-        if (is.null(input$file2)) return(read.x3p("images/Hamby252_3DX3P1of2/Br1 Bullet 1-3.x3p"))
-        else return(read.x3p(input$file2$datapath))
+        if (is.null(input$file2)) return(x3pr::read.x3p("images/Hamby252_3DX3P1of2/Br1 Bullet 1-3.x3p"))
+        else return(x3pr::read.x3p(input$file2$datapath))
     })
     
     theSurface <- reactive({
