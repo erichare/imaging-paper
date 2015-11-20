@@ -360,6 +360,15 @@ We've implemented a web interface to automate many of the steps outlined in the 
 \caption{\label{fig:app}{Screenshot of the web interface for analyzing bullet images.}}
 \end{figure*}
 
+Several lighting options are available to tweak in order to highlight markings in on the bullets more strongly:
+
+\begin{enumerate}
+    \item \textbf{Ambient Lighting} - Lighting which is used to simulate the light naturally present in the environment.
+    \item \textbf{Diffuse Lighting} - Setting this value higher will cause the surface to re-emit a higher proportion of light.
+    \item \textbf{Specular Lighting} - The lighting which appears on the surface when illuminated.
+    \item \textbf{Roughness Lighting} - The amount of light reflected by the roughness of the surface.
+    \item \textbf{Fresnel Lighting} - Higher values create a wider, softer lighting across the surface.
+\end{enumerate}
 
 \section{Approach to automatic matching}
 \hh{XXX all tentative}
