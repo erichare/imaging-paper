@@ -131,3 +131,33 @@ qplot(y, resid, colour=resid, data=subset(LOF, x == 99.84), facets=~bullet) +
 
 qplot(y, resid, geom="line", data=subset(LOF, x == 99.84), group = bullet, colour= factor(bullet)) +
   scale_colour_brewer(palette="Set1") + theme_bw()
+
+###########################
+# 
+fitloess <- function(dat, span, sub = 2) {
+  indx <- sub *(1: (nrow(dat) %/% sub))
+  subdat <- dat[indx, ]
+  lwp <- with(subdat, loess(resid~y,span=span))
+  predict(lwp, newdata = dat)
+}
+
+LOFx = LOFx %>% group_by(bullet) %>% transform(
+  l07 = fitloess(dat=., span = 0.007),
+  l10 = fitloess(dat=., span = 0.01),
+  l25 = fitloess(dat=., span = 0.025),
+  l50 = fitloess(dat=., span = 0.05),
+  l75 = fitloess(dat=., span = 0.075),
+  l100 = fitloess(dat=., span = 0.1)
+)
+
+ggplot(aes(x=y, y=resid, group=bullet), data=LOFx) +
+  geom_line(colour="grey60") +
+  geom_line(aes(y=l07), colour="black", size=0.5) + 
+  geom_line(aes(y=l10), colour="black", size=0.5) + 
+  geom_line(aes(y=l25), colour="black", size=0.5) + 
+  geom_line(aes(y=l50), colour="black", size=0.5) + 
+  geom_line(aes(y=l75), colour="black", size=0.5) + 
+  geom_line(aes(y=l100), colour="black", size=0.5) + 
+  scale_color_brewer(palette="Set1") +
+  facet_grid(bullet~.) + 
+  theme_bw()
