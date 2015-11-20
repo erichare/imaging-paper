@@ -66,6 +66,9 @@ qplot(data=lof, x=y, y=l30, colour=type, geom="line", group=bullet) +
   geom_point(aes(y=r05))
 
 qplot(data=lof, x=y, y=bullet, fill=type, geom="tile") +
-  scale_fill_brewer(palette="Set1")
+  scale_fill_brewer(palette="Set1") + 
+  theme_bw() +
+  ylab("") +
+  theme(legend.position="bottom")
 
 

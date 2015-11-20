@@ -414,6 +414,35 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
 \caption{\label{fig:manualmatch}\hh{Different view of the manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
 \end{figure}
 
+<<twolands100, echo=FALSE>>=
+images <- file.path(datadir, dir(datadir))
+
+lof <- processBullets(paths = images[c(5,7)], x = 100)
+
+subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
+subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
+subLOFx1$y <- subLOFx1$y + 19*1.5625 # working now!!!
+lofX <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
+@
+\begin{figure}
+\centering
+    \subfloat[Crosscuts at $x = 100$.\label{fig:crosscut}]{%
+<<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.49\\textwidth'>>=
+qplot(y, resid, group=bullet, colour=bullet, data=lof, geom="line") + 
+  scale_colour_brewer("", palette="Set1") + theme_bw() +
+  theme(legend.position = c(.9, .2))
+@
+    }
+    \hfill
+    \subfloat[Adjusted (Bullet 1-5 horizontally shifted) crosscuts at $x = 100$.\label{fig:crosscutX}]{%
+<<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.49\\textwidth'>>=
+qplot(y, resid, group=bullet, colour=bullet, data=lofX, geom="line") + 
+  scale_colour_brewer(palette="Set1") + theme_bw() +
+  theme(legend.position="none")
+@
+    }
+\end{figure}
+
 \section{Application}
 We've implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny[ref], allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly[ref], allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}.
 
