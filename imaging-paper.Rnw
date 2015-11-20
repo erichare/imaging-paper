@@ -418,13 +418,13 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
 \includegraphics[width=\columnwidth]{images/side-by-side-manual-match.png}
 \caption{\label{fig:manualmatch}\hh{Manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
 \end{figure}
-
 \begin{figure}
 \includegraphics[width=\columnwidth]{images/matchup-rgl.png}
-\caption{\label{fig:manualmatch}\hh{Different view of the manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
+\caption{\label{fig:manualmatch-rgl}\hh{Different view of the manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
 \end{figure}
 
-<<twolands100, echo=FALSE>>=
+
+<<twolands100, cache=TRUE,  echo=FALSE>>=
 images <- file.path(datadir, dir(datadir))
 
 lof <- processBullets(paths = images[c(5,7)], x = 100)
@@ -438,7 +438,8 @@ lofX <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
 \centering
     \subfloat[Crosscuts at $x = 100$.\label{fig:crosscut}]{%
 <<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.49\\textwidth'>>=
-qplot(y, resid, group=bullet, colour=bullet, data=lof, geom="line") + 
+qplot(y, resid, group=bullet, colour=bullet, data=lof, 
+      geom="line", alpha=I(0.6)) + 
   scale_colour_brewer("", palette="Set1") + theme_bw() +
   theme(legend.position = c(.9, .2))
 @
@@ -446,13 +447,60 @@ qplot(y, resid, group=bullet, colour=bullet, data=lof, geom="line") +
     \hfill
     \subfloat[Adjusted (Bullet 1-5 horizontally shifted) crosscuts at $x = 100$.\label{fig:crosscutX}]{%
 <<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.49\\textwidth'>>=
-qplot(y, resid, group=bullet, colour=bullet, data=lofX, geom="line") + 
+qplot(y, resid, group=bullet, colour=bullet, data=lofX, 
+      geom="line", alpha=I(0.6)) + 
   scale_colour_brewer(palette="Set1") + theme_bw() +
   theme(legend.position="none")
 @
     }
+\caption{\label{fig:cross100} Lines showing surface crosscuts at $x = 100$. A horizontal shift of the values of Bullet 1-5 to the right shows the similarity of the striation marks.}
 \end{figure}
 
+\hh{Using (for now) a single crosscut across the surface, we extract the values and remove the class characteristics using a loess fit as before. This enables us to focus on the individual characterists. Striation marks show up in this representations as peaks and valleys. Figure~\ref{fig:cross100} shows lines of the surface crosscut at $x = 100$. A horizontal shift of one of the lines (result shown in (b)) emphasizes the strong similarities.}
+
+\begin{figure}
+\centering
+    \subfloat[Loess smooth at $x = 100$ (span is 0.03).\label{fig:smooth}]{%
+<<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.49\\textwidth', warning=FALSE>>=
+lofX <- lofX %>% group_by(bullet) %>% mutate(
+  l30 = smoothloess(y, resid, span = 0.03)
+)
+lofX$r05 <- 0.75* sign(lofX$l30) * as.numeric(abs(lofX$l30) > .75)
+lofX$type <- factor(lofX$r05)
+levels(lofX$type) <- c("groove", NA, "peak")
+
+qplot(data=lofX, y, resid, colour=bullet, size=I(1)) +
+  geom_line(aes(y=l30), colour="grey30") +
+  facet_grid(bullet~.) +
+  scale_colour_brewer("", palette="Set1") +
+  theme_bw() +
+  theme(legend.position="none")
+@
+    }
+    \hfill
+    \subfloat[Values above/below a threshold level are defined as peaks and grooves. \label{fig:smoothcutb}]{%
+<<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=4, out.width='.49\\textwidth', warning=FALSE>>=
+qplot(data=lofX, x=y, y=l30, colour=type, geom="line", group=bullet) + 
+  facet_grid(bullet~.) +
+  ylab("Individual characteristics") + 
+  geom_point(aes(y=r05)) +
+  scale_colour_brewer(palette="Set2", na.value = "grey90") +
+  theme_bw() +
+  theme(legend.position="bottom")
+@
+    }
+\hfill
+    \subfloat[ \label{fig:smoothcutc}]{%
+<<smoothtile, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=2.5, out.width='.49\\textwidth'>>=
+qplot(data=lofX, x=y, y=bullet, fill=type, geom="tile") +
+  scale_fill_brewer(palette="Set2", na.value="grey90") + 
+  theme_bw() +
+  ylab("") +
+  theme(legend.position="bottom")
+@
+    }    
+\caption{\label{fig:smoothcut} Processing surface crosscuts.}
+\end{figure}
 
 \section{Conclusion}
 
