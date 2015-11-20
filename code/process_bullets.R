@@ -134,30 +134,50 @@ qplot(y, resid, geom="line", data=subset(LOF, x == 99.84), group = bullet, colou
 
 ###########################
 # 
-fitloess <- function(dat, span, sub = 2) {
-  indx <- sub *(1: (nrow(dat) %/% sub))
+fitloess <- function(x, y, span, sub = 2) {
+  dat <- data.frame(x, y)
+    indx <- sub *(1: (nrow(dat) %/% sub))
   subdat <- dat[indx, ]
-  lwp <- with(subdat, loess(resid~y,span=span))
+  lwp <- with(subdat, loess(y~x,span=span))
   predict(lwp, newdata = dat)
 }
 
-LOFx = LOFx %>% group_by(bullet) %>% transform(
-  l07 = fitloess(dat=., span = 0.007),
-  l10 = fitloess(dat=., span = 0.01),
-  l25 = fitloess(dat=., span = 0.025),
-  l50 = fitloess(dat=., span = 0.05),
-  l75 = fitloess(dat=., span = 0.075),
-  l100 = fitloess(dat=., span = 0.1)
+LOFx <- subset(LOF, x == 100)
+LOFx = LOFx %>% group_by(bullet) %>% mutate(
+  l30 = fitloess(y, resid, span = 0.03),
+  l40 = fitloess(y, resid, span = 0.04),
+  l50 = fitloess(y, resid, span = 0.05),
+  l60 = fitloess(y, resid, span = 0.06),
+  l70 = fitloess(y, resid, span = 0.07),
+  l80 = fitloess(y, resid, span = 0.08),
+  l90 = fitloess(y, resid, span = 0.09),
+  l100 = fitloess(y, resid, span = 0.1),
+  l110 = fitloess(y, resid, span = 0.11)
 )
+  
 
 ggplot(aes(x=y, y=resid, group=bullet), data=LOFx) +
   geom_line(colour="grey60") +
-  geom_line(aes(y=l07), colour="black", size=0.5) + 
-  geom_line(aes(y=l10), colour="black", size=0.5) + 
-  geom_line(aes(y=l25), colour="black", size=0.5) + 
+  geom_line(aes(y=l30), colour="black", size=0.5) + 
+  geom_line(aes(y=l40), colour="black", size=0.5) + 
   geom_line(aes(y=l50), colour="black", size=0.5) + 
-  geom_line(aes(y=l75), colour="black", size=0.5) + 
+  geom_line(aes(y=l60), colour="black", size=0.5) + 
+  geom_line(aes(y=l70), colour="black", size=0.5) + 
+  geom_line(aes(y=l80), colour="black", size=0.5) + 
+  geom_line(aes(y=l90), colour="black", size=0.5) + 
   geom_line(aes(y=l100), colour="black", size=0.5) + 
+  geom_line(aes(y=l110), colour="black", size=0.5) + 
   scale_color_brewer(palette="Set1") +
   facet_grid(bullet~.) + 
   theme_bw()
+
+# a span of 0.03 looks decent
+
+ggplot(aes(x=y, y=resid, colour=factor(bullet), group=bullet), data=LOFx) +
+  geom_point() +
+  geom_line(aes(y=l50), size=0.5) + 
+  scale_color_brewer(palette="Set1") +
+#  facet_grid(bullet~.) + 
+  theme_bw()
+
+
