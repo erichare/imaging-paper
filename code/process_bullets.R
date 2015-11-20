@@ -174,10 +174,28 @@ ggplot(aes(x=y, y=resid, group=bullet), data=LOFx) +
 # a span of 0.03 looks decent
 
 ggplot(aes(x=y, y=resid, colour=factor(bullet), group=bullet), data=LOFx) +
-  geom_point() +
+#  geom_point() +
   geom_line(aes(y=l50), size=0.5) + 
   scale_color_brewer(palette="Set1") +
 #  facet_grid(bullet~.) + 
   theme_bw()
 
+subLOFx1 <- subset(LOFx, bullet==1)
+subLOFx2 <- subset(LOFx, bullet==2)
+subLOFx1$y <- subLOFx1$y + 19*1.5625 # working now!!!
+subLOFx <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
+
+ggplot(aes(x=y, y=resid, colour=factor(bullet), group=bullet), data=subLOFx) +
+  #  geom_point() +
+  geom_line(aes(y=l50), size=0.5) + 
+  scale_color_brewer(palette="Set1") +
+  #  facet_grid(bullet~.) + 
+  theme_bw()
+
+# create a signature by using a threshold value - 
+subLOFx$r05 <- sign(subLOFx$l30) * as.numeric(abs(subLOFx$l30) > .75)
+qplot(data=subLOFx, x=y, y=l30, colour=factor(r05), geom="line", group=bullet) + facet_grid(bullet~.) +
+  geom_point(aes(y=r05))
+
+qplot(data=subLOFx, x=y, y=bullet, fill=factor(r05), geom="tile") + ylim(c(0,3))
 

@@ -351,6 +351,10 @@ my.loess <- fit_loess(br111, br111.groove)
 my.loess$resid
 @
 
+\section{Approach to automatic matching}
+\hh{XXX all tentative}
+Applying the  loess fit to a range of different surface cross cuts (see Figures~\ref{fig:manualmatch} and Figure~\ref{fig:manualmatch}, with cross cuts from 50 to 150) shows the striation marks across two bullets. Cross cuts of bullet 1 are shown on the left (cross cuts with values below 100) and cross cuts of bullets 2 are shown on the right (cross cuts with values above 100). A lot of the striation marks align, allowing for an easy visual assessment of the shared similarities between the two bullets. 
+
 \begin{figure}
 <<side-by-side, echo=FALSE, eval=FALSE>>=
 paths <- file.path(datadir, dir(datadir))
@@ -402,12 +406,12 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
 @
 
 \includegraphics[width=\columnwidth]{images/side-by-side-manual-match.png}
-\caption{\label{fig:manualmatch}\hh{Manually adjusted side-by-side comparison of two lands from different bullets.}}
+\caption{\label{fig:manualmatch}\hh{Manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
 \end{figure}
 
 \begin{figure}
 \includegraphics[width=\columnwidth]{images/matchup-rgl.png}
-\caption{\label{fig:manualmatch}\hh{Different view of the manually adjusted side-by-side comparison of two lands from different bullets.}}
+\caption{\label{fig:manualmatch}\hh{Different view of the manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
 \end{figure}
 
 \section{Application}
