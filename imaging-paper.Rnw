@@ -312,7 +312,7 @@ qplot(y, resid, data=subset(db2, x <= 80*1.5625^2 & x >=75*1.5625^2), colour=fac
 
 If we perform a similar routine for part 2 of bullet 1, we obtain the figure given in Figure \ref{fig:circlefits2}. 
 
-<<circlefits2, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Circle fit for each cross section of bullet 2, with part 2 of bullet 1 overlayed.', fig.pos='H'>>=
+<<circlefits2, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Circle fit for each cross section of bullet 2, with part 2 of bullet 1 overlayed.', fig.pos='H', cache=TRUE>>=
 qplot(y, resid, data=subset(db2, x <= 80*1.5625^2 & x >=75*1.5625^2), colour=factor(x), geom="line", size=I(1)) + 
   facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
@@ -411,6 +411,12 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
 \end{figure}
 
 \section{Application}
+We've implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny[ref], allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly[ref], allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{images/app.png}
+\caption{\label{fig:app}{Screenshot of the web interface for analyzing bullet images.}}
+\end{figure*}
 
 \section{Conclusion}
 
