@@ -351,6 +351,16 @@ my.loess <- fit_loess(br111, br111.groove)
 my.loess$resid
 @
 
+
+\section{Application}
+We've implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny[ref], allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly[ref], allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{images/app.png}
+\caption{\label{fig:app}{Screenshot of the web interface for analyzing bullet images.}}
+\end{figure*}
+
+
 \section{Approach to automatic matching}
 \hh{XXX all tentative}
 Applying the  loess fit to a range of different surface cross cuts (see Figures~\ref{fig:manualmatch} and Figure~\ref{fig:manualmatch}, with cross cuts from 50 to 150) shows the striation marks across two bullets. Cross cuts of bullet 1 are shown on the left (cross cuts with values below 100) and cross cuts of bullets 2 are shown on the right (cross cuts with values above 100). A lot of the striation marks align, allowing for an easy visual assessment of the shared similarities between the two bullets. 
@@ -443,13 +453,6 @@ qplot(y, resid, group=bullet, colour=bullet, data=lofX, geom="line") +
     }
 \end{figure}
 
-\section{Application}
-We've implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny[ref], allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly[ref], allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}.
-
-\begin{figure*}
-\includegraphics[width=\textwidth]{images/app.png}
-\caption{\label{fig:app}{Screenshot of the web interface for analyzing bullet images.}}
-\end{figure*}
 
 \section{Conclusion}
 
