@@ -470,7 +470,7 @@ qplot(y, resid, group=bullet, colour=bullet, data=lofX,
 \begin{figure}
 \centering
     \subfloat[Loess smooth at $x = 100$ (span is 0.03).\label{fig:smooth}]{%
-<<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.49\\textwidth', warning=FALSE>>=
+<<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.49\\textwidth', warning=FALSE>>=
 lofX <- lofX %>% group_by(bullet) %>% mutate(
   l30 = smoothloess(y, resid, span = 0.03)
 )
@@ -478,8 +478,8 @@ lofX$r05 <- 0.75* sign(lofX$l30) * as.numeric(abs(lofX$l30) > .75)
 lofX$type <- factor(lofX$r05)
 levels(lofX$type) <- c("groove", NA, "peak")
 
-qplot(data=lofX, y, resid, colour=bullet, size=I(1)) +
-  geom_line(aes(y=l30), colour="grey30") +
+qplot(data=lofX, y, resid, colour=bullet, size=I(0.5), geom="line", group=bullet) +
+  geom_line(aes(y=l30), colour="grey30", size=0.75) +
   facet_grid(bullet~.) +
   scale_colour_brewer("", palette="Set1") +
   theme_bw() +
@@ -489,17 +489,19 @@ qplot(data=lofX, y, resid, colour=bullet, size=I(1)) +
     \hfill
     \subfloat[Values above/below a threshold level are defined as peaks and grooves. \label{fig:smoothcutb}]{%
 <<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=4, out.width='.49\\textwidth', warning=FALSE>>=
-qplot(data=lofX, x=y, y=l30, colour=type, geom="line", group=bullet) + 
+qplot(data=lofX, x=y, y=l30, colour=type, geom="line", 
+      group=bullet, size = I(0.75)) + 
   facet_grid(bullet~.) +
   ylab("Individual characteristics") + 
-  geom_point(aes(y=r05)) +
+#  geom_point(aes(y=r05)) +
+  geom_rect(xmin = 200, xmax = 2260, ymin = -.75, ymax = 0.75, colour=NA, fill=alpha("grey90", alpha =0.5)) +
   scale_colour_brewer(palette="Set2", na.value = "grey90") +
   theme_bw() +
   theme(legend.position="bottom")
 @
     }
 \hfill
-    \subfloat[ \label{fig:smoothcutc}]{%
+    \subfloat[Overlaps of the same color indicate matching striation marks.  \label{fig:smoothcutc}]{%
 <<smoothtile, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=2.5, out.width='.49\\textwidth'>>=
 qplot(data=lofX, x=y, y=bullet, fill=type, geom="tile") +
   scale_fill_brewer(palette="Set2", na.value="grey90") + 
@@ -508,8 +510,10 @@ qplot(data=lofX, x=y, y=bullet, fill=type, geom="tile") +
   theme(legend.position="bottom")
 @
     }    
-\caption{\label{fig:smoothcut} Processing surface crosscuts.}
+\caption{\label{fig:match} Matching striation marks: smooth (a), cut (b), and match (c).}
 \end{figure}
+
+\hh{Figure~\ref{fig:match} gives an overview of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; XXX need to vary over this threshold level next). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. }
 
 \section{Conclusion}
 
