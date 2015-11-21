@@ -440,8 +440,56 @@ lof <- processBullets(paths = images[c(5,7)], x = 100)
 
 subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
 subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
-subLOFx1$y <- subLOFx1$y + 19*1.5625 # working now!!!
+subLOFx1$y <- subLOFx1$y + 23*1.5625 # working now!!!
 lofX <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
+
+# smooth
+lofX <- lofX %>% group_by(bullet) %>% mutate(
+  l30 = smoothloess(y, resid, span = 0.03)
+)
+# cut at .75
+lofX$r05 <- 0.75* sign(lofX$l30) * as.numeric(abs(lofX$l30) > .75)
+lofX$type <- factor(lofX$r05)
+levels(lofX$type) <- c("groove", NA, "peak")
+@
+
+<<twolands100match, cache=TRUE, echo=FALSE, dependson='twolands100'>>=
+matches <- lofX %>% group_by(y) %>% summarise(
+  potential = (length(unique(type)) == 1),
+  allnas = sum(is.na(type))/n(),
+  type1 = na.omit(type)[1],
+  type = paste(type, sep="|", collapse="|"),
+  n = n()
+)
+
+matches$id <- cumsum(matches$allnas == 1) + 1
+matches$lineid <- as.numeric(matches$allnas != 1) * matches$id
+
+isMatch <- function(id, type) {
+  if (id[1] == 0) return(FALSE)
+#  browser()
+  types <- strsplit(type, split = "|", fixed=TRUE) 
+  t1 <- sapply(types, function(x) x[1])
+  t2 <- sapply(types, function(x) x[2])
+  if (all(t1 == "NA")) return(FALSE)
+  if (all(is.na(t2))) return(FALSE)
+  if (all(t2 == "NA")) return(FALSE)
+  
+  peak <- length(grep("peak", c(t1, t2))) > 0
+  groove <- length(grep("groove", c(t1, t2))) > 0
+  if (peak & groove) return(FALSE)
+
+  return(TRUE)
+}
+
+lines <- matches %>% group_by(lineid) %>% summarise(
+  meany = mean(y, na.rm=T),
+  miny = min(y, na.rm=T),
+  maxy = max(y, na.rm=T) + 1.5625,
+  match = isMatch(lineid, type),
+  type = type1[1]
+)
+
 @
 \begin{figure}
 \centering
@@ -471,15 +519,8 @@ qplot(y, resid, group=bullet, colour=bullet, data=lofX,
 \centering
     \subfloat[Loess smooth at $x = 100$ (span is 0.03).\label{fig:smooth}]{%
 <<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.49\\textwidth', warning=FALSE>>=
-lofX <- lofX %>% group_by(bullet) %>% mutate(
-  l30 = smoothloess(y, resid, span = 0.03)
-)
-lofX$r05 <- 0.75* sign(lofX$l30) * as.numeric(abs(lofX$l30) > .75)
-lofX$type <- factor(lofX$r05)
-levels(lofX$type) <- c("groove", NA, "peak")
-
-qplot(data=lofX, y, resid, colour=bullet, size=I(0.5), geom="line", group=bullet) +
-  geom_line(aes(y=l30), colour="grey30", size=0.75) +
+qplot(data=lofX, y, resid, colour=bullet, size=I(0.75), geom="line", group=bullet) +
+  geom_line(aes(y=l30), colour="grey30", size=0.5) +
   facet_grid(bullet~.) +
   scale_colour_brewer("", palette="Set1") +
   theme_bw() +
@@ -495,25 +536,33 @@ qplot(data=lofX, x=y, y=l30, colour=type, geom="line",
   ylab("Individual characteristics") + 
 #  geom_point(aes(y=r05)) +
   geom_rect(xmin = 200, xmax = 2260, ymin = -.75, ymax = 0.75, colour=NA, fill=alpha("grey90", alpha =0.5)) +
-  scale_colour_brewer(palette="Set2", na.value = "grey90") +
+  scale_colour_brewer(palette="Set2", na.value = NA) +
   theme_bw() +
   theme(legend.position="bottom")
 @
     }
 \hfill
-    \subfloat[Overlaps of the same color indicate matching striation marks.  \label{fig:smoothcutc}]{%
-<<smoothtile, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=2.5, out.width='.49\\textwidth'>>=
-qplot(data=lofX, x=y, y=bullet, fill=type, geom="tile") +
-  scale_fill_brewer(palette="Set2", na.value="grey90") + 
+    \subfloat[Grey backgrounds identify a line on one of the bullets. Overlaps of the same color indicate matching striation marks.
+    Matching striations are marked by an `o', mismatches are marked by an `x'.   \label{fig:smoothcutd}]{%
+<<smoothmatch, echo=FALSE, dependson='twolands100match', fig.width=7, fig.height=2.75, out.width='.49\\textwidth'>>=
+ggplot() +
+  geom_rect(aes(xmin = miny, xmax = maxy), ymin = 0.25, ymax=2.75, fill="grey80", data = subset(lines, lineid != 0)) +
+  geom_tile(data=lofX, aes(x=y, y=bullet, fill=type)) + 
+  scale_y_discrete(expand = c(0.2,0)) +
+  scale_fill_brewer(palette="Set2") + 
   theme_bw() +
   ylab("") +
-  theme(legend.position="bottom")
+  theme(legend.position="bottom") +
+  geom_text(aes(x = meany), y= .4, label= "x", data = subset(lines, !match & lineid !=0)) +
+  geom_text(aes(x = meany), y= .4, label= "o", data = subset(lines, match & lineid !=0))
 @
     }    
 \caption{\label{fig:match} Matching striation marks: smooth (a), cut (b), and match (c).}
 \end{figure}
 
-\hh{Figure~\ref{fig:match} gives an overview of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; XXX need to vary over this threshold level next). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. }
+\hh{Figure~\ref{fig:match} gives an overview of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; XXX need to vary over this threshold level next). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} XXX need more references XXX considered four or more consecutive lines to be sufficient evidence of a match. }
+
+\hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
 
 \section{Conclusion}
 
