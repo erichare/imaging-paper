@@ -447,8 +447,10 @@ lofX <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
 lofX <- lofX %>% group_by(bullet) %>% mutate(
   l30 = smoothloess(y, resid, span = 0.03)
 )
+
 # cut at .75
-lofX$r05 <- 0.75* sign(lofX$l30) * as.numeric(abs(lofX$l30) > .75)
+threshold <- .75
+lofX$r05 <- threshold* sign(lofX$l30) * as.numeric(abs(lofX$l30) > threshold)
 lofX$type <- factor(lofX$r05)
 levels(lofX$type) <- c("groove", NA, "peak")
 @
@@ -563,6 +565,8 @@ ggplot() +
 \hh{Figure~\ref{fig:match} gives an overview of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; XXX need to vary over this threshold level next). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} XXX need more references XXX considered four or more consecutive lines to be sufficient evidence of a match. }
 
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
+
+\hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
 
 \section{Conclusion}
 
