@@ -226,6 +226,7 @@ An initial naive approach leads us to fixing a particular value of a coordinate,
 <<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2.5, fig.width=6, out.width='\\linewidth', fig.pos='t!', fig.cap='Side profile of the height values of a bullet land across fixed x values. Note that the global features dominate any deviations, which would correspond to markings.'>>=
 library(RColorBrewer)
 library(ggplot2)
+library(scales)
 library(dplyr)
 library(x3pr)
 library(x3prplus)
