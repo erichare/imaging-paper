@@ -204,15 +204,23 @@ qplot(threshold, maxCMS, data=CMS) + theme_bw() +
 # how do things look like between non-matches?
 
 
-list_of_matches <- lapply(8:12, function(i) {
-  lof <- processBullets(paths = images[c(5,i)], x = 100)
-  lines <- striation_identify(lof, threshold = 0.75)
+list_of_matches <- lapply(19:24, function(i) {
+  lof <- processBullets(paths = images[c(18,i)], x = 100)
+  mins <- lof %>% group_by(bullet) %>% summarise(miny = min(y))
+  subLOFx1 <- subset(lof, bullet==unique(lof$bullet)[1])
+  subLOFx2 <- subset(lof, bullet==unique(lof$bullet)[2]) 
+  browser()
+  
+  subLOFx1$y <- subLOFx1$y + diff(mins$miny) # working now!!!
+  lofX <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
+  
+  lines <- striation_identify(lofX, threshold = 0.75)
   title <- gsub("app.*//","", images[i])
   title <- gsub(".x3p","", title)
   ggplot() +
     theme_bw() + 
     geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=subset(lines, lineid!=0)) +
-    geom_line(aes(x = y, y = resid, colour = bullet),  data = lof) +
+    geom_line(aes(x = y, y = resid, colour = bullet),  data = lofX) +
     scale_colour_brewer(palette="Set1") +
     theme(legend.position = "none") + 
     ylim(c(-6,6)) +
@@ -222,4 +230,5 @@ list_of_matches <- lapply(8:12, function(i) {
 })
 
 grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]], 
-             list_of_matches[[4]], list_of_matches[[5]], ncol = 2)
+             list_of_matches[[4]], list_of_matches[[5]], list_of_matches[[6]],
+             ncol = 2)
