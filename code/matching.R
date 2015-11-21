@@ -1,7 +1,13 @@
 library(x3pr)
 library(x3prplus)
-
 library(dplyr)
+library(ggplot2)
+library(gridExtra)
+
+datadir <- "app/images/Hamby252_3DX3P1of2/"
+images <- file.path(datadir, dir(datadir))
+
+
 
 processBullets <- function(paths, x = 100) {
   br111 <- read.x3p(paths[1])
@@ -34,8 +40,6 @@ smoothloess <- function(x, y, span, sub = 2) {
   predict(lwp, newdata = dat)
 }
 
-datadir <- "app/images/Hamby252_3DX3P1of2/"
-images <- file.path(datadir, dir(datadir))
 
 lof <- processBullets(paths = images[c(5,7)], x = 100)
 
@@ -195,3 +199,27 @@ CMS <- thresholds %>% lapply(function(threshold) {
 qplot(threshold, maxCMS, data=CMS) + theme_bw() +
   ylab("Number of maximal CMS") +
   ylim(c(0,15))
+
+###############
+# how do things look like between non-matches?
+
+
+list_of_matches <- lapply(8:12, function(i) {
+  lof <- processBullets(paths = images[c(5,i)], x = 100)
+  lines <- striation_identify(lof, threshold = 0.75)
+  title <- gsub("app.*//","", images[i])
+  title <- gsub(".x3p","", title)
+  ggplot() +
+    theme_bw() + 
+    geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=subset(lines, lineid!=0)) +
+    geom_line(aes(x = y, y = resid, colour = bullet),  data = lof) +
+    scale_colour_brewer(palette="Set1") +
+    theme(legend.position = "none") + 
+    ylim(c(-6,6)) +
+    geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(lines, !match & lineid !=0)) +
+    geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(lines, match & lineid !=0)) +
+    ggtitle(title)
+})
+
+grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]], 
+             list_of_matches[[4]], list_of_matches[[5]], ncol = 2)
