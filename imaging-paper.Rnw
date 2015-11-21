@@ -562,11 +562,31 @@ ggplot() +
 \caption{\label{fig:match} Matching striation marks: smooth (a), cut (b), and match (c).}
 \end{figure}
 
-\hh{Figure~\ref{fig:match} gives an overview of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; XXX need to vary over this threshold level next). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} XXX need more references XXX considered four or more consecutive lines to be sufficient evidence of a match. }
+\hh{Figure~\ref{fig:match} gives an overview of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; obviously this is a crucial parameter. For more discussion see Figure~\ref{fig:thresholds}). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} XXX need more references XXX considered four or more consecutive lines to be sufficient evidence of a match. }
 
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
 
 \hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
+
+
+\paragraph{Varying threshold}
+
+In order to address the subjectivity involved in choosing a threshold level, we investigate this parameter more closely. Figure~\ref{fig:thresholds} shows the relationship between threshold and the maximal number of consecutive matching striae. For thresholds between 0.75 and 0.85 the number of CMS peaks at fifteen. On average, there are 6.6 CMS across the range of thresholds.
+\begin{figure}
+<<thresholds, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '0.49\\textwidth'>>=
+thresholds <- seq(0.3, 1.5, by = 0.025)
+CMS <- thresholds %>% lapply(function(threshold) {
+ lines <- striation_identify(lofX, threshold = threshold)
+ cms <- CMS(lines$match)
+ data.frame(threshold=threshold, maxCMS = as.numeric(rev(names(cms)))[1])
+}) %>% bind_rows()
+
+qplot(threshold, maxCMS, data=CMS) + theme_bw() +
+  ylab("Number of maximal CMS") +
+  ylim(c(0,15))
+@
+\caption{\label{fig:thresholds}Varying the threshold levels results in different number of consecutive matching striae between the two bullets. \hh{XXX Our suggestion is, to aim for the threshold with the largest number of CMS.}}
+\end{figure}
 
 \section{Conclusion}
 

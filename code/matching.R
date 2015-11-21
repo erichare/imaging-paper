@@ -183,3 +183,15 @@ ggplot() +
   theme(legend.position="bottom") +
   geom_text(aes(x = meany), y= .4, label= "x", data = subset(lines, !match & lineid !=0)) +
   geom_text(aes(x = meany), y= .4, label= "o", data = subset(lines, match & lineid !=0))
+
+
+thresholds <- seq(0.3, 1.5, by = 0.05)
+CMS <- thresholds %>% lapply(function(threshold) {
+ lines <- striation_identify(lofX, threshold = threshold)
+ cms <- CMS(lines$match)
+ data.frame(threshold=threshold, maxCMS = as.numeric(rev(names(cms)))[1])
+}) %>% bind_rows()
+
+qplot(threshold, maxCMS, data=CMS) + theme_bw() +
+  ylab("Number of maximal CMS") +
+  ylim(c(0,15))
