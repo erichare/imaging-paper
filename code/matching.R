@@ -160,7 +160,7 @@ isMatch <- function(id, type) {
 lines <- matches %>% group_by(lineid) %>% summarise(
   meany = mean(y, na.rm=T),
   miny = min(y, na.rm=T),
-  maxy = max(y, na.rm=T),
+  maxy = max(y, na.rm=T) + 1.5625,
   match = isMatch(lineid, type),
   type = type1[1]
 )
@@ -180,5 +180,6 @@ ggplot() +
   scale_fill_brewer(palette="Set1") + 
   theme_bw() +
   ylab("") +
-  theme(legend.position="bottom") 
-  
+  theme(legend.position="bottom") +
+  geom_text(aes(x = meany), y= .4, label= "x", data = subset(lines, !match & lineid !=0)) +
+  geom_text(aes(x = meany), y= .4, label= "o", data = subset(lines, match & lineid !=0))
