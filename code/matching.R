@@ -1,6 +1,7 @@
 library(x3pr)
 library(x3prplus)
 
+library(dplyr)
 
 processBullets <- function(paths, x = 100) {
   br111 <- read.x3p(paths[1])
@@ -40,7 +41,7 @@ lof <- processBullets(paths = images[c(5,7)], x = 100)
 
 subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
 subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
-subLOFx1$y <- subLOFx1$y + 20*1.5625 # working now!!!
+subLOFx1$y <- subLOFx1$y + 23*1.5625 # working now!!!
 lof <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
 
 
@@ -103,3 +104,81 @@ qplot(data=lof, x=y, y=l30, colour=type, geom="line", group=bullet) +
   geom_point(aes(y=r05), data=lof[mins,]) +
   geom_point(aes(y=r05), data=lof[maxs,])
 
+matches <- lof[mins, c("y", "bullet", "type")]
+matches$yend <- unlist(lof[maxs, c("y")])
+
+qplot(y = bullet, yend=bullet, x=y, xend = yend, data=matches, 
+      geom="segment", colour=type, size=I(10))
+
+##################
+# different attempt
+
+
+matches <- lof %>% group_by(y) %>% summarise(
+  potential = (length(unique(type)) == 1),
+  allnas = sum(is.na(type))/n(),
+  type1 = na.omit(type)[1],
+  type = paste(type, sep="|", collapse="|"),
+  n = n()
+)
+
+
+
+
+qplot(x = y, y = potential, colour=type1, data=matches)
+
+qplot(data=lof, x=y, y=bullet, fill=type, geom="tile") +
+  geom_point(aes(x = y, fill=type1), y=1.5, data=subset(matches, potential & allnas < 1)) +
+#  geom_point(aes(x = y), y=1.5, pch = "x", data=subset(matches, !potential)) +
+  scale_fill_brewer(palette="Set1") + 
+  theme_bw() +
+  ylab("") +
+  theme(legend.position="bottom")
+
+
+# lines are defined by white space in between 
+matches$id <- cumsum(matches$allnas == 1) + 1
+matches$lineid <- as.numeric(matches$allnas != 1) * matches$id
+
+isMatch <- function(id, type) {
+  if (id[1] == 0) return(FALSE)
+#  browser()
+  types <- strsplit(type, split = "|", fixed=TRUE) 
+  t1 <- sapply(types, function(x) x[1])
+  t2 <- sapply(types, function(x) x[2])
+  if (all(t1 == "NA")) return(FALSE)
+  if (all(is.na(t2))) return(FALSE)
+  if (all(t2 == "NA")) return(FALSE)
+  
+  peak <- length(grep("peak", c(t1, t2))) > 0
+  groove <- length(grep("groove", c(t1, t2))) > 0
+  if (peak & groove) return(FALSE)
+
+  return(TRUE)
+}
+
+lines <- matches %>% group_by(lineid) %>% summarise(
+  meany = mean(y, na.rm=T),
+  miny = min(y, na.rm=T),
+  maxy = max(y, na.rm=T),
+  match = isMatch(lineid, type),
+  type = type1[1]
+)
+
+
+qplot(data=lof, x=y, y=bullet, fill=type, geom="tile") +
+  geom_text(aes(x = meany, label=lineid), colour="black", y=1, data=subset(lines, match)) +
+  scale_fill_brewer(palette="Set1") + 
+  theme_bw() +
+  ylab("") +
+  theme(legend.position="bottom") 
+  
+ggplot() +
+  geom_rect(aes(xmin = miny, xmax = maxy), ymin = 0.25, ymax=2.75, fill="grey80", data = subset(lines, lineid != 0)) +
+  geom_tile(data=lof, aes(x=y, y=bullet, fill=type)) + 
+  scale_y_discrete(expand = c(0.2,0)) +
+  scale_fill_brewer(palette="Set1") + 
+  theme_bw() +
+  ylab("") +
+  theme(legend.position="bottom") 
+  
