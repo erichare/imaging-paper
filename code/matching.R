@@ -203,17 +203,17 @@ qplot(threshold, maxCMS, data=CMS) + theme_bw() +
 ###############
 # how do things look like between non-matches?
 
-
+# biggest problem right now: horizontal alignment. 
 list_of_matches <- lapply(19:24, function(i) {
   lof <- processBullets(paths = images[c(18,i)], x = 100)
-  mins <- lof %>% group_by(bullet) %>% summarise(miny = min(y))
   subLOFx1 <- subset(lof, bullet==unique(lof$bullet)[1])
   subLOFx2 <- subset(lof, bullet==unique(lof$bullet)[2]) 
-  browser()
-  
-  subLOFx1$y <- subLOFx1$y + diff(mins$miny) # working now!!!
+  ccf <- ccf(subLOFx1$resid, subLOFx2$resid, plot = FALSE)
+  lag <- ccf$lag[which.max(ccf$acf)]
+  subLOFx1$y <- subLOFx1$y + lag * 1.5625 # working now!!!
   lofX <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
-  
+
+  browser()  
   lines <- striation_identify(lofX, threshold = 0.75)
   title <- gsub("app.*//","", images[i])
   title <- gsub(".x3p","", title)
