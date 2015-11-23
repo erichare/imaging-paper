@@ -205,26 +205,41 @@ qplot(threshold, maxCMS, data=CMS) + theme_bw() +
 
 # biggest problem right now: horizontal alignment. 
 list_of_matches <- lapply(19:24, function(i) {
-  lof <- processBullets(paths = images[c(5,7)], x = 100)
+  cat(i)
+  lof <- processBullets(paths = images[c(15,i)], x = 100)
   lof <- bulletSmooth(lof)
   
   subLOFx1 <- subset(lof, bullet==unique(lof$bullet)[1])
   subLOFx2 <- subset(lof, bullet==unique(lof$bullet)[2]) 
-  ccf <- ccf(subLOFx1$l30, subLOFx2$l30, plot = TRUE, lag.max=100, na.action = na.omit)
+  
+  # ccf assumes that both time series start at the same y
+  subLOFx1$y <- subLOFx1$y - min(subLOFx1$y)
+  subLOFx2$y <- subLOFx2$y - min(subLOFx2$y)
+  ccf <- ccf(subLOFx1$l30, subLOFx2$l30, plot = FALSE, lag.max=150, na.action = na.omit)
   lag <- ccf$lag[which.max(ccf$acf)]
-  subLOFx1$y <- subLOFx1$y - 2 * lag * 1.5625 # amount of shifting should just be lag * y.inc
+  
+  subLOFx1$y <- subLOFx1$y -  lag * 1.5625 # amount of shifting should just be lag * y.inc
   lofX <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
 
 #  browser()  
-  lines <- striation_identify(lofX, threshold = 0.75)
+  CMS <- thresholds %>% lapply(function(threshold) {
+    lines <- striation_identify(lofX, threshold = threshold)
+    cms <- CMS(lines$match)
+    data.frame(threshold=threshold, maxCMS = as.numeric(rev(names(cms)))[1])
+  }) %>% bind_rows()
+  
+  threshold = CMS$threshold[which.max(CMS$maxCMS)]
+  lines <- striation_identify(lofX, threshold = threshold)
   title <- gsub("app.*//","", images[i])
   title <- gsub(".x3p","", title)
   ggplot() +
     theme_bw() + 
     geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=subset(lines, lineid!=0)) +
     geom_line(aes(x = y, y = l30, colour = bullet),  data = lofX) +
+    geom_hline(yintercept = threshold) +
+    geom_hline(yintercept = - threshold) +
     scale_colour_brewer(palette="Set1") +
-    theme(legend.position = "bottom") + 
+    theme(legend.position = "none") + 
     ylim(c(-6,6)) +
     geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(lines, !match & lineid !=0)) +
     geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(lines, match & lineid !=0)) +
