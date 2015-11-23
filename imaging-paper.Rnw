@@ -417,7 +417,7 @@ LOF <- rbind(lof, lof2)
 subLOF1 <- LOF %>% filter(bullet == 1, x <= 100)
 subLOF2 <- LOF %>% filter(bullet == 2, x > 100)
 
-subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
+#subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
 subLOF1$y <- subLOF1$y + 19*1.5625 # working now!!!
 subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
 
@@ -457,6 +457,22 @@ threshold <- .75
 lofX$r05 <- threshold* sign(lofX$l30) * as.numeric(abs(lofX$l30) > threshold)
 lofX$type <- factor(lofX$r05)
 levels(lofX$type) <- c("groove", NA, "peak")
+@
+
+<<twolands100adjust, echo=FALSE>>=
+images <- file.path(datadir, dir(datadir))
+
+lof <- processBullets(paths = images[c(5,7)], x = 100)
+
+subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
+subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
+subLOFx1$y <- subLOFx1$y - min(subLOFx1$y)
+subLOFx2$y <- subLOFx2$y - min(subLOFx2$y)
+ccf <- ccf(subLOFx1$resid, subLOFx2$resid, lag.max=100, plot=FALSE)
+lag <- ccf$lag[which.max(ccf$acf)]
+subLOFx1$y <- subLOFx1$y - lag*1.5625 
+lofY <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
+
 @
 
 <<twolands100match, cache=TRUE, echo=FALSE, dependson='twolands100'>>=
@@ -510,7 +526,11 @@ qplot(y, resid, group=bullet, colour=bullet, data=lof,
     \hfill
     \subfloat[Adjusted (Bullet 1-5 horizontally shifted) crosscuts at $x = 100$.\label{fig:crosscutX}]{%
 <<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.49\\textwidth'>>=
-qplot(y, resid, group=bullet, colour=bullet, data=lofX, 
+# qplot(y, resid, group=bullet, colour=bullet, data=lofX, 
+#       geom="line", alpha=I(0.6)) + 
+#   scale_colour_brewer(palette="Set1") + theme_bw() +
+#   theme(legend.position="none")
+qplot(y, resid, group=bullet, colour=bullet, data=lofY, 
       geom="line", alpha=I(0.6)) + 
   scale_colour_brewer(palette="Set1") + theme_bw() +
   theme(legend.position="none")
@@ -519,7 +539,23 @@ qplot(y, resid, group=bullet, colour=bullet, data=lofX,
 \caption{\label{fig:cross100} Lines showing surface crosscuts at $x = 100$. A horizontal shift of the values of Bullet 1-5 to the right shows the similarity of the striation marks.}
 \end{figure}
 
-\hh{Using (for now) a single crosscut across the surface, we extract the values and remove the class characteristics using a loess fit as before. This enables us to focus on the individual characterists. Striation marks show up in this representations as peaks and valleys. Figure~\ref{fig:cross100} shows lines of the surface crosscut at $x = 100$. A horizontal shift of one of the lines (result shown in (b)) emphasizes the strong similarities.}
+Using (for now) a single crosscut across the surface, we extract the values and remove the class characteristics using a loess fit as before. This enables us to focus on the individual characterists. Striation marks show up in this representations as peaks and valleys. Figure~\ref{fig:cross100} shows lines of the surface crosscut at $x = 100$. A horizontal shift of one of the lines (result shown in (b)) emphasizes the strong similarities.
+\hh{This horizontal shift is based on the cross-correlation between the two surface crosscuts. Let $f(t)$ and $g(t)$ define the values of the crosscut at $t$, then the cross-correlation between $f$ and $g$ at lag $k$ is defined as
+\[
+(f * g) (k) = \sum_t f(t+k) g(t),
+\]
+with suitable defined limits of the summation. 
+}
+\begin{figure}
+<<ccf, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '\\linewidth'>>=
+lag <- ccf$lag[which.max(ccf$acf)]
+qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I("grey50")) + 
+  theme_bw() + ylab("Correlation") + xlab("Lag k") +
+  geom_segment(aes(x = lag, xend = lag, y = 0, yend =  max(ccf$acf)), colour="black") + 
+  scale_x_continuous(breaks = c(-100, -50, lag, 0, 50, 100))
+@
+\caption{\label{fig:ccf}Cross-correlation between the two crosscuts shown in Figure~\ref{fig:crosscut} at lags between -100 and 100. At a lag of -10 the correlation peaks, indicating the largest amount of agreement between the crosscuts. Figure~\ref{fig:crosscutX} shows the lag-shifted crosscuts.}
+\end{figure}
 
 \begin{figure}
 \centering
@@ -566,7 +602,7 @@ ggplot() +
 \caption{\label{fig:match} Matching striation marks: smooth (a), cut (b), and match (c).}
 \end{figure}
 
-\hh{Figure~\ref{fig:match} gives an overview of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; obviously this is a crucial parameter. For more discussion see Figure~\ref{fig:thresholds}). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} XXX need more references XXX considered four or more consecutive lines to be sufficient evidence of a match. }
+\hh{Figure~\ref{fig:match} gives an overview of the rest of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; obviously this is a crucial parameter. For more discussion see Figure~\ref{fig:thresholds}). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} XXX need more references XXX considered four or more consecutive lines to be sufficient evidence of a match. }
 
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
 
