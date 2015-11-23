@@ -217,7 +217,7 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
 \caption{\label{fig:fixedX}Side profile of the surface measurements (in $\mu m$) of a bullet land across a fixed $x$ value. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
-It's clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
+It is clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
 
 \subsection{Cylindrical Fit}
 
@@ -290,6 +290,8 @@ qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
       geom="line", size=I(1)) +
 #  scale_colour_brewer("x", palette="Paired") + 
   theme_bw() + 
+  geom_hline(yintercept = 0, colour="grey50") +
+  ylab(expression(paste("Residuals (in ",mu,m,")", sep=""))) + 
   theme(legend.position="bottom")
 @
 \end{subfigure}    
@@ -299,16 +301,18 @@ qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
 #qplot(data=subset(dbr111, x <= 80*1.5625^2 & x >=75*1.5625^2), y, value-ypred,
 qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x), 
       geom="line", size=I(1)) +
-  scale_colour_brewer("x", palette="Paired") + 
+#  scale_colour_brewer("x", palette="Paired") + 
+  geom_hline(yintercept = 0, colour="grey50") +
   theme_bw() + 
+  ylab(expression(paste("Residuals (in ",mu,m,")", sep=""))) + 
   theme(legend.position="bottom")
 @
 \end{subfigure}
-\caption{\label{fig:residual} Residual structure of  circular fits at two different cross-section. The residual structure in (b) shows systematic structure, indicating that the fit is not entirely appropriate. }
+\caption{\label{fig:residual} Residual structure of  circular fits at two different cross-section. Both residual plots show systematic structures, indicating that the fit is not entirely appropriate. }
 \end{figure}
 
 
-A single cylinder as a fit is unlikely to be a particularly good fit, because there seem to be quite massive deformations in vertical direction. We therefore fit a circle for each cross section of the bullet. Figure \ref{fig:circlefits} illustrates an attempt at matching one of the six lands to the first part of bullet 1, which is shown as a black line. There is some global structure evident that makes focusing on the deviations a bit challenging.
+A single cylinder as a fit is unlikely to be a particularly good fit, because there seem to be quite massive deformations in vertical direction. We therefore fit a circle for each cross section of the bullet. Figure~\ref{fig:circlefits} illustrates an attempt at matching one of the six lands to the first part of bullet 1, which is shown as a black line. There is some global structure evident that makes focusing on the deviations a bit challenging.
 
 <<bullet1, echo=FALSE, cache=TRUE>>=
 db1 <- NULL
@@ -339,23 +343,39 @@ db2 <- db2 %>% group_by(part, x) %>% do (
 
 @
 
-<<circlefits, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Circle fit for each cross section of bullet 2, with part 1 of bullet 1 overlayed.', fig.pos='H'>>=
-qplot(y, resid, data=subset(db2, x <= 80*1.5625^2 & x >=75*1.5625^2), colour=factor(x), geom="line", size=I(1)) + 
+\begin{figure}[hbtp]
+  \centering
+\begin{subfigure}[b]{\linewidth}
+\caption{Circle fit for each cross section of bullet 2, with part 1 of bullet 1 overlayed.\label{fig:circlefits}}{%
+<<circlefits, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
+qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
+      geom="line", size=I(1), colour=I("grey30")) + 
   facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
   geom_line(aes(y, resid, group = x), colour="black", size=1, alpha=0.2, 
-             data = filter(db1, part==1, x <= 80*1.5625^2, x >=75*1.5625^2)[,c("y", "resid", "x")]) + ggtitle("Part 1 of Bullet 1 in black")
+             data = filter(db1, part==1, x == 100)[,c("y", "resid", "x")]) + ggtitle("Part 1 of Bullet 1 in black")
 @
-
-If we perform a similar routine for part 2 of bullet 1, we obtain the figure given in Figure \ref{fig:circlefits2}. 
-
-<<circlefits2, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Circle fit for each cross section of bullet 2, with part 2 of bullet 1 overlayed.', fig.pos='H', cache=TRUE>>=
-qplot(y, resid, data=subset(db2, x <= 80*1.5625^2 & x >=75*1.5625^2), colour=factor(x), geom="line", size=I(1)) + 
+}
+\end{subfigure}    
+\begin{subfigure}[b]{\linewidth}
+    \caption{Circle fit for each cross section of bullet 2, with part 2 of bullet 1 overlayed.\label{fig:circlefits2}}{%
+<<circlefits2, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE,  cache=TRUE>>=
+qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
+      geom="line", size=I(1), colour=I("grey30")) + 
   facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
   geom_line(aes(y, resid, group =x), colour="black", size=1, alpha=0.2, 
-             data = filter(db1, part==2, x <= 80*1.5625^2, x >=75*1.5625^2)[,c("y", "resid", "x")]) + ggtitle("Part 2 of Bullet 1 in black")
-@
+             data = filter(db1, part==2, x == 100)[,c("y", "resid", "x")]) + ggtitle("Part 2 of Bullet 1 in black")
+@    
+}
+\end{subfigure}
+\caption{An example of a scan of a bullet land from one groove to the next. }
+\end{figure}
+
+
+If we perform a similar routine for part 2 of bullet 1, we obtain the figure given in Figure \ref{fig:circlefits2}. 
+
+
 
 It can be seen pretty clearly at this point that the deviations resulting from the grooves dominates the residual structure that would correspond to markings. This is unfortunate, as the grooves themselves will not typically contain markings produced by a gun barrel. We can also see the residual circular structure which suggests our circle fit is not entirely appropriate.
 
@@ -371,7 +391,9 @@ To improve upon the previous algorithm, the first step must be to eliminate the 
     \item Remove all y values below the minimum and above the maximum
 \end{enumerate}
 
-Next, we fit a Loess regression to the data
+Next, we fit a Loess regression to the data.
+
+\hh{XXX could you include a series of plots here, walking through the individual steps of this list? I like the ones that you've already got in the loess fit function ... } 
 
 <<loess_fit, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Loess fit for part 1 of bullet 1', fig.pos='H', message=FALSE>>=
 br111 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-1.x3p"))
@@ -554,7 +576,7 @@ lines <- subset(lines, lineid != 0)
 \centering
 \begin{subfigure}[t]{\linewidth}
 \caption{Crosscuts at $x = 100$.\label{fig:crosscut}}{%
-<<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.49\\textwidth'>>=
+<<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
 qplot(y, resid, group=bullet, colour=bullet, data=lof, 
       geom="line", alpha=I(0.6)) + 
   scale_colour_brewer("", palette="Set1") + theme_bw() +
@@ -564,7 +586,7 @@ qplot(y, resid, group=bullet, colour=bullet, data=lof,
 \end{subfigure}    
 \begin{subfigure}[t]{\linewidth}
     \caption{Adjusted (Bullet 1-5 horizontally shifted) crosscuts at $x = 100$.\label{fig:crosscutX}}{%
-<<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.49\\textwidth'>>=
+<<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
 # qplot(y, resid, group=bullet, colour=bullet, data=lofX, 
 #       geom="line", alpha=I(0.6)) + 
 #   scale_colour_brewer(palette="Set1") + theme_bw() +
@@ -602,7 +624,7 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 \centering
     \begin{subfigure}[t]{\linewidth}
 \caption{Loess smooth at $x = 100$ (span is 0.03).\label{fig:smooth}}{%
-<<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.49\\textwidth', warning=FALSE>>=
+<<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
 qplot(data=lofX, y, resid, colour=bullet, size=I(0.75), geom="line", group=bullet) +
   geom_line(aes(y=l30), colour="grey30", size=0.5) +
   facet_grid(bullet~.) +
@@ -614,7 +636,7 @@ qplot(data=lofX, y, resid, colour=bullet, size=I(0.75), geom="line", group=bulle
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
 \caption{Values above/below a threshold level are defined as peaks and grooves. \label{fig:smoothcutb}}{%
-<<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=4, out.width='.49\\textwidth', warning=FALSE>>=
+<<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=4, out.width='\\textwidth', warning=FALSE>>=
 qplot(data=lofX, x=y, y=l30, colour=type, geom="line", 
       group=bullet, size = I(0.75)) + 
   facet_grid(bullet~.) +
@@ -630,7 +652,7 @@ qplot(data=lofX, x=y, y=l30, colour=type, geom="line",
 \begin{subfigure}[t]{\linewidth}
     \caption{Grey backgrounds identify a line on one of the bullets. Overlaps of the same color indicate matching striation marks.
     Matching striations are marked by an `o', mismatches are marked by an `x'.   \label{fig:smoothcutd}}{%
-<<smoothmatch, echo=FALSE, dependson='twolands100match', fig.width=7, fig.height=2.75, out.width='.49\\textwidth'>>=
+<<smoothmatch, echo=FALSE, dependson='twolands100match', fig.width=7, fig.height=2.75, out.width='\\textwidth'>>=
 ggplot() +
   geom_rect(aes(xmin = miny, xmax = maxy), ymin = 0.25, ymax=2.75, fill="grey80", data = subset(lines, lineid != 0)) +
   geom_tile(data=lofX, aes(x=y, y=bullet, fill=type)) + 
@@ -648,6 +670,27 @@ ggplot() +
 \end{figure}
 
 \hh{Figure~\ref{fig:match} gives an overview of the rest of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; obviously this is a crucial parameter. For more discussion see Figure~\ref{fig:thresholds}). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} XXX need more references XXX considered four or more consecutive lines to be sufficient evidence of a match. }
+
+
+
+\paragraph{Varying threshold}
+
+In order to address the subjectivity involved in choosing a threshold level, we investigate this parameter more closely. Figure~\ref{fig:thresholds} shows the relationship between threshold and the maximal number of consecutive matching striae. For thresholds between 0.75 and 0.85 the number of CMS peaks at fifteen. On average, there are 6.6 CMS across the range of thresholds.
+\begin{figure}
+<<thresholds, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '0.49\\textwidth'>>=
+thresholds <- seq(0.3, 1.5, by = 0.025)
+CMS <- thresholds %>% lapply(function(threshold) {
+ lines <- striation_identify(lofX, threshold = threshold)
+ cms <- CMS(lines$match)
+ data.frame(threshold=threshold, maxCMS = as.numeric(rev(names(cms)))[1])
+}) %>% bind_rows()
+
+qplot(threshold, maxCMS, data=CMS) + theme_bw() +
+  ylab("Number of maximal CMS") +
+  ylim(c(0,15))
+@
+\caption{\label{fig:thresholds}Varying the threshold levels results in different number of consecutive matching striae between the two bullets. \hh{XXX Our suggestion is, to aim for the threshold with the largest number of CMS.}}
+\end{figure}
 
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
 
@@ -708,24 +751,6 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 \hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
 
 
-\paragraph{Varying threshold}
-
-In order to address the subjectivity involved in choosing a threshold level, we investigate this parameter more closely. Figure~\ref{fig:thresholds} shows the relationship between threshold and the maximal number of consecutive matching striae. For thresholds between 0.75 and 0.85 the number of CMS peaks at fifteen. On average, there are 6.6 CMS across the range of thresholds.
-\begin{figure}
-<<thresholds, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '0.49\\textwidth'>>=
-thresholds <- seq(0.3, 1.5, by = 0.025)
-CMS <- thresholds %>% lapply(function(threshold) {
- lines <- striation_identify(lofX, threshold = threshold)
- cms <- CMS(lines$match)
- data.frame(threshold=threshold, maxCMS = as.numeric(rev(names(cms)))[1])
-}) %>% bind_rows()
-
-qplot(threshold, maxCMS, data=CMS) + theme_bw() +
-  ylab("Number of maximal CMS") +
-  ylim(c(0,15))
-@
-\caption{\label{fig:thresholds}Varying the threshold levels results in different number of consecutive matching striae between the two bullets. \hh{XXX Our suggestion is, to aim for the threshold with the largest number of CMS.}}
-\end{figure}
 
 \section{Conclusion}
 
