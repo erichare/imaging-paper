@@ -206,21 +206,27 @@ qplot(threshold, maxCMS, data=CMS) + theme_bw() +
 # biggest problem right now: horizontal alignment. 
 list_of_matches <- lapply(19:24, function(i) {
   lof <- processBullets(paths = images[c(18,i)], x = 100)
+  lof <- lof %>% group_by(bullet) %>% mutate(
+    l30 = smoothloess(y, resid, span = 0.03)
+  )
+  lof$l30 <- pmin(5, lof$l30)
+  lof$l30 <- pmax(-5, lof$l30)
+  
   subLOFx1 <- subset(lof, bullet==unique(lof$bullet)[1])
   subLOFx2 <- subset(lof, bullet==unique(lof$bullet)[2]) 
-  ccf <- ccf(subLOFx1$resid, subLOFx2$resid, plot = FALSE)
+  ccf <- ccf(subLOFx1$l30, subLOFx2$l30, plot = TRUE, lag.max=100, na.action = na.omit)
   lag <- ccf$lag[which.max(ccf$acf)]
-  subLOFx1$y <- subLOFx1$y + lag * 1.5625 # working now!!!
+  subLOFx1$y <- subLOFx1$y - 3*lag * 1.5625 # amount of shifting should just be lag * y.inc
   lofX <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
 
-  browser()  
-  lines <- striation_identify(lofX, threshold = 0.75)
+#  browser()  
+  lines <- striation_identify(lofX, threshold = .75)
   title <- gsub("app.*//","", images[i])
   title <- gsub(".x3p","", title)
   ggplot() +
     theme_bw() + 
     geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=subset(lines, lineid!=0)) +
-    geom_line(aes(x = y, y = resid, colour = bullet),  data = lofX) +
+    geom_line(aes(x = y, y = l30, colour = bullet),  data = lofX) +
     scale_colour_brewer(palette="Set1") +
     theme(legend.position = "none") + 
     ylim(c(-6,6)) +
