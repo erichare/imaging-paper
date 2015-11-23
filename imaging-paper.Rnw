@@ -223,7 +223,7 @@ The primary goal in this type of forensic analysis is to identify markings. Gun 
 
 An initial naive approach leads us to fixing a particular value of a coordinate, and then producing a plot of the heights across values of the other coordinate. Figure \ref{fig:fixedX} gives a plot resulting from such a procedure. It can be seem that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
-<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2.5, fig.width=6, out.width='\\linewidth', fig.pos='t!', fig.cap='Side profile of the height values of a bullet land across fixed x values. Note that the global features dominate any deviations, which would correspond to markings.'>>=
+<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2.5, fig.width=6, out.width='\\linewidth', fig.pos='t!', fig.cap='Side profile of the height values of a bullet land across a fixed x value. Note that the global features dominate any deviations, which would correspond to markings.'>>=
 library(RColorBrewer)
 library(ggplot2)
 library(scales)
@@ -242,10 +242,9 @@ dbr111 <- dbr111 %>% mutate(
   ypred = sin(theta/180*pi)*pars$radius + pars$y0
 )
 
-qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 95*1.5625^2), y, value, colour=factor(x), geom="line", size=I(1)) +
+qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom="line", size=I(1)) +
   geom_line(aes(x=xpred, y=ypred, group=x), 
             colour="grey30", size=0.25) +
-  scale_colour_brewer("Cross-sections at x", palette="Paired") + 
   ylab(expression(paste("Surface Measurements (in ",mu,m,")", sep=""))) + 
   theme_bw() + 
   theme(legend.position="bottom") + coord_equal()
