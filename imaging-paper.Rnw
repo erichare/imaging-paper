@@ -1,38 +1,32 @@
-\documentclass[journal]{vgtc}                % final (journal style)
-%\documentclass[review,journal]{vgtc}         % review (journal style)
-%\documentclass[widereview]{vgtc}             % wide-spaced review
-%\documentclass[preprint,journal]{vgtc}       % preprint (journal style)
-%\documentclass[electronic,journal]{vgtc}     % electronic version, journal
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Large Colored Title Article
+% LaTeX Template
+% Version 1.1 (25/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Uncomment one of the lines above depending on where your paper is
-%% in the conference process. ``review'' and ``widereview'' are for review
-%% submission, ``preprint'' is for pre-publication, and the final version
-%% doesn't use a specific qualifier. Further, ``electronic'' includes
-%% hyperreferences for more convenient online viewing.
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
 
-%% Please use one of the ``review'' options in combination with the
-%% assigned online id (see below) ONLY if your paper uses a double blind
-%% review process. Some conferences, like IEEE Vis and InfoVis, have NOT
-%% in the past.
+\documentclass[DIV=calc, paper=letter, fontsize=10pt, twocolumn]{scrartcl}	 % A4 paper and 11pt font size
 
-%% Please note that the use of figures other than the optional teaser is not permitted on the first page
-%% of the journal version.  Figures should begin on the second page and be
-%% in CMYK or Grey scale format, otherwise, colour shifting may occur
-%% during the printing process.  Papers submitted with figures other than the optional teaser on the
-%% first page will be refused.
-
-%% These three lines bring in essential packages: ``mathptmx'' for Type 1
-%% typefaces, ``graphicx'' for inclusion of EPS figures. and ``times''
-%% for proper handling of the times font family.
-
-\usepackage{mathptmx}
-\usepackage{graphicx}
-\usepackage{times}
-\usepackage{float}
-
-%% We encourage the use of mathptmx for consistent usage of times font
-%% throughout the proceedings. However, if you encounter conflicts
-%% with other math-related packages, you may want to disable it.
+\usepackage[USenglish]{babel}
+\usepackage[protrusion=true,expansion=true]{microtype} % Better typography
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage[svgnames]{xcolor} % Enabling colors by their 'svgnames'
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{booktabs} % Horizontal rules in tables
+\usepackage{fix-cm}	 % Custom font sizes - used for the initial letter in the document
 
 % declare the path(s) where your graphic files are
 \graphicspath{{Figure/}{Images/}}
@@ -40,105 +34,91 @@
 % every instance of \includegraphics
 \DeclareGraphicsExtensions{.pdf,.jpg,.png}
 
-%---------------------------------------------------
-\usepackage[cmex10]{amsmath}
-\usepackage{amssymb}
-\usepackage{color}
+\usepackage{sectsty} % Enables custom section titles
+\allsectionsfont{\usefont{OT1}{phv}{b}{n}} % Change the font of all section commands
 
-\newcommand{\hh}[1]{{\color{magenta} #1}}
-% \usepackage[dvipsnames,svgnames]{xcolor}
-% \usepackage{ulem}
-% \usepackage[section]{placeins}
-\usepackage[caption=false,font=footnotesize,labelfont=sf,textfont=sf]{subfig}
-% \usepackage{sidecap}
-\usepackage{multirow}
-\usepackage{bbm}
+\usepackage{fancyhdr} % Needed to define custom headers/footers
+\pagestyle{fancy} % Enables the custom headers/footers
+\usepackage{lastpage} % Used to determine the number of pages in the document (for "Page X of Total")
+
 \usepackage{url}
-\usepackage{xr}
-\usepackage{xr-hyper}
-\usepackage{afterpage}
 
 
-%---------------------------------------------------
+% Headers - all currently empty
+\lhead{}
+\chead{}
+\rhead{}
 
-%% This turns references into clickable hyperlinks.
-\usepackage[bookmarks,backref=section,linkcolor=black]{hyperref} %,colorlinks
-\hypersetup{
-  pdfauthor = {},
-  pdftitle = {},
-  pdfsubject = {},
-  pdfkeywords = {},
-  colorlinks=true,
-  linkcolor= black,
-  citecolor= black,
-  pageanchor=true,
-  urlcolor = black,
-  plainpages = false,
-  linktocpage
-}
+% Footers
+\lfoot{}
+\cfoot{}
+\rfoot{\footnotesize Page \thepage\ of \pageref{LastPage}} % "Page 1 of 2"
 
-\externaldocument{appendix}
+\renewcommand{\headrulewidth}{0.0pt} % No header rule
+\renewcommand{\footrulewidth}{0.4pt} % Thin footer rule
 
-%% If you are submitting a paper to a conference for review with a double
-%% blind reviewing process, please replace the value ``0'' below with your
-%% OnlineID. Otherwise, you may safely leave it at ``0''.
-\onlineid{0}
+\usepackage{color}
+\newcommand{\hh}[1]{{\color{magenta} #1}}
 
-%% declare the category of your paper, only shown in review mode
-\vgtccategory{Theory/Model}
+\usepackage{lettrine} % Package to accentuate the first letter of the text
+\newcommand{\initial}[1]{ % Defines the command and style for the first letter
+\lettrine[lines=3,lhang=0.3,nindent=0em]{
+\color{DarkGoldenrod}
+{\textsf{#1}}}{}}
 
-%% allow for this line if you want the electronic option to work properly
-\vgtcinsertpkg
+\usepackage{subfig} 
 
-%% In preprint mode you may define your own headline.
-%\preprinttext{To appear in IEEE Transactions on Visualization and Computer Graphics.}
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
 
-%% Paper title.
+\usepackage{titling} % Allows custom title configuration
 
-\title{Matching bullets}
+\newcommand{\HorRule}{\color{DarkGoldenrod} \rule{\linewidth}{1pt}} % Defines the gold horizontal rule around the title
 
-%% This is how authors are specified in the journal style
+\pretitle{\vspace{-30pt} \begin{flushleft} \HorRule \fontsize{50}{50} \usefont{OT1}{phv}{b}{n} \color{DarkRed} \selectfont} % Horizontal rule before the title
 
-%% indicate IEEE Member or Student Member in form indicated below
-\author{Eric Hare and Heike Hofmann}
-\authorfooter{
-%% insert punctuation at end of each item
-\item Eric Hare is a graduate student in the Department of Statistics at Iowa State University. Email: erichare@iastate.edu.
-\item Heike Hofmann is Professor of Statistics at Iowa State University. Email: hofmann@iastate.edu.
-}
+\title{Matching Bullets} % Your article title
 
+\posttitle{\par\end{flushleft}\vskip 0.5em} % Whitespace under the title
 
-%other entries to be set up for journal
-\shortauthortitle{Hare \MakeLowercase{\textit{et al.}}: Matching Bullets}
-%\shortauthortitle{Firstauthor \MakeLowercase{\textit{et al.}}: Paper Title}
+\preauthor{\begin{flushleft}\large \lineskip 0.5em \usefont{OT1}{phv}{b}{sl} \color{DarkRed}} % Author font configuration
 
+\author{Eric Hare, Heike Hofmann} % Your name
 
-%% Abstract section.
-\abstract{
-abstract goes here - this is actually not part of the paper, but goes on a separate page.
-} % end of abstract
+\postauthor{\footnotesize \usefont{OT1}{phv}{m}{sl} \color{Black} % Configuration for the institution name
+
+Department of Statistics and Statistical Laboratory,
+Iowa State University% Your institution
+
+\par\end{flushleft}\HorRule} % Horizontal rule after the title
+
+\date{} % Add a date here if you would like one to appear underneath the title block
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Print the title
+
+\thispagestyle{fancy} % Enabling the custom headers/footers for the first page 
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+% The first character should be within \initial{}
+\initial{H}\textbf{ere is some sample text to show the initial in the introductory paragraph of this template article. The color and lineheight of the initial can be modified in the preamble of this document.}
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
 
 %% Keywords that describe your work. Will show as 'Index Terms' in journal
 %% please capitalize first letter and insert punctuation after last keyword
-\keywords{Data visualization, Statistical graphics, Statistical computing.}
+\paragraph{Keywords:} Data visualization, Statistical graphics, Statistical computing.
 
-%% ACM Computing Classification System (CCS). 
-%% See <http://www.acm.org/class/1998/> for details.
-%% The ``\CCScat'' command takes four arguments.
 
-\CCScatlist{ % not used in journal version
- \CCScat{H.2.8.c}{Data and knowledge visualization}%
-{Database applications}{Database management};
- \CCScat{G.3.n}{Statistical Computing}{Probability and Statistics}{Mathematics of Computing}
-}
-
-%% Uncomment below to include a teaser figure.
-   \teaser{
-      \centering
-Teaser image wouldn't be bad, let's see whether there is  space
-%          \includegraphics[height=\textwidth]{lineup.png}
-    \caption{\protect\label{fig:teaser} Teaser image shows the final results. }
-  }
 
 <<setup, fig.keep='all', cache=FALSE, echo=FALSE, eval=TRUE, message=F, warning=F>>=
 #rm(list=ls())
@@ -154,27 +134,7 @@ options(replace.assign=TRUE,scipen=3)
 @
 
 
-%% Uncomment below to disable the manuscript note
-%\renewcommand{\manuscriptnotetxt}{}
-
-%% Copyright space is enabled by default as required by guidelines.
-%% It is disabled by the 'review' option or via the following command:
-% \nocopyrightspace
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%% START OF THE PAPER %%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{document}
-
-%% The ``\maketitle'' command must be the first command after the
-%% ``\begin{document}'' command. It prepares and prints the title block.
-
-%% the only exception to this rule is the \firstsection command
-
-\firstsection{Introduction}
-
-\maketitle
+\section{Introduction}
 
 Rough outline:
 \begin{enumerate}
