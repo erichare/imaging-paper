@@ -371,6 +371,8 @@ Several lighting options are available to tweak in order to highlight markings i
     \item \textbf{Fresnel Lighting} - Higher values create a wider, softer lighting across the surface.
 \end{enumerate}
 
+The application includes a button which allows the automatic creation of a residual plot. An x coordinate value can be selected, and a cross-section of the two bullet at the x value will be taken. The previously described Loess regression procedure will be applied to the two cross sections. A residual plot will be produced beneath the surface plots allowing for an assessment of the similarity of the markings. It is intended that users will perform this procedure at different x values in order to see whether the markings indicate a match at different points along the bullet.
+
 \section{Approach to automatic matching}
 \hh{XXX all tentative}
 Applying the  loess fit to a range of different surface cross cuts (see Figures~\ref{fig:manualmatch} and Figure~\ref{fig:manualmatch}, with cross cuts from 50 to 150) shows the striation marks across two bullets. Cross cuts of bullet 1 are shown on the left (cross cuts with values below 100) and cross cuts of bullets 2 are shown on the right (cross cuts with values above 100). A lot of the striation marks align, allowing for an easy visual assessment of the shared similarities between the two bullets. 
