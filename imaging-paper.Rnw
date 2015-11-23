@@ -544,7 +544,7 @@ Using (for now) a single crosscut across the surface, we extract the values and 
 \[
 (f * g) (k) = \sum_t f(t+k) g(t),
 \]
-with suitable defined limits of the summation. 
+with suitable defined limits of the summation. % (because variances of $f$ and $g$ do not change, the above equation is proportional to the correlation). 
 }
 \begin{figure}
 <<ccf, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '\\linewidth'>>=
@@ -552,7 +552,8 @@ lag <- ccf$lag[which.max(ccf$acf)]
 qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I("grey50")) + 
   theme_bw() + ylab("Correlation") + xlab("Lag k") +
   geom_segment(aes(x = lag, xend = lag, y = 0, yend =  max(ccf$acf)), colour="black") + 
-  scale_x_continuous(breaks = c(-100, -50, lag, 0, 50, 100))
+  scale_x_continuous(breaks = c(-100, -50, lag, 0, 50, 100),
+                     minor_breaks = c(-75,-25,25, 75))
 @
 \caption{\label{fig:ccf}Cross-correlation between the two crosscuts shown in Figure~\ref{fig:crosscut} at lags between -100 and 100. At a lag of -10 the correlation peaks, indicating the largest amount of agreement between the crosscuts. Figure~\ref{fig:crosscutX} shows the lag-shifted crosscuts.}
 \end{figure}
