@@ -567,6 +567,60 @@ ggplot() +
 
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
 
+\begin{figure}
+<<barrel2, echo=FALSE, fig.width = 7.5, fig.height=7.5, out.width='\\linewidth', warning=FALSE>>=
+library(grid)
+library(gridExtra)
+thresholds <- seq(0.3, 1.5, by = 0.05)
+list_of_matches <- lapply(19:24, function(i) {
+  lof <- processBullets(paths = images[c(15,i)], x = 100)
+  lof <- bulletSmooth(lof)
+  
+  subLOFx1 <- subset(lof, bullet==unique(lof$bullet)[1])
+  subLOFx2 <- subset(lof, bullet==unique(lof$bullet)[2]) 
+  
+  # ccf assumes that both time series start at the same y
+  subLOFx1$y <- subLOFx1$y - min(subLOFx1$y)
+  subLOFx2$y <- subLOFx2$y - min(subLOFx2$y)
+  ccf <- ccf(subLOFx1$l30, subLOFx2$l30, plot = FALSE, lag.max=150, na.action = na.omit)
+  lag <- ccf$lag[which.max(ccf$acf)]
+  
+  subLOFx1$y <- subLOFx1$y -  lag * 1.5625 # amount of shifting should just be lag * y.inc
+  lofX <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
+
+#  browser()  
+  CMS <- thresholds %>% lapply(function(threshold) {
+    lines <- striation_identify(lofX, threshold = threshold)
+    cms <- CMS(lines$match)
+    data.frame(threshold=threshold, maxCMS = as.numeric(rev(names(cms)))[1])
+  }) %>% bind_rows()
+  
+  threshold = CMS$threshold[which.max(CMS$maxCMS)]
+  lines <- striation_identify(lofX, threshold = threshold)
+  title <- gsub("app.*//","", images[i])
+  title <- gsub(".x3p","", title)
+  ggplot() +
+    theme_bw() + 
+    geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=subset(lines, lineid!=0)) +
+    geom_line(aes(x = y, y = l30, colour = bullet),  data = lofX) +
+    geom_hline(yintercept = threshold) +
+    geom_hline(yintercept = - threshold) +
+    scale_colour_brewer(palette="Set1") +
+    theme(legend.position = "none") + 
+    ylim(c(-6,6)) + ylab("") + xlab("") +
+    geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(lines, !match & lineid !=0)) +
+    geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(lines, match & lineid !=0)) +
+    ggtitle(title) +
+    theme(plot.margin=unit(c(1,0,0,0), unit="line"))
+})
+
+grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]], 
+             list_of_matches[[4]], list_of_matches[[5]], list_of_matches[[6]],
+             ncol = 2)
+@
+\caption{\label{fig:barrel2}All lands from the second bullet shot from barrel 2 are compared to the third land of the first bullet shot from barrel 2 (in red). The largest number of CMS is seven, observed with land four of the second bullet. }
+\end{figure}
+
 \hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
 
 
