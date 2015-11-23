@@ -66,7 +66,7 @@
 \color{DarkGoldenrod}
 {\textsf{#1}}}{}}
 
-\usepackage{subfig} 
+\usepackage{subcaption} 
 
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
@@ -167,14 +167,17 @@ x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url
 
 \begin{figure}[hbtp]
   \centering
-    \subfloat[View from the side.\label{fig:sidex3p}]{%
+\begin{subfigure}[b]{\linewidth}
+\caption{View from the side.\label{fig:sidex3p}}{%
       \includegraphics[width=\linewidth]{images/sidex3p.png}
     }
-    \hfill
-    \subfloat[View from the top.\label{fig:topx3p}]{%
+\end{subfigure}    
+\begin{subfigure}[b]{\linewidth}
+    \caption{View from the top.\label{fig:topx3p}}{%
     \includegraphics[width=\linewidth]{images/topx3p.png}
     }
-\caption{An example of a scan of a bullet land.  \hh{XXX is the code for these pictures somewhere in the code folder? Let's put a link/note to it here. The aspect ratio of these 3D files should be adjusted such that it faithfully shows the actual geography. That should happen in the function plot3D.x3p.file }}
+\end{subfigure}
+\caption{An example of a scan of a bullet land from one groove to the next. }
 \end{figure}
 Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}, which show side and top profiles of the land respectively.
 \hh{The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artefact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clock-wise or anti-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic. XXX rotation in Ruger? twist rate?}
@@ -183,7 +186,8 @@ The primary goal in this type of forensic analysis is to identify markings. Gun 
 
 An initial naive approach leads us to fixing a particular value of a coordinate, and then producing a plot of the heights across values of the other coordinate. Figure \ref{fig:fixedX} gives a plot resulting from such a procedure. It can be seem that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
-<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2.5, fig.width=6, out.width='\\linewidth', fig.pos='t!', fig.cap='Side profile of the height values of a bullet land across a fixed x value. Note that the global features dominate any deviations, which would correspond to markings.'>>=
+\begin{figure}
+<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2, fig.width=6, out.width='\\linewidth'>>=
 library(RColorBrewer)
 library(ggplot2)
 library(scales)
@@ -205,31 +209,104 @@ dbr111 <- dbr111 %>% mutate(
 qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom="line", size=I(1)) +
   geom_line(aes(x=xpred, y=ypred, group=x), 
             colour="grey30", size=0.25) +
-  ylab(expression(paste("Surface Measurements (in ",mu,m,")", sep=""))) + 
+#  ylab(expression(paste("Surface Measurements (in ",mu,m,")", sep=""))) + 
+  ylab("") +
   theme_bw() + 
-  theme(legend.position="bottom") + coord_equal()
+  theme(legend.position="bottom") #+ coord_equal()
 @
+\caption{\label{fig:fixedX}Side profile of the surface measurements (in $\mu m$) of a bullet land across a fixed $x$ value. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
+\end{figure}
 
 It's clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
 
 \subsection{Cylindrical Fit}
 
-One reasonable approach is to fit a circle to the curve and compute the residuals from this fit. The scatterplot below shows the residuals of such a fit. The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For cross sections of $x$ values between 75 and 80, there is a residual circular structure that does not show up for all cross sections. 
+One reasonable approach is to fit a circle to the curve and compute the residuals from this fit.
 
-<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
-qplot(data=subset(dbr111, x <= 80*1.5625^2 & x >=75*1.5625^2), y, value-ypred, colour=factor(x), geom="line", size=I(1)) +
-  scale_colour_brewer("x", palette="Paired") + 
+For this, assume that $n$ data points $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$ are given that are (approximately) located on a circle. We want to estimate the location of the center and radius of the best fitting circle using a least squares approach.
+
+We minimize the following expression:
+\begin{equation}\label{eq:circle}
+D = \sum_{i=1}^n \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right)^2
+\end{equation}
+We do this by differentiating $D$ with respect to $r, a,$ and $b$:
+let us assume that $x_i$ and $y_i$ are centralized (i.e. $\sum x_i = \sum_i y_i = 0$). Note, if they are not, make a note of the current means, subtract them now and add them to $(\hat{a}, \hat{b})$ at the end. 
+
+\noindent
+The  derivate of $D$ with respect to $r$ is:
+\begin{eqnarray*}
+\frac{d}{dr} D &=& 2 \sum_i \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right) 2 r = \\
+&=& 4 r \left( n r^2 - \sum_i (x_i-a)^2 - \sum_i(y_i-b)^2 \right) 
+\end{eqnarray*}
+For a minimum then holds:
+\begin{equation}\label{eq:rmin}
+\frac{d}{dr} D = 0 \stackrel{r \neq 0}{\iff} nr^2  = \sum_i (x_i-a)^2 + \sum_i(y_i-b)^2 
+\end{equation}
+%
+%
+The  derivative of $D$ with respect to $a$ is:
+\begin{eqnarray*}
+\frac{d}{da} D &=& 2 \sum_i \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right) 2 (x_i - a) = \\
+&=& -4 \left[ a \cdot nr^2 + \sum_i (x_i - a)^3  + \sum_i (x_i - a) (y_i - b)^2 \right]
+\end{eqnarray*}
+Using (\ref{eq:rmin}) for $nr^2$  in the equation above we get:
+\begin{eqnarray*}
+\frac{d}{da} D &=& -4 \left[  \sum_i a(x_i-a)^2 +  \sum_i a(y_i-b)^2  + \right. \\
+&& \phantom{-4 \ \ } \left . \sum_i (x_i - a)^3  + \sum_i (x_i - a) (y_i - b)^2 \right]  = \\
+&=& -4 \left[ \sum_i (x_i-a)^2 (a + x_i - a)  + \right.\\
+&& \phantom{-4 \ \ } \left .\sum_i (x_i - a + a) (y_i - b)^2 \right] = \\
+&=& -4 \left[ \sum_i (x_i-a)^2 x_i   + \sum_i x_i  (y_i - b)^2 \right] 
+\stackrel{\begin{array}{c}\sum_i x_i = 0\\
+\sum_i y_i = 0\end{array}}{=} \\
+&=& -4 \left[ \sum_i x_i^3   + \sum_i x_i y_i^2  - 2a s_{xx} - 2b s_{xy} \right], 
+\end{eqnarray*}
+where $s_{xx} = \sum_i x_i^2, s_{xy} = \sum_i x_i y_i$ and $s_{yy} = \sum_i y_i^2$.
+
+\noindent
+Likewise, we get for the derivative of $D$ with respect to $b$:
+\begin{eqnarray*}
+\frac{d}{db} D &=& -4 \left[ \sum_i y_i^3   + \sum_i x_i^2 y_i - 2a s_{xy} - 2b s_{yy} \right] 
+\end{eqnarray*}
+For the minimum we therefore get a system of two linear equations in $a$ and $b$:
+\begin{eqnarray*}
+2 s_{xx} a + 2 s_{xy} b = c_1 && \text{ with } c_1 = \sum_i x_i^3 + x_i y_i^2 \\
+2 s_{xy} a + 2 s_{yy} b = c_2 &&\text{ with } c_2 = \sum_i x_i^2 y_i + y_i^3.
+\end{eqnarray*}
+This resolves to 
+\begin{eqnarray*}
+\hat{a} &=& \frac{c_1 s_{yy} - c_2 s_{xy}}{2 s_{xx} s_{yy} - 2 s_{xy}^2},\\
+\hat{b} &=& \frac{c_2 s_{xx} - c_1 s_{xy}}{2 s_{xx} s_{yy} - 2 s_{xy}^2}, \text{ and}\\
+\hat{r^2} &=& \frac{1}{n}s_{xx} + \frac{1}{n}s_{yy} + \hat{a}^2 + \hat{b}^2.
+\end{eqnarray*}
+
+
+The scatterplot in Figure~\ref{fig:residual} shows the residuals of such a fit. The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For a surface cross cut at $x = 100$ there is a residual circular structure that does not show up for all cross sections. 
+
+\begin{figure}
+\begin{subfigure}[t]{\linewidth}
+\caption{\label{fig:residuala}Residual structure of a surface crosscut at $x = 1.5625$ (bottom of the bullet).}
+<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
+qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
+      geom="line", size=I(1)) +
+#  scale_colour_brewer("x", palette="Paired") + 
   theme_bw() + 
   theme(legend.position="bottom")
 @
-
-<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
-qplot(data=subset(dbr111, x <= 5*1.5625^2), y, value-ypred, colour=factor(x),
+\end{subfigure}    
+\begin{subfigure}[t]{\linewidth}
+\caption{\label{fig:residualb} Residual structure of a surface crosscut at $x = 100.00$}
+<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
+#qplot(data=subset(dbr111, x <= 80*1.5625^2 & x >=75*1.5625^2), y, value-ypred,
+qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x), 
       geom="line", size=I(1)) +
   scale_colour_brewer("x", palette="Paired") + 
   theme_bw() + 
   theme(legend.position="bottom")
 @
+\end{subfigure}
+\caption{\label{fig:residual} Residual structure of  circular fits at two different cross-section. The residual structure in (b) shows systematic structure, indicating that the fit is not entirely appropriate. }
+\end{figure}
+
 
 A single cylinder as a fit is unlikely to be a particularly good fit, because there seem to be quite massive deformations in vertical direction. We therefore fit a circle for each cross section of the bullet. Figure \ref{fig:circlefits} illustrates an attempt at matching one of the six lands to the first part of bullet 1, which is shown as a black line. There is some global structure evident that makes focusing on the deviations a bit challenging.
 
@@ -475,7 +552,8 @@ lines <- subset(lines, lineid != 0)
 @
 \begin{figure}
 \centering
-    \subfloat[Crosscuts at $x = 100$.\label{fig:crosscut}]{%
+\begin{subfigure}[t]{\linewidth}
+\caption{Crosscuts at $x = 100$.\label{fig:crosscut}}{%
 <<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.49\\textwidth'>>=
 qplot(y, resid, group=bullet, colour=bullet, data=lof, 
       geom="line", alpha=I(0.6)) + 
@@ -483,8 +561,9 @@ qplot(y, resid, group=bullet, colour=bullet, data=lof,
   theme(legend.position = c(.9, .2))
 @
     }
-    \hfill
-    \subfloat[Adjusted (Bullet 1-5 horizontally shifted) crosscuts at $x = 100$.\label{fig:crosscutX}]{%
+\end{subfigure}    
+\begin{subfigure}[t]{\linewidth}
+    \caption{Adjusted (Bullet 1-5 horizontally shifted) crosscuts at $x = 100$.\label{fig:crosscutX}}{%
 <<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.49\\textwidth'>>=
 # qplot(y, resid, group=bullet, colour=bullet, data=lofX, 
 #       geom="line", alpha=I(0.6)) + 
@@ -496,6 +575,7 @@ qplot(y, resid, group=bullet, colour=bullet, data=lofY,
   theme(legend.position="none")
 @
     }
+\end{subfigure}
 \caption{\label{fig:cross100} Lines showing surface crosscuts at $x = 100$. A horizontal shift of the values of Bullet 1-5 to the right shows the similarity of the striation marks.}
 \end{figure}
 
@@ -520,7 +600,8 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 
 \begin{figure}
 \centering
-    \subfloat[Loess smooth at $x = 100$ (span is 0.03).\label{fig:smooth}]{%
+    \begin{subfigure}[t]{\linewidth}
+\caption{Loess smooth at $x = 100$ (span is 0.03).\label{fig:smooth}}{%
 <<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.49\\textwidth', warning=FALSE>>=
 qplot(data=lofX, y, resid, colour=bullet, size=I(0.75), geom="line", group=bullet) +
   geom_line(aes(y=l30), colour="grey30", size=0.5) +
@@ -530,8 +611,9 @@ qplot(data=lofX, y, resid, colour=bullet, size=I(0.75), geom="line", group=bulle
   theme(legend.position="none")
 @
     }
-    \hfill
-    \subfloat[Values above/below a threshold level are defined as peaks and grooves. \label{fig:smoothcutb}]{%
+\end{subfigure}
+\begin{subfigure}[t]{\linewidth}
+\caption{Values above/below a threshold level are defined as peaks and grooves. \label{fig:smoothcutb}}{%
 <<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=4, out.width='.49\\textwidth', warning=FALSE>>=
 qplot(data=lofX, x=y, y=l30, colour=type, geom="line", 
       group=bullet, size = I(0.75)) + 
@@ -544,9 +626,10 @@ qplot(data=lofX, x=y, y=l30, colour=type, geom="line",
   theme(legend.position="bottom")
 @
     }
-\hfill
-    \subfloat[Grey backgrounds identify a line on one of the bullets. Overlaps of the same color indicate matching striation marks.
-    Matching striations are marked by an `o', mismatches are marked by an `x'.   \label{fig:smoothcutd}]{%
+\end{subfigure}    
+\begin{subfigure}[t]{\linewidth}
+    \caption{Grey backgrounds identify a line on one of the bullets. Overlaps of the same color indicate matching striation marks.
+    Matching striations are marked by an `o', mismatches are marked by an `x'.   \label{fig:smoothcutd}}{%
 <<smoothmatch, echo=FALSE, dependson='twolands100match', fig.width=7, fig.height=2.75, out.width='.49\\textwidth'>>=
 ggplot() +
   geom_rect(aes(xmin = miny, xmax = maxy), ymin = 0.25, ymax=2.75, fill="grey80", data = subset(lines, lineid != 0)) +
@@ -559,7 +642,8 @@ ggplot() +
   geom_text(aes(x = meany), y= .4, label= "x", data = subset(lines, !match & lineid !=0)) +
   geom_text(aes(x = meany), y= .4, label= "o", data = subset(lines, match & lineid !=0))
 @
-    }    
+    }
+\end{subfigure}
 \caption{\label{fig:match} Matching striation marks: smooth (a), cut (b), and match (c).}
 \end{figure}
 
@@ -650,58 +734,4 @@ qplot(threshold, maxCMS, data=CMS) + theme_bw() +
 %\nocite{*}
 \bibliography{references}
 
-\section{Circular Fit}
-
-Assume, $n$ data points $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$ are given that are (approximately) located on a circle. We want to estimate the location of the center and radius of the best fitting circle.
-
-We minimize the following expression:
-\begin{equation}\label{eq:circle}
-D = \sum_{i=1}^n \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right)^2
-\end{equation}
-We do this by differentiating $D$ with respect to $r, a,$ and $b$:
-let us assume that $x_i$ and $y_i$ are centralized (i.e. $\sum x_i = \sum_i y_i = 0$). Note, if they are not, make a note of the current means, subtract them now and add them to $(\hat{a}, \hat{b})$ at the end. 
-
-\noindent
-The  derivate of $D$ with respect to $r$ is:
-\begin{eqnarray*}
-\frac{d}{dr} D &=& 2 \sum_i \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right) 2 r = \\
-&=& 4 r \left( n r^2 - \sum_i (x_i-a)^2 - \sum_i(y_i-b)^2 \right) 
-\end{eqnarray*}
-For a minimum then holds:
-\begin{equation}\label{eq:rmin}
-\frac{d}{dr} D = 0 \stackrel{r \neq 0}{\iff} nr^2  = \sum_i (x_i-a)^2 + \sum_i(y_i-b)^2 
-\end{equation}
-%
-%
-The  derivative of $D$ with respect to $a$ is:
-\begin{eqnarray*}
-\frac{d}{da} D &=& 2 \sum_i \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right) 2 (x_i - a) = \\
-&=& -4 \left[ a \cdot nr^2 + \sum_i (x_i - a)^3  + \sum_i (x_i - a) (y_i - b)^2 \right]
-\end{eqnarray*}
-Using (\ref{eq:rmin}) for $nr^2$  in the equation above we get:
-\begin{eqnarray*}
-\frac{d}{da} D &=& -4 \left[  \sum_i a(x_i-a)^2 +  \sum_i a(y_i-b)^2  + \right. \\
-&& \phantom{-4 \ \ } \left . \sum_i (x_i - a)^3  + \sum_i (x_i - a) (y_i - b)^2 \right]  = \\
-&=& -4 \left[ \sum_i (x_i-a)^2 (a + x_i - a)  + \sum_i (x_i - a + a) (y_i - b)^2 \right] = \\
-&=& -4 \left[ \sum_i (x_i-a)^2 x_i   + \sum_i x_i  (y_i - b)^2 \right] \stackrel{\sum_i x_i = \sum_i y_i = 0}{=} \\
-&=& -4 \left[ \sum_i x_i^3   + \sum_i x_i y_i^2  - 2a s_{xx} - 2b s_{xy} \right], 
-\end{eqnarray*}
-where $s_{xx} = \sum_i x_i^2, s_{xy} = \sum_i x_i y_i$ and $s_{yy} = \sum_i y_i^2$.
-
-\noindent
-Likewise, we get for the derivative of $D$ with respect to $b$:
-\begin{eqnarray*}
-\frac{d}{db} D &=& -4 \left[ \sum_i y_i^3   + \sum_i x_i^2 y_i - 2a s_{xy} - 2b s_{yy} \right] 
-\end{eqnarray*}
-For the minimum we therefore get a system of two linear equations in $a$ and $b$:
-\begin{eqnarray*}
-2 s_{xx} a + 2 s_{xy} b = c_1 && \text{ with } c_1 = \sum_i x_i^3 + x_i y_i^2 \\
-2 s_{xy} a + 2 s_{yy} b = c_2 &&\text{ with } c_2 = \sum_i x_i^2 y_i + y_i^3.
-\end{eqnarray*}
-This resolves to 
-\begin{eqnarray*}
-\hat{a} &=& \frac{c_1 s_{yy} - c_2 s_{xy}}{2 s_{xx} s_{yy} - 2 s_{xy}^2},\\
-\hat{b} &=& \frac{c_2 s_{xx} - c_1 s_{xy}}{2 s_{xx} s_{yy} - 2 s_{xy}^2}, \text{ and}\\
-\hat{r^2} &=& \frac{1}{n}s_{xx} + \frac{1}{n}s_{yy} + \hat{a}^2 + \hat{b}^2.
-\end{eqnarray*}
 \end{document}
