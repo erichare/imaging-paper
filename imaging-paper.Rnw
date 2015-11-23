@@ -492,7 +492,7 @@ lines <- matches %>% group_by(lineid) %>% summarise(
   match = isMatch(lineid, type),
   type = type1[1]
 )
-
+lines <- subset(lines, lineid != 0)
 @
 \begin{figure}
 \centering
