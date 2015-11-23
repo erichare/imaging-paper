@@ -353,12 +353,14 @@ my.loess$resid
 
 
 \section{Application}
-We've implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny[ref], allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly[ref], allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}.
+We've implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny[ref], allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly[ref], allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{images/app.png}
 \caption{\label{fig:app}{Screenshot of the web interface for analyzing bullet images.}}
 \end{figure*}
+
+The mouse is the primary control input for interacting with the surface plots. One can mouse over the plots to view the coordinate values for each point. Clicking and dragging anywhere on the plot will allow rotation. Scrolling up and down allows the user to zoom in and out respectively. There are also a set of controls available at the top right of the page, which will allow the selection of some other rotation methods, taking of screenshots, and reseting the camera to the default view.
 
 Several lighting options are available to tweak in order to highlight markings in on the bullets more strongly:
 
