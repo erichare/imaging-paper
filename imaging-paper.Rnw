@@ -291,7 +291,7 @@ qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
 #  scale_colour_brewer("x", palette="Paired") + 
   theme_bw() + 
   geom_hline(yintercept = 0, colour="grey50") +
-  ylab(expression(paste("Residuals (in ",mu,m,")", sep=""))) + 
+  ylab(expression(paste("Residuals (in ",mu,"m)", sep=""))) + 
   theme(legend.position="bottom")
 @
 \end{subfigure}    
@@ -304,15 +304,16 @@ qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x),
 #  scale_colour_brewer("x", palette="Paired") + 
   geom_hline(yintercept = 0, colour="grey50") +
   theme_bw() + 
-  ylab(expression(paste("Residuals (in ",mu,m,")", sep=""))) + 
+  ylab(expression(paste("Residuals (in ",mu,"m)", sep=""))) + 
   theme(legend.position="bottom")
 @
 \end{subfigure}
-\caption{\label{fig:residual} Residual structure of  circular fits at two different cross-section. Both residual plots show systematic structures, indicating that the fit is not entirely appropriate. }
+\caption{\label{fig:residual} Residual structure of  circular fits at two different cross-section. Both residual plots show systematic structures, indicating that a circular fit is not entirely appropriate. }
 \end{figure}
 
 
-A single cylinder as a fit is unlikely to be a particularly good fit, because there seem to be quite massive deformations in vertical direction. We therefore fit a circle for each cross section of the bullet. Figure~\ref{fig:circlefits} illustrates an attempt at matching one of the six lands to the first part of bullet 1, which is shown as a black line. There is some global structure evident that makes focusing on the deviations a bit challenging.
+A single cylinder as a fit is unlikely to be a particularly good fit, because  there seem to be quite massive deformations in vertical direction. \hh{Even when we fit a circle to each cross section of the bullet, we can not address all of these issues. While the wider circumference at the base of the bullet can be resolved by individual circular fits, the systematic residual structure in Figure~\ref{fig:residualb} stays the same.} \hh{XXX move the rest of the section to the Loess Fit (except for the last paragraph).}
+We therefore fit a circle for each cross section of the bullet. \hh{XXX I don't think that we need the next figure. Instead of a circular fit, let's do the same thing after a loess fit. } Figure~\ref{fig:circlefits} illustrates an attempt at matching one of the six lands to the first part of bullet 1, which is shown as a black line. There is some global structure evident that makes focusing on the deviations a bit challenging.
 
 <<bullet1, echo=FALSE, cache=TRUE>>=
 db1 <- NULL
