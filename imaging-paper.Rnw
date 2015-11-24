@@ -410,7 +410,7 @@ my.loess$resid
 
 
 \section{Application}
-We've implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny[ref], allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly[ref], allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
+We've implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny \cite{shiny}, allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly \cite{plotly}, allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{images/app.png}
