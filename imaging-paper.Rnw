@@ -389,9 +389,7 @@ To improve upon the previous algorithm, the first step must be to eliminate the 
     \item Remove all y values below the minimum and above the maximum
 \end{enumerate}
 
-Next, we fit a Loess regression to the data.
-
-\hh{XXX could you include a series of plots here, walking through the individual steps of this list? I like the ones that you've already got in the loess fit function ... } 
+Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlayed against the processed image of part 1 of bullet 1. The fit seems to do a reaosnable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear.
 
 <<loess_fit, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Loess fit for part 1 of bullet 1', fig.pos='H', message=FALSE>>=
 br111 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-1.x3p"))
@@ -407,7 +405,6 @@ my.loess <- fit_loess(br111, br111.groove)
 
 my.loess$resid
 @
-
 
 \section{Application}
 We've implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny \cite{shiny}, allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly \cite{plotly}, allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
