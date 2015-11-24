@@ -143,8 +143,7 @@ Rough outline:
 \item Description of the problem: Standard operating practice, 2009 NAS report
 \item Description of the Results
 \item Walkthrough of the process
-\item \hh{XXX Alternative approaches: IBIS database and the NRC report against it\footnote{Fox report on the NRC report \url{http://www.foxnews.com/story/2008/03/05/nationwide-firearms-
-database-shot-down-by-government-sponsored-study.html}.
+\item \hh{XXX Alternative approaches: IBIS database and the NRC report against it\footnote{Fox report on the NRC report \url{http://goo.gl/XurSVl}.
 NRC report: \url{http://www.nap.edu/catalog/12162/ballistic-imaging}} }
 \end{enumerate}
 
