@@ -60,6 +60,7 @@
 
 \usepackage{color}
 \newcommand{\hh}[1]{{\color{magenta} #1}}
+\newcommand{\eh}[1]{{\color{blue} #1}}
 
 \usepackage{lettrine} % Package to accentuate the first letter of the text
 \newcommand{\initial}[1]{ % Defines the command and style for the first letter
@@ -142,7 +143,8 @@ Rough outline:
 \item Description of the problem: Standard operating practice, 2009 NAS report
 \item Description of the Results
 \item Walkthrough of the process
-\item \hh{XXX Alternative approaches: IBIS database and the NRC report against it\footnote{Fox report on the NRC report \url{http://www.foxnews.com/story/2008/03/05/nationwide-firearms-database-shot-down-by-government-sponsored-study.html}.
+\item \hh{XXX Alternative approaches: IBIS database and the NRC report against it\footnote{Fox report on the NRC report \url{http://www.foxnews.com/story/2008/03/05/nationwide-firearms-
+database-shot-down-by-government-sponsored-study.html}.
 NRC report: \url{http://www.nap.edu/catalog/12162/ballistic-imaging}} }
 \end{enumerate}
 
@@ -157,9 +159,7 @@ The new scrutiny of the procedure culminated with the 2009 National Academy of S
 \section{Methodology}
 Throughout this section, we will work with images from the James Hamby Consecutively Rifled Ruger Barrel Study \cite{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
 
-\hh{XXX here's a paragraph missing: rifling in the barrel is creating striation marks on the bullet during the firing process (and grooves). These marks are claimed to be unique to the barrel - we need to find a citation for that from the SOP manual. Roger Thompson's writeup on firearm identification cites AFTE 1992 procedures.\footnote{\url{https://www.ncjrs.gov/app/publications/Abstract.aspx?id=254151}}, \footnote{AFTE 1992 theory of identification \url{http://projects.nfstc.org/firearms/module09/fir_m09_t05_05.htm}} includes the following statements, both on page 34: `The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in ``sufficient agreement".' (my highlighting) and `Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows.'}
-
-
+Rifling in the barrel creates striation marks on the bullet during the firing process (and grooves). These marks are claimed to be unique to the barrel, as described in a 1992 AFTE article. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows." \footnote{\url{https://www.ncjrs.gov/app/publications/Abstract.aspx?id=254151}}, \footnote{AFTE 1992 theory of identification \url{http://projects.nfstc.org/firearms/module09/fir_m09_t05_05.htm}}
 
 3D topographical images of each bullet were taken using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). 
 x3p is a container format conforming to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. 
