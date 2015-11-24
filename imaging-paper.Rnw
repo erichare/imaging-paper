@@ -191,7 +191,9 @@ library(scales)
 library(dplyr)
 library(x3pr)
 library(x3prplus)
-
+library(grid)
+library(gridExtra)
+library(zoo)
 
 br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
 dbr111 <- fortify_x3p(br111)
@@ -382,26 +384,59 @@ It can be seen pretty clearly at this point that the deviations resulting from t
 To improve upon the previous algorithm, the first step must be to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match. Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent. Because a bullet is scanned groove to groove, the groove should appear within approximately scan points from each end. That is, on y coordinate system ranging from 0 to 1000 as these images, are, the grooves will appear between $y \in \{0, 100\}$ and $y \in \{900, 1000\}$. Hence, the algorithm for removing the grooves can be described as follows:
 
 \begin{enumerate}
-    \item Fix an x coordinate value.
-    \item Remove values from $y \in \{0, 100\}$ and $y \in \{900, 1000\}$.
-    \item For each y value from 100 to 900, compute a rolling average to smooth out any deviations occurring near the minimums.
-    \item Determine the minimum in the first half (corresponding to the left groove) and the minimum in the right half (corresponding to the right groove)
-    \item Remove all y values below the minimum and above the maximum
+    \item Fix an x coordinate value. (Top panel of Figure \ref{fig:loess_step12})
+    \item Remove values from $y \in \{0, 100\}$ and $y \in \{900, 1000\}$. (Bottom panel of Figure \ref{fig:loess_step12})
+    \item For each y value from 100 to 900, compute a rolling average to smooth out any deviations occurring near the minimums. (Top panel of Figure \ref{fig:loess_step34})
+    \item Determine the minimum in the first half (corresponding to the left groove) and the minimum in the right half (corresponding to the right groove) (Bottom panel of Figure \ref{fig:loess_step34})
+    \item Remove all y values below the minimum and above the maximum (Figure \ref{fig:loess_step5})
 \end{enumerate}
 
 Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlayed against the processed image of part 1 of bullet 1. The fit seems to do a reaosnable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear.
 
-<<loess_fit, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Loess fit for part 1 of bullet 1', fig.pos='H', message=FALSE>>=
-br111 <- get_bullet(file.path("GitHub", "x3prproto", "images", "Hamby252_3DX3P1of2", "Br1 Bullet 1-1.x3p"))
-br111.groove <- get_grooves(br111)
+<<loess_step12, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Steps 1 and 2 of the Loess fit algorithm. The top panel is a plot of height values for part 1 of bullet 1 across different values of y, with x held constant at 243.75. The bottom panel is the same plot, but with the first and last 100 y values trimmed.', fig.pos='H', message=FALSE>>=
+br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
 
-my.loess <- fit_loess(br111, br111.groove)
+p1 <- qplot(y, value, data = br111_bullet) + theme_bw()
+p2 <- qplot(y, value, data = tail(head(br111_bullet, n = -100), n = -100)) + theme_bw()
+
+grid.arrange(p1, p2, nrow = 2)
+@
+
+<<loess_step34, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Steps 3 and 4 of the Loess fitting algorithm. The top panel is a plot of the smoothed height values, and the bottom panel is a plot of the detected minimums.', fig.pos='H', message=FALSE>>=
+subdata <- tail(head(br111_bullet, n = -100), n = -100)
+subdata$smoothed <- c(rep(NA, 10), rollapply(subdata$value, 21, function(x) mean(x, na.rm = TRUE)), rep(NA, 10))
+p3 <- qplot(y, smoothed, data = tail(head(subdata, n = -10), n = -10)) + theme_bw()
+
+curdata <- tail(head(subdata, n = -10), n = -10)
+min.left <- which.min(curdata$value[1:(length(curdata$value) %/% 2)])
+min.right <- which.min(curdata$value[(length(curdata$value) %/% 2):length(curdata$value)])
+
+p4 <- qplot(data=curdata, y, value) +
+        theme_bw() +
+        geom_vline(xintercept = curdata$y[min.left], colour = "red") +
+        geom_vline(xintercept = curdata$y[min.right + (length(curdata$y) %/% 2)], colour = "blue")
+
+grid.arrange(p3, p4, nrow = 2)
+@
+
+<<loess_step5, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Step 5 of the Loess fitting algorithm. The plot shows the result after trimming values below the first minimum, and above the second minimum.', fig.pos='H', message=FALSE>>=
+final.dat <- subset(curdata, y > curdata$y[min.left + 5] & y < curdata$y[min.right + (length(curdata$y) %/% 2) - 5])
+
+qplot(data=final.dat, y, value) +
+    theme_bw()
+@
+
+<<loess_fit, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Loess fit for part 1 of bullet 1', fig.pos='H', message=FALSE>>=
+
+br111.groove <- get_grooves(br111_bullet)
+
+my.loess <- fit_loess(br111_bullet, br111.groove)
 
 my.loess$fitted
 @
 
 <<loess_resid, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Loess fit residuals for part 1 of bullet 1', fig.pos='H'>>=
-my.loess <- fit_loess(br111, br111.groove)
+my.loess <- fit_loess(br111_bullet, br111.groove)
 
 my.loess$resid
 @
@@ -691,8 +726,6 @@ qplot(threshold, maxCMS, data=CMS) + theme_bw() +
 
 \begin{figure}
 <<barrel2, echo=FALSE, fig.width = 7.5, fig.height=7.5, out.width='\\linewidth', warning=FALSE>>=
-library(grid)
-library(gridExtra)
 thresholds <- seq(0.3, 1.5, by = 0.05)
 list_of_matches <- lapply(19:24, function(i) {
   lof <- processBullets(paths = images[c(15,i)], x = 100)
