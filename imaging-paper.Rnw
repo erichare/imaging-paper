@@ -27,6 +27,7 @@
 \usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
 \usepackage{booktabs} % Horizontal rules in tables
 \usepackage{fix-cm}	 % Custom font sizes - used for the initial letter in the document
+\usepackage{float}
 
 % declare the path(s) where your graphic files are
 \graphicspath{{Figure/}{Images/}}
