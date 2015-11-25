@@ -110,7 +110,7 @@ Iowa State University% Your institution
 %----------------------------------------------------------------------------------------
 
 % The first character should be within \initial{}
-\initial{H}\textbf{ere is some sample text to show the initial in the introductory paragraph of this template article. The color and lineheight of the initial can be modified in the preamble of this document.}
+\initial{F}\textbf{orensic examiners try to determine whether two guns were fired from the same barrel by analyzing them under a microscope in controlled conditions. Can we make the task simpler?}
 
 %----------------------------------------------------------------------------------------
 %	ARTICLE CONTENTS
