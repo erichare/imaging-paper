@@ -705,7 +705,7 @@ ggplot() +
 
 \paragraph{Varying threshold}
 
-In order to address the subjectivity involved in choosing a threshold level, we investigate this parameter more closely. Figure~\ref{fig:thresholds} shows the relationship between threshold and the maximal number of consecutive matching striae. For thresholds between 0.75 and 0.85 the number of CMS peaks at fifteen. On average, there are 6.6 CMS across the range of thresholds.
+In order to address the subjectivity involved in choosing a threshold level, we investigate this parameter more closely. Figure~\ref{fig:thresholds} shows the relationship between threshold and the maximal number of consecutive matching striae. For thresholds between 0.7 and 0.9 the number of CMS peaks at fifteen. On average, there are 6.6 CMS across the range of thresholds.
 \begin{figure}
 <<thresholds, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '0.49\\textwidth'>>=
 thresholds <- seq(0.3, 1.5, by = 0.025)
