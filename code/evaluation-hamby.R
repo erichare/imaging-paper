@@ -1,5 +1,5 @@
 setwd("data")
-datas <- dir()
+datas <- dir(pattern="RData")
 
 maxCMS <- sapply(datas, function(x) {
   load(x)
@@ -38,12 +38,15 @@ CCFs <- plyr::ldply(datas, function(x) {
 })
 
 CCFs$resID <- rep(1:120, length=nrow(CCFs))
+CCFs <- CCFs[order(as.character(CCFs$b2)),]
+CCFs$b2 <- factor(as.character(CCFs$b2))
 
 idx <- which(CCFs$ccf > 0.6 & CCFs$distr.dist < 1.25)
 for ( i in idx) {
   load(CCFs$data[i])
   res <- reslist[[CCFs$resID[i]]]  
 
+  ch <- scan()
   print(ggplot() +
           theme_bw() + 
           geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
