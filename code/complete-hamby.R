@@ -25,6 +25,17 @@ reslist <- lapply(knowns, function(x) {
 save(reslist, file=sprintf("data/unkn%d.RData", j))
 }
 
+for (j in 1:90) {
+  reslist <- lapply(knowns, function(x) {
+    cat(x)
+    cat("\n")
+    bulletGetMaxCMS(x, unknowns[j])
+  })
+  save(reslist, file=sprintf("data/unkn%d.RData", j))
+}
+
+
+
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
 qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
 res <- reslist[[which.max(cmsdist)]]  
