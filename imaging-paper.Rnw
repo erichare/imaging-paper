@@ -311,9 +311,7 @@ qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x),
 \caption{\label{fig:residual} Residual structure of  circular fits at two different cross-section. Both residual plots show systematic structures, indicating that a circular fit is not entirely appropriate. }
 \end{figure}
 
-
-A single cylinder as a fit is unlikely to be a particularly good fit, because  there seem to be quite massive deformations in vertical direction. \hh{Even when we fit a circle to each cross section of the bullet, we can not address all of these issues. While the wider circumference at the base of the bullet can be resolved by individual circular fits, the systematic residual structure in Figure~\ref{fig:residualb} stays the same.} \hh{XXX move the rest of the section to the Loess Fit (except for the last paragraph).}
-We therefore fit a circle for each cross section of the bullet. \hh{XXX I don't think that we need the next figure. Instead of a circular fit, let's do the same thing after a loess fit. } Figure~\ref{fig:circlefits} illustrates an attempt at matching one of the six lands to the first part of bullet 1, which is shown as a black line. There is some global structure evident that makes focusing on the deviations a bit challenging.
+A single cylinder as a fit is unlikely to be a particularly good fit, because  there seem to be quite massive deformations in vertical direction. Even when we fit a circle to each cross section of the bullet, as in Figure~\ref{fig:circlefits}, we can not address all of these issues. While the wider circumference at the base of the bullet can be resolved by individual circular fits, the systematic residual structure in Figure~\ref{fig:residualb} stays the same.
 
 <<bullet1, echo=FALSE, cache=TRUE>>=
 db1 <- NULL
@@ -346,7 +344,7 @@ db2 <- db2 %>% group_by(part, x) %>% do (
 
 \begin{figure}[hbtp]
   \centering
-\caption{Circle fit for each cross section of bullet 2, with part 1 of bullet 1 overlayed.\label{fig:circlefits}}{%
+\caption{Circle fit for each cross section of bullet 2, with part 1 of bullet 1 overlayed.\label{fig:circlefits}}%
 <<circlefits, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
 qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
       geom="line", size=I(1), colour=I("grey30")) + 
@@ -355,10 +353,7 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
   geom_line(aes(y, resid, group = x), colour="black", size=1, alpha=0.2, 
              data = filter(db1, part==1, x == 100)[,c("y", "resid", "x")]) + ggtitle("Part 1 of Bullet 1 in black")
 @
-
 \end{figure}
-
-It can be seen pretty clearly at this point that the deviations resulting from the grooves dominates the residual structure that would correspond to markings. This is unfortunate, as the grooves themselves will not typically contain markings produced by a gun barrel. We can also see the residual circular structure which suggests our circle fit is not entirely appropriate.
 
 \subsection{Loess Fit}
 
