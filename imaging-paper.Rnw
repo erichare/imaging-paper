@@ -194,6 +194,7 @@ library(x3prplus)
 library(grid)
 library(gridExtra)
 library(zoo)
+library(tidyr)
 
 br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
 dbr111 <- fortify_x3p(br111)
@@ -375,11 +376,13 @@ Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides
 
 <<loess_step12, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Steps 1 and 2 of the Loess fit algorithm. The top panel is a plot of height values for part 1 of bullet 1 across different values of y, with x held constant at 243.75. The bottom panel is the same plot, but with the first and last 100 y values trimmed.', fig.pos='H', message=FALSE>>=
 br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
-br112_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-2.x3p", sep = "/"))
-br113_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-3.x3p", sep = "/"))
-br114_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-4.x3p", sep = "/"))
-br115_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
-br116_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-6.x3p", sep = "/"))
+
+br121_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
+br122_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-2.x3p", sep = "/"))
+br123_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-3.x3p", sep = "/"))
+br124_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-4.x3p", sep = "/"))
+br125_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-5.x3p", sep = "/"))
+br126_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-6.x3p", sep = "/"))
 
 p1 <- qplot(y, value, data = br111_bullet) + theme_bw()
 p2 <- qplot(y, value, data = tail(head(br111_bullet, n = -100), n = -100)) + theme_bw()
@@ -426,27 +429,49 @@ my.loess <- fit_loess(br111_bullet, br111.groove)
 my.loess$resid
 @
 
+We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from part 1 of bullet 1. This is available in Figure \ref{fig:loessfits}. 
+
 <<loessfits, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
-br111.groove <- get_grooves(br111_bullet)
-br112.groove <- get_grooves(br112_bullet)
-br113.groove <- get_grooves(br113_bullet)
-br114.groove <- get_grooves(br114_bullet)
-br115.groove <- get_grooves(br115_bullet)
-br116.groove <- get_grooves(br116_bullet)
+br121.groove <- get_grooves(br121_bullet)
+br122.groove <- get_grooves(br122_bullet)
+br123.groove <- get_grooves(br123_bullet)
+br124.groove <- get_grooves(br124_bullet)
+br125.groove <- get_grooves(br125_bullet)
+br126.groove <- get_grooves(br126_bullet)
 
-my.loess1 <- fit_loess(br111_bullet, br111.groove)
-my.loess2 <- fit_loess(br112_bullet, br112.groove)
-my.loess3 <- fit_loess(br113_bullet, br113.groove)
-my.loess4 <- fit_loess(br114_bullet, br114.groove)
-my.loess5 <- fit_loess(br115_bullet, br115.groove)
-my.loess6 <- fit_loess(br116_bullet, br116.groove)
+my.loess1 <- fit_loess(br121_bullet, br121.groove)
+my.loess2 <- fit_loess(br122_bullet, br122.groove)
+my.loess3 <- fit_loess(br123_bullet, br123.groove)
+my.loess4 <- fit_loess(br124_bullet, br124.groove)
+my.loess5 <- fit_loess(br125_bullet, br125.groove)
+my.loess6 <- fit_loess(br126_bullet, br126.groove)
 
-qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
+my.loessactual <- fit_loess(br111_bullet, br111.groove)
+
+minrows <- min(length(my.loess1$data$resid),
+               length(my.loess2$data$resid),
+               length(my.loess3$data$resid),
+               length(my.loess4$data$resid),
+               length(my.loess5$data$resid),
+               length(my.loess6$data$resid),
+               length(my.loessactual$data$resid))
+
+my.df <- data.frame(y = my.loess1$data$y[1:minrows], resid1 = my.loess1$data$resid[1:minrows],
+                    resid2 = my.loess2$data$resid[1:minrows], resid3 = my.loess3$data$resid[1:minrows],
+                    resid4 = my.loess4$data$resid[1:minrows], resid5 = my.loess5$data$resid[1:minrows],
+                    resid6 = my.loess6$data$resid[1:minrows])
+
+melt.df <- my.df %>%
+    gather(key = part, value = resid, resid1:resid6)
+melt.df$part <- gsub("resid", "", melt.df$part)
+
+actual.df <- my.loessactual$data[1:minrows,]
+
+qplot(y, resid, data=melt.df, #colour=factor(x), 
       geom="line", size=I(1), colour=I("grey30")) + 
   facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
-  geom_line(aes(y, resid, group =x), colour="black", size=1, alpha=0.2, 
-             data = filter(db1, part==2, x == 100)[,c("y", "resid", "x")]) + ggtitle("Part 2 of Bullet 1 in black")
+  geom_line(data = actual.df, aes(y, resid), colour="black", size=1, alpha=0.2) + ggtitle("Part 1 of Bullet 1 in black")
 @    
 
 \section{Application}
