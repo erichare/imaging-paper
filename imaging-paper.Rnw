@@ -345,7 +345,6 @@ db2 <- db2 %>% group_by(part, x) %>% do (
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[b]{\linewidth}
 \caption{Circle fit for each cross section of bullet 2, with part 1 of bullet 1 overlayed.\label{fig:circlefits}}{%
 <<circlefits, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
 qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
@@ -355,27 +354,8 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
   geom_line(aes(y, resid, group = x), colour="black", size=1, alpha=0.2, 
              data = filter(db1, part==1, x == 100)[,c("y", "resid", "x")]) + ggtitle("Part 1 of Bullet 1 in black")
 @
-}
-\end{subfigure}    
-\begin{subfigure}[b]{\linewidth}
-    \caption{Circle fit for each cross section of bullet 2, with part 2 of bullet 1 overlayed.\label{fig:circlefits2}}{%
-<<circlefits2, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE,  cache=TRUE>>=
-qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
-      geom="line", size=I(1), colour=I("grey30")) + 
-  facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
-  theme_bw() + theme(legend.position="bottom") + 
-  geom_line(aes(y, resid, group =x), colour="black", size=1, alpha=0.2, 
-             data = filter(db1, part==2, x == 100)[,c("y", "resid", "x")]) + ggtitle("Part 2 of Bullet 1 in black")
-@    
-}
-\end{subfigure}
-\caption{An example of a scan of a bullet land from one groove to the next. }
+
 \end{figure}
-
-
-If we perform a similar routine for part 2 of bullet 1, we obtain the figure given in Figure \ref{fig:circlefits2}. 
-
-
 
 It can be seen pretty clearly at this point that the deviations resulting from the grooves dominates the residual structure that would correspond to markings. This is unfortunate, as the grooves themselves will not typically contain markings produced by a gun barrel. We can also see the residual circular structure which suggests our circle fit is not entirely appropriate.
 
@@ -395,6 +375,11 @@ Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides
 
 <<loess_step12, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Steps 1 and 2 of the Loess fit algorithm. The top panel is a plot of height values for part 1 of bullet 1 across different values of y, with x held constant at 243.75. The bottom panel is the same plot, but with the first and last 100 y values trimmed.', fig.pos='H', message=FALSE>>=
 br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
+br112_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-2.x3p", sep = "/"))
+br113_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-3.x3p", sep = "/"))
+br114_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-4.x3p", sep = "/"))
+br115_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
+br116_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-6.x3p", sep = "/"))
 
 p1 <- qplot(y, value, data = br111_bullet) + theme_bw()
 p2 <- qplot(y, value, data = tail(head(br111_bullet, n = -100), n = -100)) + theme_bw()
@@ -440,6 +425,29 @@ my.loess <- fit_loess(br111_bullet, br111.groove)
 
 my.loess$resid
 @
+
+<<loessfits, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
+br111.groove <- get_grooves(br111_bullet)
+br112.groove <- get_grooves(br112_bullet)
+br113.groove <- get_grooves(br113_bullet)
+br114.groove <- get_grooves(br114_bullet)
+br115.groove <- get_grooves(br115_bullet)
+br116.groove <- get_grooves(br116_bullet)
+
+my.loess1 <- fit_loess(br111_bullet, br111.groove)
+my.loess2 <- fit_loess(br112_bullet, br112.groove)
+my.loess3 <- fit_loess(br113_bullet, br113.groove)
+my.loess4 <- fit_loess(br114_bullet, br114.groove)
+my.loess5 <- fit_loess(br115_bullet, br115.groove)
+my.loess6 <- fit_loess(br116_bullet, br116.groove)
+
+qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
+      geom="line", size=I(1), colour=I("grey30")) + 
+  facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
+  theme_bw() + theme(legend.position="bottom") + 
+  geom_line(aes(y, resid, group =x), colour="black", size=1, alpha=0.2, 
+             data = filter(db1, part==2, x == 100)[,c("y", "resid", "x")]) + ggtitle("Part 2 of Bullet 1 in black")
+@    
 
 \section{Application}
 We've implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny \cite{shiny}, allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly \cite{plotly}, allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
