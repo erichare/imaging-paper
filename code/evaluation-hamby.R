@@ -42,6 +42,7 @@ CCFs <- CCFs[order(as.character(CCFs$b2)),]
 CCFs$b2 <- factor(as.character(CCFs$b2))
 
 idx <- which(CCFs$ccf > 0.6 & CCFs$distr.dist < 1.25)
+idx <- c(21, 84)
 for ( i in idx) {
   load(CCFs$data[i])
   res <- reslist[[CCFs$resID[i]]]  
