@@ -809,8 +809,8 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 
 \begin{figure}
 \begin{subfigure}[t]{.49\textwidth}
-\caption{Maximal number of CMS between Bullet land and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
-<<cms, echo=FALSE, fig.width=5, fig.height=3, out.width='\\textwidth'>>=
+\caption{Maximal number of CMS between unknown Bullet D land 5 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
+<<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth'>>=
 load("data/unkn17.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
 
@@ -818,8 +818,8 @@ qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
 @
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}
-\caption{Overlaid lines of the land of the unknown bullet and the land with the top matching CMS.}
-<<top, echo=FALSE, fig.width=5, fig.height=3, out.width='\\textwidth'>>=
+\caption{Overlaid lines of the land of the unknown bullet D-5 and the land with the top matching CMS.}
+<<top, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth', warning = FALSE>>=
 res <- reslist[[which.max(cmsdist)]]  
 #res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
 
@@ -837,8 +837,8 @@ print(ggplot() +
 
 @
 
-\caption{Overlaid lines of the land of the unknown bullet and the land with the second top matching CMS.}
-<<top2, echo=FALSE, fig.width=5, fig.height=3, out.width='\\textwidth'>>=
+\caption{Overlaid lines of the land of the unknown bullet D-5 and the land with the second top matching CMS.}
+<<top2, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth', warning = FALSE>>=
 #res <- reslist[[which.max(cmsdist)]]  
 res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
 
@@ -856,6 +856,7 @@ print(ggplot() +
 
 @
 \end{subfigure}
+\caption{\label{fig:hamby-perfect}Showcase scenario of when matching with CMS works perfectly. Unfortunately the matches are not always that convincing.}
 \end{figure}
 
 
