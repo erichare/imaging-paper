@@ -367,7 +367,7 @@ To improve upon the previous algorithm, the first step must be to eliminate the 
     \item Remove all y values below the minimum and above the maximum (Figure \ref{fig:loess_step5})
 \end{enumerate}
 
-Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlayed against the processed image of part 1 of bullet 1. The fit seems to do a reaosnable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear.
+Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reaosnable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear.
 
 <<loess_step12, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Steps 1 and 2 of the Loess fit algorithm. The top panel is a plot of height values for part 1 of bullet 1 across different values of y, with x held constant at 243.75. The bottom panel is the same plot, but with the first and last 100 y values trimmed.', fig.pos='H', message=FALSE>>=
 br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
@@ -733,7 +733,7 @@ ggplot() +
 
 \paragraph{Varying threshold}
 
-In order to address the subjectivity involved in choosing a threshold level, we investigate this parameter more closely. Figure~\ref{fig:thresholds} shows the relationship between threshold and the maximal number of consecutive matching striae. For thresholds between 0.7 and 0.9 the number of CMS peaks at fifteen. On average, there are 6.6 CMS across the range of thresholds.
+In order to address the subjectivity involved in choosing a threshold level, we investigate this parameter more closely. Figure~\ref{fig:thresholds} shows the relationship between threshold and the maximal number of consecutive matching striae. For thresholds between 0.7 and 0.9 the number of CMS peaks at fifteen. On average, there are 6.6 CMS across the range of thresholds. In the autmatic matching routine, several thresholds are considered and the threshold resulting in the higest number of consecutive atching striae is chosen (and reported).
 \begin{figure}
 <<thresholds, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '0.49\\textwidth'>>=
 thresholds <- seq(0.3, 1.5, by = 0.025)
@@ -747,7 +747,51 @@ qplot(threshold, maxCMS, data=CMS) + theme_bw() +
   ylab("Number of maximal CMS") +
   ylim(c(0,15))
 @
-\caption{\label{fig:thresholds}Varying the threshold levels results in different number of consecutive matching striae between the two bullets. \hh{XXX Our suggestion is, to aim for the threshold with the largest number of CMS.}}
+\caption{\label{fig:thresholds}Varying the threshold levels results in different number of consecutive matching striae between the two bullets. By default, the threshold with the highest CMS is chosen automatically.}
+\end{figure}
+
+\paragraph{Varying crosscuts}
+
+\begin{figure}
+<<crosscuts-vary, echo=FALSE, fig.width = 14, fig.height = 21, out.width = '\\linewidth', cache=TRUE, warnings = FALSE>>=
+paths <- file.path(datadir, dir(datadir))
+crosscuts <- seq(100, 450, by = 25)
+lof <- processBullets(paths[5], x = crosscuts)
+lof$bullet <- paste(lof$bullet, lof$x)
+qplot(data=lof, x=y, y=resid, colour=factor(x), facets=~x)
+
+reslist <- lapply(crosscuts[-1], function(cc) {
+  b2 <- subset(lof, x %in% c(cc, 100))
+  lofX <- bulletSmooth(b2)
+  lofX <- bulletAlign(lofX)  
+  threshold <- bulletPickThreshold(lofX, thresholds = seq(0.3, 1.5, by = 0.05))
+  
+  lines <- striation_identify(lofX, threshold = threshold)
+  maxCMS <- maxCMS(lines$match==TRUE)
+  list(maxCMS = maxCMS, threshold=threshold, lines=lines, bullets=lofX)
+})
+
+
+lop <- lapply(reslist, function(res) {
+ggplot() +
+  theme_bw() + 
+  geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
+  geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
+  geom_hline(yintercept = res$threshold) +
+  geom_hline(yintercept = - res$threshold) +
+  scale_colour_brewer(palette="Set1") +
+  theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
+  ylim(c(-6,6)) +
+  geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match))
+})
+
+grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]], 
+             lop[[7]], lop[[8]], lop[[9]], lop[[10]], lop[[11]], lop[[12]], 
+             lop[[13]], lop[[14]],
+             ncol = 2)
+@
+\caption{\label{fig:crosscuts}Overview of the variations in the surface along different crosscuts. Crosscut at $x = 100$ is compared to crosscuts every 25$\mu m$. \hh{XXX result?}}
 \end{figure}
 
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
@@ -860,9 +904,12 @@ print(ggplot() +
 \end{figure}
 
 
+
 \hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
 
+\hh{XXX needs more work: how does crosscut impact the results?  For the same bullet: how far apart can crosscuts be to still result in a match?}
 
+\hh{XXX another idea for the rest of the paper: use some datamining methods to match the Hamby bullets }
 
 \section{Conclusion}
 
