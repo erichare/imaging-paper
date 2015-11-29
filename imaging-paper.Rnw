@@ -752,6 +752,7 @@ qplot(threshold, maxCMS, data=CMS) + theme_bw() +
 
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
 
+
 \begin{figure}
 <<barrel2, echo=FALSE, fig.width = 7.5, fig.height=7.5, out.width='\\linewidth', warning=FALSE>>=
 thresholds <- seq(0.3, 1.5, by = 0.05)
@@ -803,6 +804,60 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 @
 \caption{\label{fig:barrel2}All lands from the second bullet shot from barrel 2 are compared to the third land of the first bullet shot from barrel 2 (in red). The largest number of CMS is seven, observed with land four of the second bullet. }
 \end{figure}
+
+\hh{We can use the Hamby study to run all unkowns against the known bullets. When things go perfectly, they look like in Figure~\ref{fig:hamby-perfect}.}
+
+\begin{figure}
+\begin{subfigure}[t]{.49\textwidth}
+\caption{Maximal number of CMS between Bullet land and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
+<<cms, echo=FALSE, fig.width=5, fig.height=3, out.width='\\textwidth'>>=
+load("data/unkn17.RData")
+cmsdist <- sapply(reslist, function(x) x$maxCMS)
+
+qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
+@
+\end{subfigure}
+\begin{subfigure}[t]{.49\textwidth}
+\caption{Overlaid lines of the land of the unknown bullet and the land with the top matching CMS.}
+<<top, echo=FALSE, fig.width=5, fig.height=3, out.width='\\textwidth'>>=
+res <- reslist[[which.max(cmsdist)]]  
+#res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
+
+print(ggplot() +
+  theme_bw() + 
+  geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
+  geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
+  geom_hline(yintercept = res$threshold) +
+  geom_hline(yintercept = - res$threshold) +
+  scale_colour_brewer(palette="Set1") +
+  theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
+  ylim(c(-6,6)) +
+  geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
+
+@
+
+\caption{Overlaid lines of the land of the unknown bullet and the land with the second top matching CMS.}
+<<top2, echo=FALSE, fig.width=5, fig.height=3, out.width='\\textwidth'>>=
+#res <- reslist[[which.max(cmsdist)]]  
+res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
+
+print(ggplot() +
+  theme_bw() + 
+  geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
+  geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
+  geom_hline(yintercept = res$threshold) +
+  geom_hline(yintercept = - res$threshold) +
+  scale_colour_brewer(palette="Set1") +
+  theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
+  ylim(c(-6,6)) +
+  geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
+
+@
+\end{subfigure}
+\end{figure}
+
 
 \hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
 

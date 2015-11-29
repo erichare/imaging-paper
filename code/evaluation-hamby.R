@@ -43,6 +43,7 @@ CCFs$b2 <- factor(as.character(CCFs$b2))
 
 idx <- which(CCFs$ccf > 0.6 & CCFs$distr.dist < 1.25)
 idx <- c(21, 84)
+idx <- which(CCFs$b2 == "Ukn Bullet B-1")
 for ( i in idx) {
   load(CCFs$data[i])
   res <- reslist[[CCFs$resID[i]]]  
@@ -71,8 +72,10 @@ idx <- which(maxCMS == 7) # one is a match
 idx <- which(maxCMS == 6) # two are a match
 
 
+i <- 1
 
 for (i in idx) {
+i <- i+1
 load(datas[i])
 
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
