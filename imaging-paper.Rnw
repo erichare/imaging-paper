@@ -753,12 +753,11 @@ qplot(threshold, maxCMS, data=CMS) + theme_bw() +
 \paragraph{Varying crosscuts}
 
 \begin{figure}
-<<crosscuts-vary, echo=FALSE, fig.width = 14, fig.height = 21, out.width = '\\linewidth', cache=TRUE, warnings = FALSE>>=
+<<crosscuts-vary, echo=FALSE, fig.width = 14, fig.height = 21, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
 crosscuts <- seq(100, 450, by = 25)
 lof <- processBullets(paths[5], x = crosscuts)
 lof$bullet <- paste(lof$bullet, lof$x)
-qplot(data=lof, x=y, y=resid, colour=factor(x), facets=~x)
 
 reslist <- lapply(crosscuts[-1], function(cc) {
   b2 <- subset(lof, x %in% c(cc, 100))
