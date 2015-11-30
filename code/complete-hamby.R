@@ -5,7 +5,7 @@ library(ggplot2)
 library(gridExtra)
 
 knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
-knowns <- file.path(knowndatadir, dir(knowndatadir))
+knowns <- file.path(knowndatadir, dir(knowndatadir, pattern="x3p"))
 
 unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
@@ -14,13 +14,30 @@ unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 ###############
 # can we identify the barrels the unknown bullets came from?
 
+
+# match unknown land using crosscuts
+ccs <- read.csv("crosscuts.csv")
+for (j in 1:90) {
+  
+  reslist <- lapply(knowns, function(x) {
+    cat(x)
+    cat("\n")
+    
+    bulletGetMaxCMS(x, unknowns[j], 
+                    crosscut = ccs$cc[which(ccs$path==x)], 
+                    crosscut2 = ccs$cc[which(ccs$path==unknowns[j])], check=TRUE)
+  })
+  save(reslist, file=sprintf("data/unkn%d.RData", j))
+}
+
+
 # match first unknown land
-for (j in 3:90) {
+for (j in 1:90) {
 
 reslist <- lapply(knowns, function(x) {
   cat(x)
   cat("\n")
-  bulletGetMaxCMS(x, unknowns[j])
+  bulletGetMaxCMS(x, unknowns[j], check=TRUE)
 })
 save(reslist, file=sprintf("data/unkn%d.RData", j))
 }
@@ -35,7 +52,7 @@ for (j in 1:90) {
 }
 
 
-for (j in 1) {
+for (j in 2:90) {
   reslist <- lapply(knowns, function(x) {
     cat(x)
     cat("\n")
