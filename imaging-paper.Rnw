@@ -659,13 +659,14 @@ qplot(y, resid, group=bullet, colour=bullet, data=lofY,
 \caption{\label{fig:cross100} Lines showing surface crosscuts at $x = 100$. A horizontal shift of the values of Bullet 1-5 to the right shows the similarity of the striation marks.}
 \end{figure}
 
+\paragraph{Horizontal Alignment}
 Using (for now) a single crosscut across the surface, we extract the values and remove the class characteristics using a loess fit as before. This enables us to focus on the individual characterists. Striation marks show up in this representations as peaks and valleys. Figure~\ref{fig:cross100} shows lines of the surface crosscut at $x = 100$. A horizontal shift of one of the lines (result shown in (b)) emphasizes the strong similarities.
-\hh{This horizontal shift is based on the cross-correlation between the two surface crosscuts. Let $f(t)$ and $g(t)$ define the values of the crosscut at $t$, then the cross-correlation between $f$ and $g$ at lag $k$ is defined as
+This horizontal shift is based on the cross-correlation between the two surface crosscuts. Let $f(t)$ and $g(t)$ define the values of the crosscut at $t$, then the cross-correlation between $f$ and $g$ at lag $k$ is defined as
 \[
 (f * g) (k) = \sum_t f(t+k) g(t),
 \]
 with suitable defined limits of the summation. % (because variances of $f$ and $g$ do not change, the above equation is proportional to the correlation). 
-}
+
 \begin{figure}
 <<ccf, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '\\linewidth'>>=
 lag <- ccf$lag[which.max(ccf$acf)]
@@ -727,7 +728,7 @@ ggplot() +
 \caption{\label{fig:match} Matching striation marks: smooth (a), cut (b), and match (c).}
 \end{figure}
 
-\hh{Figure~\ref{fig:match} gives an overview of the rest of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; obviously this is a crucial parameter. For more discussion see Figure~\ref{fig:thresholds}). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match. XXX need more references XXX \cite{nichols:2003} XXX what does the paper say? AFTE is so frustrating! XXX }
+Figure~\ref{fig:match} gives an overview of the rest of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; obviously this is a crucial parameter. For more discussion see Figure~\ref{fig:thresholds}). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match. \hh{XXX need more references XXX \cite{nichols:2003} XXX what does the paper say? AFTE is so frustrating! XXX }
 
 
 
@@ -793,8 +794,8 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
 \caption{\label{fig:crosscuts}Overview of the variations in the surface along different crosscuts. Crosscut at $x = 100$ is compared to crosscuts every 50$\mu m$. With every step away from the original crosscut site, the number of differences between the crosscuts increases, and the number of maximum CMS decreases from initially 19 to only 3 at $x = 400\mu m$ and $x = 450\mu m$. }
 \end{figure}
 
-\hh{XXX Does this give us a way to automatically check for the bottom of the bullet? -- We could try to take two cross sections - maybe 50 or 100 $\mu m$ apart. If they don't match, we need to go a bit higher with the lower cross cut. Attempt at this is shown in Figure~\ref{fig:crosscuts2}.}
-
+\hh{XXX Does this give us a way to automatically check for the bottom of the bullet? Attempt below} 
+By comparing cross sections that are not too far apart -- maybe 25 or 50 $\mu m$ for example -- we get an indication whether the crosscut is in a rapidly changing section, such as in a break-off, or in a stable section, where we can expect to find matches reasonably well. In the approach here, we choose a slightly higher crosscut until we find a section with a stable pattern. This process is shown  in Figure~\ref{fig:crosscuts2} at the example of land 1-1 from barrel 3.
 
 \begin{figure}
 <<crosscuts-vary-b31, echo=FALSE, fig.width = 7, fig.height = 10, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
