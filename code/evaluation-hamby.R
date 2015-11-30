@@ -1,5 +1,5 @@
-setwd("data")
-datas <- dir(pattern="RData")
+
+datas <- file.path("data", dir("data", pattern="RData"))
 
 maxCMS <- sapply(datas, function(x) {
   load(x)
@@ -41,6 +41,7 @@ CCFs$resID <- rep(1:120, length=nrow(CCFs))
 CCFs <- CCFs[order(as.character(CCFs$b2)),]
 CCFs$b2 <- factor(as.character(CCFs$b2))
 
+idx <- which(CCFs$cms >= 6)
 idx <- which(CCFs$ccf > 0.6 & CCFs$distr.dist < 1.25)
 idx <- c(21, 84)
 idx <- which(CCFs$b2 == "Ukn Bullet B-1")

@@ -120,6 +120,7 @@ Iowa State University% Your institution
 %% please capitalize first letter and insert punctuation after last keyword
 \paragraph{Keywords:} Data visualization, Statistical graphics, Statistical computing.
 
+\tableofcontents
 
 
 <<setup, fig.keep='all', cache=FALSE, echo=FALSE, eval=TRUE, message=F, warning=F>>=
@@ -344,15 +345,15 @@ db2 <- db2 %>% group_by(part, x) %>% do (
 
 \begin{figure}[hbtp]
   \centering
-\caption{Circle fit for each cross section of bullet 2, with part 1 of bullet 1 overlayed.\label{fig:circlefits}}%
-<<circlefits, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
+<<circlefits, echo=FALSE, fig.width=7, fig.height=10.5, out.width='\\linewidth', warning=FALSE>>=
 qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
       geom="line", size=I(1), colour=I("grey30")) + 
-  facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
+  facet_wrap(~part, ncol=2) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
   geom_line(aes(y, resid, group = x), colour="black", size=1, alpha=0.2, 
              data = filter(db1, part==1, x == 100)[,c("y", "resid", "x")]) + ggtitle("Part 1 of Bullet 1 in black")
 @
+\caption{Circle fit for each cross section of bullet 2, with part 1 of bullet 1 overlayed.\label{fig:circlefits}}%
 \end{figure}
 
 \subsection{Loess Fit}
@@ -367,9 +368,9 @@ To improve upon the previous algorithm, the first step must be to eliminate the 
     \item Remove all y values below the minimum and above the maximum (Figure \ref{fig:loess_step5})
 \end{enumerate}
 
-Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reaosnable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear.
+Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear.
 
-<<loess_step12, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Steps 1 and 2 of the Loess fit algorithm. The top panel is a plot of height values for part 1 of bullet 1 across different values of y, with x held constant at 243.75. The bottom panel is the same plot, but with the first and last 100 y values trimmed.', fig.pos='H', message=FALSE>>=
+<<loess_step12, echo=FALSE, fig.width=7, fig.height=10.5, out.width='\\linewidth', warning=FALSE, fig.cap='Steps 1 and 2 of the Loess fit algorithm. The top panel is a plot of height values for part 1 of bullet 1 across different values of y, with x held constant at 243.75. The bottom panel is the same plot, but with the first and last 100 y values trimmed.', fig.pos='H', message=FALSE>>=
 br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
 
 br121_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
@@ -382,7 +383,7 @@ br126_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-6.x3p", sep = "/"))
 p1 <- qplot(y, value, data = br111_bullet) + theme_bw()
 p2 <- qplot(y, value, data = tail(head(br111_bullet, n = -100), n = -100)) + theme_bw()
 
-grid.arrange(p1, p2, nrow = 2)
+grid.arrange(p1, p2, nrow = 3)
 @
 
 <<loess_step34, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Steps 3 and 4 of the Loess fitting algorithm. The top panel is a plot of the smoothed height values, and the bottom panel is a plot of the detected minimums.', fig.pos='H', message=FALSE>>=
@@ -470,7 +471,7 @@ qplot(y, resid, data=melt.df, #colour=factor(x),
 @    
 
 \section{Application}
-We've implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny \cite{shiny}, allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly \cite{plotly}, allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
+We have implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny \cite{shiny}, allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly \cite{plotly}, allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{images/app.png}
@@ -659,7 +660,7 @@ qplot(y, resid, group=bullet, colour=bullet, data=lofY,
 \caption{\label{fig:cross100} Lines showing surface crosscuts at $x = 100$. A horizontal shift of the values of Bullet 1-5 to the right shows the similarity of the striation marks.}
 \end{figure}
 
-\paragraph{Horizontal Alignment}
+\subsection{Horizontal Alignment}
 Using (for now) a single crosscut across the surface, we extract the values and remove the class characteristics using a loess fit as before. This enables us to focus on the individual characterists. Striation marks show up in this representations as peaks and valleys. Figure~\ref{fig:cross100} shows lines of the surface crosscut at $x = 100$. A horizontal shift of one of the lines (result shown in (b)) emphasizes the strong similarities.
 This horizontal shift is based on the cross-correlation between the two surface crosscuts. Let $f(t)$ and $g(t)$ define the values of the crosscut at $t$, then the cross-correlation between $f$ and $g$ at lag $k$ is defined as
 \[
@@ -732,7 +733,7 @@ Figure~\ref{fig:match} gives an overview of the rest of the automated matching r
 
 
 
-\paragraph{Varying threshold}
+\subsection{Varying threshold}
 
 In order to address the subjectivity involved in choosing a threshold level, we investigate this parameter more closely. Figure~\ref{fig:thresholds} shows the relationship between threshold and the maximal number of consecutive matching striae. For thresholds between 0.7 and 0.9 the number of CMS peaks at fifteen. On average, there are 6.6 CMS across the range of thresholds. In the autmatic matching routine, several thresholds are considered and the threshold resulting in the higest number of consecutive atching striae is chosen (and reported).
 \begin{figure}
@@ -751,7 +752,7 @@ qplot(threshold, maxCMS, data=CMS) + theme_bw() +
 \caption{\label{fig:thresholds}Varying the threshold levels results in different number of consecutive matching striae between the two bullets. By default, the threshold with the highest CMS is chosen automatically.}
 \end{figure}
 
-\paragraph{Varying crosscuts}
+\subsection{Varying crosscuts}
 The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. For bullet land 1-5 from barrel 1 crosscuts at intervals of 50$\mu m$ between 150$\mu m$  and 450$\mu m$  are compared to a crosscut at 100$\mu m$. The initially almost perfect match (consolidated by a CMS of nineteen) between the  crosscuts deteriorates with increasing distance to a very questionable match at $x = 350\mu m$ and non-matches further apart. Only if the crosscut is within 200$\mu m$ do we get a good visual match. Given that alignment in the microscope is not perfect, we should take this into account in the automatic matching routine by evaluating matches at several cross sections. \hh{XXX We're not doing that yet, but it might help - particular for bullets that have larger break-offs at the bottom.}
 \begin{figure}
 <<crosscuts-vary, echo=FALSE, fig.width = 7, fig.height = 14, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
@@ -763,14 +764,16 @@ lof$bullet <- paste(lof$bullet, lof$x)
 reslist <- lapply(crosscuts[-1], function(cc) {
   b2 <- subset(lof, x %in% c(cc, 100))
   lofX <- bulletSmooth(b2)
-  lofX <- bulletAlign(lofX)  
+  bAlign = bulletAlign(lofX)
+  lofX <- bAlign$bullet  
   threshold <- bulletPickThreshold(lofX, thresholds = seq(0.3, 1.5, by = 0.05))
   
   lines <- striation_identify(lofX, threshold = threshold)
   maxCMS <- maxCMS(lines$match==TRUE)
-  list(maxCMS = maxCMS, threshold=threshold, lines=lines, bullets=lofX)
+  list(maxCMS = maxCMS, ccf = bAlign$ccf, threshold=threshold, lines=lines, bullets=lofX)
 })
 
+ccfs <- sapply(reslist, function(res) res$ccf)
 
 lop <- lapply(reslist, function(res) {
 ggplot() +
@@ -807,13 +810,16 @@ lof$bullet <- paste(lof$bullet, lof$x)
 reslist <- lapply(1:length(crosscuts[-1]), function(i) {
   b2 <- subset(lof, x %in% crosscuts[i:(i+1)])
   lofX <- bulletSmooth(b2)
-  lofX <- bulletAlign(lofX)  
+  bAlign <- bulletAlign(lofX)
+  lofX <- bAlign$bullet  
   threshold <- bulletPickThreshold(lofX, thresholds = seq(0.3, 1.5, by = 0.05))
   
   lines <- striation_identify(lofX, threshold = threshold)
   maxCMS <- maxCMS(lines$match==TRUE)
-  list(maxCMS = maxCMS, threshold=threshold, lines=lines, bullets=lofX)
+  list(maxCMS = maxCMS, threshold=threshold, ccf = bAlign$ccf, lines=lines, bullets=lofX)
 })
+
+ccfs <- sapply(reslist, function(res) res$ccf)
 
 lop <- lapply(reslist, function(res) {
 ggplot() +
@@ -834,7 +840,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
              lop[[4]], lop[[5]], 
              ncol=1)
 @
-\caption{\label{fig:crosscuts2}Varying crosscuts for barrel 3, bullet 1. Initially, the match between crosscuts 25$\mu m$ apart is affected strongly by break off at the bottom of the bullet. At a crosscut level of $175\mu m$ the bullet pattern stabilizes. For this land, matches should not be attempted to lower crosscuts.}
+\caption{\label{fig:crosscuts2}Varying crosscuts for barrel 3, bullet 1. Initially, the match between crosscuts 25$\mu m$ apart is affected strongly by break off at the bottom of the bullet. At a crosscut level of $175\mu m$ the bullet pattern stabilizes. For this land, matches should not be attempted at lower crosscuts.}
 \end{figure}
 
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
