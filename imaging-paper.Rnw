@@ -751,11 +751,11 @@ qplot(threshold, maxCMS, data=CMS) + theme_bw() +
 \end{figure}
 
 \paragraph{Varying crosscuts}
-
+The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. For bullet land 1-5 from barrel 1 crosscuts at intervals of 50$\mu m$ between 150$\mu m$  and 450$\mu m$  are compared to a crosscut at 100$\mu m$. The initially almost perfect match (consolidated by a CMS of nineteen) between the  crosscuts deteriorates with increasing distance to a very questionable match at $x = 350\mu m$ and non-matches further apart. Only if the crosscut is within 200$\mu m$ do we get a good visual match. Given that alignment in the microscope is not perfect, we should take this into account in the automatic matching routine by evaluating matches at several cross sections.
 \begin{figure}
 <<crosscuts-vary, echo=FALSE, fig.width = 14, fig.height = 21, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
-crosscuts <- seq(100, 450, by = 25)
+crosscuts <- seq(100, 450, by = 50)
 lof <- processBullets(paths[5], x = crosscuts)
 lof$bullet <- paste(lof$bullet, lof$x)
 
@@ -786,11 +786,10 @@ ggplot() +
 })
 
 grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]], 
-             lop[[7]], lop[[8]], lop[[9]], lop[[10]], lop[[11]], lop[[12]], 
-             lop[[13]], lop[[14]],
-             ncol = 2)
+             lop[[7]],
+             ncol = 1)
 @
-\caption{\label{fig:crosscuts}Overview of the variations in the surface along different crosscuts. Crosscut at $x = 100$ is compared to crosscuts every 25$\mu m$. \hh{XXX result?}}
+\caption{\label{fig:crosscuts}Overview of the variations in the surface along different crosscuts. Crosscut at $x = 100$ is compared to crosscuts every 50$\mu m$. With every step away from the original crosscut site, the number of differences between the crosscuts increases, and the number of maximum CMS decreases from initially 19 to only 3 at $x = 400$ and $x = 450$. }
 \end{figure}
 
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
