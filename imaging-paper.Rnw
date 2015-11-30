@@ -779,7 +779,8 @@ ggplot() +
   geom_hline(yintercept = res$threshold) +
   geom_hline(yintercept = - res$threshold) +
   scale_colour_brewer("", palette="Set1") +
-  theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
+  theme(legend.position = c(1,1.2), legend.justification=c(1,1),
+        legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylim(c(-6,6)) +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match))
@@ -821,7 +822,8 @@ ggplot() +
   geom_hline(yintercept = res$threshold) +
   geom_hline(yintercept = - res$threshold) +
   scale_colour_brewer("", palette="Set1") +
-  theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
+  theme(legend.position = c(1,1.2), legend.justification=c(1,1),
+        legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylim(c(-6,6)) +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match))
