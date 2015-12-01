@@ -41,6 +41,9 @@ CCFs$resID <- rep(1:120, length=nrow(CCFs))
 CCFs <- CCFs[order(as.character(CCFs$b2)),]
 CCFs$b2 <- factor(as.character(CCFs$b2))
 
+qplot(data=CCFs, x=ccf, y=cms)
+
+
 idx <- which(CCFs$cms >= 6)
 idx <- which(CCFs$ccf > 0.6 & CCFs$distr.dist < 1.25)
 idx <- c(21, 84)
