@@ -63,7 +63,7 @@ save(reslist, file=sprintf("data/br8-%d.RData", j))
 
 br <- knowns[grep("Br9", knowns)]
 reslist <- list()
-for (j in 1:6) {
+for (j in 1) {
   res <- lapply(br[7:12], function(x) {
     cat(x)
     cat("\n")
