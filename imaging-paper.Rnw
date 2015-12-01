@@ -374,7 +374,7 @@ Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides
 
 \begin{figure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step12}Steps 1 and 2 of the Loess fit algorithm. For a fixed crosscut (x held constant at 243.75) height values for part 1 of bullet 1 are plotted across different values of y. The first and last 100 values of y are trimmed (shown in grey).}
+\caption{\label{fig:loess_step12}Steps 1 and 2 of the Loess fit algorithm. For a fixed crosscut (x held constant at 243.75) height values for part 1 of bullet 1 are plotted across different values of y. The height values are smoothed to remove noise in the deviations.}
 <<loess_step12, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
 br121_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
@@ -384,8 +384,8 @@ br124_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-4.x3p", sep = "/"))
 br125_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-5.x3p", sep = "/"))
 br126_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-6.x3p", sep = "/"))
 
-p1 <- qplot(y, value, data = br111_bullet, size=I(1), colour=I("grey60"), alpha=I(.25)) + theme_bw()
-p1 + geom_point(aes(y, value), data = tail(head(br111_bullet, n = -100), n = -100))
+p1 <- qplot(y, value, data = br111_bullet, size=I(1)) + theme_bw()
+p1
 
 subdata <- br111_bullet
 subdata$smoothed <- c(rep(NA, 10), rollapply(subdata$value, 21, function(x) mean(x, na.rm = TRUE)), rep(NA, 10))
