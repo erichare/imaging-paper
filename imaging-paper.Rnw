@@ -360,13 +360,13 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
 
 \subsection{Loess Fit}
 
-To improve upon the previous algorithm, the first step must be to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match. Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent. Because a bullet is scanned groove to groove, the groove should appear within approximately scan points from each end. That is, on y coordinate system ranging from 0 to 1000 as these images, are, the grooves will appear between $y \in \{0, 100\}$ and $y \in \{900, 1000\}$. Hence, the algorithm for removing the grooves can be described as follows:
+To improve upon the previous algorithm, the first step must be to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match. Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent. By noting that height values beginning at $y = 0$ reach a maximum around the peak of the groove, we can then follow the descent of the height values to valley of the groove. This marks the point at which we should trim the image. We repeat a similar procedure for the right-hand groove by starting at the maximum y value and working backwards. The procedure can be described as follows:
 
 \begin{enumerate}
     \item Fix an $x$ coordinate value (Figure~\ref{fig:loess_step12}).
-    \item Remove values from $y \in \{0, 100\}$ and $y \in \{900, 1000\}$ (Figure~\ref{fig:loess_step12}).
-    \item For each y value from 100 to 900, compute a rolling average to smooth out any deviations occurring near the minima. (Figure~\ref{fig:loess_step34}).
-    \item Determine the minimum in the first half (corresponding to the left groove) and the minimum in the right half (corresponding to the right groove) (Figure~\ref{fig:loess_step34}).
+    \item For each y value, compute a rolling average to smooth out any deviations occurring near the minima. (Figure~\ref{fig:loess_step12}).
+    \item Determine the peak of the left groove by finding the first value with a negative discretized derivative. Determine the valley of the left groove by finding the first value with a positive discretized derivative after the value of the peak. (Figure~\ref{fig:loess_step34}).
+    \item Determine the peak of the right groove by finding the last value with a positive discretized derivative. Determine the valley of the right groove by finding the last value with a negative discretized derivative before the value of the peak. (Figure~\ref{fig:loess_step34}).
     \item Remove all $y$ values left and right of the identified minima in vertical direction (Figure \ref{fig:loess_step34}).
 \end{enumerate}
 
@@ -377,7 +377,6 @@ Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides
 \caption{\label{fig:loess_step12}Steps 1 and 2 of the Loess fit algorithm. For a fixed crosscut (x held constant at 243.75) height values for part 1 of bullet 1 are plotted across different values of y. The first and last 100 values of y are trimmed (shown in grey).}
 <<loess_step12, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
-
 br121_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
 br122_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-2.x3p", sep = "/"))
 br123_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-3.x3p", sep = "/"))
@@ -387,32 +386,36 @@ br126_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-6.x3p", sep = "/"))
 
 p1 <- qplot(y, value, data = br111_bullet, size=I(1), colour=I("grey60"), alpha=I(.25)) + theme_bw()
 p1 + geom_point(aes(y, value), data = tail(head(br111_bullet, n = -100), n = -100))
-#p2 <- qplot(y, value, data = tail(head(br111_bullet, n = -100), n = -100)) + theme_bw()
 
-#grid.arrange(p1, p2, nrow = 3)
+subdata <- br111_bullet
+subdata$smoothed <- c(rep(NA, 10), rollapply(subdata$value, 21, function(x) mean(x, na.rm = TRUE)), rep(NA, 10))
+subdata$smoothed2 <- c(rep(NA, 10), rollapply(subdata$smoothed, 21, function(x) mean(x, na.rm = TRUE)), rep(NA, 10))
+p2 <- qplot(y, smoothed2, data = subdata) + theme_bw() + xlim(c(0,2500))
+
+p2
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step34}Steps 3 - 5 of the Loess fitting algorithm. After smoothing the $y$ values left and right minima are detected (marked by vertical lines). Values outside these boundaries are removed (shown in grey)}
+\caption{\label{fig:loess_step34}Steps 3 - 5 of the Loess fitting algorithm. After smoothing the $y$ values left and right minima are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside these boundaries are removed (shown in grey)}
 <<loess_step34, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
-subdata <- tail(head(br111_bullet, n = -100), n = -100)
-subdata$smoothed <- c(rep(NA, 10), rollapply(subdata$value, 21, function(x) mean(x, na.rm = TRUE)), rep(NA, 10))
-p3 <- qplot(y, smoothed, data = tail(head(subdata, n = -10), n = -10)) + theme_bw() + xlim(c(0,2500))
-
-curdata <- tail(head(subdata, n = -10), n = -10)
-min.left <- which.min(curdata$value[1:(length(curdata$value) %/% 2)])
-min.right <- which.min(curdata$value[(length(curdata$value) %/% 2):length(curdata$value)])
-
-p4 <- qplot(data=curdata, y, value, size=I(1), colour=I("grey60"), alpha=I(.25)) +
+peak_ind <- head(which(diff(subdata$smoothed2) < 0), n = 1)
+    groove_ind <- head(which(diff(tail(subdata$smoothed2, n = -(peak_ind + 10))) > 0), n = 1) + peak_ind + 10
+    
+    peak_ind2 <- tail(which(diff(subdata$smoothed2) > 0), n = 1)
+    groove_ind2 <- tail(which(diff(head(subdata$smoothed2, n = -(length(subdata$smoothed2) - peak_ind2 + 10))) < 0), n = 1)
+    
+    p4 <- qplot(subdata$y[subdata$y < subdata$y[groove_ind]], subdata$smoothed2[subdata$y < subdata$y[groove_ind]], colour=I("grey60"), alpha=I(.25)) +
+        ylim(c(min(subdata$value[!is.nan(subdata$value)]) - 25, max(subdata$value[!is.nan(subdata$value)]) + 25)) +
+        xlim(c(min(subdata$y) - 25, max(subdata$y) + 25)) +
+        geom_point(aes(x, y), data = data.frame(x = subdata$y[subdata$y > subdata$y[groove_ind2]], y = subdata$smoothed2[subdata$y > subdata$y[groove_ind2]]), colour=I("grey60"), alpha=I(.25)) +
+        geom_point(inherit.aes = FALSE, aes(x, y), data = data.frame(x = subdata$y[subdata$y < subdata$y[groove_ind2] & subdata$y > subdata$y[groove_ind]], y = subdata$smoothed2[subdata$y < subdata$y[groove_ind2] & subdata$y > subdata$y[groove_ind]])) +
         theme_bw() +
-        geom_vline(xintercept = curdata$y[min.left], colour = "red") +
-        geom_vline(xintercept = curdata$y[min.right + (length(curdata$y) %/% 2)], colour = "blue") + xlim(c(0,2500))
-
-
-#grid.arrange(p3, p4, nrow = 2)
-final.dat <- subset(curdata, y > curdata$y[min.left + 5] & y < curdata$y[min.right + (length(curdata$y) %/% 2) - 5])
-
-p4 + geom_point(data=final.dat, aes(y, value))
+        geom_vline(xintercept = subdata$y[peak_ind], colour = "red") +
+        geom_vline(xintercept = subdata$y[groove_ind], colour = "blue") +
+        geom_vline(xintercept = subdata$y[peak_ind2], colour = "red") +
+        geom_vline(xintercept = subdata$y[groove_ind2], colour = "blue")
+    
+    p4
 @
 \end{subfigure}
 %' \begin{subfigure}[t]{\linewidth}
