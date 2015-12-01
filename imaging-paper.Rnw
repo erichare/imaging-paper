@@ -347,13 +347,15 @@ db2 <- db2 %>% group_by(part, x) %>% do (
   \centering
 <<circlefits, echo=FALSE, fig.width=7, fig.height=10.5, out.width='\\linewidth', warning=FALSE>>=
 qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
-      geom="line", size=I(1), colour=I("grey30")) + 
+      geom="line", size=I(1), colour=I("grey70")) + 
   facet_wrap(~part, ncol=2) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
-  geom_line(aes(y, resid, group = x), colour="black", size=1, alpha=0.2, 
-             data = filter(db1, part==1, x == 100)[,c("y", "resid", "x")]) + ggtitle("Part 1 of Bullet 1 in black")
+  geom_line(aes(y, resid, group = x), colour="black", size=1, 
+             data = filter(db1, part==1, x == 100)[,c("y", "resid", "x")]) +
+  ylab("Residuals from circular fit") +
+  ggtitle("Part 1 of Bullet 1 in black")
 @
-\caption{Circle fit for each cross section of bullet 2, with part 1 of bullet 1 overlayed.\label{fig:circlefits}}%
+\caption{Circle fit for each cross section of bullet 2, with part 1 of bullet 1 overlaid.\label{fig:circlefits}}%
 \end{figure}
 
 \subsection{Loess Fit}
@@ -361,16 +363,19 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
 To improve upon the previous algorithm, the first step must be to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match. Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent. Because a bullet is scanned groove to groove, the groove should appear within approximately scan points from each end. That is, on y coordinate system ranging from 0 to 1000 as these images, are, the grooves will appear between $y \in \{0, 100\}$ and $y \in \{900, 1000\}$. Hence, the algorithm for removing the grooves can be described as follows:
 
 \begin{enumerate}
-    \item Fix an x coordinate value. (Top panel of Figure \ref{fig:loess_step12})
-    \item Remove values from $y \in \{0, 100\}$ and $y \in \{900, 1000\}$. (Bottom panel of Figure \ref{fig:loess_step12})
-    \item For each y value from 100 to 900, compute a rolling average to smooth out any deviations occurring near the minimums. (Top panel of Figure \ref{fig:loess_step34})
-    \item Determine the minimum in the first half (corresponding to the left groove) and the minimum in the right half (corresponding to the right groove) (Bottom panel of Figure \ref{fig:loess_step34})
-    \item Remove all y values below the minimum and above the maximum (Figure \ref{fig:loess_step5})
+    \item Fix an $x$ coordinate value (Figure~\ref{fig:loess_step12}).
+    \item Remove values from $y \in \{0, 100\}$ and $y \in \{900, 1000\}$ (Figure~\ref{fig:loess_step12}).
+    \item For each y value from 100 to 900, compute a rolling average to smooth out any deviations occurring near the minima. (Figure~\ref{fig:loess_step34}).
+    \item Determine the minimum in the first half (corresponding to the left groove) and the minimum in the right half (corresponding to the right groove) (Figure~\ref{fig:loess_step34}).
+    \item Remove all $y$ values left and right of the identified minima in vertical direction (Figure \ref{fig:loess_step34}).
 \end{enumerate}
 
-Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear.
+Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear. \hh{XXX did you follow up on that? What is the effect of using a different span?}
 
-<<loess_step12, echo=FALSE, fig.width=7, fig.height=10.5, out.width='\\linewidth', warning=FALSE, fig.cap='Steps 1 and 2 of the Loess fit algorithm. The top panel is a plot of height values for part 1 of bullet 1 across different values of y, with x held constant at 243.75. The bottom panel is the same plot, but with the first and last 100 y values trimmed.', fig.pos='H', message=FALSE>>=
+\begin{figure}
+\begin{subfigure}[t]{\linewidth}
+\caption{\label{fig:loess_step12}Steps 1 and 2 of the Loess fit algorithm. For a fixed crosscut (x held constant at 243.75) height values for part 1 of bullet 1 are plotted across different values of y. The first and last 100 values of y are trimmed (shown in grey).}
+<<loess_step12, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
 
 br121_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
@@ -380,37 +385,49 @@ br124_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-4.x3p", sep = "/"))
 br125_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-5.x3p", sep = "/"))
 br126_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-6.x3p", sep = "/"))
 
-p1 <- qplot(y, value, data = br111_bullet) + theme_bw()
-p2 <- qplot(y, value, data = tail(head(br111_bullet, n = -100), n = -100)) + theme_bw()
+p1 <- qplot(y, value, data = br111_bullet, size=I(1), colour=I("grey60"), alpha=I(.25)) + theme_bw()
+p1 + geom_point(aes(y, value), data = tail(head(br111_bullet, n = -100), n = -100))
+#p2 <- qplot(y, value, data = tail(head(br111_bullet, n = -100), n = -100)) + theme_bw()
 
-grid.arrange(p1, p2, nrow = 3)
+#grid.arrange(p1, p2, nrow = 3)
 @
-
-<<loess_step34, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Steps 3 and 4 of the Loess fitting algorithm. The top panel is a plot of the smoothed height values, and the bottom panel is a plot of the detected minimums.', fig.pos='H', message=FALSE>>=
+\end{subfigure}
+\begin{subfigure}[t]{\linewidth}
+\caption{\label{fig:loess_step34}Steps 3 - 5 of the Loess fitting algorithm. After smoothing the $y$ values left and right minima are detected (marked by vertical lines). Values outside these boundaries are removed (shown in grey)}
+<<loess_step34, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 subdata <- tail(head(br111_bullet, n = -100), n = -100)
 subdata$smoothed <- c(rep(NA, 10), rollapply(subdata$value, 21, function(x) mean(x, na.rm = TRUE)), rep(NA, 10))
-p3 <- qplot(y, smoothed, data = tail(head(subdata, n = -10), n = -10)) + theme_bw()
+p3 <- qplot(y, smoothed, data = tail(head(subdata, n = -10), n = -10)) + theme_bw() + xlim(c(0,2500))
 
 curdata <- tail(head(subdata, n = -10), n = -10)
 min.left <- which.min(curdata$value[1:(length(curdata$value) %/% 2)])
 min.right <- which.min(curdata$value[(length(curdata$value) %/% 2):length(curdata$value)])
 
-p4 <- qplot(data=curdata, y, value) +
+p4 <- qplot(data=curdata, y, value, size=I(1), colour=I("grey60"), alpha=I(.25)) +
         theme_bw() +
         geom_vline(xintercept = curdata$y[min.left], colour = "red") +
-        geom_vline(xintercept = curdata$y[min.right + (length(curdata$y) %/% 2)], colour = "blue")
+        geom_vline(xintercept = curdata$y[min.right + (length(curdata$y) %/% 2)], colour = "blue") + xlim(c(0,2500))
 
-grid.arrange(p3, p4, nrow = 2)
-@
 
-<<loess_step5, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Step 5 of the Loess fitting algorithm. The plot shows the result after trimming values below the first minimum, and above the second minimum.', fig.pos='H', message=FALSE>>=
+#grid.arrange(p3, p4, nrow = 2)
 final.dat <- subset(curdata, y > curdata$y[min.left + 5] & y < curdata$y[min.right + (length(curdata$y) %/% 2) - 5])
 
-qplot(data=final.dat, y, value) +
-    theme_bw()
+p4 + geom_point(data=final.dat, aes(y, value))
 @
+\end{subfigure}
+%' \begin{subfigure}[t]{\linewidth}
+%' \caption{\label{fig:loess_step5}Step 5 of the Loess fitting algorithm. The plot shows the result after trimming values below the first minimum, and above the second minimum.}
+%' <<loess_step5, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
+%' final.dat <- subset(curdata, y > curdata$y[min.left + 5] & y < curdata$y[min.right + (length(curdata$y) %/% 2) - 5])
+%' 
+%' qplot(data=final.dat, y, value) +
+%'     theme_bw() + xlim(c(0,2500))
+%' @
+%' \end{subfigure}
+\caption{Overview of all five steps of the loess algorithm to identify and remove big bullet strucure.}
+\end{figure}
 
-<<loess_fit, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Loess fit for part 1 of bullet 1', fig.pos='H', message=FALSE>>=
+<<loess_fit, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Loess fit for part 1 of bullet 1', fig.pos='hbtp', message=FALSE>>=
 
 br111.groove <- get_grooves(br111_bullet)
 
@@ -419,7 +436,7 @@ my.loess <- fit_loess(br111_bullet, br111.groove)
 my.loess$fitted
 @
 
-<<loess_resid, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Loess fit residuals for part 1 of bullet 1', fig.pos='H'>>=
+<<loess_resid, echo=FALSE, fig.width=10, fig.height=7, out.width='\\linewidth', warning=FALSE, fig.cap='Loess fit residuals for part 1 of bullet 1', fig.pos='hbtp'>>=
 my.loess <- fit_loess(br111_bullet, br111.groove)
 
 my.loess$resid
@@ -464,10 +481,10 @@ melt.df$part <- gsub("resid", "", melt.df$part)
 actual.df <- my.loessactual$data[1:minrows,]
 
 qplot(y, resid, data=melt.df, #colour=factor(x), 
-      geom="line", size=I(1), colour=I("grey30")) + 
+      geom="line", size=I(1), colour=I("grey70")) + 
   facet_wrap(~part) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
-  geom_line(data = actual.df, aes(y, resid), colour="black", size=1, alpha=0.2) + ggtitle("Part 1 of Bullet 1 in black")
+  geom_line(data = actual.df, aes(y, resid), colour="black", size=1) + ggtitle("Part 1 of Bullet 1 in black")
 @    
 
 \section{Application}

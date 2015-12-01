@@ -19,7 +19,7 @@ CCFs <- plyr::ldply(datas, function(x) {
     
     subLOFx1$y <- subLOFx1$y - min(subLOFx1$y)
     subLOFx2$y <- subLOFx2$y - min(subLOFx2$y)
- #     browser()
+#      browser()
     ccf <- ccf(subLOFx1$val, subLOFx2$val, plot = FALSE, lag.max=200, na.action = na.omit)
     lag <- ccf$lag[which.max(ccf$acf)]
     incr <- min(diff(sort(unique(subLOFx1$y))))
@@ -30,7 +30,11 @@ CCFs <- plyr::ldply(datas, function(x) {
     idx2 <- which(subLOFx2$y %in% ys)
     distr.dist <- mean((subLOFx1$val[idx1] - subLOFx2$val[idx2])^2, na.rm=T)
     
-    data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), distr.dist=distr.dist, b1=b12[1], b2=b12[2])
+    # feature extraction
+    data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), distr.dist=distr.dist, 
+               b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
+               num.matches = sum(res$lines$match), 
+               num.mismatches = sum(!res$lines$match))
   })
   ccf$cms <- cmsdist
   ccf$data <- x
@@ -41,13 +45,23 @@ CCFs$resID <- rep(1:120, length=nrow(CCFs))
 CCFs <- CCFs[order(as.character(CCFs$b2)),]
 CCFs$b2 <- factor(as.character(CCFs$b2))
 
-qplot(data=CCFs, x=ccf, y=cms)
+CCFs$match <- NA
+idx <- which(CCFs$cms >= 9) # all are matches, visually confirmed
+CCFs$match[idx] <- TRUE
+write.csv(CCFs, file="bullet-stats.csv", row.names=FALSE)
 
 
-idx <- which(CCFs$cms >= 6)
+qplot(data=CCFs, x=ccf, y=cms, colour=match)
+qplot(data=CCFs, x=ccf, y=distr.dist)
+
+
+idx <- which(CCFs$cms >= 9)
+
+
+
 idx <- which(CCFs$ccf > 0.6 & CCFs$distr.dist < 1.25)
 idx <- c(21, 84)
-idx <- which(CCFs$b2 == "Ukn Bullet B-1")
+idx <- which(CCFs$cms == 8)
 for ( i in idx) {
   load(CCFs$data[i])
   res <- reslist[[CCFs$resID[i]]]  
