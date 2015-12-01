@@ -53,10 +53,11 @@ write.csv(CCFs, file="bullet-stats.csv", row.names=FALSE)
 idx <- which(CCFs$cms == 8) # 
 
 qplot(data=CCFs, x=ccf, y=cms, colour=match)
-qplot(data=CCFs, x=ccf, y=distr.dist)
+qplot(data=CCFs, x=ccf, y=distr.dist, colour=match)
 
 
-idx <- which(CCFs$cms >= 9)
+idx <- which(CCFs$cms < 8 & CCFs$ccf > .85) # nothing
+idx <- which(CCFs$cms < 8 & CCFs$ccf > 0.5 & CCFs$distr.dist < 1.25)
 
 
 

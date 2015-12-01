@@ -145,3 +145,24 @@ res <- reslist[[which.max(cmsdist)]]
     ylim(c(-6,6)) +
     geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
     geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)) 
+
+  
+  for ( i in 1:6) {
+    res <- reslist[[i]]  
+    
+    ch <- scan()
+    print(ggplot() +
+            theme_bw() + 
+            geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
+            geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
+            geom_hline(yintercept = res$threshold) +
+            geom_hline(yintercept = - res$threshold) +
+            scale_colour_brewer(palette="Set1") +
+            theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
+            ylim(c(-6,6)) +
+            geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
+            geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
+    
+  }
+  
+  
