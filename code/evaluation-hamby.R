@@ -50,6 +50,7 @@ idx <- which(CCFs$cms >= 9) # all are matches, visually confirmed
 CCFs$match[idx] <- TRUE
 write.csv(CCFs, file="bullet-stats.csv", row.names=FALSE)
 
+idx <- which(CCFs$cms == 8) # 
 
 qplot(data=CCFs, x=ccf, y=cms, colour=match)
 qplot(data=CCFs, x=ccf, y=distr.dist)

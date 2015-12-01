@@ -30,6 +30,73 @@ for (j in 1:90) {
   save(reslist, file=sprintf("data/unkn%d.RData", j))
 }
 
+# match some known lands
+br4 <- knowns[grep("Br4", knowns)]
+reslist <- list()
+for (j in 1) {
+  res <- lapply(br4[7:12], function(x) {
+    cat(x)
+    cat("\n")
+    
+    bulletGetMaxCMS(x, br4[j], 
+                    crosscut = ccs$cc[which(ccs$path==x)], 
+                    crosscut2 = ccs$cc[which(ccs$path==unknowns[j])], check=TRUE)
+  })
+  reslist <- c(reslist, res)
+}
+save(reslist, file=sprintf("data/br4-%d.RData", j))
+
+br <- knowns[grep("Br8", knowns)]
+reslist <- list()
+for (j in 2) {
+  res <- lapply(br[7:12], function(x) {
+    cat(x)
+    cat("\n")
+    
+    bulletGetMaxCMS(x, br[j], 
+                    crosscut = ccs$cc[which(ccs$path==x)], 
+                    crosscut2 = ccs$cc[which(ccs$path==unknowns[j])], check=TRUE)
+  })
+  reslist <- c(reslist, res)
+}
+save(reslist, file=sprintf("data/br8-%d.RData", j))
+
+br <- knowns[grep("Br9", knowns)]
+reslist <- list()
+for (j in 1:6) {
+  res <- lapply(br[7:12], function(x) {
+    cat(x)
+    cat("\n")
+    
+    bulletGetMaxCMS(x, br[j], 
+                    crosscut = ccs$cc[which(ccs$path==x)], 
+                    crosscut2 = ccs$cc[which(ccs$path==unknowns[j])], check=TRUE)
+  })
+  reslist <- c(reslist, res)
+}
+cmsdist <- sapply(reslist, function(x) x$maxCMS)
+qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
+
+save(reslist, file=sprintf("data/br9.RData", j))
+
+
+br <- knowns[grep("Br10", knowns)]
+reslist <- list()
+for (j in 2) {
+  res <- lapply(br[7:12], function(x) {
+    cat(x)
+    cat("\n")
+    
+    bulletGetMaxCMS(x, br[j], 
+                    crosscut = ccs$cc[which(ccs$path==x)], 
+                    crosscut2 = ccs$cc[which(ccs$path==unknowns[j])], check=TRUE)
+  })
+  reslist <- c(reslist, res)
+}
+cmsdist <- sapply(reslist, function(x) x$maxCMS)
+qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
+save(reslist, file=sprintf("data/br10.RData", j))
+
 
 # match first unknown land
 for (j in 1:90) {
