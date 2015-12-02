@@ -89,3 +89,4 @@ CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
 CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
 CCFs$match <- CCFs$id.x == CCFs$id.y
 
+write.csv(CCFs, file="data/bullet-stats.csv", row.names=FALSE)

@@ -983,6 +983,33 @@ print(ggplot() +
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works perfectly. Unfortunately the matches are not always that convincing.}
 \end{figure}
 
+\section{Evaluation}
+\hh{XXX a lot more about the Hamby study. Fifteen unknown bullets (i.e. 90 lands) compared to two times ten known bullets (i.e. 120 lands) makes $90 \times 120 = 10,800$ land to land comparisons, out of which 180 are actual matches. It is not reasonable to assume that we can match all lands, but we can try to maximize the number of matches. }
+Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 28 pairs of lands with at least nine CMS in common are matches. For smaller number of CMS, the percentage of false positives quickly increases. 
+\begin{figure}
+\begin{subfigure}[t]{\linewidth}
+\caption{Distribution of maximal CMS.}
+<<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\linewidth'>>=
+bstats <- read.csv("data/bullet-stats.csv")
+ggplot(data=bstats) + 
+  geom_bar(aes(x=factor(cms))) + theme_bw() +
+  theme(legend.position="bottom") + 
+  xlab("maximum CMS")
+@
+\end{subfigure}
+\begin{subfigure}[t]{\linewidth}
+\caption{All bullet pairs with a maximum of at least nine CMS are matches.}
+<<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='\\linewidth'>>=
+bstats <- read.csv("data/bullet-stats.csv")
+ggplot(data=bstats) + 
+  geom_bar(aes(x=factor(cms), fill=match), position="fill") +
+  theme(legend.position="bottom") + 
+  xlab("maximum CMS")
+@
+\end{subfigure}
+\caption{\label{fig:cms}Overview of the maximal number of consecutive maximal striae compared to matches.}
+\end{figure}
+
 
 
 \hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
