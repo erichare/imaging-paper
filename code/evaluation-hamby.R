@@ -37,7 +37,7 @@ CCFs <- plyr::ldply(datas, function(x) {
                b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
                num.matches = sum(res$lines$match), 
                num.mismatches = sum(!res$lines$match), 
-               non_cms = x3prplus::maxCMS(res$lines$match))
+               non_cms = x3prplus::maxCMS(!res$lines$match))
   })
   ccf$cms <- cmsdist
   ccf$data <- x

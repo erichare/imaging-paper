@@ -1010,7 +1010,15 @@ ggplot(data=bstats) +
 \caption{\label{fig:cms}Overview of the maximal number of consecutive maximal striae compared to matches.}
 \end{figure}
 
-
+\begin{figure}
+<<distr.dist, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
+ggplot(data=bstats) + 
+    geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match)) +
+    theme(legend.position="bottom") + 
+    xlab("maximum CMS")
+@
+\caption{If the distance between the crosscuts is small, a smaller number of CMS might already be an indication of a match.}
+\end{figure}
 
 \hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
 
