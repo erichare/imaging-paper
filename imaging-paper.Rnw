@@ -929,7 +929,15 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 \caption{\label{fig:barrel2}All lands from the second bullet shot from barrel 2 are compared to the third land of the first bullet shot from barrel 2 (in red). The largest number of CMS is seven, observed with land four of the second bullet. }
 \end{figure}
 
-\hh{We can use the Hamby study to run all unkowns against the known bullets. When things go perfectly, they look like in Figure~\ref{fig:hamby-perfect}.}
+
+
+\hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
+
+\hh{XXX needs more work: how does crosscut impact the results?  For the same bullet: how far apart can crosscuts be to still result in a match?}
+
+\section{Evaluation}
+
+\hh{We can use the Hamby study to run all unkowns against the known bullets. When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}.}
 
 \begin{figure}
 \begin{subfigure}[t]{.49\textwidth}
@@ -982,8 +990,6 @@ print(ggplot() +
 \end{subfigure}
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works perfectly. Unfortunately the matches are not always that convincing.}
 \end{figure}
-
-\section{Evaluation}
 \hh{XXX a lot more about the Hamby study. Fifteen unknown bullets (i.e. 90 lands) compared to two times ten known bullets (i.e. 120 lands) makes $90 \times 120 = 10,800$ land to land comparisons, out of which 180 are actual matches. It is not reasonable to assume that we can match all lands, but we can try to maximize the number of matches. }
 Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 28 pairs of lands with at least nine CMS in common are matches. For smaller number of CMS, the percentage of false positives quickly increases. 
 \begin{figure}
@@ -1020,14 +1026,15 @@ ggplot(data=bstats) +
 \caption{If the distance between the crosscuts is small, a smaller number of CMS might already be an indication of a match.}
 \end{figure}
 
-\hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
-
-\hh{XXX needs more work: how does crosscut impact the results?  For the same bullet: how far apart can crosscuts be to still result in a match?}
 
 \hh{XXX another idea for the rest of the paper: use some datamining methods to match the Hamby bullets }
 
 \section{Conclusion}
 
+\hh{Things we discussed}
+\begin{enumerate}
+\item adding more non-matches into the mix is going to make things more realistic. 
+\end{enumerate}
 \bibliographystyle{abbrv}
 %%use following if all content of bibtex file should be shown
 %\nocite{*}
