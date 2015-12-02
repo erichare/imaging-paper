@@ -980,7 +980,7 @@ print(ggplot() +
 
 @
 \end{subfigure}
-\caption{\label{fig:hamby-perfect}Showcase scenario of when matching with CMS works perfectly. Unfortunately the matches are not always that convincing.}
+\caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works perfectly. Unfortunately the matches are not always that convincing.}
 \end{figure}
 
 

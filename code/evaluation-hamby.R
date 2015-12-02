@@ -1,11 +1,13 @@
 
 datas <- file.path("data", dir("data", pattern="RData"))
+datas <- datas[grep("data/u.*", datas)]
 
 maxCMS <- sapply(datas, function(x) {
   load(x)
   cmsdist <- sapply(reslist, function(x) x$maxCMS)
   max(cmsdist)
 })
+
 
 CCFs <- plyr::ldply(datas, function(x) {
   load(x)
@@ -19,7 +21,7 @@ CCFs <- plyr::ldply(datas, function(x) {
     
     subLOFx1$y <- subLOFx1$y - min(subLOFx1$y)
     subLOFx2$y <- subLOFx2$y - min(subLOFx2$y)
-#      browser()
+ #     browser()
     ccf <- ccf(subLOFx1$val, subLOFx2$val, plot = FALSE, lag.max=200, na.action = na.omit)
     lag <- ccf$lag[which.max(ccf$acf)]
     incr <- min(diff(sort(unique(subLOFx1$y))))
@@ -34,7 +36,8 @@ CCFs <- plyr::ldply(datas, function(x) {
     data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), distr.dist=distr.dist, 
                b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
                num.matches = sum(res$lines$match), 
-               num.mismatches = sum(!res$lines$match))
+               num.mismatches = sum(!res$lines$match), 
+               non_cms = x3prplus::maxCMS(res$lines$match))
   })
   ccf$cms <- cmsdist
   ccf$data <- x
@@ -50,21 +53,9 @@ idx <- which(CCFs$cms >= 9) # all are matches, visually confirmed
 CCFs$match[idx] <- TRUE
 write.csv(CCFs, file="bullet-stats.csv", row.names=FALSE)
 
-idx <- which(CCFs$cms == 8) # 
 
-qplot(data=CCFs, x=ccf, y=cms, colour=match)
-qplot(data=CCFs, x=ccf, y=distr.dist, colour=match)
-
-
-idx <- which(CCFs$cms < 8 & CCFs$ccf > .85) # nothing
-idx <- which(CCFs$cms < 8 & CCFs$ccf > 0.5 & CCFs$distr.dist < 1.25)
-
-
-
-idx <- which(CCFs$ccf > 0.6 & CCFs$distr.dist < 1.25)
-idx <- c(21, 84)
-idx <- which(CCFs$cms == 8)
 for ( i in idx) {
+  
   load(CCFs$data[i])
   res <- reslist[[CCFs$resID[i]]]  
 
@@ -84,37 +75,17 @@ for ( i in idx) {
 }
 
 
+matches <- read.csv("csvs/matches.csv", header=FALSE, stringsAsFactors = FALSE)
+matches$V3 <- paste("Ukn Bullet",matches$V3)
+matches$V4 <- paste("Ukn Bullet",matches$V4)
+matches$V5 <- paste("Ukn Bullet",matches$V5)
+matches$id <- 1:nrow(matches)
 
-qplot(maxCMS)
-idx <- which(maxCMS > 9) # definitely matches
-idx <- which(maxCMS == 8) # not a match
-idx <- which(maxCMS == 7) # one is a match
-idx <- which(maxCMS == 6) # two are a match
+library(reshape2)
+mm <- melt(matches, id.var="id")
+mm <- subset(mm, value != "Ukn Bullet ")
 
+CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
+CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
+CCFs$match <- CCFs$id.x == CCFs$id.y
 
-i <- 1
-
-for (i in idx) {
-i <- i+1
-load(datas[i])
-
-cmsdist <- sapply(reslist, function(x) x$maxCMS)
-
-
-qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
-res <- reslist[[which.max(cmsdist)]]  
-ch <- scan()
-#res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
-
-print(ggplot() +
-  theme_bw() + 
-  geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
-  geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
-  geom_hline(yintercept = res$threshold) +
-  geom_hline(yintercept = - res$threshold) +
-  scale_colour_brewer(palette="Set1") +
-  theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
-  ylim(c(-6,6)) +
-  geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
-  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
-}

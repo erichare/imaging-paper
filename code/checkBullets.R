@@ -6,6 +6,14 @@ library(ggplot2)
 knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
 knowns <- file.path(knowndatadir, dir(knowndatadir, pattern="x3p"))
 
+crosscuts <- sapply(unknowns, function(x) {
+  cat(x)
+  crosscut <- bulletCheckCrossCut(x, x = seq(100, 500, by=12.5))
+  cat(crosscut)
+  cat("\n")
+  crosscut
+})
+
 
 dframe <- data.frame(
   path = knowns,
