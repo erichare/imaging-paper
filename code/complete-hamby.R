@@ -16,7 +16,7 @@ unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 
 
 # match unknown land using crosscuts
-ccs <- read.csv("crosscuts.csv")
+ccs <- read.csv("data/crosscuts.csv")
 for (j in 1:90) {
   
   reslist <- lapply(knowns, function(x) {
