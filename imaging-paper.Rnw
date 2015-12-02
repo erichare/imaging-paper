@@ -784,7 +784,7 @@ qplot(threshold, maxCMS, data=CMS) + theme_bw() +
 \end{figure}
 
 \subsection{Varying crosscuts}
-The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. For bullet land 1-5 from barrel 1 crosscuts at intervals of 50$\mu m$ between 150$\mu m$  and 450$\mu m$  are compared to a crosscut at 100$\mu m$. The initially almost perfect match (consolidated by a CMS of nineteen) between the  crosscuts deteriorates with increasing distance to a very questionable match at $x = 350\mu m$ and non-matches further apart. Only if the crosscut is within 200$\mu m$ do we get a good visual match. Given that alignment in the microscope is not perfect, we should take this into account in the automatic matching routine by evaluating matches at several cross sections. \hh{XXX We're not doing that yet, but it might help - particular for bullets that have larger break-offs at the bottom.}
+The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. For bullet land 1-5 from barrel 1 crosscuts at intervals of 50$\mu m$ between 150$\mu m$  and 450$\mu m$  are compared to a crosscut at 100$\mu m$. The initially almost perfect match (consolidated by a CMS of nineteen) between the  crosscuts deteriorates with increasing distance to a very questionable match at $x = 350\mu m$ and non-matches further apart. Only if the crosscut is within 200$\mu m$ do we get a good visual match. Given that alignment in the microscope is not perfect, we should take this into account in the automatic matching routine by evaluating matches at several cross sections. 
 \begin{figure}
 <<crosscuts-vary, echo=FALSE, fig.width = 7, fig.height = 14, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
@@ -828,9 +828,9 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
 \caption{\label{fig:crosscuts}Overview of the variations in the surface along different crosscuts. Crosscut at $x = 100$ is compared to crosscuts every 50$\mu m$. With every step away from the original crosscut site, the number of differences between the crosscuts increases, and the number of maximum CMS decreases from initially 19 to only 3 at $x = 400\mu m$ and $x = 450\mu m$. }
 \end{figure}
 
-\hh{XXX Does this give us a way to automatically check for the bottom of the bullet? Attempt below} 
-By comparing cross sections that are not too far apart -- maybe 25 or 50 $\mu m$ for example -- we get an indication whether the crosscut is in a rapidly changing section, such as in a break-off, or in a stable section, where we can expect to find matches reasonably well. In the approach here, we choose a slightly higher crosscut until we find a section with a stable pattern. This process is shown  in Figure~\ref{fig:crosscuts2} at the example of land 1-1 from barrel 3.
-
+%\hh{XXX Does this give us a way to automatically check for the bottom of the bullet? Attempt below} 
+By comparing cross sections that are not too far apart -- maybe 25 or 50 $\mu m$ for example -- we get an indication whether the crosscut is in a rapidly changing section, indicative of a break-off, or in a stable section, where we can expect to find matches reasonably well. In the approach here, we keep increasing the crosscut level until we find a section with a stable pattern. This process is shown  in Figure~\ref{fig:crosscuts2} at the example of land 1-1 from barrel 3.
+\hh{`Stability' is here defined as two aligned crosscuts chosen 12.5$\mu m$ apart having a cross-correlation of at least 0.9. }
 \begin{figure}
 <<crosscuts-vary-b31, echo=FALSE, fig.width = 7, fig.height = 10, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
