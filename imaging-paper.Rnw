@@ -445,8 +445,6 @@ my.loess$fitted
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:loess_resid} Residuals of Loess fit for land 1 of bullet 1.}
 <<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE>>=
-my.loess <- fit_loess(br111_bullet, br111.groove)
-
 my.loess$resid
 @
 \end{subfigure}

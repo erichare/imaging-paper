@@ -6,12 +6,9 @@ for (file in dir("app/images/Hamby252_3DX3P1of2")) {
     mybullet <- get_bullet(file.path("app/images/Hamby252_3DX3P1of2", file), x = 150)
     x <- get_grooves(mybullet)
     cat(file, "\n")
-    print(x$plot)
-    #my.loess <- fit_loess(mybullet, x)
-    #print(my.loess$resid)
+    my.loess <- fit_loess(mybullet, x)
+    result <- get_peaks(my.loess$data)
+    print(result$plot)
     value <- readline("Press Enter to Continue, or q to Quit")
     if (value == "q") break;
 }
-
-mybullet <- get_bullet(file.path("app/images/Hamby252_3DX3P1of2", "Br1 Bullet 1-5.x3p"), x = 100)
-x <- get_grooves(mybullet)
