@@ -1000,7 +1000,7 @@ print(ggplot() +
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works perfectly. Unfortunately the matches are not always that convincing.}
 \end{figure}
 \hh{XXX a lot more about the Hamby study. Fifteen unknown bullets (i.e. 90 lands) compared to two times ten known bullets (i.e. 120 lands) makes $90 \times 120 = 10,800$ land to land comparisons, out of which 180 are actual matches. It is not reasonable to assume that we can match all lands, but we can try to maximize the number of matches. }
-Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 23 pairs of lands with at least twelve CMS in common are matches. For smaller number of CMS, the percentage of false positives quickly increases. Taking cross-correlation into account (see Figure~\ref{ccfs-match}) increases the number of matches. A cross-correlation of above 0.75 in the Hamby study is indicative of a match. There are 67 land-land comparisons with a cross-correlation of above 0.75.   
+Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 23 pairs of lands with at least twelve CMS in common are matches. For smaller number of CMS, the percentage of false positives quickly increases. Taking cross-correlation into account (see Figure~\ref{fig:ccfs-match}) increases the number of matches. A cross-correlation of above 0.75 in the Hamby study is indicative of a match. There are 67 land-land comparisons with a cross-correlation of above 0.75.   
 \begin{figure}
 \begin{subfigure}[t]{\linewidth}
 \caption{Distribution of maximal CMS.}
@@ -1050,7 +1050,6 @@ ggplot(data=bstats) + theme_bw() +
 \begin{figure}
 <<cms-outlier, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
 idx <- which(bstats$cms==11 & !bstats$match)[1]
-bstats[idx,]
 load(as.character(bstats$data[idx]))
 res <- reslist[[bstats$resID[idx]]]
 print(ggplot() +
