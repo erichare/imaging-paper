@@ -90,3 +90,12 @@ CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
 CCFs$match <- CCFs$id.x == CCFs$id.y
 
 write.csv(CCFs, file="data/bullet-stats.csv", row.names=FALSE)
+
+# diagnostics
+
+library(ggplot2)
+qplot(factor(cms), data=CCFs)
+ggplot(data=CCFs) + geom_bar(aes(x=factor(cms), fill=match), position="fill")
+ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match))
+ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=ccf, colour=match)) + facet_wrap(~match)
+ggplot(data=CCFs) + geom_bar(aes(x=factor(non_cms), fill=match), position="fill")

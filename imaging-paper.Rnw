@@ -872,6 +872,16 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
 \caption{\label{fig:crosscuts2}Varying crosscuts for barrel 3, bullet 1. Initially, the match between crosscuts 25$\mu m$ apart is affected strongly by break off at the bottom of the bullet. At a crosscut level of $175\mu m$ the bullet pattern stabilizes. For this land, matches should not be attempted at lower crosscuts.}
 \end{figure}
 
+\hh{The automated matching routine is then as follows:
+Identify a stable region for each bullet and pick the lowest crosscut level in this region (assumption here: lower crosscut levels show better expression of individual marks XXX need to still check)
+
+All of the other steps are done on pairs of bullets:
+\begin{enumerate}
+\item Smooth the two crosscuts by a loess with a very small span. 
+\item Use cross-correlation to find the best alignment along the crosscuts: Shift one of the crosscuts by the lag indicated by the cross-correlation function.
+\item Based on a starting threshold level of $\theta$, identify the maximal number of CMS (consecutive matching striae) between the two crosscuts. Vary $\theta$, such that the maximum number of CMS is reached. 
+\end{enumerate}
+}
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
 
 
