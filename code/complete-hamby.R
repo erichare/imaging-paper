@@ -17,12 +17,34 @@ unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 
 # match unknown land using crosscuts
 ccs <- read.csv("data/crosscuts.csv")
+load("data/bullets.RData")
+bPaths <- sapply(bullets, function(x) x$path)
+
+
 for (j in 1:90) {
   
   reslist <- lapply(knowns, function(x) {
     cat(x)
     cat("\n")
+#    browser()
+    b1 <- bullets[[which(bPaths == x)]]
+    b2 <- bullets[[which(bPaths == unknowns[j])]]
     
+    bulletGetMaxCMSXXX(b1, b2)
+  })
+  save(reslist, file=sprintf("data/unkn%d.RData", j))
+}
+
+
+
+# match unknown land using crosscuts
+ccs <- read.csv("data/crosscuts.csv")
+for (j in 1:90) {
+  
+  reslist <- lapply(knowns, function(x) {
+    cat(x)
+    cat("\n")
+    browser()
     bulletGetMaxCMS(x, unknowns[j], 
                     crosscut = ccs$cc[which(ccs$path==x)], 
                     crosscut2 = ccs$cc[which(ccs$path==unknowns[j])], check=TRUE)

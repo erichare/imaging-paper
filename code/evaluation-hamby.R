@@ -53,6 +53,7 @@ idx <- which(CCFs$cms >= 9) # all are matches, visually confirmed
 CCFs$match[idx] <- TRUE
 write.csv(CCFs, file="bullet-stats.csv", row.names=FALSE)
 
+idx <- which(CCFs$match & CCFs$cms <= 6)
 
 for ( i in idx) {
   

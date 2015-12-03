@@ -879,7 +879,8 @@ All of the other steps are done on pairs of bullets:
 \begin{enumerate}
 \item Smooth the two crosscuts by a loess with a very small span. 
 \item Use cross-correlation to find the best alignment along the crosscuts: Shift one of the crosscuts by the lag indicated by the cross-correlation function.
-\item Based on a starting threshold level of $\theta$, identify the maximal number of CMS (consecutive matching striae) between the two crosscuts. Vary $\theta$, such that the maximum number of CMS is reached. 
+\item Based on a starting threshold level of $\theta$, identify areas of the crosscuts whose absolute value are above the thresholds. These areas are regions of potential matches between the crosscuts. If all of the values of the crosscuts stay on the same side, the area is called a matching line. If only one crosscut exceeds the threshold, or if the two crosscuts move into opposite directions over the threshold, the area is a non-match.
+\item Identify the maximal number of CMS (consecutive matching striae) between the two crosscuts by counting consecutive matching lines. Vary $\theta$ in (3), such that a maximum number of CMS is reached. 
 \end{enumerate}
 }
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
@@ -965,10 +966,10 @@ res <- reslist[[which.max(cmsdist)]]
 
 print(ggplot() +
   theme_bw() + 
-  geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
+  geom_rect(aes(xmin=xmin, xmax=xmax), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
   geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
-  geom_hline(yintercept = res$threshold) +
-  geom_hline(yintercept = - res$threshold) +
+#  geom_hline(yintercept = res$threshold) +
+#  geom_hline(yintercept = - res$threshold) +
   scale_colour_brewer(palette="Set1") +
   theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
   ylim(c(-6,6)) +
@@ -984,10 +985,10 @@ res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
 
 print(ggplot() +
   theme_bw() + 
-  geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
+  geom_rect(aes(xmin=xmin, xmax=xmax), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
   geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
-  geom_hline(yintercept = res$threshold) +
-  geom_hline(yintercept = - res$threshold) +
+#  geom_hline(yintercept = res$threshold) +
+#  geom_hline(yintercept = - res$threshold) +
   scale_colour_brewer(palette="Set1") +
   theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
   ylim(c(-6,6)) +
