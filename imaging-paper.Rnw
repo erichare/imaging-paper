@@ -950,16 +950,16 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 
 \begin{figure}
 \begin{subfigure}[t]{.49\textwidth}
-\caption{Maximal number of CMS between unknown Bullet D land 5 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
+\caption{Maximal number of CMS between unknown Bullet F land 3 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
 <<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth'>>=
-load("data/unkn17.RData")
+load("data/unkn27.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
 
 qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
 @
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}
-\caption{Overlaid lines of the land of the unknown bullet D-5 and the land with the top matching CMS.}
+\caption{Overlaid lines of the land of the unknown bullet F-3 and the land with the top matching CMS.}
 <<top, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth', warning = FALSE>>=
 res <- reslist[[which.max(cmsdist)]]  
 #res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
@@ -978,7 +978,7 @@ print(ggplot() +
 
 @
 
-\caption{Overlaid lines of the land of the unknown bullet D-5 and the land with the second top matching CMS.}
+\caption{Overlaid lines of the land of the unknown bullet F-3 and the land with the second top matching CMS.}
 <<top2, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth', warning = FALSE>>=
 #res <- reslist[[which.max(cmsdist)]]  
 res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
@@ -1000,7 +1000,7 @@ print(ggplot() +
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works perfectly. Unfortunately the matches are not always that convincing.}
 \end{figure}
 \hh{XXX a lot more about the Hamby study. Fifteen unknown bullets (i.e. 90 lands) compared to two times ten known bullets (i.e. 120 lands) makes $90 \times 120 = 10,800$ land to land comparisons, out of which 180 are actual matches. It is not reasonable to assume that we can match all lands, but we can try to maximize the number of matches. }
-Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 28 pairs of lands with at least nine CMS in common are matches. For smaller number of CMS, the percentage of false positives quickly increases. 
+Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 23 pairs of lands with at least twelve CMS in common are matches. For smaller number of CMS, the percentage of false positives quickly increases. Taking cross-correlation into account (see Figure~\ref{ccfs-match}) increases the number of matches. A cross-correlation of above 0.75 in the Hamby study is indicative of a match. There are 67 land-land comparisons with a cross-correlation of above 0.75.   
 \begin{figure}
 \begin{subfigure}[t]{\linewidth}
 \caption{Distribution of maximal CMS.}
@@ -1015,7 +1015,7 @@ ggplot(data=bstats) +
 \begin{subfigure}[t]{\linewidth}
 \caption{All bullet pairs with a maximum of at least nine CMS are matches.}
 <<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='\\linewidth'>>=
-bstats <- read.csv("data/bullet-stats.csv")
+#bstats <- read.csv("data/bullet-stats.csv")
 ggplot(data=bstats) + 
   geom_bar(aes(x=factor(cms), fill=match), position="fill") +
   theme(legend.position="bottom") + 
@@ -1026,14 +1026,49 @@ ggplot(data=bstats) +
 \end{figure}
 
 \begin{figure}
-<<distr.dist, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
+<<distr.dist, echo=FALSE, fig.width=8, fig.height=4, out.width='\\linewidth'>>=
 ggplot(data=bstats) + 
-    geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match)) +
-    theme(legend.position="bottom") + 
+    geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match), alpha=0.5) +
+   facet_wrap(~match, labeller="label_both") + xlab("maximum CMS") + 
+  ylab("Distance between crosscuts") +
+  theme_bw() + 
+  theme(legend.position="none") +
     xlab("maximum CMS")
 @
 \caption{If the distance between the crosscuts is small, a smaller number of CMS might already be an indication of a match.}
 \end{figure}
+
+\begin{figure}
+<<ccfs-match, echo=FALSE, fig.width=8, fig.height=4, out.width='\\linewidth'>>=
+ggplot(data=bstats) + theme_bw() + 
+  geom_jitter(aes(x=factor(cms), y=ccf, colour=match), alpha=.5) + facet_wrap(~match, labeller="label_both") + xlab("maximum CMS") + ylab("Cross-correlation") +
+  theme(legend.position="none")
+@
+\caption{If the cross-correlations between the crosscuts is high, a smaller number of CMS might already be an indication of a match.}
+\end{figure}
+
+\begin{figure}
+<<cms-outlier, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
+idx <- which(bstats$cms==11 & !bstats$match)[1]
+bstats[idx,]
+load(as.character(bstats$data[idx]))
+res <- reslist[[bstats$resID[idx]]]
+print(ggplot() +
+  theme_bw() + 
+  geom_rect(aes(xmin=xmin, xmax=xmax), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
+  geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
+#  geom_hline(yintercept = res$threshold) +
+#  geom_hline(yintercept = - res$threshold) +
+  scale_colour_brewer(palette="Set1") +
+  theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
+  ylim(c(-6,6)) +
+  geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
+@
+\caption{Wrongfully identified match between two bullet lands with a maximum CMS of 11.}
+\end{figure}
+
+
 
 
 \hh{XXX another idea for the rest of the paper: use some datamining methods to match the Hamby bullets }
