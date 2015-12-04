@@ -33,7 +33,22 @@ for (j in 1:90) {
 
     bulletGetMaxCMSXXX(x, unknowns[j], cc1, cc2, span=30)
   })
-  save(reslist, file=sprintf("data/unkn%d.RData", j))
+  save(reslist, file=sprintf("data-30/unkn%d.RData", j))
+}
+
+
+for (j in 1:90) {
+  
+  reslist <- lapply(knowns, function(x) {
+    cat(x)
+    cat("\n")
+    #    browser()
+    cc1 <- ccs$cc[which(ccs$path == x)]
+    cc2 <- ccs$cc[which(ccs$path == unknowns[j])]
+    
+    bulletGetMaxCMSXXX(x, unknowns[j], cc1, cc2, span=25)
+  })
+  save(reslist, file=sprintf("data-25/unkn%d.RData", j))
 }
 
 

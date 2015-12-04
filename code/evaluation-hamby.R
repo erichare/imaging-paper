@@ -95,8 +95,50 @@ write.csv(CCFs, file="data/bullet-stats.csv", row.names=FALSE)
 # diagnostics
 
 library(ggplot2)
+CCFs <- read.csv("data-35/bullet-stats.csv")
+
 qplot(factor(cms), data=CCFs)
 ggplot(data=CCFs) + geom_bar(aes(x=factor(cms), fill=match), position="fill")
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match))
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=ccf, colour=match)) + facet_wrap(~match)
 ggplot(data=CCFs) + geom_bar(aes(x=factor(non_cms), fill=match), position="fill")
+
+library(rpart)
+includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
+rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
+plot(rp1)
+text(rp1) 
+
+qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=0.1) + facet_wrap(~match)
+
+CCFs$pred35 <- predict(rp1)
+xtabs(~pred35+match, data=CCFs)
+
+# the ccf/num.matches distribution of non-matches looks like a normal distribution - 
+# let's find a mean and compute (a standardized) distance from that
+
+means <- CCFs %>% group_by(match) %>% summarize(
+  meanx = mean(ccf), 
+  sdx = sd(ccf),
+  meany = mean(num.matches),
+  sdy = sd(num.matches))
+
+CCFs$dist <- sqrt(with(CCFs, (num.matches-means$meany[1])^2/means$sdy[1]^2 + (ccf-means$meanx[1])^2/means$sdx[1]^2 ))
+subCCFs <- subset(CCFs, match==FALSE)
+qplot(ccf, num.matches, geom="jitter", data=subCCFs, colour=dist) 
+
+includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred35"))
+rp2 <- rpart(match~., CCFs[,includes])  
+plot(rp2)
+text(rp2) 
+CCFs$pred352 <- predict(rp2)
+xtabs(~pred352+match, data=CCFs)
+
+# not actually an improvement - now there's two false positives in the mix
+
+includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred35"))
+rp3 <- rpart(match~., CCFs[,includes], parms=list(prior=c(0.5,0.5)) )
+plot(rp3)
+text(rp3) 
+CCFs$pred353 <- predict(rp3)
+xtabs(~pred353+match, data=CCFs)
