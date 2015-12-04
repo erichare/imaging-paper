@@ -3,6 +3,7 @@ library(x3prplus)
 library(dplyr)
 library(ggplot2)
 library(gridExtra)
+library(zoo)
 
 knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
 knowns <- file.path(knowndatadir, dir(knowndatadir, pattern="x3p"))
@@ -17,8 +18,8 @@ unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 
 # match unknown land using crosscuts
 ccs <- read.csv("data/crosscuts.csv")
-load("data/bullets.RData")
-bPaths <- sapply(bullets, function(x) x$path)
+#load("data/bullets.RData")
+#bPaths <- sapply(bullets, function(x) x$path)
 
 
 for (j in 1:90) {
@@ -27,10 +28,10 @@ for (j in 1:90) {
     cat(x)
     cat("\n")
 #    browser()
-    b1 <- bullets[[which(bPaths == x)]]
-    b2 <- bullets[[which(bPaths == unknowns[j])]]
-    
-    bulletGetMaxCMSXXX(b1, b2)
+    cc1 <- ccs$cc[which(ccs$path == x)]
+    cc2 <- ccs$cc[which(ccs$path == unknowns[j])]
+
+    bulletGetMaxCMSXXX(x, unknowns[j], cc1, cc2)
   })
   save(reslist, file=sprintf("data/unkn%d.RData", j))
 }

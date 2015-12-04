@@ -724,62 +724,81 @@ qplot(data=lofX, y, resid, colour=bullet, size=I(0.75), geom="line", group=bulle
     }
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{Values above/below a threshold level are defined as peaks and grooves. \label{fig:smoothcutb}}{%
+\caption{Using a rolling median peaks and grooves are identified for each crosscut. \label{fig:smoothcutb}}{%
 <<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=4, out.width='\\textwidth', warning=FALSE>>=
-qplot(data=lofX, x=y, y=l30, colour=type, geom="line", 
-      group=bullet, size = I(0.75)) + 
-  facet_grid(bullet~.) +
-  ylab("Individual characteristics") + 
-#  geom_point(aes(y=r05)) +
-  geom_rect(xmin = 200, xmax = 2260, ymin = -.75, ymax = 0.75, colour=NA, fill=alpha("grey90", alpha =0.5)) +
-  scale_colour_brewer(palette="Set2", na.value = NA) +
-  theme_bw() +
-  theme(legend.position="bottom")
+  lof <- processBullets(paths = images[c(5,7)], x = 100)
+  lof <- bulletSmooth(lof)
+  bAlign = bulletAlign(lof)
+  lofX <- bAlign$bullet  
+
+  b12 <- unique(lof$bullet)
+  peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = 30)
+  peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = 30)
+  p1 <- peaks1$plot + xlab("y") + ylab("smoothed crosscut") + ggtitle(b12[1])
+  p2 <- peaks2$plot + xlab("y") + ylab("smoothed crosscut") + ggtitle(b12[2])
+grid.arrange(p1, p2, ncol=1)
 @
-    }
+}
 \end{subfigure}    
 \begin{subfigure}[t]{\linewidth}
-    \caption{Grey backgrounds identify a line on one of the bullets. Overlaps of the same color indicate matching striation marks.
-    Matching striations are marked by an `o', mismatches are marked by an `x'.   \label{fig:smoothcutd}}{%
+    \caption{Rectangles in the back identify a line on one of the bullets.  Matching striation marks are indicated by color filled rectangles and arked by an `o'. Mismatches are filled in grey and  marked by an `x'.   \label{fig:smoothcutd}}{%
 <<smoothmatch, echo=FALSE, dependson='twolands100match', fig.width=7, fig.height=2.75, out.width='\\textwidth'>>=
-ggplot() +
-  geom_rect(aes(xmin = miny, xmax = maxy), ymin = 0.25, ymax=2.75, fill="grey80", data = subset(lines, lineid != 0)) +
-  geom_tile(data=lofX, aes(x=y, y=bullet, fill=type)) + 
-  scale_y_discrete(expand = c(0.2,0)) +
-  scale_fill_brewer(palette="Set2") + 
-  theme_bw() +
-  ylab("") +
+peaks1$lines$bullet <- b12[1]
+peaks2$lines$bullet <- b12[2]
+
+lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
+
+ggplot() + 
+  geom_rect(aes(xmin = xmin, xmax = xmax, fill=factor(type)), ymin = -6, ymax=6,  data = lines, alpha=0.2) +
   theme(legend.position="bottom") +
-  geom_text(aes(x = meany), y= .4, label= "x", data = subset(lines, !match & lineid !=0)) +
-  geom_text(aes(x = meany), y= .4, label= "o", data = subset(lines, match & lineid !=0))
+  geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(lines, !match)) +
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(lines, match)) +
+  ylim(c(-6,6)) + theme_bw() +
+  geom_line(data=lofX, aes(x=y, y=l30, group=bullet, colour=bullet)) +
+  scale_colour_brewer("", palette="Set1") +
+  scale_fill_brewer("", palette="Set2", na.value=alpha("grey60", 0.5)) +
+  theme(legend.position="none") +
+  ylab(expression("Crosscut values in",mu,m)) +
+  xlab("y")
+
+# ggplot() +
+#   geom_rect(aes(xmin = miny, xmax = maxy), ymin = 0.25, ymax=2.75, fill="grey80", data = subset(lines, lineid != 0)) +
+#   geom_tile(data=lofX, aes(x=y, y=bullet, fill=type)) + 
+#   scale_y_discrete(expand = c(0.2,0)) +
+#   scale_fill_brewer(palette="Set2") + 
+#   theme_bw() +
+#   ylab("") +
+#   theme(legend.position="bottom") +
+#   geom_text(aes(x = meany), y= .4, label= "x", data = subset(lines, !match & lineid !=0)) +
+#   geom_text(aes(x = meany), y= .4, label= "o", data = subset(lines, match & lineid !=0))
 @
     }
 \end{subfigure}
-\caption{\label{fig:match} Matching striation marks: smooth (a), cut (b), and match (c).}
+\caption{\label{fig:match} Matching striation marks: smooth (a), identify peaks and valley (b), and match peaks and valleys between crosscuts (c).}
 \end{figure}
 
 Figure~\ref{fig:match} gives an overview of the rest of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; obviously this is a crucial parameter. For more discussion see Figure~\ref{fig:thresholds}). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match. \hh{XXX need more references XXX \cite{nichols:2003} XXX what does the paper say? AFTE is so frustrating! XXX }
 
 
 
-\subsection{Varying threshold}
-
-In order to address the subjectivity involved in choosing a threshold level, we investigate this parameter more closely. Figure~\ref{fig:thresholds} shows the relationship between threshold and the maximal number of consecutive matching striae. For thresholds between 0.7 and 0.9 the number of CMS peaks at fifteen. On average, there are 6.6 CMS across the range of thresholds. In the autmatic matching routine, several thresholds are considered and the threshold resulting in the higest number of consecutive atching striae is chosen (and reported).
-\begin{figure}
-<<thresholds, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '0.49\\textwidth'>>=
-thresholds <- seq(0.3, 1.5, by = 0.025)
-CMS <- thresholds %>% lapply(function(threshold) {
- lines <- striation_identify(lofX, threshold = threshold)
- cms <- CMS(lines$match)
- data.frame(threshold=threshold, maxCMS = as.numeric(rev(names(cms)))[1])
-}) %>% bind_rows()
-
-qplot(threshold, maxCMS, data=CMS) + theme_bw() +
-  ylab("Number of maximal CMS") +
-  ylim(c(0,15))
-@
-\caption{\label{fig:thresholds}Varying the threshold levels results in different number of consecutive matching striae between the two bullets. By default, the threshold with the highest CMS is chosen automatically.}
-\end{figure}
+%' \subsection{Varying threshold}
+%' 
+%' In order to address the subjectivity involved in choosing a threshold level, we investigate this parameter more closely. Figure~\ref{fig:thresholds} shows the relationship between threshold and the maximal number of consecutive matching striae. For thresholds between 0.7 and 0.9 the number of CMS peaks at fifteen. On average, there are 6.6 CMS across the range of thresholds. In the autmatic matching routine, several thresholds are considered and the threshold resulting in the higest number of consecutive atching striae is chosen (and reported).
+%' \begin{figure}
+%' <<thresholds, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '0.49\\textwidth'>>=
+%' thresholds <- seq(0.3, 1.5, by = 0.025)
+%' CMS <- thresholds %>% lapply(function(threshold) {
+%'  lines <- striation_identify(lofX, threshold = threshold)
+%'  cms <- CMS(lines$match)
+%'  data.frame(threshold=threshold, maxCMS = as.numeric(rev(names(cms)))[1])
+%' }) %>% bind_rows()
+%' 
+%' qplot(threshold, maxCMS, data=CMS) + theme_bw() +
+%'   ylab("Number of maximal CMS") +
+%'   ylim(c(0,15))
+%' @
+%' \caption{\label{fig:thresholds}Varying the threshold levels results in different number of consecutive matching striae between the two bullets. By default, the threshold with the highest CMS is chosen automatically.}
+%' \end{figure}
 
 \subsection{Varying crosscuts}
 The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. For bullet land 1-5 from barrel 1 crosscuts at intervals of 50$\mu m$ between 150$\mu m$  and 450$\mu m$  are compared to a crosscut at 100$\mu m$. The initially almost perfect match (consolidated by a CMS of nineteen) between the  crosscuts deteriorates with increasing distance to a very questionable match at $x = 350\mu m$ and non-matches further apart. Only if the crosscut is within 200$\mu m$ do we get a good visual match. Given that alignment in the microscope is not perfect, we should take this into account in the automatic matching routine by evaluating matches at several cross sections. 
@@ -1076,7 +1095,7 @@ print(ggplot() +
 
 \hh{Things we discussed}
 \begin{enumerate}
-\item adding more non-matches into the mix is going to make things more realistic. 
+\item the Hamby study only includes 35 bullets - this is not a particularly realistic scenario for automatic matching. Adding more non-matches into the mix is going to make things more realistic. 
 \end{enumerate}
 \bibliographystyle{abbrv}
 %%use following if all content of bibtex file should be shown
