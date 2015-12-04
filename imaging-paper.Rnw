@@ -718,7 +718,7 @@ qplot(data=lofX, y, resid, colour=bullet, size=I(0.75), geom="line", group=bulle
   geom_line(aes(y=l30), colour="grey30", size=0.5) +
   facet_grid(bullet~.) +
   scale_colour_brewer("", palette="Set1") +
-  theme_bw() +
+  theme_bw() + ylab("Residuals of Loess Fit") + 
   theme(legend.position="none")
 @
     }
@@ -734,43 +734,51 @@ qplot(data=lofX, y, resid, colour=bullet, size=I(0.75), geom="line", group=bulle
   b12 <- unique(lof$bullet)
   peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = 30)
   peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = 30)
-  p1 <- peaks1$plot + xlab("y") + ylab("smoothed crosscut") + ggtitle(b12[1])
-  p2 <- peaks2$plot + xlab("y") + ylab("smoothed crosscut") + ggtitle(b12[2])
+  
+  library(RColorBrewer)
+  col <- brewer.pal(3, "Set1")
+  p1 <- ggplot() + theme_bw() +
+    geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, data=peaks1$lines,  alpha=0.2) +
+    geom_vline(aes(xintercept=extrema, colour=factor(type)), data= peaks1$lines) + scale_colour_brewer(palette="Set2") + 
+    scale_fill_brewer(palette="Set2") +
+    theme(legend.position="none") + 
+    geom_line(aes(x=y, y=l30, group=bullet), data=subset(lofX, bullet==b12[1])) +
+  ylab(expression(paste("Crosscut values (in ",mu,"m)", sep=""))) +
+    ggtitle(b12[1])+ xlim(c(0, 2000)) 
+
+  p2 <- ggplot() + theme_bw() +
+    geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, data=peaks2$lines,  alpha=0.2) +
+    geom_vline(aes(xintercept=extrema, colour=factor(type)), data= peaks2$lines) + scale_colour_brewer(palette="Set2") + 
+    scale_fill_brewer(palette="Set2") +
+    theme(legend.position="none") + 
+    geom_line(aes(x=y, y=l30, group=bullet), data=subset(lofX, bullet==b12[2])) +
+  ylab(expression(paste("Crosscut values (in ",mu,"m)", sep=""))) +
+    ggtitle(b12[2]) + xlim(c(0, 2000))
 grid.arrange(p1, p2, ncol=1)
 @
 }
 \end{subfigure}    
 \begin{subfigure}[t]{\linewidth}
     \caption{Rectangles in the back identify a line on one of the bullets.  Matching striation marks are indicated by color filled rectangles and arked by an `o'. Mismatches are filled in grey and  marked by an `x'.   \label{fig:smoothcutd}}{%
-<<smoothmatch, echo=FALSE, dependson='twolands100match', fig.width=7, fig.height=2.75, out.width='\\textwidth'>>=
+<<smoothmatch, echo=FALSE, dependson='twolands100match', fig.width=7, fig.height=2.75, out.width='\\textwidth', warning=FALSE>>=
 peaks1$lines$bullet <- b12[1]
 peaks2$lines$bullet <- b12[2]
 
 lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
 
 ggplot() + 
-  geom_rect(aes(xmin = xmin, xmax = xmax, fill=factor(type)), ymin = -6, ymax=6,  data = lines, alpha=0.2) +
+  geom_rect(aes(xmin = xmin, xmax = xmax, fill=factor(type)), ymin = -6, ymax=6.5,  data = lines, alpha=0.2, show.legend = FALSE) +
   theme(legend.position="bottom") +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(lines, !match)) +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(lines, match)) +
-  ylim(c(-6,6)) + theme_bw() +
+  ylim(c(-6,6.5)) + theme_bw() +
   geom_line(data=lofX, aes(x=y, y=l30, group=bullet, colour=bullet)) +
   scale_colour_brewer("", palette="Set1") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey60", 0.5)) +
-  theme(legend.position="none") +
-  ylab(expression("Crosscut values in",mu,m)) +
+    theme(legend.position = c(1,1), legend.justification=c(1,1),
+        legend.background = element_rect(fill=alpha('white', 0.4))) + 
+  ylab(expression(paste("Crosscut values (in ",mu,"m)", sep=""))) +
   xlab("y")
-
-# ggplot() +
-#   geom_rect(aes(xmin = miny, xmax = maxy), ymin = 0.25, ymax=2.75, fill="grey80", data = subset(lines, lineid != 0)) +
-#   geom_tile(data=lofX, aes(x=y, y=bullet, fill=type)) + 
-#   scale_y_discrete(expand = c(0.2,0)) +
-#   scale_fill_brewer(palette="Set2") + 
-#   theme_bw() +
-#   ylab("") +
-#   theme(legend.position="bottom") +
-#   geom_text(aes(x = meany), y= .4, label= "x", data = subset(lines, !match & lineid !=0)) +
-#   geom_text(aes(x = meany), y= .4, label= "o", data = subset(lines, match & lineid !=0))
 @
     }
 \end{subfigure}
@@ -810,15 +818,23 @@ lof <- processBullets(paths[5], x = crosscuts)
 lof$bullet <- paste(lof$bullet, lof$x)
 
 reslist <- lapply(crosscuts[-1], function(cc) {
+#  browser()
   b2 <- subset(lof, x %in% c(cc, 100))
   lofX <- bulletSmooth(b2)
   bAlign = bulletAlign(lofX)
-  lofX <- bAlign$bullet  
-  threshold <- bulletPickThreshold(lofX, thresholds = seq(0.3, 1.5, by = 0.05))
-  
-  lines <- striation_identify(lofX, threshold = threshold)
+  lofX <- bAlign$bullet
+    b12 <- unique(b2$bullet)
+  peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = 35)
+  peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = 35)
+
+#  threshold <- bulletPickThreshold(lofX, thresholds = seq(0.3, 1.5, by = 0.05))
+#  lines <- striation_identify(lofX, threshold = threshold)
+  peaks1$lines$bullet <- b12[1]
+  peaks2$lines$bullet <- b12[2]
+  lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
+
   maxCMS <- maxCMS(lines$match==TRUE)
-  list(maxCMS = maxCMS, ccf = bAlign$ccf, threshold=threshold, lines=lines, bullets=lofX)
+  list(maxCMS = maxCMS, ccf = bAlign$ccf, lines=lines, bullets=lofX)
 })
 
 ccfs <- sapply(reslist, function(res) res$ccf)
@@ -826,17 +842,16 @@ ccfs <- sapply(reslist, function(res) res$ccf)
 lop <- lapply(reslist, function(res) {
 ggplot() +
   theme_bw() + 
-  geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
-  geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
-  geom_hline(yintercept = res$threshold) +
-  geom_hline(yintercept = - res$threshold) +
-  scale_colour_brewer("", palette="Set1") +
+  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
+  geom_line(aes(x = y, y = l30, colour = bullet),   data = res$bullets) +
+  scale_colour_brewer("", palette="Set1", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1.2), legend.justification=c(1,1),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylim(c(-6,6)) +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match))
 })
+
 
 grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]], 
              lop[[7]],
@@ -860,11 +875,19 @@ reslist <- lapply(1:length(crosscuts[-1]), function(i) {
   lofX <- bulletSmooth(b2)
   bAlign <- bulletAlign(lofX)
   lofX <- bAlign$bullet  
-  threshold <- bulletPickThreshold(lofX, thresholds = seq(0.3, 1.5, by = 0.05))
-  
-  lines <- striation_identify(lofX, threshold = threshold)
+
+  b12 <- unique(b2$bullet)
+  peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = 35)
+  peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = 35)
+
+#  threshold <- bulletPickThreshold(lofX, thresholds = seq(0.3, 1.5, by = 0.05))
+#  lines <- striation_identify(lofX, threshold = threshold)
+  peaks1$lines$bullet <- b12[1]
+  peaks2$lines$bullet <- b12[2]
+  lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
+
   maxCMS <- maxCMS(lines$match==TRUE)
-  list(maxCMS = maxCMS, threshold=threshold, ccf = bAlign$ccf, lines=lines, bullets=lofX)
+  list(maxCMS = maxCMS, ccf = bAlign$ccf, lines=lines, bullets=lofX)
 })
 
 ccfs <- sapply(reslist, function(res) res$ccf)
@@ -872,11 +895,9 @@ ccfs <- sapply(reslist, function(res) res$ccf)
 lop <- lapply(reslist, function(res) {
 ggplot() +
   theme_bw() + 
-  geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
-  geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
-  geom_hline(yintercept = res$threshold) +
-  geom_hline(yintercept = - res$threshold) +
-  scale_colour_brewer("", palette="Set1") +
+  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
+  geom_line(aes(x = y, y = l30, colour = bullet),   data = res$bullets) +
+  scale_colour_brewer("", palette="Set1", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1.2), legend.justification=c(1,1),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylim(c(-6,6)) +
