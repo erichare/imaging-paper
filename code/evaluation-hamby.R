@@ -1,6 +1,7 @@
-
-datas <- file.path("data-30", dir("data-30", pattern="RData"))
-datas <- datas[grep("data-30/u.*", datas)]
+span <- 35
+dataStr <- sprintf("data-%d", span)
+datas <- file.path(dataStr, dir(dataStr, pattern="RData"))
+datas <- datas[grep(paste0(dataStr,"/u.*"), datas)]
 
 maxCMS <- sapply(datas, function(x) {
   load(x)
@@ -48,10 +49,25 @@ CCFs$resID <- rep(1:120, length=nrow(CCFs))
 CCFs <- CCFs[order(as.character(CCFs$b2)),]
 CCFs$b2 <- factor(as.character(CCFs$b2))
 
-CCFs$match <- NA
-idx <- which(CCFs$cms >= 9) # all are matches, visually confirmed
-CCFs$match[idx] <- TRUE
-write.csv(CCFs, file="bullet-stats.csv", row.names=FALSE)
+
+matches <- read.csv("csvs/matches.csv", header=FALSE, stringsAsFactors = FALSE)
+matches$V3 <- paste("Ukn Bullet",matches$V3)
+matches$V4 <- paste("Ukn Bullet",matches$V4)
+matches$V5 <- paste("Ukn Bullet",matches$V5)
+matches$id <- 1:nrow(matches)
+
+library(reshape2)
+mm <- melt(matches, id.var="id")
+mm <- subset(mm, value != "Ukn Bullet ")
+
+CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
+CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
+CCFs$match <- CCFs$id.x == CCFs$id.y
+
+write.csv(CCFs, file=file.path(dataStr, "bullet-stats.csv"), row.names=FALSE)
+
+# diagnostics
+
 
 idx <- which(CCFs$match & CCFs$cms <= 6)
 
@@ -59,7 +75,7 @@ for ( i in idx) {
   
   load(CCFs$data[i])
   res <- reslist[[CCFs$resID[i]]]  
-
+  
   ch <- scan()
   print(ggplot() +
           theme_bw() + 
@@ -76,26 +92,8 @@ for ( i in idx) {
 }
 
 
-matches <- read.csv("csvs/matches.csv", header=FALSE, stringsAsFactors = FALSE)
-matches$V3 <- paste("Ukn Bullet",matches$V3)
-matches$V4 <- paste("Ukn Bullet",matches$V4)
-matches$V5 <- paste("Ukn Bullet",matches$V5)
-matches$id <- 1:nrow(matches)
-
-library(reshape2)
-mm <- melt(matches, id.var="id")
-mm <- subset(mm, value != "Ukn Bullet ")
-
-CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
-CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
-CCFs$match <- CCFs$id.x == CCFs$id.y
-
-write.csv(CCFs, file="data-30/bullet-stats.csv", row.names=FALSE)
-
-# diagnostics
-
 library(ggplot2)
-CCFs <- read.csv("data-30/bullet-stats.csv")
+CCFs <- read.csv(file.path(dataStr, "bullet-stats.csv"))
 
 qplot(factor(cms), data=CCFs)
 ggplot(data=CCFs) + geom_bar(aes(x=factor(cms), fill=match), position="fill")
@@ -152,3 +150,6 @@ xtabs(~pred353+match, data=CCFs)
 CCFs$bullet <- gsub("-[0-9]$", "", CCFs$b2)
 qplot(bullet, data=CCFs, fill=match) + coord_flip()
 qplot(bullet, data=CCFs, fill=pred35 > 0.5) + coord_flip()
+
+library(rattle)
+fancyRpartPlot(rp1)		

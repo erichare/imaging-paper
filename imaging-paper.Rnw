@@ -921,8 +921,10 @@ All of the other steps are done on pairs of bullets:
 \begin{enumerate}
 \item Smooth the two crosscuts by a loess with a very small span. 
 \item Use cross-correlation to find the best alignment along the crosscuts: Shift one of the crosscuts by the lag indicated by the cross-correlation function.
-\item Based on a starting threshold level of $\theta$, identify areas of the crosscuts whose absolute value are above the thresholds. These areas are regions of potential matches between the crosscuts. If all of the values of the crosscuts stay on the same side, the area is called a matching line. If only one crosscut exceeds the threshold, or if the two crosscuts move into opposite directions over the threshold, the area is a non-match.
-\item Identify the maximal number of CMS (consecutive matching striae) between the two crosscuts by counting consecutive matching lines. Vary $\theta$ in (3), such that a maximum number of CMS is reached. 
+\item Using a rolling average, identify peaks and grooves for each of the crosscuts. We define a region around the extrema on each side as one third of the distance to the next extrema. 
+%Based on a starting threshold level of $\theta$, identify areas of the crosscuts whose absolute value are above the thresholds. These areas are regions of potential matches between the crosscuts. If all of the values of the crosscuts stay on the same side, the area is called a matching line. If only one crosscut exceeds the threshold, or if the two crosscuts move into opposite directions over the threshold, the area is a non-match.
+\item Match grooves and peaks between crosscuts. \hh{XXX  needs some more details.} 
+\item Identify the maximal number of CMS (consecutive matching striae) between the two crosscuts by counting consecutive matching lines. 
 \end{enumerate}
 }
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
@@ -1075,13 +1077,14 @@ ggplot(data=bstats) + theme_bw() +
   geom_jitter(aes(x=factor(cms), y=ccf, colour=match), alpha=.5) + facet_wrap(~match, labeller="label_both") + xlab("maximum CMS") + ylab("Cross-correlation") +
   theme(legend.position="none")
 @
-\caption{If the cross-correlations between the crosscuts is high, a smaller number of CMS might already be an indication of a match.}
+\caption{\label{fig:ccfs-match}If the cross-correlations between the crosscuts is high, a smaller number of CMS might already be an indication of a match.}
 \end{figure}
 
 
 
 \hh{XXX another idea for the rest of the paper: use some datamining methods to match the Hamby bullets }
 Using recursive partitioning, we find a decision tree predicting matches based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 93 lands are being matched correctly. Interestingly, the number of consecutive matching striae is not featured in this evaluation. Instead, cross-correlation (ccf) between the crosscuts is featured heavily. Aside from cross correlation, the number of matches between crosscuts is involved in the decision. 
+This is not in contradiction to earlier papers emphasizing the value of CMS on visual assessments of bullet matches. 
 
 \begin{figure}
 <<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
