@@ -1,6 +1,6 @@
 
-datas <- file.path("data", dir("data", pattern="RData"))
-datas <- datas[grep("data/u.*", datas)]
+datas <- file.path("data-30", dir("data-30", pattern="RData"))
+datas <- datas[grep("data-30/u.*", datas)]
 
 maxCMS <- sapply(datas, function(x) {
   load(x)
@@ -90,24 +90,26 @@ CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
 CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
 CCFs$match <- CCFs$id.x == CCFs$id.y
 
-write.csv(CCFs, file="data/bullet-stats.csv", row.names=FALSE)
+write.csv(CCFs, file="data-30/bullet-stats.csv", row.names=FALSE)
 
 # diagnostics
 
 library(ggplot2)
-CCFs <- read.csv("data-35/bullet-stats.csv")
+CCFs <- read.csv("data-30/bullet-stats.csv")
 
 qplot(factor(cms), data=CCFs)
 ggplot(data=CCFs) + geom_bar(aes(x=factor(cms), fill=match), position="fill")
+sum(CCFs$cms >= 12)
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match))
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=ccf, colour=match)) + facet_wrap(~match)
 ggplot(data=CCFs) + geom_bar(aes(x=factor(non_cms), fill=match), position="fill")
+qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=0.1) + facet_wrap(~match)
 
 library(rpart)
+library(rpart.plot)
 includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
 rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
-plot(rp1)
-text(rp1) 
+prp(rp1)
 
 qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=0.1) + facet_wrap(~match)
 
@@ -129,16 +131,24 @@ qplot(ccf, num.matches, geom="jitter", data=subCCFs, colour=dist)
 
 includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred35"))
 rp2 <- rpart(match~., CCFs[,includes])  
-plot(rp2)
-text(rp2) 
+prp(rp2)
 CCFs$pred352 <- predict(rp2)
 xtabs(~pred352+match, data=CCFs)
 
 # not actually an improvement - now there's two false positives in the mix
 
-includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred35"))
-rp3 <- rpart(match~., CCFs[,includes], parms=list(prior=c(0.5,0.5)) )
-plot(rp3)
-text(rp3) 
+# different idea: look at number of matches and percentage correct/incorrect ones
+CCFs$total <- with(CCFs, num.matches+num.mismatches)
+CCFs$percMatch <- CCFs$num.matches/CCFs$total
+
+includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred35", "bullet"))
+rp3 <- rpart(match~., CCFs[,includes])
+library(rpart.plot)
+prp(rp3)
+
 CCFs$pred353 <- predict(rp3)
 xtabs(~pred353+match, data=CCFs)
+
+CCFs$bullet <- gsub("-[0-9]$", "", CCFs$b2)
+qplot(bullet, data=CCFs, fill=match) + coord_flip()
+qplot(bullet, data=CCFs, fill=pred35 > 0.5) + coord_flip()

@@ -982,7 +982,7 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 \begin{subfigure}[t]{.49\textwidth}
 \caption{Maximal number of CMS between unknown Bullet F land 3 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
 <<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth'>>=
-load("data/unkn27.RData")
+load("data-35/unkn27.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
 
 qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
@@ -1037,7 +1037,7 @@ Figure~\ref{fig:cms} shows the strong connection between the maximal number of c
 \begin{subfigure}[t]{\linewidth}
 \caption{Distribution of maximal CMS.}
 <<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\linewidth'>>=
-bstats <- read.csv("data/bullet-stats.csv")
+bstats <- read.csv("data-35/bullet-stats.csv")
 ggplot(data=bstats) + 
   geom_bar(aes(x=factor(cms))) + theme_bw() +
   theme(legend.position="bottom") + 
@@ -1047,7 +1047,6 @@ ggplot(data=bstats) +
 \begin{subfigure}[t]{\linewidth}
 \caption{All bullet pairs with a maximum of at least nine CMS are matches.}
 <<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='\\linewidth'>>=
-#bstats <- read.csv("data/bullet-stats.csv")
 ggplot(data=bstats) + 
   geom_bar(aes(x=factor(cms), fill=match), position="fill") +
   theme(legend.position="bottom") + 
@@ -1079,30 +1078,45 @@ ggplot(data=bstats) + theme_bw() +
 \caption{If the cross-correlations between the crosscuts is high, a smaller number of CMS might already be an indication of a match.}
 \end{figure}
 
-\begin{figure}
-<<cms-outlier, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
-idx <- which(bstats$cms==11 & !bstats$match)[1]
-load(as.character(bstats$data[idx]))
-res <- reslist[[bstats$resID[idx]]]
-print(ggplot() +
-  theme_bw() + 
-  geom_rect(aes(xmin=xmin, xmax=xmax), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
-  geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
-#  geom_hline(yintercept = res$threshold) +
-#  geom_hline(yintercept = - res$threshold) +
-  scale_colour_brewer(palette="Set1") +
-  theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
-  ylim(c(-6,6)) +
-  geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
-  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
-@
-\caption{Wrongfully identified match between two bullet lands with a maximum CMS of 11.}
-\end{figure}
-
-
 
 
 \hh{XXX another idea for the rest of the paper: use some datamining methods to match the Hamby bullets }
+Using recursive partitioning, we find a decision tree predicting matches based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 93 lands are being matched correctly. Interestingly, the number of consecutive matching striae is not featured in this evaluation. Instead, cross-correlation (ccf) between the crosscuts is featured heavily. Aside from cross correlation, the number of matches between crosscuts is involved in the decision. 
+
+\begin{figure}
+<<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
+library(rpart)
+library(rpart.plot)
+CCFs <- read.csv("data-35/bullet-stats.csv")
+includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
+rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
+prp(rp1)
+
+CCFs$pred35 <- predict(rp1)
+@
+\caption{\label{fig:tree}Decision tree of matching bullets based on recursive partitioning.}
+\end{figure}
+
+<<pred:table, echo=FALSE, results='asis'>>=
+library(xtable)
+xtable(xtabs(~I(pred35>0.5)+match, data=CCFs))
+@
+
+\begin{figure}
+<<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
+CCFs$bullet <- gsub("-[0-9]$", "", CCFs$b2)
+bullets <- CCFs %>% group_by(bullet) %>% summarize(
+  n = n(),
+  pred = sum(pred35 > 0.5)
+)
+
+qplot(data=bullets, pred, reorder(bullet, pred/n)) + 
+  theme_bw()  + ylab("") + 
+  scale_x_continuous("Number of correctly predicted land-to-land matches", 
+                     breaks = 3*0:4, limits=c(0,12))
+@
+\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree. For each bullet at least one land is correctly matched. Unknown bullet B is the hardest for the algorithm to match.}
+\end{figure}
 
 \section{Conclusion}
 
