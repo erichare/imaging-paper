@@ -152,4 +152,5 @@ qplot(bullet, data=CCFs, fill=match) + coord_flip()
 qplot(bullet, data=CCFs, fill=pred35 > 0.5) + coord_flip()
 
 library(rattle)
-fancyRpartPlot(rp1)		
+fancyRpartPlot(rp1, sub="")		
+prp(rp1, extra = 101, fallen.leaves=TRUE)

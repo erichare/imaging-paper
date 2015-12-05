@@ -785,28 +785,11 @@ ggplot() +
 \caption{\label{fig:match} Matching striation marks: smooth (a), identify peaks and valley (b), and match peaks and valleys between crosscuts (c).}
 \end{figure}
 
-Figure~\ref{fig:match} gives an overview of the rest of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if it exceeds a pre-set threshold (of 0.75$\mu m$; obviously this is a crucial parameter. For more discussion see Figure~\ref{fig:thresholds}). Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match. \hh{XXX need more references XXX \cite{nichols:2003} XXX what does the paper say? AFTE is so frustrating! XXX }
+Figure~\ref{fig:match} gives an overview of the rest of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if \hh{XXX }
+
+Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match, and which are part of current practice in assessing bullet matches  \cite{nichols:2003}.
 
 
-
-%' \subsection{Varying threshold}
-%' 
-%' In order to address the subjectivity involved in choosing a threshold level, we investigate this parameter more closely. Figure~\ref{fig:thresholds} shows the relationship between threshold and the maximal number of consecutive matching striae. For thresholds between 0.7 and 0.9 the number of CMS peaks at fifteen. On average, there are 6.6 CMS across the range of thresholds. In the autmatic matching routine, several thresholds are considered and the threshold resulting in the higest number of consecutive atching striae is chosen (and reported).
-%' \begin{figure}
-%' <<thresholds, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '0.49\\textwidth'>>=
-%' thresholds <- seq(0.3, 1.5, by = 0.025)
-%' CMS <- thresholds %>% lapply(function(threshold) {
-%'  lines <- striation_identify(lofX, threshold = threshold)
-%'  cms <- CMS(lines$match)
-%'  data.frame(threshold=threshold, maxCMS = as.numeric(rev(names(cms)))[1])
-%' }) %>% bind_rows()
-%' 
-%' qplot(threshold, maxCMS, data=CMS) + theme_bw() +
-%'   ylab("Number of maximal CMS") +
-%'   ylim(c(0,15))
-%' @
-%' \caption{\label{fig:thresholds}Varying the threshold levels results in different number of consecutive matching striae between the two bullets. By default, the threshold with the highest CMS is chosen automatically.}
-%' \end{figure}
 
 \subsection{Varying crosscuts}
 The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. For bullet land 1-5 from barrel 1 crosscuts at intervals of 50$\mu m$ between 150$\mu m$  and 450$\mu m$  are compared to a crosscut at 100$\mu m$. The initially almost perfect match (consolidated by a CMS of nineteen) between the  crosscuts deteriorates with increasing distance to a very questionable match at $x = 350\mu m$ and non-matches further apart. Only if the crosscut is within 200$\mu m$ do we get a good visual match. Given that alignment in the microscope is not perfect, we should take this into account in the automatic matching routine by evaluating matches at several cross sections. 
@@ -1083,8 +1066,8 @@ ggplot(data=bstats) + theme_bw() +
 
 
 \hh{XXX another idea for the rest of the paper: use some datamining methods to match the Hamby bullets }
-Using recursive partitioning, we find a decision tree predicting matches based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 93 lands are being matched correctly. Interestingly, the number of consecutive matching striae is not featured in this evaluation. Instead, cross-correlation (ccf) between the crosscuts is featured heavily. Aside from cross correlation, the number of matches between crosscuts is involved in the decision. 
-This is not in contradiction to earlier papers emphasizing the value of CMS on visual assessments of bullet matches. 
+Using recursive partitioning, we find a decision tree predicting matches based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 93 lands is being matched correctly. Interestingly, the number of consecutive matching striae is not featured in this evaluation. Instead, cross-correlation (ccf) between the crosscuts is featured heavily. Aside from cross correlation, the number of matches between crosscuts is involved in the decision. Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation is the variable with more  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
+Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3D surface structure. 
 
 \begin{figure}
 <<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
@@ -1093,7 +1076,9 @@ library(rpart.plot)
 CCFs <- read.csv("data-35/bullet-stats.csv")
 includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
 rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
-prp(rp1)
+
+per <- rp1$frame$yval # predictive probability for each node in the tree
+prp(rp1, extra = 101, fallen.leaves=TRUE, box.col=c("grey90", "orange")[as.numeric(per > 0.5)+1])
 
 CCFs$pred35 <- predict(rp1)
 @
