@@ -196,6 +196,8 @@ library(grid)
 library(gridExtra)
 library(zoo)
 library(tidyr)
+library(rpart)
+library(rpart.plot)
 
 br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-1.x3p", sep = "/"))
 dbr111 <- fortify_x3p(br111)
@@ -782,7 +784,7 @@ ggplot() +
 @
     }
 \end{subfigure}
-\caption{\label{fig:match} Matching striation marks: smooth (a), identify peaks and valley (b), and match peaks and valleys between crosscuts (c).}
+\caption{\label{fig:match}Matching striation marks: smooth (a), identify peaks and valley (b), and match peaks and valleys between crosscuts (c).}
 \end{figure}
 
 Figure~\ref{fig:match} gives an overview of the rest of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if \hh{XXX }
@@ -1066,7 +1068,7 @@ ggplot(data=bstats) + theme_bw() +
 
 
 \hh{XXX another idea for the rest of the paper: use some datamining methods to match the Hamby bullets }
-Using recursive partitioning, we find a decision tree predicting matches based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 93 lands is being matched correctly. Interestingly, the number of consecutive matching striae is not featured in this evaluation. Instead, cross-correlation (ccf) between the crosscuts is featured heavily. Aside from cross correlation, the number of matches between crosscuts is involved in the decision. Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation is the variable with more  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
+Using recursive partitioning, we find a decision tree \cite{breiman:1984, rpart, rpart.plot} predicting matches based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 93 lands is being matched correctly. Interestingly, the number of consecutive matching striae is not featured in this evaluation. Instead, cross-correlation (ccf) between the crosscuts is featured heavily. Aside from cross correlation, the number of matches between crosscuts is involved in the decision. Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation is the variable with more  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
 Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3D surface structure. 
 
 \begin{figure}
@@ -1106,12 +1108,14 @@ qplot(data=bullets, pred, reorder(bullet, pred/n)) +
 \caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree. For each bullet at least one land is correctly matched. Unknown bullet B is the hardest for the algorithm to match.}
 \end{figure}
 
+\paragraph{Acknowledgment}: thanks to the men and women behind R\cite{R}, and the authors of the packages  knitr \cite{knitr} and ggplot2 \cite{ggplot2}.
 \section{Conclusion}
 
 \hh{Things we discussed}
 \begin{enumerate}
 \item the Hamby study only includes 35 bullets - this is not a particularly realistic scenario for automatic matching. Adding more non-matches into the mix is going to make things more realistic. 
 \end{enumerate}
+
 \bibliographystyle{abbrv}
 %%use following if all content of bibtex file should be shown
 %\nocite{*}
