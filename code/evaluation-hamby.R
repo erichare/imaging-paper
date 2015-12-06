@@ -22,7 +22,7 @@ CCFs <- plyr::ldply(datas, function(x) {
     
     subLOFx1$y <- subLOFx1$y - min(subLOFx1$y)
     subLOFx2$y <- subLOFx2$y - min(subLOFx2$y)
- #     browser()
+
     ccf <- ccf(subLOFx1$val, subLOFx2$val, plot = FALSE, lag.max=200, na.action = na.omit)
     lag <- ccf$lag[which.max(ccf$acf)]
     incr <- min(diff(sort(unique(subLOFx1$y))))
@@ -31,14 +31,19 @@ CCFs <- plyr::ldply(datas, function(x) {
     ys <- intersect(subLOFx1$y, subLOFx2$y)
     idx1 <- which(subLOFx1$y %in% ys)
     idx2 <- which(subLOFx2$y %in% ys)
-    distr.dist <- mean((subLOFx1$val[idx1] - subLOFx2$val[idx2])^2, na.rm=T)
+    distr.dist <- mean((subLOFx1$val[idx1] - subLOFx2$val[idx2])^2, na.rm=TRUE)
+    distr.sd <- sd(subLOFx1$val, na.rm=TRUE) + sd(subLOFx2$val, na.rm=TRUE)
     
     # feature extraction
-    data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), distr.dist=distr.dist, 
+    data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), 
+               distr.dist=distr.dist, 
+               distr.sd = distr.sd,
                b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
                num.matches = sum(res$lines$match), 
                num.mismatches = sum(!res$lines$match), 
-               non_cms = x3prplus::maxCMS(!res$lines$match))
+               non_cms = x3prplus::maxCMS(!res$lines$match),
+               sumpeaks = sum(abs(res$lines$heights[res$lines$match]))
+               )
   })
   ccf$cms <- cmsdist
   ccf$data <- x
@@ -70,20 +75,23 @@ write.csv(CCFs, file=file.path(dataStr, "bullet-stats.csv"), row.names=FALSE)
 
 
 idx <- which(CCFs$match & CCFs$cms <= 6)
+idx <- which(!CCFs$match & CCFs$ccf > .7)
+idx <- which(!CCFs$match & CCFs$cms == 11)
+idx <- which(CCFs$cms == 11)
 
 for ( i in idx) {
   
-  load(CCFs$data[i])
+  load( CCFs$data[i])
   res <- reslist[[CCFs$resID[i]]]  
   
   ch <- scan()
   print(ggplot() +
           theme_bw() + 
-          geom_rect(aes(xmin=miny, xmax=maxy), ymin=-6, ymax=5, fill="grey90", data=res$lines) +
+          geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
           geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
-          geom_hline(yintercept = res$threshold) +
-          geom_hline(yintercept = - res$threshold) +
-          scale_colour_brewer(palette="Set1") +
+    #      geom_hline(yintercept = res$threshold) +
+    #      geom_hline(yintercept = - res$threshold) +
+          scale_colour_brewer(palette="Set1", na.value=alpha("grey50", .5)) +
           theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
           ylim(c(-6,6)) +
           geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
@@ -101,7 +109,9 @@ sum(CCFs$cms >= 12)
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match))
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=ccf, colour=match)) + facet_wrap(~match)
 ggplot(data=CCFs) + geom_bar(aes(x=factor(non_cms), fill=match), position="fill")
-qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=0.1) + facet_wrap(~match)
+qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=I(0.5)) + facet_wrap(~match)
+qplot(cms, sumpeaks, geom="jitter", data=CCFs, colour=match, alpha=I(0.5)) + facet_wrap(~match)
+qplot(cms, distr.sd, geom="jitter", data=CCFs, colour=match, alpha=I(0.5)) 
 
 library(rpart)
 library(rpart.plot)

@@ -1108,7 +1108,7 @@ qplot(data=bullets, pred, reorder(bullet, pred/n)) +
 \caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree. For each bullet at least one land is correctly matched. Unknown bullet B is the hardest for the algorithm to match.}
 \end{figure}
 
-\paragraph{Acknowledgment}: thanks to the men and women behind R\cite{R}, and the authors of the packages  knitr \cite{knitr} and ggplot2 \cite{ggplot2}.
+\paragraph{Acknowledgment} Thanks to the men and women behind the software R\cite{R}, and the authors of the R packages  knitr \cite{knitr} and ggplot2 \cite{ggplot2}.
 \section{Conclusion}
 
 \hh{Things we discussed}

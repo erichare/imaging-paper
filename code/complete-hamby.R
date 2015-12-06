@@ -11,29 +11,28 @@ knowns <- file.path(knowndatadir, dir(knowndatadir, pattern="x3p"))
 unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 
+span <- 35
+dataStr <- sprintf("data-%d", span)
 
 ###############
 # can we identify the barrels the unknown bullets came from?
 
 
 # match unknown land using crosscuts
-ccs <- read.csv("data/crosscuts.csv")
-#load("data/bullets.RData")
-#bPaths <- sapply(bullets, function(x) x$path)
-
+ccs <- read.csv(file.path(dataStr, "crosscuts.csv"))
 
 for (j in 1:90) {
   
   reslist <- lapply(knowns, function(x) {
     cat(x)
     cat("\n")
-#    browser()
+
     cc1 <- ccs$cc[which(ccs$path == x)]
     cc2 <- ccs$cc[which(ccs$path == unknowns[j])]
 
-    bulletGetMaxCMSXXX(x, unknowns[j], cc1, cc2, span=30)
+    bulletGetMaxCMSXXX(x, unknowns[j], cc1, cc2, span=span)
   })
-  save(reslist, file=sprintf("data-30/unkn%d.RData", j))
+  save(reslist, file=file.path(dataStr, sprintf("unkn%d.RData", j)))
 }
 
 
