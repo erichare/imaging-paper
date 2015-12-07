@@ -124,7 +124,7 @@ prp(rp1, extra = 101)
 qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=0.1) + facet_wrap(~match)
 
 CCFs$pred35 <- predict(rp1)
-xtabs(~pred35+match, data=CCFs)
+xtabs(~(pred35>.5)+match, data=CCFs)
 
 # the ccf/num.matches distribution of non-matches looks like a normal distribution - 
 # let's find a mean and compute (a standardized) distance from that
@@ -164,3 +164,37 @@ qplot(bullet, data=CCFs, fill=match) + coord_flip()
 qplot(bullet, data=CCFs, fill=pred35 > 0.5) + coord_flip()
 
 prp(rp1, extra = 101, fallen.leaves=TRUE)
+
+#####################
+# throw in all three evaluations into the mix:
+
+bstats <- NULL
+for (i in c(35, 30, 25)) {
+  dataStr <- sprintf("data-%d", i)
+  temp <- read.csv(file.path(dataStr, "bullet-stats.csv"))
+  includes <- setdiff(names(temp), c("b1", "b2", "data", "resID", "id.x", "id.y"))
+  temp$diffx <- with(temp, abs(x1-x2))
+  temp$perc_matches <- with(temp, num.matches/(num.matches+num.mismatches))
+  rp <- rpart(match~., data=temp[,includes])
+  
+  prp(rp, extra = 101)
+  ch <- scan()
+  temp$pred <- predict(rp)
+  temp$span <- i
+  bstats <- rbind(bstats, temp)
+}
+
+
+
+xtabs(~(pred>0.5)+match+span, data=bstats)
+
+bstats$bullet <- gsub("-[0-9]$", "", bstats$b2)
+bullets <- bstats %>% group_by(bullet, span) %>% summarize(
+  n = n(),
+  pred = sum(pred > 0.5)
+)
+
+qplot(data=bullets, pred, reorder(bullet, pred/n),  colour=factor(span), shape = factor(span)) + 
+  theme_bw()  + ylab("") + 
+  scale_x_continuous("Number of correctly predicted land-to-land matches", 
+                     breaks = 3*0:4, limits=c(0,12)) 
