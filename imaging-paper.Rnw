@@ -376,7 +376,7 @@ To improve upon the previous algorithm, the first step must be to eliminate the 
 
 \begin{figure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step1}Step 1 the Loess fit algorithm. For a fixed crosscut (x held constant at 243.75) height values for part 1 of bullet 1 are plotted across different values of y.}
+\caption{\label{fig:loess_step1}Step 1 the Loess fit algorithm. For a fixed crosscut (x held constant at 243.75) height values for land 5 of bullet 1 are plotted across different values of y.}
 <<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 br121_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
@@ -446,7 +446,7 @@ p3
 
 The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a value of 35 for the smoothing factor seems to work quite well. It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass [ref].
 
-Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear. \hh{XXX did you follow up on that? What is the effect of using a different span?}
+Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of land 5 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear. \hh{XXX did you follow up on that? What is the effect of using a different span?}
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
@@ -469,7 +469,7 @@ my.loess$resid + ylab("Residual of Loess Fit")
 \caption{Fit and residuals of a loess fit to land 5 of bullet 1 (Barrel 1).}
 \end{figure}
 
-We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from part 1 of bullet 1. This is shown in Figure~\ref{fig:loessfits}. 
+We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from land 5 of bullet 1. This is shown in Figure~\ref{fig:loessfits}. 
 
 \begin{figure}[hbtp]
 <<loessfits, echo=FALSE, fig.width=7, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
@@ -1084,7 +1084,7 @@ ggplot(data=bstats) + theme_bw() +
 
 
 \hh{XXX another idea for the rest of the paper: use some datamining methods to match the Hamby bullets }
-Using recursive partitioning, we find a decision tree \cite{breiman:1984, rpart, rpart.plot} predicting matches based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 105 lands is being matched correctly. Interestingly, the number of consecutive matching striae is not featured in this evaluation. Instead, cross-correlation (ccf) between the crosscuts is featured heavily. Aside from cross correlation, the number of matches between crosscuts is involved in the decision. Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
+Using recursive partitioning, we find a decision tree \cite{breiman:1984, rpart, rpart.plot} predicting matches based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 105 lands is being matched correctly. Interestingly, the number of consecutive matching striae is not featuring as an important variable in this evaluation. Instead, cross-correlation (ccf) between the crosscuts is very predominant. Aside from cross correlation, the number of matches (num.matches) and the cumulative height of the joint peaks (sumpeaks) between crosscuts is involved in the decision. Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
 Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3D surface structure. 
 
 \begin{figure}
@@ -1096,7 +1096,7 @@ includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
 rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 
 per <- rp1$frame$yval # predictive probability for each node in the tree
-prp(rp1, extra = 101, fallen.leaves=TRUE, box.col=c("grey90", "orange")[as.numeric(per > 0.5)+1])
+prp(rp1, extra = 101,  box.col=c("grey90", "orange")[as.numeric(per > 0.5)+1])
 
 CCFs$pred35 <- predict(rp1)
 @
