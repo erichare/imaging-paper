@@ -1120,7 +1120,7 @@ qplot(data=bullets, pred, reorder(bullet, pred/n)) +
 
 Things to be dicussed in the future
 \begin{enumerate}
-\item 
+\item reduce the stretch of crosscuts and match smaller pieces. This allows for both a more realistic scenario, as well as a quantification of the individuality of the segment.
 \end{enumerate}
 \bibliographystyle{abbrv}
 %%use following if all content of bibtex file should be shown
