@@ -374,8 +374,6 @@ To improve upon the previous algorithm, the first step must be to eliminate the 
     \item Remove all $y_i < v_{left}$ and $y_i > v_{right}$. (Figure \ref{fig:loess_step47}).
 \end{enumerate}
 
-Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear. \hh{XXX did you follow up on that? What is the effect of using a different span?}
-
 \begin{figure}
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:loess_step1}Step 1 the Loess fit algorithm. For a fixed crosscut (x held constant at 243.75) height values for part 1 of bullet 1 are plotted across different values of y.}
@@ -445,6 +443,10 @@ p3
 \end{subfigure}
 \caption{Overview of all seven steps of the smoothing algorithm to identify and remove grooves from the bullet images.}
 \end{figure}
+
+The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a value of 35 for the smoothing factor seems to work quite well. It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass [ref].
+
+Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear. \hh{XXX did you follow up on that? What is the effect of using a different span?}
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
