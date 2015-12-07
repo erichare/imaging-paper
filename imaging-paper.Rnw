@@ -514,7 +514,7 @@ qplot(y, resid, data=melt.df, #colour=factor(x),
   theme_bw() + theme(legend.position="bottom") + 
   geom_line(data = actual.df, aes(y, resid), colour="black", size=1) + ggtitle("Land 1 of Bullet 1 in black")
 @    
-\caption{Residuals of a loess fit to bullets 1 and 2 from barrel 1. Land 1 of bullet 1 is shown in black. }
+\caption{\label{fig:loessfits} Residuals of a loess fit to bullets 1 and 2 from barrel 1. Land 1 of bullet 1 is shown in black. }
 \end{figure}
 
 \section{Application}
