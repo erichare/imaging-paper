@@ -443,16 +443,7 @@ p3
     p4
 @
 \end{subfigure}
-%' \begin{subfigure}[t]{\linewidth}
-%' \caption{\label{fig:loess_step5}Step 5 of the Loess fitting algorithm. The plot shows the result after trimming values below the first minimum, and above the second minimum.}
-%' <<loess_step5, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
-%' final.dat <- subset(curdata, y > curdata$y[min.left + 5] & y < curdata$y[min.right + (length(curdata$y) %/% 2) - 5])
-%' 
-%' qplot(data=final.dat, y, value) +
-%'     theme_bw() + xlim(c(0,2500))
-%' @
-%' \end{subfigure}
-\caption{Overview of all five steps of the loess algorithm to identify and remove big bullet strucure.}
+\caption{Overview of all seven steps of the smoothing algorithm to identify and remove grooves from the bullet images.}
 \end{figure}
 
 \begin{figure}[hbtp]
