@@ -198,3 +198,7 @@ qplot(data=bullets, pred, reorder(bullet, pred/n),  colour=factor(span), shape =
   theme_bw()  + ylab("") + 
   scale_x_continuous("Number of correctly predicted land-to-land matches", 
                      breaks = 3*0:4, limits=c(0,12)) 
+
+write.csv(bstats, "csvs/bullet-stats.csv", row.names=TRUE)
+
+
