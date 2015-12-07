@@ -11,7 +11,7 @@ knowns <- file.path(knowndatadir, dir(knowndatadir, pattern="x3p"))
 unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 
-span <- 35
+span <- 25
 dataStr <- sprintf("data-%d", span)
 
 ###############

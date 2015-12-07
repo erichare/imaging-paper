@@ -1,4 +1,4 @@
-span <- 35
+span <- 30
 dataStr <- sprintf("data-%d", span)
 datas <- file.path(dataStr, dir(dataStr, pattern="RData"))
 datas <- datas[grep(paste0(dataStr,"/u.*"), datas)]
@@ -113,11 +113,13 @@ qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=I(0.5)) + 
 qplot(cms, sumpeaks, geom="jitter", data=CCFs, colour=match, alpha=I(0.5)) + facet_wrap(~match)
 qplot(cms, distr.sd, geom="jitter", data=CCFs, colour=match, alpha=I(0.5)) 
 
+qplot(factor(cms), fill=match, data=CCFs) + facet_wrap(~b2)
+
 library(rpart)
 library(rpart.plot)
 includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
 rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
-prp(rp1)
+prp(rp1, extra = 101)
 
 qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=0.1) + facet_wrap(~match)
 
@@ -161,6 +163,4 @@ CCFs$bullet <- gsub("-[0-9]$", "", CCFs$b2)
 qplot(bullet, data=CCFs, fill=match) + coord_flip()
 qplot(bullet, data=CCFs, fill=pred35 > 0.5) + coord_flip()
 
-library(rattle)
-fancyRpartPlot(rp1, sub="")		
 prp(rp1, extra = 101, fallen.leaves=TRUE)

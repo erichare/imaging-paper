@@ -794,7 +794,7 @@ Two lines are defined as a match, if their peak/groove base at the threshold ove
 
 
 \subsection{Varying crosscuts}
-The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. For bullet land 1-5 from barrel 1 crosscuts at intervals of 50$\mu m$ between 150$\mu m$  and 450$\mu m$  are compared to a crosscut at 100$\mu m$. The initially almost perfect match (consolidated by a CMS of nineteen) between the  crosscuts deteriorates with increasing distance to a very questionable match at $x = 350\mu m$ and non-matches further apart. Only if the crosscut is within 200$\mu m$ do we get a good visual match. Given that alignment in the microscope is not perfect, we should take this into account in the automatic matching routine by evaluating matches at several cross sections. 
+The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. For bullet land 1-5 from barrel 1 crosscuts at intervals of 50$\mu m$ between 150$\mu m$  and 450$\mu m$  are compared to a crosscut at 100$\mu m$. The initially almost perfect match (consolidated by a CMS of fourteen) between the  crosscuts deteriorates with increasing distance to non-matches at a crosscut of $x = 300\mu m$ or higher. Only if the crosscut is within 150$\mu m$ do we get a good visual match. Given that alignment in the microscope is not perfect, we should take this into account in the automatic matching routine by evaluating matches at several cross sections. 
 \begin{figure}
 <<crosscuts-vary, echo=FALSE, fig.width = 7, fig.height = 14, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
@@ -843,7 +843,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
              lop[[7]],
              ncol = 1)
 @
-\caption{\label{fig:crosscuts}Overview of the variations in the surface along different crosscuts. Crosscut at $x = 100$ is compared to crosscuts every 50$\mu m$. With every step away from the original crosscut site, the number of differences between the crosscuts increases, and the number of maximum CMS decreases from initially 19 to only 3 at $x = 400\mu m$ and $x = 450\mu m$. }
+\caption{\label{fig:crosscuts}Overview of the variations in the surface along different crosscuts. Crosscut at $x = 100$ is compared to crosscuts every 50$\mu m$. With every step away from the original crosscut site, the number of differences between the crosscuts increases, and the number of maximum CMS decreases from initially 15 to  3 or fewer at $x = 300\mu m$ and higher. }
 \end{figure}
 
 %\hh{XXX Does this give us a way to automatically check for the bottom of the bullet? Attempt below} 
@@ -999,7 +999,7 @@ print(ggplot() +
 \caption{Overlaid lines of the land of the unknown bullet F-3 and the land with the second top matching CMS.}
 <<top2, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth', warning = FALSE>>=
 #res <- reslist[[which.max(cmsdist)]]  
-res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
+res <- reslist[[11]]  # number 2
 
 print(ggplot() +
   theme_bw() + 
@@ -1032,7 +1032,7 @@ ggplot(data=bstats) +
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{All bullet pairs with a maximum of at least nine CMS are matches.}
+\caption{All land-to-land comparisons a maximum number of CMS of twelve or more are matches.}
 <<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='\\linewidth'>>=
 ggplot(data=bstats) + 
   geom_bar(aes(x=factor(cms), fill=match), position="fill") +
@@ -1068,7 +1068,7 @@ ggplot(data=bstats) + theme_bw() +
 
 
 \hh{XXX another idea for the rest of the paper: use some datamining methods to match the Hamby bullets }
-Using recursive partitioning, we find a decision tree \cite{breiman:1984, rpart, rpart.plot} predicting matches based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 93 lands is being matched correctly. Interestingly, the number of consecutive matching striae is not featured in this evaluation. Instead, cross-correlation (ccf) between the crosscuts is featured heavily. Aside from cross correlation, the number of matches between crosscuts is involved in the decision. Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation is the variable with more  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
+Using recursive partitioning, we find a decision tree \cite{breiman:1984, rpart, rpart.plot} predicting matches based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 105 lands is being matched correctly. Interestingly, the number of consecutive matching striae is not featured in this evaluation. Instead, cross-correlation (ccf) between the crosscuts is featured heavily. Aside from cross correlation, the number of matches between crosscuts is involved in the decision. Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
 Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3D surface structure. 
 
 \begin{figure}
@@ -1114,8 +1114,14 @@ qplot(data=bullets, pred, reorder(bullet, pred/n)) +
 \hh{Things we discussed}
 \begin{enumerate}
 \item the Hamby study only includes 35 bullets - this is not a particularly realistic scenario for automatic matching. Adding more non-matches into the mix is going to make things more realistic. 
+\item parameter optimization is going to drive some of the matches
+\item involve multiple crosscuts for each bullet in a match?
 \end{enumerate}
 
+Things to be dicussed in the future
+\begin{enumerate}
+\item 
+\end{enumerate}
 \bibliographystyle{abbrv}
 %%use following if all content of bibtex file should be shown
 %\nocite{*}
