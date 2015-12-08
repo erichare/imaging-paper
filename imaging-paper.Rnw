@@ -392,8 +392,8 @@ p1 <- qplot(y, value, data = br111_bullet, size=I(1)) + theme_bw()
 p1
 @
 \end{subfigure}
-\begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step2}Step 2 of the Loess fit algorithm. The height values are smoothed with a particular smoothing factor to remove noise in the deviations.}
+% \begin{subfigure}[t]{\linewidth}
+% \caption{\label{fig:loess_step2}Step 2 of the Loess fit algorithm. The height values are smoothed with a particular smoothing factor to remove noise in the deviations.}
 <<loess_step2, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 subdata <- br111_bullet
 smoothfactor <- 35
@@ -402,14 +402,20 @@ value_filled <- na.fill(subdata$value, "extend")
 smoothed <- rollapply(value_filled, smoothfactor, function(x) mean(x))
 smoothed_truefalse <- rollapply(smoothed, smoothfactor, function(x) mean(x))
 
-p2 <- qplot(1:length(smoothed), smoothed) + theme_bw()
-p2
+p2 <- qplot(1.5625*(1:length(smoothed)), smoothed) + theme_bw() + xlab("y")
+#p2
 @
-\end{subfigure}
+%\end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step3}Step 3 of the Loess fit algorithm. The smoothed height values are smoothed one more time with the same smoothing factor.}
+\caption{\label{fig:loess_step3}Steps 2 \& 3 of the Loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35.}
 <<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
-p3 <- qplot(1:length(smoothed_truefalse), smoothed_truefalse) + theme_bw()
+xloc=250
+p3 <- ggplot() +
+  annotate("rect",xmin=xloc-17*1.5625, xmax=xloc+18*1.5625, ymin=45, ymax=180, fill=alpha("orange", alpha=0.5)) + 
+  geom_point(aes(x=(1:length(smoothed_truefalse))*1.5625, y=smoothed_truefalse)) + theme_bw() +
+    geom_vline(xintercept=xloc, colour="grey50") + xlab("y") + ylab("")
+
+  
 p3
 @
 \end{subfigure}
@@ -438,7 +444,8 @@ p3
         geom_vline(xintercept = subdata$y[peak_ind], colour = "red") +
         geom_vline(xintercept = subdata$y[groove_ind], colour = "blue") +
         geom_vline(xintercept = subdata$y[peak_ind2], colour = "red") +
-        geom_vline(xintercept = subdata$y[groove_ind2], colour = "blue")
+        geom_vline(xintercept = subdata$y[groove_ind2], colour = "blue") +
+      xlab("y") + ylab("")
     
     p4
 @
@@ -446,7 +453,11 @@ p3
 \caption{Overview of all seven steps of the smoothing algorithm to identify and remove grooves from the bullet images.}
 \end{figure}
 
-The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a value of 35 for the smoothing factor seems to work quite well. It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass [ref].
+The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a window of 35 observations for the smoothing factor seems to work quite well.
+%currently a window of 57.8375$\mu m$ is used, corresponding to a window of 17 values to the left and the right of an observation
+It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass \cite{tukey:1977}. \hh{Did Tukey say, what the goal of the twicing was? - also, do you have a page number for the twicing?}
+
+
 
 Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of land 5 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear. \hh{XXX did you follow up on that? What is the effect of using a different span?}
 
@@ -1143,10 +1154,10 @@ qplot(data=bullets, pred, reorder(bullet, pred/n)) +
 \hh{Things we discussed}
 \begin{enumerate}
 \item the Hamby study only includes 35 bullets - this is not a particularly realistic scenario for automatic matching. Adding more non-matches into the mix is going to make things more realistic. 
-\item The matching algorithm is sensitive to the parameter choices made. The distance between crosscuts (currently 25$\mu m$) to evaluate stability, as well as the cross-correlation factor (currently 0.9) we set as a minimum are affecting the final outcome. Another parameter is the amount of smoothing in identifying peaks and grooves (currently a window of 57.8375$\mu m$ is used, corresponding to a window of 17 values to the left and the right of an observation). While we tried to lay out in the paper the impact each of the parameter choices has on the matching, we are still far from an optimized scenario. 
+\item The matching algorithm is sensitive to the parameter choices made. The distance between crosscuts (currently 25$\mu m$) to evaluate stability, as well as the cross-correlation factor (currently 0.9) we set as a minimum are affecting the final outcome. Another parameter is the amount of smoothing in identifying peaks and grooves (currently a window of 35 observations is used). While we tried to lay out in the paper the impact each of the parameter choices has on the matching, we are still far from an optimized scenario. 
 
 \item involve multiple crosscuts for each bullet in a match?
-\item assessing different crosscuts at the same bullet allows us to assess a land's quality in terms of how stable it is -- generally, break-off patterns are less stable. }
+\item assessing different crosscuts at the same bullet allows us to assess a land's quality in terms of how stable it is -- generally, break-off patterns are less stable. 
 \item we get probabilities for matches. 
 \end{enumerate}
 
