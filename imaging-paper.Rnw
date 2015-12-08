@@ -804,10 +804,12 @@ ggplot() +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(lines, !match)) +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(lines, match)) +
   ylim(c(-6,6.5)) + theme_bw() +
-  geom_line(data=lofX, aes(x=y, y=l30, group=bullet, colour=bullet)) +
-  scale_colour_brewer("", palette="Set1") +
+  geom_line(data=lofX, aes(x=y, y=l30, group=bullet, linetype=bullet)) +
+#  scale_colour_brewer("", palette="Set1") +
+  scale_linetype_discrete("") +
+  scale_colour_manual("", values=cols) +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey60", 0.5)) +
-    theme(legend.position = c(1,1.2), legend.justification=c(1,1),
+    theme(legend.position = c(1,1.1), legend.justification=c(1,1),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylab(expression(paste("Crosscut values (in ",mu,"m)", sep=""))) +
   xlab("y")
