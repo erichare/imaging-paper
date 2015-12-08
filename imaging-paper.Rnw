@@ -450,7 +450,7 @@ Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_fit} Loess fit for land 1 of bullet 1.}
+\caption{\label{fig:loess_fit} Loess fit for land 5 of bullet 1.}
 <<loess_fit, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 
 br111.groove <- get_grooves(br111_bullet)
@@ -461,7 +461,7 @@ my.loess$fitted
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_resid} Residuals of Loess fit for land 1 of bullet 1.}
+\caption{\label{fig:loess_resid} Residuals of Loess fit for land 5 of bullet 1.}
 <<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE>>=
 my.loess$resid + ylab("Residual of Loess Fit")
 @
@@ -594,11 +594,11 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
 @
 
 \includegraphics[width=\columnwidth]{images/side-by-side-manual-match.png}
-\caption{\label{fig:manualmatch}\hh{Manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
+\caption{\label{fig:manualmatch}\hh{Manually adjusted side-by-side comparison of land 5 of bullet 1 and land 1 of bullet 2.}}
 \end{figure}
 \begin{figure}
 \includegraphics[width=\columnwidth]{images/matchup-rgl.png}
-\caption{\label{fig:manualmatch-rgl}\hh{Different view of the manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
+\caption{\label{fig:manualmatch-rgl}\hh{Different view of the manually adjusted side-by-side comparison of land 5 of bullet 1 and land 1 of bullet 2.}}
 \end{figure}
 
 
