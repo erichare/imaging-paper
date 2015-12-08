@@ -368,8 +368,8 @@ To improve upon the previous algorithm, the first step must be to eliminate the 
 
 \begin{enumerate}
     \item Fix an $x$ coordinate value (Figure~\ref{fig:loess_step1}).
-    \item For each $y$ value, compute a rolling average with a particular \textbf{smoothing factor} to smooth out any deviations occurring near the minima. (Figure~\ref{fig:loess_step2}).
-    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor above. (Figure~\ref{fig:loess_step3}).
+    \item For each $y$ value, smooth out any deviations occurring near the minima by twice applying a rolling average with a pre-set \textbf{smoothing factor}. (Figure~\ref{fig:loess_step3}).
+%    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor as above. (Figure~\ref{fig:loess_step3}).
     \item Determine the peak of the left groove by finding the first doubled-smoothed value $y_i$ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$. Call this peak $p_{left}$. (Figure~\ref{fig:loess_step47}).
     \item Determine the valley of the left groove by finding the first doubled-smoothed $y_j > p_{left}$ such that $y_j < y_{j - 1}$ and $y_j < y_{j + 1}$. Call this valley $v_{left}$.
     \item Reverse the order of the $y$ values and repeat the previous two steps to find the peak and valley of the right groove, $(p_{right}, v_{right})$.
@@ -407,11 +407,11 @@ p2 <- qplot(1.5625*(1:length(smoothed)), smoothed) + theme_bw() + xlab("y")
 @
 %\end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step3}Steps 2 \& 3 of the Loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35.}
+\caption{\label{fig:loess_step3}Step 2 of the Loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35.}
 <<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 xloc=250
 p3 <- ggplot() +
-  annotate("rect",xmin=xloc-17*1.5625, xmax=xloc+18*1.5625, ymin=45, ymax=180, fill=alpha("orange", alpha=0.5)) + 
+  annotate("rect",xmin=xloc-17*1.5625, xmax=xloc+18*1.5625, ymin=80, ymax=200, fill=alpha("orange", alpha=0.5)) + 
   geom_point(aes(x=(1:length(smoothed_truefalse))*1.5625, y=smoothed_truefalse)) + theme_bw() +
     geom_vline(xintercept=xloc, colour="grey50") + xlab("y") + ylab("")
 
@@ -420,7 +420,7 @@ p3
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step47}Steps 4 - 7 of the Loess fitting algorithm. After smoothing the $y$ values left and right minima are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside these boundaries are removed (shown in grey)}
+\caption{\label{fig:loess_step47}Steps 3 -- 6 of the Loess fitting algorithm. After smoothing the $y$ values left and right minima are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside these boundaries are removed (shown in grey)}
 <<loess_step47, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
     lengthdiff <- length(subdata$value) - length(smoothed_truefalse)
     
@@ -450,16 +450,15 @@ p3
     p4
 @
 \end{subfigure}
-\caption{Overview of all seven steps of the smoothing algorithm to identify and remove grooves from the bullet images.}
+\caption{Overview of all six steps of the smoothing algorithm to identify and remove grooves from the bullet images.}
 \end{figure}
 
 The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a window of 35 observations for the smoothing factor seems to work quite well.
 %currently a window of 57.8375$\mu m$ is used, corresponding to a window of 17 values to the left and the right of an observation
-It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass \cite{tukey:1977}. \hh{Did Tukey say, what the goal of the twicing was? - also, do you have a page number for the twicing?}
+It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass \cite{tukey:1977}. \hh{XXX Did Tukey say, what the goal of the twicing was? - also, do you have a page number for the twicing?}
 
-
-
-Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of land 5 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear. \hh{XXX did you follow up on that? What is the effect of using a different span?}
+Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit in blue, overlaid against the processed image of land 5 of bullet 1. The fit seems to do a reasonable job of capturing the structure. Figure \ref{fig:loess_resid} shows the residuals from this fit. \hh{XXX what purpose does the next paragraph have? I think you just want end this section, but it brings up two new ideas: autocorrelation and dependency on the span. The span obviously doesn't get any resolution ... so it's just muddying the waters at the moment ... XXX}
+It is clear that there is a rather significant amount of autocorrelation, which makes sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear. \hh{XXX did you follow up on that? What is the effect of using a different span?}
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
