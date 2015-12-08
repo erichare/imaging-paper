@@ -200,6 +200,8 @@ library(tidyr)
 library(rpart)
 library(rpart.plot)
 
+cols = c(alpha("grey60", alpha=0.6), alpha("black", 0.5))
+
 br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 dbr111 <- fortify_x3p(br111)
 
@@ -699,9 +701,11 @@ lines <- subset(lines, lineid != 0)
 \caption{Crosscuts at $x = 100$.\label{fig:crosscut}}{%
 <<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
 qplot(y, resid, group=bullet, colour=bullet, data=lof, 
-      geom="line", alpha=I(0.6)) + 
-  scale_colour_brewer("", palette="Set1") + theme_bw() +
-  theme(legend.position = c(.9, .2))
+      geom="line") + 
+  scale_colour_manual("", values=cols) + theme_bw() +
+  theme(legend.position = c(.9, .2),
+        legend.background = element_rect(fill=alpha('white', 0.4))) + 
+  ylab("Residuals of Loess fit")
 @
     }
 \end{subfigure}    
@@ -713,9 +717,9 @@ qplot(y, resid, group=bullet, colour=bullet, data=lof,
 #   scale_colour_brewer(palette="Set1") + theme_bw() +
 #   theme(legend.position="none")
 qplot(y, resid, group=bullet, colour=bullet, data=lofY, 
-      geom="line", alpha=I(0.6)) + 
-  scale_colour_brewer(palette="Set1") + theme_bw() +
-  theme(legend.position="none")
+      geom="line") + 
+  scale_colour_manual("", values=cols) + theme_bw() +
+  theme(legend.position="none") + ylab("Residuals of Loess fit")
 @
     }
 \end{subfigure}
@@ -747,18 +751,19 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
     \begin{subfigure}[t]{\linewidth}
 \caption{Loess smooth at $x = 100$ (span is 0.03).\label{fig:smooth}}{%
 <<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
-qplot(data=lofX, y, resid, colour=bullet, size=I(0.75), geom="line", group=bullet) +
-  geom_line(aes(y=l30), colour="grey30", size=0.5) +
+qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=bullet) +
+  geom_line(aes(y=l30), colour="grey70", size=0.5) +
   facet_grid(bullet~.) +
-  scale_colour_brewer("", palette="Set1") +
-  theme_bw() + ylab("Residuals of Loess Fit") + 
+#  scale_colour_manual("", values=cols) +
+  theme_bw() + ylab("") + 
   theme(legend.position="none")
 @
     }
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
 \caption{Using a rolling median peaks and grooves are identified for each crosscut. \label{fig:smoothcutb}}{%
-<<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=4, out.width='\\textwidth', warning=FALSE>>=
+<<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
+#images <- file.path(datadir, dir(datadir))
   lof <- processBullets(paths = images[c(5,7)], x = 100)
   lof <- bulletSmooth(lof)
   bAlign = bulletAlign(lof)
@@ -767,27 +772,21 @@ qplot(data=lofX, y, resid, colour=bullet, size=I(0.75), geom="line", group=bulle
   b12 <- unique(lof$bullet)
   peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = 30)
   peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = 30)
+  peaks1$lines$bullet <- b12[1]
+  peaks2$lines$bullet <- b12[2]
+  peaks <- rbind(peaks1$lines, peaks2$lines)
   
-  library(RColorBrewer)
-  col <- brewer.pal(3, "Set1")
-  p1 <- ggplot() + theme_bw() +
-    geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, data=peaks1$lines,  alpha=0.2) +
-    geom_vline(aes(xintercept=extrema, colour=factor(type)), data= peaks1$lines) + scale_colour_brewer(palette="Set2") + 
+  
+  ggplot() + theme_bw() +
+    geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, 
+              data=peaks,  alpha=0.2) +
+    geom_vline(aes(xintercept=extrema, colour=factor(type)), data= peaks) +
+    scale_colour_brewer(palette="Set2") + 
     scale_fill_brewer(palette="Set2") +
     theme(legend.position="none") + 
-    geom_line(aes(x=y, y=l30, group=bullet), data=subset(lofX, bullet==b12[1])) +
-  ylab(expression(paste("Crosscut values (in ",mu,"m)", sep=""))) +
-    ggtitle(b12[1])+ xlim(c(0, 2000)) 
-
-  p2 <- ggplot() + theme_bw() +
-    geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, data=peaks2$lines,  alpha=0.2) +
-    geom_vline(aes(xintercept=extrema, colour=factor(type)), data= peaks2$lines) + scale_colour_brewer(palette="Set2") + 
-    scale_fill_brewer(palette="Set2") +
-    theme(legend.position="none") + 
-    geom_line(aes(x=y, y=l30, group=bullet), data=subset(lofX, bullet==b12[2])) +
-  ylab(expression(paste("Crosscut values (in ",mu,"m)", sep=""))) +
-    ggtitle(b12[2]) + xlim(c(0, 2000))
-grid.arrange(p1, p2, ncol=1)
+    facet_grid(bullet~.) +
+    geom_line(aes(x=y, y=l30, group=bullet), data=lofX) +
+  ylab(expression(paste("Crosscut values (in ",mu,"m)", sep=""))) 
 @
 }
 \end{subfigure}    
@@ -808,7 +807,7 @@ ggplot() +
   geom_line(data=lofX, aes(x=y, y=l30, group=bullet, colour=bullet)) +
   scale_colour_brewer("", palette="Set1") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey60", 0.5)) +
-    theme(legend.position = c(1,1), legend.justification=c(1,1),
+    theme(legend.position = c(1,1.2), legend.justification=c(1,1),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylab(expression(paste("Crosscut values (in ",mu,"m)", sep=""))) +
   xlab("y")
