@@ -1143,10 +1143,11 @@ qplot(data=bullets, pred, reorder(bullet, pred/n)) +
 \hh{Things we discussed}
 \begin{enumerate}
 \item the Hamby study only includes 35 bullets - this is not a particularly realistic scenario for automatic matching. Adding more non-matches into the mix is going to make things more realistic. 
-\item parameter optimization is going to drive some of the matches
+\item The matching algorithm is sensitive to the parameter choices made. The distance between crosscuts (currently 25$\mu m$) to evaluate stability, as well as the cross-correlation factor (currently 0.9) we set as a minimum are affecting the final outcome. Another parameter is the amount of smoothing in identifying peaks and grooves (currently a window of 57.8375$\mu m$ is used, corresponding to a window of 17 values to the left and the right of an observation). While we tried to lay out in the paper the impact each of the parameter choices has on the matching, we are still far from an optimized scenario. 
+
 \item involve multiple crosscuts for each bullet in a match?
 \item assessing different crosscuts at the same bullet allows us to assess a land's quality in terms of how stable it is -- generally, break-off patterns are less stable. }
-
+\item we get probabilities for matches. 
 \end{enumerate}
 
 Things to be dicussed in the future
