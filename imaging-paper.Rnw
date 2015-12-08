@@ -141,9 +141,9 @@ options(replace.assign=TRUE,scipen=3)
 
 Rough outline:
 \begin{enumerate}
-\item Description of the problem: Standard operating practice, 2009 NAS report
-\item Description of the Results
-\item Walkthrough of the process
+\item DONE Description of the problem: Standard operating practice, 2009 NAS report
+\item DONE Description of the Results
+\item DONE Walkthrough of the process
 \item \hh{XXX Alternative approaches: IBIS database and the NRC report\cite{nap:2008} against it\footnote{Fox report on the NRC report \url{http://goo.gl/XurSVl}.
 NRC report: \url{http://www.nap.edu/catalog/12162/ballistic-imaging}} }
 \end{enumerate}
@@ -153,6 +153,7 @@ Bullet matching is a process in forensic science done to determine whether two b
 The new scrutiny of the procedure culminated with the 2009 National Academy of Sciences report \cite{NAS:2009}. The report concluded that minimal research had been done exploring the reliability of these ballistic identification methods. In fact, the report says the forensic evidence ``including, for example, bite marks and firearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
 
 \section{Problem Statement}
+\eh{XXX do we still need this section?}
 
 \section{Methodology}
 Throughout this section, we will work with images from the James Hamby Consecutively Rifled Ruger Barrel Study \cite{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
