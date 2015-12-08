@@ -461,9 +461,11 @@ p3
 \caption{Overview of all seven steps of the smoothing algorithm to identify and remove grooves from the bullet images.}
 \end{figure}
 
-The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a value of 35 for the smoothing factor seems to work quite well. It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass [ref].
+The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a value of 35 for the smoothing factor seems to work quite well. It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass \cite{tukey:1977}. \hh{XXX Did Tukey say, what the goal of the twicing was? - also, do you have a page number for the twicing?}
 
-Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear. \hh{XXX did you follow up on that? What is the effect of using a different span?}
+Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. 
+\hh{XXX what purpose does the next paragraph have? I think you just want end this section, but it brings up two new ideas: autocorrelation and dependency on the span. The span obviously doesn't get any resolution ... so it's just muddying the waters at the moment ... XXX}
+It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear. \hh{XXX did you follow up on that? What is the effect of using a different span?}
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
@@ -805,7 +807,6 @@ ggplot() +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(lines, match)) +
   ylim(c(-6,6.5)) + theme_bw() +
   geom_line(data=lofX, aes(x=y, y=l30, group=bullet, linetype=bullet)) +
-#  scale_colour_brewer("", palette="Set1") +
   scale_linetype_discrete("") +
   scale_colour_manual("", values=cols) +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey60", 0.5)) +
@@ -860,14 +861,16 @@ lop <- lapply(reslist, function(res) {
 ggplot() +
   theme_bw() + 
   geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
-  geom_line(aes(x = y, y = l30, colour = bullet),   data = res$bullets) +
+  geom_line(aes(x = y, y = l30, linetype=bullet),   data = res$bullets) +
   scale_colour_brewer("", palette="Set1", na.value=alpha("grey50", alpha=0.5)) +
+  scale_linetype_discrete("") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1.2), legend.justification=c(1,1),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylim(c(-6,6)) +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
-  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match))
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)) +
+    ylab("")
 })
 
 
@@ -914,8 +917,9 @@ lop <- lapply(reslist, function(res) {
 ggplot() +
   theme_bw() + 
   geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
-  geom_line(aes(x = y, y = l30, colour = bullet),   data = res$bullets) +
-  scale_colour_brewer("", palette="Set1", na.value=alpha("grey50", alpha=0.5)) +
+  geom_line(aes(x = y, y = l30, linetype = bullet),   data = res$bullets) +
+  scale_linetype_discrete("") +
+#  scale_colour_brewer("", palette="Set1", na.value=alpha("grey50", alpha=0.5)) +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1.2), legend.justification=c(1,1),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
