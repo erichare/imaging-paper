@@ -10,34 +10,27 @@ knowns <- file.path(knowndatadir, dir(knowndatadir, pattern="x3p"))
 unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 
-if (!file.exists("data/crosscuts.csv")) {
-crosscuts1 <- sapply(knowns, function(x) {
+if (!file.exists("csvs/crosscuts.csv")) {
+crosscuts <- sapply(c(knowns, unknowns), function(x) {
   cat(x)
-  crosscut <- bulletCheckCrossCut(x, x = seq(100, 500, by=12.5))
+  crosscut <- bulletCheckCrossCut(x, x = seq(100, 500, by=25))
   cat(crosscut)
   cat("\n")
   crosscut
 })
 
-
-
-
-crosscuts2 <- sapply(unknowns, function(x) {
-  cat(x)
-  crosscut <- bulletCheckCrossCut(x, x = seq(100, 500, by=12.5))
-  cat(crosscut)
-  cat("\n")
-  crosscut
-})
 
 dframe <- data.frame(
   path = c(knowns, unknowns),
-  cc = c(crosscuts1, crosscuts2)
+  cc = crosscuts
 )
 
 
-write.csv(dframe, file="data/crosscuts.csv", row.names=FALSE)
+write.csv(dframe, file="csvs/crosscuts-25.csv", row.names=FALSE)
 } 
+
+
+
 ccs <- read.csv("data/crosscuts.csv")
 
 
