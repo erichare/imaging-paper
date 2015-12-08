@@ -1,5 +1,5 @@
-span <- 30
-dataStr <- sprintf("data-%d", span)
+span <- 35
+dataStr <- sprintf("data-%d-25", span)
 datas <- file.path(dataStr, dir(dataStr, pattern="RData"))
 datas <- datas[grep(paste0(dataStr,"/u.*"), datas)]
 
@@ -76,7 +76,7 @@ write.csv(CCFs, file=file.path(dataStr, "bullet-stats.csv"), row.names=FALSE)
 
 idx <- which(CCFs$match & CCFs$cms <= 6)
 idx <- which(!CCFs$match & CCFs$ccf > .7)
-idx <- which(!CCFs$match & CCFs$cms == 11)
+idx <- which(!CCFs$match & CCFs$cms == 15)
 idx <- which(CCFs$cms == 11)
 
 for ( i in idx) {
@@ -105,7 +105,7 @@ CCFs <- read.csv(file.path(dataStr, "bullet-stats.csv"))
 
 qplot(factor(cms), data=CCFs)
 ggplot(data=CCFs) + geom_bar(aes(x=factor(cms), fill=match), position="fill")
-sum(CCFs$cms >= 12)
+sum(CCFs$cms >= 16)
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match))
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=ccf, colour=match)) + facet_wrap(~match)
 ggplot(data=CCFs) + geom_bar(aes(x=factor(non_cms), fill=match), position="fill")

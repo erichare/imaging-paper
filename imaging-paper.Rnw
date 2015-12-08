@@ -1093,21 +1093,21 @@ Neither one of these methods allows for an assessment of cross-correlations. Thi
 <<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
 library(rpart)
 library(rpart.plot)
-CCFs <- read.csv("data-35/bullet-stats.csv")
+CCFs <- read.csv("data-35-25/bullet-stats.csv")
 includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
 rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 
 per <- rp1$frame$yval # predictive probability for each node in the tree
 prp(rp1, extra = 101,  box.col=c("grey90", "orange")[as.numeric(per > 0.5)+1])
 
-CCFs$pred35 <- predict(rp1)
+CCFs$pred <- predict(rp1)
 @
 \caption{\label{fig:tree}Decision tree of matching bullets based on recursive partitioning.}
 \end{figure}
 
 <<pred:table, echo=FALSE, results='asis'>>=
 library(xtable)
-xtable(xtabs(~I(pred35>0.5)+match, data=CCFs))
+xtable(xtabs(~I(pred>0.75)+match, data=CCFs))
 @
 
 \begin{figure}
@@ -1129,9 +1129,11 @@ qplot(data=bullets, pred, reorder(bullet, pred/n)) +
 %' 
 %' <<rforest, echo=FALSE>>=
 %' library(randomForest)
-%' rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=1000)
-%' CCFs$forest <- predict(rtrees)
+%' rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=300)
+%' qplot(1:nrow(rtrees$err.rate), OOB, geom="line", data=data.frame(rtrees$err.rate)) + theme_bw() + ylim(c(0,NA))
+%' CCFs$forest <- predict(rtrees, type="prob")[,2]
 %' importance(rtrees)
+%' qplot(pred, forest, geom="jitter", data=CCFs, colour=match)
 %' @
 %' 
 
