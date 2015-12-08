@@ -358,26 +358,33 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
   ylab("Residuals from circular fit") +
   ggtitle("Land 5 of Bullet 1 in black")
 @
-\caption{Circle fit for each cross section of bullet 2, with land 5 of bullet 1 overlaid.\label{fig:circlefits}}%
+\caption{Circle fit for each cross section of bullet 2, with land 5 of bullet 1 overlaid.\label{fig:circlefits} \hh{Land 5 of bullet 1 matches best with the first land of the second bullet.}}%
 \end{figure}
 
 \subsection{Loess Fit}
-
-To improve upon the previous algorithm, the first step must be to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match. Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent. By noting that height values beginning at $y = 0$ reach a maximum around the peak of the groove, we can then follow the descent of the height values to valley of the groove. This marks the point at which we should trim the image. We repeat a similar procedure for the right-hand groove by starting at the maximum y value and working backwards. The procedure can be described as follows:
+In an approach to improve upon the previous algorithm, we first have to eliminate 
+%To improve upon the previous algorithm, the first step must be to eliminate
+the grooves from the images under the assumption that they do not contain relevant information for determining a match.
+Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent.
+Surface measurements %beginning at $y = 0$ 
+reach local maxima around the peak of the groove at either end of the range of $y$, we can then follow the descent of the surface measurements inwards to the valley of the groove. 
+This marks the point at which we should trim the image. %We repeat a similar procedure for the right-hand groove by starting at the maximum y value and working backwards. 
+The procedure can be described as follows:
 
 \begin{enumerate}
-    \item Fix an $x$ coordinate value (Figure~\ref{fig:loess_step1}).
-    \item For each $y$ value, compute a rolling average with a particular \textbf{smoothing factor} to smooth out any deviations occurring near the minima. (Figure~\ref{fig:loess_step2}).
-    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor above. (Figure~\ref{fig:loess_step3}).
-    \item Determine the peak of the left groove by finding the first doubled-smoothed value $y_i$ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$. Call this peak $p_{left}$. (Figure~\ref{fig:loess_step47}).
-    \item Determine the valley of the left groove by finding the first doubled-smoothed $y_j > p_{left}$ such that $y_j < y_{j - 1}$ and $y_j < y_{j + 1}$. Call this valley $v_{left}$.
+    \item Fix an $x$ value (Figure~\ref{fig:loess_step1}, with $x$ set to 243.75$\mu m$).
+    \item For each $y$ value, smooth out any deviations occurring near the minima by twice applying a rolling average with a pre-set \textbf{smoothing factor}. (Figure~\ref{fig:loess_step3}, smoothing factor of 35, corresponding to 55$\mu m$).
+%    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor as above. (Figure~\ref{fig:loess_step3}).
+    \item Determine the location of the peak of the left groove by finding the first double-smoothed value $y_i$ that is the maximum within its smoothing window (e.g.\ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$, $i = 1, ..., 17$). We call the location of this peak $p_{left}$ (see Figure~\ref{fig:loess_step47}). 
+    %\hh{XXX By peak, do you mean the location of the peak or its height or both?} XXX never mind, found the answer below
+    \item Similarly, determine the location of the valley of the left groove by finding the first double-smoothed $y_j$ that is the minimum within its smoothing window. Call the location of this valley $v_{left}$.
     \item Reverse the order of the $y$ values and repeat the previous two steps to find the peak and valley of the right groove, $(p_{right}, v_{right})$.
-    \item Remove all $y_i < v_{left}$ and $y_i > v_{right}$. (Figure \ref{fig:loess_step47}).
+    \item Trim the surface measurements to values within the two grooves (i.e.\ remove all records with $y_i < v_{left}$ and $y_i > v_{right}$). (Figure \ref{fig:loess_step47}).
 \end{enumerate}
 
 \begin{figure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step1}Step 1 the Loess fit algorithm. For a fixed crosscut (x held constant at 243.75) height values for part 1 of bullet 1 are plotted across different values of y.}
+\caption{\label{fig:loess_step1}Step 1 the Loess fit algorithm. For a fixed crosscut ($x$ held constant at 243.75 $\mu m$) of surface measurements for land 5 of bullet 1 are plotted across different values of $y$.}
 <<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 br121_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
@@ -387,7 +394,7 @@ br124_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-4.x3p", sep = "/"))
 br125_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-5.x3p", sep = "/"))
 br126_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-6.x3p", sep = "/"))
 
-p1 <- qplot(y, value, data = br111_bullet, size=I(1)) + theme_bw()
+p1 <- qplot(y, value, data = br111_bullet, size=I(1)) + theme_bw() + ylab("Surface measurements")
 p1
 @
 \end{subfigure}
@@ -401,14 +408,20 @@ value_filled <- na.fill(subdata$value, "extend")
 smoothed <- rollapply(value_filled, smoothfactor, function(x) mean(x))
 smoothed_truefalse <- rollapply(smoothed, smoothfactor, function(x) mean(x))
 
-p2 <- qplot(1:length(smoothed), smoothed) + theme_bw()
-p2
+p2 <- qplot(1.5625*(1:length(smoothed)), smoothed) + theme_bw() + xlab("y") +
+  ylab("Surface measurements")
+#p2
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step3}Step 3 of the Loess fit algorithm. The smoothed height values are smoothed one more time with the same smoothing factor.}
+\caption{\label{fig:loess_step3}Step 2 of the Loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35. The orange rectangle shows an example of the smoothing window. Groove and peak will be detected, if they are not within the same window.}
 <<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
-p3 <- qplot(1:length(smoothed_truefalse), smoothed_truefalse) + theme_bw()
+xloc=250
+p3 <- ggplot() +
+  annotate("rect",xmin=xloc-17*1.5625, xmax=xloc+18*1.5625, ymin=80, ymax=200, fill=alpha("orange", alpha=0.5)) + 
+  geom_point(aes(x=(1:length(smoothed_truefalse))*1.5625, y=smoothed_truefalse)) + theme_bw() +
+    geom_vline(xintercept=xloc, colour="grey50") + xlab("y") + ylab("Surface measurements")
+
 p3
 @
 \end{subfigure}
@@ -437,8 +450,9 @@ p3
         geom_vline(xintercept = subdata$y[peak_ind], colour = "red") +
         geom_vline(xintercept = subdata$y[groove_ind], colour = "blue") +
         geom_vline(xintercept = subdata$y[peak_ind2], colour = "red") +
-        geom_vline(xintercept = subdata$y[groove_ind2], colour = "blue")
-    
+        geom_vline(xintercept = subdata$y[groove_ind2], colour = "blue") +
+      xlab("y") + ylab("Surface measurements")
+
     p4
 @
 \end{subfigure}
@@ -458,19 +472,19 @@ br111.groove <- get_grooves(br111_bullet)
 
 my.loess <- fit_loess(br111_bullet, br111.groove)
 
-my.loess$fitted
+my.loess$fitted + ylab("Surface measurements")
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:loess_resid} Residuals of Loess fit for land 1 of bullet 1.}
 <<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE>>=
-my.loess$resid + ylab("Residual of Loess Fit")
+my.loess$resid + ylab("Residuals of Loess Fit")
 @
 \end{subfigure}
 \caption{Fit and residuals of a loess fit to land 5 of bullet 1 (Barrel 1).}
 \end{figure}
 
-We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from part 1 of bullet 1. This is shown in Figure~\ref{fig:loessfits}. 
+We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from land 5 of bullet 1. This is shown in Figure~\ref{fig:loessfits}. \hh{The first land of bullet 2 is still the best  match for land 5, but now the details of the match are more pronounced.}
 
 \begin{figure}[hbtp]
 <<loessfits, echo=FALSE, fig.width=7, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
@@ -513,7 +527,7 @@ qplot(y, resid, data=melt.df, #colour=factor(x),
       geom="line", size=I(.75), colour=I("grey70")) + 
   facet_wrap(~part, ncol=2) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
-  geom_line(data = actual.df, aes(y, resid), colour="black", size=.75, alpha=0.5) + ggtitle("Land 5 of Bullet 1 in black")
+  geom_line(data = actual.df, aes(y, resid), colour="black", size=.75, alpha=0.5) + ggtitle("Land 5 of Bullet 1 in black") + ylab("Residuals of Loess Fit")
 @    
 \caption{\label{fig:loessfits} Residuals of a loess fit to bullets 1 and 2 from barrel 1. Land 5 of bullet 1 is shown in black. }
 \end{figure}
@@ -705,7 +719,7 @@ qplot(y, resid, group=bullet, colour=bullet, data=lofY,
 @
     }
 \end{subfigure}
-\caption{\label{fig:cross100} Lines showing surface crosscuts at $x = 100$. A horizontal shift of the values of Bullet 1-5 to the right shows the similarity of the striation marks.}
+\caption{\label{fig:cross100}Lines showing surface crosscuts at $x = 100$. A horizontal shift of the values of Bullet 1-5 to the right shows the similarity of the striation marks.}
 \end{figure}
 
 \subsection{Horizontal Alignment}
@@ -921,11 +935,11 @@ Identify a stable region for each bullet and pick the lowest crosscut level in t
 
 All of the other steps are done on pairs of bullets:
 \begin{enumerate}
-\item Smooth the two crosscuts by a loess with a very small span. 
-\item Use cross-correlation to find the best alignment along the crosscuts: Shift one of the crosscuts by the lag indicated by the cross-correlation function.
-\item Using a rolling average, identify peaks and grooves for each of the crosscuts. We define a region around the extrema on each side as one third of the distance to the next extrema. 
+\item Smooth the two crosscuts by a loess with a very small span (see Figure~\ref{fig:smooth}). 
+\item Use cross-correlation to find the best alignment along the crosscuts: Shift one of the crosscuts by the lag indicated by the cross-correlation function (see Figure~\ref{fig:ccf} for the cross-correlation function and Figure~\ref{fig:crosscutX} for the resulting shift).
+\item Using a rolling average, identify peaks and grooves for each of the crosscuts. We define a region around the extrema on each side as one third of the distance to the next extrema (see Figure~\ref{fig:smoothcutb}). 
 %Based on a starting threshold level of $\theta$, identify areas of the crosscuts whose absolute value are above the thresholds. These areas are regions of potential matches between the crosscuts. If all of the values of the crosscuts stay on the same side, the area is called a matching line. If only one crosscut exceeds the threshold, or if the two crosscuts move into opposite directions over the threshold, the area is a non-match.
-\item Match grooves and peaks between crosscuts. \hh{XXX  needs some more details.} 
+\item Match grooves and peaks between crosscuts: based on the regions around the extrema as defined above, we identify joint regions between two crosscuts as those areas, in which at least two of the individual regions touch. A joint region is defined as the smallest interval that covers all of the touching regions. A joint region is called a match between the crosscuts, if all of the crosscut-specific regions are of the same type of extrema, i.e.\ either all peaks or all valleys. In Figure~\ref{fig:smoothcutc} all matches are colored corresponding to their type of extrema. Non-matching regions are left grey.
 \item Identify the maximal number of CMS (consecutive matching striae) between the two crosscuts by counting consecutive matching lines. 
 \end{enumerate}
 }
@@ -1092,8 +1106,8 @@ Neither one of these methods allows for an assessment of cross-correlations. Thi
 <<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
 library(rpart)
 library(rpart.plot)
-CCFs <- read.csv("data-35/bullet-stats.csv")
-includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
+CCFs <- read.csv("data-35-25/bullet-stats.csv")
+includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest"))
 rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 
 per <- rp1$frame$yval # predictive probability for each node in the tree
@@ -1106,7 +1120,7 @@ CCFs$pred35 <- predict(rp1)
 
 <<pred:table, echo=FALSE, results='asis'>>=
 library(xtable)
-xtable(xtabs(~I(pred35>0.5)+match, data=CCFs))
+xtable(xtabs(~I(pred>0.5)+match, data=CCFs))
 @
 
 \begin{figure}
