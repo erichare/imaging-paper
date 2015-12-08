@@ -133,7 +133,7 @@ imgdir <- "Figure/"
 codedir <- "code"
 datadir <- "app/images/Hamby252_3DX3P1of2/"
 
-options(replace.assign=TRUE,scipen=3, digits=2)
+options(replace.assign=TRUE,scipen=3)
 @
 
 
@@ -282,10 +282,8 @@ This resolves to
 \hat{r^2} &=& \frac{1}{n}s_{xx} + \frac{1}{n}s_{yy} + \hat{a}^2 + \hat{b}^2.
 \end{eqnarray*}
 
-%\hh{XXX add parameter estimates? $\hat{r} \approx 4500$ - indicating a 9 mm bullet, amount of degrees covered by land?  }
-The scatterplot in Figure~\ref{fig:residual} shows the residuals of such a fit.
-\hh{In this instance, the radius is estimated as $\hat{r} = \Sexpr{pars$radius}\mu m = \Sexpr{pars$radius/1000}mm$, which is consistent with a 9 mm bullet fired in a Ruger P-85. }
-The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For a surface cross cut at $x = 100$ there is a residual circular structure that does not show up for all cross sections. 
+\hh{XXX add parameter estimates? $\hat{r} \approx 4500$ - indicating a 9 mm bullet, amount of degrees covered by land?  }
+The scatterplot in Figure~\ref{fig:residual} shows the residuals of such a fit. The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For a surface cross cut at $x = 100$ there is a residual circular structure that does not show up for all cross sections. 
 
 \begin{figure}
 \begin{subfigure}[t]{\linewidth}
@@ -368,8 +366,8 @@ To improve upon the previous algorithm, the first step must be to eliminate the 
 
 \begin{enumerate}
     \item Fix an $x$ coordinate value (Figure~\ref{fig:loess_step1}).
-    \item For each $y$ value, smooth out any deviations occurring near the minima by twice applying a rolling average with a pre-set \textbf{smoothing factor}. (Figure~\ref{fig:loess_step3}).
-%    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor as above. (Figure~\ref{fig:loess_step3}).
+    \item For each $y$ value, compute a rolling average with a particular \textbf{smoothing factor} to smooth out any deviations occurring near the minima. (Figure~\ref{fig:loess_step2}).
+    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor above. (Figure~\ref{fig:loess_step3}).
     \item Determine the peak of the left groove by finding the first doubled-smoothed value $y_i$ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$. Call this peak $p_{left}$. (Figure~\ref{fig:loess_step47}).
     \item Determine the valley of the left groove by finding the first doubled-smoothed $y_j > p_{left}$ such that $y_j < y_{j - 1}$ and $y_j < y_{j + 1}$. Call this valley $v_{left}$.
     \item Reverse the order of the $y$ values and repeat the previous two steps to find the peak and valley of the right groove, $(p_{right}, v_{right})$.
@@ -378,7 +376,7 @@ To improve upon the previous algorithm, the first step must be to eliminate the 
 
 \begin{figure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step1}Step 1 the Loess fit algorithm. For a fixed crosscut (x held constant at 243.75) height values for land 5 of bullet 1 are plotted across different values of y.}
+\caption{\label{fig:loess_step1}Step 1 the Loess fit algorithm. For a fixed crosscut (x held constant at 243.75) height values for part 1 of bullet 1 are plotted across different values of y.}
 <<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 br121_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
@@ -392,8 +390,8 @@ p1 <- qplot(y, value, data = br111_bullet, size=I(1)) + theme_bw()
 p1
 @
 \end{subfigure}
-% \begin{subfigure}[t]{\linewidth}
-% \caption{\label{fig:loess_step2}Step 2 of the Loess fit algorithm. The height values are smoothed with a particular smoothing factor to remove noise in the deviations.}
+\begin{subfigure}[t]{\linewidth}
+\caption{\label{fig:loess_step2}Step 2 of the Loess fit algorithm. The height values are smoothed with a particular smoothing factor to remove noise in the deviations.}
 <<loess_step2, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 subdata <- br111_bullet
 smoothfactor <- 35
@@ -402,25 +400,19 @@ value_filled <- na.fill(subdata$value, "extend")
 smoothed <- rollapply(value_filled, smoothfactor, function(x) mean(x))
 smoothed_truefalse <- rollapply(smoothed, smoothfactor, function(x) mean(x))
 
-p2 <- qplot(1.5625*(1:length(smoothed)), smoothed) + theme_bw() + xlab("y")
-#p2
+p2 <- qplot(1:length(smoothed), smoothed) + theme_bw()
+p2
 @
-%\end{subfigure}
+\end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step3}Step 2 of the Loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35.}
+\caption{\label{fig:loess_step3}Step 3 of the Loess fit algorithm. The smoothed height values are smoothed one more time with the same smoothing factor.}
 <<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
-xloc=250
-p3 <- ggplot() +
-  annotate("rect",xmin=xloc-17*1.5625, xmax=xloc+18*1.5625, ymin=80, ymax=200, fill=alpha("orange", alpha=0.5)) + 
-  geom_point(aes(x=(1:length(smoothed_truefalse))*1.5625, y=smoothed_truefalse)) + theme_bw() +
-    geom_vline(xintercept=xloc, colour="grey50") + xlab("y") + ylab("")
-
-  
+p3 <- qplot(1:length(smoothed_truefalse), smoothed_truefalse) + theme_bw()
 p3
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step47}Steps 3 -- 6 of the Loess fitting algorithm. After smoothing the $y$ values left and right minima are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside these boundaries are removed (shown in grey)}
+\caption{\label{fig:loess_step47}Steps 4 - 7 of the Loess fitting algorithm. After smoothing the $y$ values left and right minima are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside these boundaries are removed (shown in grey)}
 <<loess_step47, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
     lengthdiff <- length(subdata$value) - length(smoothed_truefalse)
     
@@ -444,25 +436,21 @@ p3
         geom_vline(xintercept = subdata$y[peak_ind], colour = "red") +
         geom_vline(xintercept = subdata$y[groove_ind], colour = "blue") +
         geom_vline(xintercept = subdata$y[peak_ind2], colour = "red") +
-        geom_vline(xintercept = subdata$y[groove_ind2], colour = "blue") +
-      xlab("y") + ylab("")
+        geom_vline(xintercept = subdata$y[groove_ind2], colour = "blue")
     
     p4
 @
 \end{subfigure}
-\caption{Overview of all six steps of the smoothing algorithm to identify and remove grooves from the bullet images.}
+\caption{Overview of all seven steps of the smoothing algorithm to identify and remove grooves from the bullet images.}
 \end{figure}
 
-The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a window of 35 observations for the smoothing factor seems to work quite well.
-%currently a window of 57.8375$\mu m$ is used, corresponding to a window of 17 values to the left and the right of an observation
-It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass \cite{tukey:1977}. \hh{XXX Did Tukey say, what the goal of the twicing was? - also, do you have a page number for the twicing?}
+The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a value of 35 for the smoothing factor seems to work quite well. It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass [ref].
 
-Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit in blue, overlaid against the processed image of land 5 of bullet 1. The fit seems to do a reasonable job of capturing the structure. Figure \ref{fig:loess_resid} shows the residuals from this fit. \hh{XXX what purpose does the next paragraph have? I think you just want end this section, but it brings up two new ideas: autocorrelation and dependency on the span. The span obviously doesn't get any resolution ... so it's just muddying the waters at the moment ... XXX}
-It is clear that there is a rather significant amount of autocorrelation, which makes sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear. \hh{XXX did you follow up on that? What is the effect of using a different span?}
+Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. It is clear that there is a rather significant amount of autocorrelation, which make sense given the presence of striations and markings. Certainly, tuning the parameters for this regression, such as the Loess span, could prove to do an even better job at making the markings more clear. \hh{XXX did you follow up on that? What is the effect of using a different span?}
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_fit} Loess fit for land 5 of bullet 1.}
+\caption{\label{fig:loess_fit} Loess fit for land 1 of bullet 1.}
 <<loess_fit, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 
 br111.groove <- get_grooves(br111_bullet)
@@ -473,7 +461,7 @@ my.loess$fitted
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_resid} Residuals of Loess fit for land 5 of bullet 1.}
+\caption{\label{fig:loess_resid} Residuals of Loess fit for land 1 of bullet 1.}
 <<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE>>=
 my.loess$resid + ylab("Residual of Loess Fit")
 @
@@ -481,7 +469,7 @@ my.loess$resid + ylab("Residual of Loess Fit")
 \caption{Fit and residuals of a loess fit to land 5 of bullet 1 (Barrel 1).}
 \end{figure}
 
-We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from land 5 of bullet 1. This is shown in Figure~\ref{fig:loessfits}. 
+We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from part 1 of bullet 1. This is shown in Figure~\ref{fig:loessfits}. 
 
 \begin{figure}[hbtp]
 <<loessfits, echo=FALSE, fig.width=7, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
@@ -530,14 +518,14 @@ qplot(y, resid, data=melt.df, #colour=factor(x),
 \end{figure}
 
 \section{Application}
-We have implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny \cite{shiny}, allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly \cite{plotly}, allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is shown in Figure~\ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
+We have implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny \cite{shiny}, allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly \cite{plotly}, allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{images/app.png}
-\caption{\label{fig:app}{Screenshot of the web interface for analyzing bullet images. \hh{The shot shows two lands from the Hamby study. Although the lands are a match, this is visually very hard to confirm.}}}
+\caption{\label{fig:app}{Screenshot of the web interface for analyzing bullet images.}}
 \end{figure*}
 
-The mouse is the primary control input for interacting with the surface plots. One can mouse over the plots to view the coordinate values for each point. Clicking and dragging anywhere on the plot will allow rotation. Scrolling up and down allows the user to zoom in and out respectively. There are also a set of controls available at the top right of the page, which will allow the selection of some other rotation methods, taking of screenshots, and reseting the camera to the default view.
+The mouse is the primary control input for interacting with the surface plots. One can mouse over the plots to view the coordinate values for each point. Clicking and dragging anywhere on the plot will allow rotation. Scrolling up and down allows the user to zoom out and and respectively. There are also a set of controls available at the top right of the page, which will allow the selection of some other rotation methods, taking of screenshots, and reseting the camera to the default view.
 
 Several lighting options are available to tweak in order to highlight markings in on the bullets more strongly:
 
@@ -549,7 +537,7 @@ Several lighting options are available to tweak in order to highlight markings i
     \item \textbf{Fresnel Lighting} - Higher values create a wider, softer lighting across the surface.
 \end{enumerate}
 
-The application includes a button which allows the automatic creation of a residual plot. An x coordinate value can be selected, and a cross-section of the two bullet at the x value will be taken. The previously described Loess regression procedure will be applied to the two cross sections. A residual plot will be produced beneath the surface plots allowing for an assessment of the similarity of the markings. It is intended that users will perform this procedure at different x values in order to see whether the markings indicate a match at different points along the bullet.
+The application includes a button which allows the automatic creation of a residual plot from the Loess fits of two bullets. An x coordinate value can be selected, and a cross-section of the two bullet at the x value will be taken. The previously described Loess regression procedure will be applied to the two cross sections. A residual plot will be produced beneath the surface plots allowing for an assessment of the similarity of the markings. It is intended that users will perform this procedure at different x values in order to see whether the markings indicate a match at different points along the bullet.
 
 \section{Approach to automatic matching}
 \hh{XXX all tentative}
@@ -606,11 +594,11 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
 @
 
 \includegraphics[width=\columnwidth]{images/side-by-side-manual-match.png}
-\caption{\label{fig:manualmatch}\hh{Manually adjusted side-by-side comparison of land 5 of bullet 1 and land 1 of bullet 2.}}
+\caption{\label{fig:manualmatch}\hh{Manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
 \end{figure}
 \begin{figure}
 \includegraphics[width=\columnwidth]{images/matchup-rgl.png}
-\caption{\label{fig:manualmatch-rgl}\hh{Different view of the manually adjusted side-by-side comparison of land 5 of bullet 1 and land 1 of bullet 2.}}
+\caption{\label{fig:manualmatch-rgl}\hh{Different view of the manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
 \end{figure}
 
 
@@ -805,7 +793,7 @@ ggplot() +
   geom_line(data=lofX, aes(x=y, y=l30, group=bullet, colour=bullet)) +
   scale_colour_brewer("", palette="Set1") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey60", 0.5)) +
-    theme(legend.position = c(1,1.2), legend.justification=c(1,1),
+    theme(legend.position = c(1,1), legend.justification=c(1,1),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylab(expression(paste("Crosscut values (in ",mu,"m)", sep=""))) +
   xlab("y")
@@ -927,7 +915,6 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
 \caption{\label{fig:crosscuts2}Varying crosscuts for barrel 3, bullet 1. Initially, the match between crosscuts 25$\mu m$ apart is affected strongly by break off at the bottom of the bullet. At a crosscut level of $175\mu m$ the bullet pattern stabilizes. For this land, matches should not be attempted at lower crosscuts.}
 \end{figure}
 
-\subsection{Automatic Matching Algorithm}
 \hh{The automated matching routine is then as follows:
 Identify a stable region for each bullet and pick the lowest crosscut level in this region (assumption here: lower crosscut levels show better expression of individual marks XXX need to still check)
 
@@ -988,6 +975,7 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 
 \hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
 
+\hh{XXX needs more work: how does crosscut impact the results?  For the same bullet: how far apart can crosscuts be to still result in a match?}
 
 \section{Evaluation}
 
@@ -1096,28 +1084,28 @@ ggplot(data=bstats) + theme_bw() +
 
 
 \hh{XXX another idea for the rest of the paper: use some datamining methods to match the Hamby bullets }
-Using recursive partitioning, we find a decision tree \cite{breiman:1984, rpart, rpart.plot} predicting matches based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 105 lands is being matched correctly. Interestingly, the number of consecutive matching striae is not featuring as an important variable in this evaluation. Instead, cross-correlation (ccf) between the crosscuts is very predominant. Aside from cross correlation, the number of matches (num.matches) and the cumulative height of the joint peaks (sumpeaks) between crosscuts is involved in the decision. Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
+Using recursive partitioning, we find a decision tree \cite{breiman:1984, rpart, rpart.plot} predicting matches based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 105 lands is being matched correctly. Interestingly, the number of consecutive matching striae is not featured in this evaluation. Instead, cross-correlation (ccf) between the crosscuts is featured heavily. Aside from cross correlation, the number of matches between crosscuts is involved in the decision. Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
 Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3D surface structure. 
 
 \begin{figure}
 <<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
 library(rpart)
 library(rpart.plot)
-CCFs <- read.csv("data-35-25/bullet-stats.csv")
+CCFs <- read.csv("data-35/bullet-stats.csv")
 includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
 rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 
 per <- rp1$frame$yval # predictive probability for each node in the tree
-prp(rp1, extra = 101,  box.col=c("grey90", "orange")[as.numeric(per > 0.5)+1])
+prp(rp1, extra = 101, fallen.leaves=TRUE, box.col=c("grey90", "orange")[as.numeric(per > 0.5)+1])
 
-CCFs$pred <- predict(rp1)
+CCFs$pred35 <- predict(rp1)
 @
 \caption{\label{fig:tree}Decision tree of matching bullets based on recursive partitioning.}
 \end{figure}
 
 <<pred:table, echo=FALSE, results='asis'>>=
 library(xtable)
-xtable(xtabs(~I(pred>0.75)+match, data=CCFs))
+xtable(xtabs(~I(pred35>0.5)+match, data=CCFs))
 @
 
 \begin{figure}
@@ -1139,11 +1127,9 @@ qplot(data=bullets, pred, reorder(bullet, pred/n)) +
 %' 
 %' <<rforest, echo=FALSE>>=
 %' library(randomForest)
-%' rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=300)
-%' qplot(1:nrow(rtrees$err.rate), OOB, geom="line", data=data.frame(rtrees$err.rate)) + theme_bw() + ylim(c(0,NA))
-%' CCFs$forest <- predict(rtrees, type="prob")[,2]
+%' rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=1000)
+%' CCFs$forest <- predict(rtrees)
 %' importance(rtrees)
-%' qplot(pred, forest, geom="jitter", data=CCFs, colour=match)
 %' @
 %' 
 
@@ -1153,11 +1139,8 @@ qplot(data=bullets, pred, reorder(bullet, pred/n)) +
 \hh{Things we discussed}
 \begin{enumerate}
 \item the Hamby study only includes 35 bullets - this is not a particularly realistic scenario for automatic matching. Adding more non-matches into the mix is going to make things more realistic. 
-\item The matching algorithm is sensitive to the parameter choices made. The distance between crosscuts (currently 25$\mu m$) to evaluate stability, as well as the cross-correlation factor (currently 0.9) we set as a minimum are affecting the final outcome. Another parameter is the amount of smoothing in identifying peaks and grooves (currently a window of 35 observations is used). While we tried to lay out in the paper the impact each of the parameter choices has on the matching, we are still far from an optimized scenario. 
-
+\item parameter optimization is going to drive some of the matches
 \item involve multiple crosscuts for each bullet in a match?
-\item assessing different crosscuts at the same bullet allows us to assess a land's quality in terms of how stable it is -- generally, break-off patterns are less stable. 
-\item we get probabilities for matches. 
 \end{enumerate}
 
 Things to be dicussed in the future
