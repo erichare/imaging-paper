@@ -755,7 +755,7 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 
 
 \subsection{Varying crosscuts}
-The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. This poses both a caveat to matching attempts as well as an opportunity: on the one hand we have to be aware of which crosscut level was used in a matching, but on the other hand we can use multiple crosscuts of the same bullet for an initial assessment of its quality.Both of these situations are assessed and discussed in more detail below: 
+The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. This poses both a caveat to matching attempts as well as an opportunity: on the one hand we have to be aware of which crosscut level was used in a matching, but on the other hand we can use multiple crosscuts of the same bullet for an initial assessment of its quality. Both of these situations are assessed and discussed in more detail below: 
 Figure~\ref{fig:crosscuts} shows a sequence of crosscuts for bullet land 1-5 (barrel 1) that are taken 50$\mu m$ apart, between 150$\mu m$  and 450$\mu m$. These  are compared to a crosscut at 100$\mu m$. Initially this comparison constitutes an almost perfect match (consolidated by a CMS of fourteen) between the two crosscuts. However, the match quickly deteriorates with increasing distance to non-matches at a crosscut of $x = 300\mu m$ or higher.  Only if the crosscut is within 150$\mu m$ do we get a good visual match even when we know that the same bullet surface is being used. 
 Given that we have to expect some variation in nominally the same crosscut levels due to manual alignments in microscopes, we should take crosscut levels into account in the automatic matching routine by evaluating matches at several cross sections. 
 \begin{figure}[hbtp]
@@ -810,7 +810,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
 @
 \caption{\label{fig:crosscuts}Overview of the variations in the surface along different crosscuts. Crosscut at $x = 100$ is compared to crosscuts every 50$\mu m$. With every step away from the original crosscut site, the number of differences between the crosscuts increases, and the number of maximum CMS decreases from initially 14 to  3 or fewer at $x = 300\mu m$ and higher. }
 \end{figure}
-\afterpage{\clearpage}
+%\afterpage{\clearpage}
 
 %\hh{XXX Does this give us a way to automatically check for the bottom of the bullet? Attempt below} 
 An opportunity that arises from comparing multiple crosscuts of a bullet's surface measurements is the following: by comparing cross sections that are not too far apart -- maybe 25 or 50 $\mu m$ for example -- we get an indication whether the crosscut is in a rapidly changing section of the surface, indicative of a break-off, or in a stable section, where we can expect to find matches to other surfaces reasonably well. In the approach here, we keep increasing the crosscut level until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of land 1-1 from barrel 3.
@@ -865,7 +865,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
 @
 \caption{\label{fig:crosscuts2}Varying crosscuts for barrel 3, bullet 1. Initially, the match between crosscuts 25$\mu m$ apart is affected strongly by break off at the bottom of the bullet. At a crosscut level of $175\mu m$ the bullet pattern stabilizes. For this land, matches should not be attempted at lower crosscuts.}
 \end{figure}
-
+\afterpage{\clearpage}
 
 \begin{figure}[hbtp]
 \centering
