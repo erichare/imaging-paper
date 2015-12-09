@@ -28,6 +28,7 @@
 \usepackage{booktabs} % Horizontal rules in tables
 \usepackage{fix-cm}	 % Custom font sizes - used for the initial letter in the document
 \usepackage{float}
+\usepackage{afterpage}
 
 % declare the path(s) where your graphic files are
 \graphicspath{{Figure/}{Images/}}
@@ -69,6 +70,9 @@
 {\textsf{#1}}}{}}
 
 \usepackage{subcaption} 
+
+    \renewcommand{\topfraction}{0.99}	% max fraction of floats at top
+    \renewcommand{\bottomfraction}{0.99}	% max fraction of floats at bottom
 
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
@@ -180,7 +184,7 @@ Each fired bullet is provided in form of a set of six x3p files, where each file
 
 An initial naive approach leads us to fixing a particular value of a coordinate, and then producing a plot of the heights across values of the other coordinate. Figure \ref{fig:fixedX} gives a plot resulting from such a procedure. It can be seem that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
-\begin{figure}
+\begin{figure}[hbtp]
 <<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2, fig.width=6, out.width='\\linewidth'>>=
 library(RColorBrewer)
 library(ggplot2)
@@ -290,7 +294,7 @@ The residuals are dominated, as expected, by the grooves, which show up as large
 -%\hh{XXX add parameter estimates? $\hat{r} \approx 4500$ - indicating a 9 mm bullet, amount of degrees covered by land?  }
 
 
-\begin{figure}
+\begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:residuala}Residual structure of a surface crosscut at $x = 1.5625$ (bottom of the bullet).}
 <<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
@@ -386,7 +390,7 @@ The procedure can be described as follows:
     \item Trim the surface measurements to values within the two grooves (i.e.\ remove all records with $y_i < v_{left}$ and $y_i > v_{right}$). (Figure \ref{fig:loess_step47}).
 \end{enumerate}
 
-\begin{figure}
+\begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:loess_step1}Step 1 the Loess fit algorithm. For a fixed crosscut ($x$ held constant at 243.75 $\mu m$) of surface measurements for land 5 of bullet 1 are plotted across different values of $y$.}
 <<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
@@ -563,7 +567,7 @@ The application includes a button which allows the automatic creation of a resid
 \section{Approach to automatic matching}
 Applying the  loess fit to a range of different surface cross cuts (see Figures~\ref{fig:manualmatch} and Figure~\ref{fig:manualmatch}, with cross cuts from 50 to 150) shows the striation marks across two bullets. Cross cuts of bullet 1 are shown on the left (cross cuts with values below 100) and cross cuts of bullets 2 are shown on the right (cross cuts with values above 100). A lot of the striation marks align, allowing for an easy visual assessment of the shared similarities between the two bullets. 
 
-\begin{figure}
+\begin{figure}[hbtp]
 <<side-by-side, echo=FALSE, eval=FALSE>>=
 paths <- file.path(datadir, dir(datadir))
 
@@ -616,7 +620,7 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
 \includegraphics[width=\columnwidth]{images/side-by-side-manual-match.png}
 \caption{\label{fig:manualmatch}\hh{Manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
 \end{figure}
-\begin{figure}
+\begin{figure}[hbtp]
 \includegraphics[width=\columnwidth]{images/matchup-rgl.png}
 \caption{\label{fig:manualmatch-rgl}\hh{Different view of the manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
 \end{figure}
@@ -698,7 +702,7 @@ lines <- matches %>% group_by(lineid) %>% summarise(
 )
 lines <- subset(lines, lineid != 0)
 @
-\begin{figure}
+\begin{figure}[hbtp]
 \centering
 \begin{subfigure}[t]{\linewidth}
 \caption{Crosscuts at $x = 100$.\label{fig:crosscut}}{%
@@ -737,7 +741,7 @@ This horizontal shift is based on the cross-correlation between the two surface 
 \]
 with suitable defined limits of the summation. % (because variances of $f$ and $g$ do not change, the above equation is proportional to the correlation). 
 
-\begin{figure}
+\begin{figure}[hbtp]
 <<ccf, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '\\linewidth'>>=
 lag <- ccf$lag[which.max(ccf$acf)]
 qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I("grey50")) + 
@@ -749,7 +753,119 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 \caption{\label{fig:ccf}Cross-correlation between the two crosscuts shown in Figure~\ref{fig:crosscut} at lags between -100 and 100. At a lag of -10 the correlation peaks, indicating the largest amount of agreement between the crosscuts. Figure~\ref{fig:crosscutX} shows the lag-shifted crosscuts.}
 \end{figure}
 
-\begin{figure}
+
+\subsection{Varying crosscuts}
+The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. For bullet land 1-5 from barrel 1 crosscuts at intervals of 50$\mu m$ between 150$\mu m$  and 450$\mu m$  are compared to a crosscut at 100$\mu m$. The initially almost perfect match (consolidated by a CMS of fourteen) between the  crosscuts deteriorates with increasing distance to non-matches at a crosscut of $x = 300\mu m$ or higher. Only if the crosscut is within 150$\mu m$ do we get a good visual match. Given that alignment in the microscope is not perfect, we should take this into account in the automatic matching routine by evaluating matches at several cross sections. 
+\begin{figure}[hbtp]
+<<crosscuts-vary, echo=FALSE, fig.width = 7, fig.height = 14, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
+paths <- file.path(datadir, dir(datadir))
+crosscuts <- seq(100, 450, by = 50)
+lof <- processBullets(paths[5], x = crosscuts)
+lof$bullet <- paste(lof$bullet, lof$x)
+
+reslist <- lapply(crosscuts[-1], function(cc) {
+#  browser()
+  b2 <- subset(lof, x %in% c(cc, 100))
+  lofX <- bulletSmooth(b2)
+  bAlign = bulletAlign(lofX)
+  lofX <- bAlign$bullet
+    b12 <- unique(b2$bullet)
+  peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = 35)
+  peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = 35)
+
+#  threshold <- bulletPickThreshold(lofX, thresholds = seq(0.3, 1.5, by = 0.05))
+#  lines <- striation_identify(lofX, threshold = threshold)
+  peaks1$lines$bullet <- b12[1]
+  peaks2$lines$bullet <- b12[2]
+  lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
+
+  maxCMS <- maxCMS(lines$match==TRUE)
+  list(maxCMS = maxCMS, ccf = bAlign$ccf, lines=lines, bullets=lofX)
+})
+
+ccfs <- sapply(reslist, function(res) res$ccf)
+
+lop <- lapply(reslist, function(res) {
+ggplot() +
+  theme_bw() + 
+  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
+  geom_line(aes(x = y, y = l30, linetype=bullet),   data = res$bullets, alpha=0.6) +
+  scale_colour_brewer("", palette="Set1", na.value=alpha("grey50", alpha=0.5)) +
+  scale_linetype_discrete("") +
+  scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
+  theme(legend.position = c(1,1.2), legend.justification=c(1,1),
+        legend.background = element_rect(fill=alpha('white', 0.4))) + 
+  ylim(c(-6,6)) +
+  geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)) +
+    ylab("") + xlab("")
+})
+
+
+grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]], 
+             lop[[7]],
+             ncol = 1)
+@
+\caption{\label{fig:crosscuts}Overview of the variations in the surface along different crosscuts. Crosscut at $x = 100$ is compared to crosscuts every 50$\mu m$. With every step away from the original crosscut site, the number of differences between the crosscuts increases, and the number of maximum CMS decreases from initially 14 to  3 or fewer at $x = 300\mu m$ and higher. }
+\end{figure}
+\afterpage{\clearpage}
+
+%\hh{XXX Does this give us a way to automatically check for the bottom of the bullet? Attempt below} 
+By comparing cross sections that are not too far apart -- maybe 25 or 50 $\mu m$ for example -- we get an indication whether the crosscut is in a rapidly changing section, indicative of a break-off, or in a stable section, where we can expect to find matches reasonably well. In the approach here, we keep increasing the crosscut level until we find a section with a stable pattern. This process is shown  in Figure~\ref{fig:crosscuts2} at the example of land 1-1 from barrel 3.
+\hh{`Stability' is here defined as two aligned crosscuts chosen 12.5$\mu m$ apart having a cross-correlation of at least 0.9. }
+\begin{figure}[hbtp]
+<<crosscuts-vary-b31, echo=FALSE, fig.width = 7, fig.height = 10, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
+paths <- file.path(datadir, dir(datadir))
+crosscuts <- seq(100,225, by=25)
+lof <- processBullets(paths[37], x = crosscuts)
+lof$bullet <- paste(lof$bullet, lof$x)
+
+reslist <- lapply(1:length(crosscuts[-1]), function(i) {
+  b2 <- subset(lof, x %in% crosscuts[i:(i+1)])
+  lofX <- bulletSmooth(b2)
+  bAlign <- bulletAlign(lofX)
+  lofX <- bAlign$bullet  
+
+  b12 <- unique(b2$bullet)
+  peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = 35)
+  peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = 35)
+
+#  threshold <- bulletPickThreshold(lofX, thresholds = seq(0.3, 1.5, by = 0.05))
+#  lines <- striation_identify(lofX, threshold = threshold)
+  peaks1$lines$bullet <- b12[1]
+  peaks2$lines$bullet <- b12[2]
+  lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
+
+  maxCMS <- maxCMS(lines$match==TRUE)
+  list(maxCMS = maxCMS, ccf = bAlign$ccf, lines=lines, bullets=lofX)
+})
+
+ccfs <- sapply(reslist, function(res) res$ccf)
+
+lop <- lapply(reslist, function(res) {
+ggplot() +
+  theme_bw() + 
+  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
+  geom_line(aes(x = y, y = l30, linetype = bullet),   data = res$bullets) +
+  scale_linetype_discrete("") +
+#  scale_colour_brewer("", palette="Set1", na.value=alpha("grey50", alpha=0.5)) +
+  scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
+  theme(legend.position = c(1,1.2), legend.justification=c(1,1),
+        legend.background = element_rect(fill=alpha('white', 0.4))) + 
+  ylim(c(-6,6)) + ylab("") + xlab("") + 
+  geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match))
+})
+
+grid.arrange(lop[[1]], lop[[2]], lop[[3]], 
+             lop[[4]], lop[[5]], 
+             ncol=1)
+@
+\caption{\label{fig:crosscuts2}Varying crosscuts for barrel 3, bullet 1. Initially, the match between crosscuts 25$\mu m$ apart is affected strongly by break off at the bottom of the bullet. At a crosscut level of $175\mu m$ the bullet pattern stabilizes. For this land, matches should not be attempted at lower crosscuts.}
+\end{figure}
+
+
+\begin{figure}[hbtp]
 \centering
     \begin{subfigure}[t]{\linewidth}
 \caption{Loess smooth at $x = 100$ (span is 0.03).\label{fig:smooth}}{%
@@ -820,6 +936,9 @@ ggplot() +
 \end{subfigure}
 \caption{\label{fig:match}Matching striation marks: smooth (a), identify peaks and valley (b), and match peaks and valleys between crosscuts (c).}
 \end{figure}
+\afterpage{\clearpage}
+
+\subsection{Automated matching algorithm}
 
 Figure~\ref{fig:match} gives an overview of the rest of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if \hh{XXX }
 
@@ -827,116 +946,6 @@ Two lines are defined as a match, if their peak/groove base at the threshold ove
 
 
 
-\subsection{Varying crosscuts}
-The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. For bullet land 1-5 from barrel 1 crosscuts at intervals of 50$\mu m$ between 150$\mu m$  and 450$\mu m$  are compared to a crosscut at 100$\mu m$. The initially almost perfect match (consolidated by a CMS of fourteen) between the  crosscuts deteriorates with increasing distance to non-matches at a crosscut of $x = 300\mu m$ or higher. Only if the crosscut is within 150$\mu m$ do we get a good visual match. Given that alignment in the microscope is not perfect, we should take this into account in the automatic matching routine by evaluating matches at several cross sections. 
-\begin{figure}
-<<crosscuts-vary, echo=FALSE, fig.width = 7, fig.height = 14, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
-paths <- file.path(datadir, dir(datadir))
-crosscuts <- seq(100, 450, by = 50)
-lof <- processBullets(paths[5], x = crosscuts)
-lof$bullet <- paste(lof$bullet, lof$x)
-
-reslist <- lapply(crosscuts[-1], function(cc) {
-#  browser()
-  b2 <- subset(lof, x %in% c(cc, 100))
-  lofX <- bulletSmooth(b2)
-  bAlign = bulletAlign(lofX)
-  lofX <- bAlign$bullet
-    b12 <- unique(b2$bullet)
-  peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = 35)
-  peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = 35)
-
-#  threshold <- bulletPickThreshold(lofX, thresholds = seq(0.3, 1.5, by = 0.05))
-#  lines <- striation_identify(lofX, threshold = threshold)
-  peaks1$lines$bullet <- b12[1]
-  peaks2$lines$bullet <- b12[2]
-  lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
-
-  maxCMS <- maxCMS(lines$match==TRUE)
-  list(maxCMS = maxCMS, ccf = bAlign$ccf, lines=lines, bullets=lofX)
-})
-
-ccfs <- sapply(reslist, function(res) res$ccf)
-
-lop <- lapply(reslist, function(res) {
-ggplot() +
-  theme_bw() + 
-  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
-  geom_line(aes(x = y, y = l30, linetype=bullet),   data = res$bullets, alpha=0.6) +
-  scale_colour_brewer("", palette="Set1", na.value=alpha("grey50", alpha=0.5)) +
-  scale_linetype_discrete("") +
-  scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
-  theme(legend.position = c(1,1.2), legend.justification=c(1,1),
-        legend.background = element_rect(fill=alpha('white', 0.4))) + 
-  ylim(c(-6,6)) +
-  geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
-  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)) +
-    ylab("")
-})
-
-
-grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]], 
-             lop[[7]],
-             ncol = 1)
-@
-\caption{\label{fig:crosscuts}Overview of the variations in the surface along different crosscuts. Crosscut at $x = 100$ is compared to crosscuts every 50$\mu m$. With every step away from the original crosscut site, the number of differences between the crosscuts increases, and the number of maximum CMS decreases from initially 14 to  3 or fewer at $x = 300\mu m$ and higher. }
-\end{figure}
-
-%\hh{XXX Does this give us a way to automatically check for the bottom of the bullet? Attempt below} 
-By comparing cross sections that are not too far apart -- maybe 25 or 50 $\mu m$ for example -- we get an indication whether the crosscut is in a rapidly changing section, indicative of a break-off, or in a stable section, where we can expect to find matches reasonably well. In the approach here, we keep increasing the crosscut level until we find a section with a stable pattern. This process is shown  in Figure~\ref{fig:crosscuts2} at the example of land 1-1 from barrel 3.
-\hh{`Stability' is here defined as two aligned crosscuts chosen 12.5$\mu m$ apart having a cross-correlation of at least 0.9. }
-\begin{figure}
-<<crosscuts-vary-b31, echo=FALSE, fig.width = 7, fig.height = 10, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
-paths <- file.path(datadir, dir(datadir))
-crosscuts <- seq(100,225, by=25)
-lof <- processBullets(paths[37], x = crosscuts)
-lof$bullet <- paste(lof$bullet, lof$x)
-
-reslist <- lapply(1:length(crosscuts[-1]), function(i) {
-  b2 <- subset(lof, x %in% crosscuts[i:(i+1)])
-  lofX <- bulletSmooth(b2)
-  bAlign <- bulletAlign(lofX)
-  lofX <- bAlign$bullet  
-
-  b12 <- unique(b2$bullet)
-  peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = 35)
-  peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = 35)
-
-#  threshold <- bulletPickThreshold(lofX, thresholds = seq(0.3, 1.5, by = 0.05))
-#  lines <- striation_identify(lofX, threshold = threshold)
-  peaks1$lines$bullet <- b12[1]
-  peaks2$lines$bullet <- b12[2]
-  lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
-
-  maxCMS <- maxCMS(lines$match==TRUE)
-  list(maxCMS = maxCMS, ccf = bAlign$ccf, lines=lines, bullets=lofX)
-})
-
-ccfs <- sapply(reslist, function(res) res$ccf)
-
-lop <- lapply(reslist, function(res) {
-ggplot() +
-  theme_bw() + 
-  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
-  geom_line(aes(x = y, y = l30, linetype = bullet),   data = res$bullets) +
-  scale_linetype_discrete("") +
-#  scale_colour_brewer("", palette="Set1", na.value=alpha("grey50", alpha=0.5)) +
-  scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
-  theme(legend.position = c(1,1.2), legend.justification=c(1,1),
-        legend.background = element_rect(fill=alpha('white', 0.4))) + 
-  ylim(c(-6,6)) + ylab("") +
-  geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
-  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match))
-})
-
-grid.arrange(lop[[1]], lop[[2]], lop[[3]], 
-             lop[[4]], lop[[5]], 
-             ncol=1)
-@
-\caption{\label{fig:crosscuts2}Varying crosscuts for barrel 3, bullet 1. Initially, the match between crosscuts 25$\mu m$ apart is affected strongly by break off at the bottom of the bullet. At a crosscut level of $175\mu m$ the bullet pattern stabilizes. For this land, matches should not be attempted at lower crosscuts.}
-\end{figure}
-
-\subsection{Automated matching algorithm}
 \hh{The automated matching routine is then as follows:
 Identify a stable region for each bullet and pick the lowest crosscut level in this region (assumption here: lower crosscut levels show better expression of individual marks XXX need to still check)
 
@@ -952,7 +961,7 @@ All of the other steps are done on pairs of bullets:
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
 
 
-\begin{figure}
+\begin{figure}[hbtp]
 <<barrel2, echo=FALSE, fig.width = 7, fig.height=12, out.width='\\linewidth', warning=FALSE>>=
 
 list_of_matches <- lapply(25:30, function(i) {
@@ -992,7 +1001,7 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 @
 \caption{\label{fig:barrel2}All lands from the first bullet shot from barrel 2 are compared to the first land of the second bullet shot from barrel 2. The largest number of CMS is eleven, observed with land six of the first bullet. }
 \end{figure}
-
+\afterpage{clearpage}
 
 
 \hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
@@ -1005,7 +1014,7 @@ Using the James Hamby study, we run all unknown bullets against all known bullet
  Unfortunately, not all results are as clear cut. 
 It is not reasonable to assume that we can match all lands, but we can try to maximize the number of matches to get an overview of what we can reasonably expect from an automated match. 
 
-\begin{figure}
+\begin{figure}[hbtp]
 \begin{subfigure}[t]{.49\textwidth}
 \caption{Maximal number of CMS between unknown Bullet F land 3 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
 <<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth'>>=
@@ -1062,7 +1071,8 @@ print(ggplot() +
 \end{figure}
 
 Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 29 pairs of lands with at least sixteen CMS in common are matches. For smaller number of CMS, the percentage of false positives quickly increases. Taking cross-correlation into account (see Figure~\ref{fig:ccfs-match}) increases the number of matches. A cross-correlation of above 0.75 in the Hamby study is indicative of a match. There are 97 land-to-land comparisons with a cross-correlation of above 0.75.   
-\begin{figure}
+%
+\begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
 \caption{Distribution of maximal CMS.}
 <<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\linewidth'>>=
@@ -1086,7 +1096,9 @@ ggplot(data=bstats) +
 \caption{\label{fig:cms}Overview of the maximal number of consecutive maximal striae compared to matches.}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[hbtp]
+\begin{subfigure}[t]{\linewidth}
+\caption{\label{fig:distr.dist}Relationship between maximal CMS, distances between crosscuts and matches.}
 <<distr.dist, echo=FALSE, fig.width=8, fig.height=4, out.width='\\linewidth'>>=
 ggplot(data=bstats) + 
     geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match), alpha=0.5) +
@@ -1097,10 +1109,9 @@ ggplot(data=bstats) +
   theme(legend.position="none") +
     xlab("maximum CMS")
 @
-\caption{If the distance between the crosscuts is small, a smaller number of CMS might already be an indication of a match.}
-\end{figure}
-
-\begin{figure}
+\end{subfigure}
+\begin{subfigure}[t]{\linewidth}
+\caption{\label{fig:ccfs-match}Relationship between maximal CMS, cross-correlation between crosscuts and matches.}
 <<ccfs-match, echo=FALSE, fig.width=8, fig.height=4, out.width='\\linewidth'>>=
 ggplot(data=bstats) + theme_bw() + 
   geom_jitter(aes(x=factor(cms), y=ccf, colour=match), alpha=.5) + 
@@ -1109,18 +1120,20 @@ ggplot(data=bstats) + theme_bw() +
   xlab("maximum CMS") + ylab("Cross-correlation") +
   theme(legend.position="none")
 @
-\caption{\label{fig:ccfs-match}If the cross-correlations between the crosscuts is high, a smaller number of CMS might already be an indication of a match.}
+\end{subfigure}
+\caption{A small distance between crosscuts or a large cross-correlation between crosscuts are indicative of matches between lands.}
 \end{figure}
 
 
 
-\hh{XXX another idea for the rest of the paper: use some datamining methods to match the Hamby bullets }
+
+
 Using recursive partitioning, we fit a decision tree \cite{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 123 lands is being matched correctly. Interestingly, the number of consecutive matching striae only features as the last step in this evaluation. At this point in the tree, the first false positive matches are introduced into the results: out of the ten land-to-land comparisons three are mis-matched.
 Instead of CMS, cross-correlation (ccf) between the crosscuts is very important in the matching process  by the decision tree. Aside from  cross correlation, the number of matches (num.matches) between crosscuts and the distance between crosscuts (distr.dist) is involved in the decision. 
 Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
 Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3d surface structure. 
 
-\begin{figure}
+\begin{figure}[hbtp]
 <<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
 library(rpart)
 library(rpart.plot)
@@ -1142,7 +1155,7 @@ CCFs$pred <- predict(rp1)
 
 \hh{XXX still need discussion of the results from random forests \cite{breiman:2001, randomForest}}
 
-\begin{figure}
+\begin{figure}[hbtp]
 <<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
 CCFs$bullet <- gsub("-[0-9]$", "", CCFs$b2)
 bullets <- CCFs %>% group_by(bullet) %>% summarize(
@@ -1172,7 +1185,7 @@ CCFs$forest <- predict(rtrees, type="prob")[,2]
 
 Figure~\ref{fig:oob} shows the cumulative out-of-bag error (OOB) rate.
 
-\begin{figure}
+\begin{figure}[hbtp]
 <<oob, echo=FALSE, fig.width=7, fig.height=3, out.width='\\linewidth'>>=
 qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Number of trees") + ylab("Out of Bag Error (OOB)")
 @
@@ -1191,7 +1204,7 @@ print(xtable(imp[,2:1]), include.rownames=FALSE, floating = FALSE)
 \caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. }
 \end{table}
 
-\begin{figure}
+\begin{figure}[hbtp]
 <<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='\\linewidth'>>=
 qplot(pred, forest, geom="jitter", data=CCFs, colour=match) + theme_bw() +
   theme(legend.position="bottom") +
