@@ -1036,7 +1036,7 @@ print(ggplot() +
 #  geom_hline(yintercept = res$threshold) +
 #  geom_hline(yintercept = - res$threshold) +
 #  scale_colour_brewer("",palette="Set1") +
-  scale_linetype_discrete("") +
+  scale_linetype_discrete("") + ylab("") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
   ylim(c(-6,6)) +
@@ -1057,7 +1057,7 @@ print(ggplot() +
 #  geom_hline(yintercept = res$threshold) +
 #  geom_hline(yintercept = - res$threshold) +
 #  scale_colour_brewer("",palette="Set1") +
-  scale_linetype_discrete("") +
+  scale_linetype_discrete("") + ylab("") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
   ylim(c(-6,6)) +
@@ -1069,7 +1069,7 @@ print(ggplot() +
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works perfectly. Unfortunately the matches are not always that convincing.}
 \end{figure}
 
-Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 29 pairs of lands with at least sixteen CMS in common are matches. For smaller number of CMS, the percentage of false positives quickly increases. Taking cross-correlation into account (see Figure~\ref{fig:ccfs-match}) increases the number of matches. A cross-correlation of above 0.75 in the Hamby study is indicative of a match. There are 97 land-to-land comparisons with a cross-correlation of above 0.75.   
+Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 29 pairs of lands with at least sixteen CMS in common are matches. However, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by Miller \cite{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, XXXX
 %
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
@@ -1095,8 +1095,8 @@ ggplot(data=bstats) +
 \caption{\label{fig:cms}Overview of the maximal number of consecutive maximal striae compared to matches.}
 \end{figure}
 
-\begin{figure}
-<<strange-res, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
+\begin{figure}[hbtp]
+<<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\linewidth', warning=FALSE>>=
 load("data-35-25/unkn82.RData")
 res <- reslist[[97]]
 
@@ -1107,7 +1107,7 @@ print(ggplot() +
 #  geom_hline(yintercept = res$threshold) +
 #  geom_hline(yintercept = - res$threshold) +
 #  scale_colour_brewer("",palette="Set1") +
-  scale_linetype_discrete("") +
+  scale_linetype_discrete("") + ylab("") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
   ylim(c(-6,6)) +
@@ -1117,6 +1117,7 @@ print(ggplot() +
 \caption{\label{fig:mismatch}Known mismatch with a surprisingly large number of maximal consecutive matching striae (fifteen) and a small distance between the crosscuts. }
 \end{figure}
 
+For smaller number of CMS, the percentage of false positives quickly increases. Taking cross-correlation into account (see Figure~\ref{fig:ccfs-match}) increases the number of matches. A cross-correlation of above 0.75 in the Hamby study is indicative of a match. There are 97 land-to-land comparisons with a cross-correlation of above 0.75.   
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:distr.dist}Relationship between maximal CMS, distances between crosscuts and matches.}
