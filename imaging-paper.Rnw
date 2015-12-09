@@ -364,9 +364,9 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
   geom_line(aes(y, resid, group = x), colour="black", size=.75, alpha=0.5,
              data = filter(db1, part==5, x == 100)[,c("y", "resid", "x")]) +
   ylab("Residuals from circular fit") +
-  ggtitle("Land 5 of Bullet 1 in black")
+  ggtitle("Bullet 1-5 in black")
 @
-\caption{Circle fit for each cross section of bullet 2, with land 5 of bullet 1 overlaid.\label{fig:circlefits} \hh{Land 5 of bullet 1 matches best with the first land of the second bullet.}}%
+\caption{Circle fit for each cross section of bullet 2, with bullet 1-5 overlaid.\label{fig:circlefits} \hh{Bullet 1-5 matches best with the first land of the second bullet.}}%
 \end{figure}
 
 \subsection{Loess Fit}
@@ -392,7 +392,7 @@ The procedure can be described as follows:
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step1}Step 1 the Loess fit algorithm. For a fixed crosscut ($x$ held constant at 243.75 $\mu m$) of surface measurements for land 5 of bullet 1 are plotted across different values of $y$.}
+\caption{\label{fig:loess_step1}Step 1 the Loess fit algorithm. For a fixed crosscut ($x$ held constant at 243.75 $\mu m$) of surface measurements for bullet 1-5 are plotted across different values of $y$.}
 <<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 br121_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
@@ -475,7 +475,7 @@ It is clear that there is a rather significant amount of autocorrelation, which 
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_fit} Loess fit for land 1 of bullet 1.}
+\caption{\label{fig:loess_fit} Loess fit for bullet 1-5.}
 <<loess_fit, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 
 br111.groove <- get_grooves(br111_bullet)
@@ -486,15 +486,15 @@ my.loess$fitted + ylab("Surface measurements")
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_resid} Residuals of Loess fit for land 1 of bullet 1.}
+\caption{\label{fig:loess_resid} Residuals of Loess fit for bullet 1-5.}
 <<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE>>=
 my.loess$resid + ylab("Residuals of Loess Fit")
 @
 \end{subfigure}
-\caption{Fit and residuals of a loess fit to land 5 of bullet 1 (Barrel 1).}
+\caption{Fit and residuals of a loess fit to bullet 1-5 (Barrel 1).}
 \end{figure}
 
-We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from land 5 of bullet 1. This is shown in Figure~\ref{fig:loessfits}. \hh{The first land of bullet 2 is still the best  match for land 5, but now the details of the match are more pronounced.}
+We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from bullet 1-5. This is shown in Figure~\ref{fig:loessfits}. \hh{The first land of bullet 2 is still the best  match for land 5, but now the details of the match are more pronounced.}
 
 \begin{figure}[hbtp]
 <<loessfits, echo=FALSE, fig.width=7, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
@@ -537,9 +537,9 @@ qplot(y, resid, data=melt.df, #colour=factor(x),
       geom="line", size=I(.75), colour=I("grey70")) + 
   facet_wrap(~part, ncol=2) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
-  geom_line(data = actual.df, aes(y, resid), colour="black", size=.75, alpha=0.5) + ggtitle("Land 5 of Bullet 1 in black") + ylab("Residuals of Loess Fit")
+  geom_line(data = actual.df, aes(y, resid), colour="black", size=.75, alpha=0.5) + ggtitle("Bullet 1-5 in black") + ylab("Residuals of Loess Fit")
 @    
-\caption{\label{fig:loessfits} Residuals of a loess fit to bullets 1 and 2 from barrel 1. Land 5 of bullet 1 is shown in black. }
+\caption{\label{fig:loessfits} Residuals of a loess fit to bullets 1 and 2 from barrel 1. Bullet 1-5 is shown in black. }
 \end{figure}
 
 \section{Web Application}
