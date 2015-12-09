@@ -861,7 +861,7 @@ lop <- lapply(reslist, function(res) {
 ggplot() +
   theme_bw() + 
   geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
-  geom_line(aes(x = y, y = l30, linetype=bullet),   data = res$bullets) +
+  geom_line(aes(x = y, y = l30, linetype=bullet),   data = res$bullets, alpha=0.6) +
   scale_colour_brewer("", palette="Set1", na.value=alpha("grey50", alpha=0.5)) +
   scale_linetype_discrete("") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
@@ -971,10 +971,11 @@ list_of_matches <- lapply(25:30, function(i) {
   ggplot() +
     theme_bw() + 
     geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=6, data=lines, alpha=0.2) +
-    geom_line(aes(x = y, y = l30, colour = bullet),  data = lofX) +
+    geom_line(aes(x = y, y = l30, linetype = bullet),  data = lofX, alpha=0.6) +
 #    geom_hline(yintercept = threshold) +
 #    geom_hline(yintercept = - threshold) +
-    scale_colour_brewer("",palette="Set1") +
+#    scale_colour_brewer("",palette="Set1") +
+    scale_linetype_discrete("") +
     scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1.2), legend.justification=c(1,1),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
@@ -1005,7 +1006,7 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 \begin{subfigure}[t]{.49\textwidth}
 \caption{Maximal number of CMS between unknown Bullet F land 3 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
 <<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth'>>=
-load("data-35/unkn27.RData")
+load("data-35-25/unkn27.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
 
 qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
@@ -1020,10 +1021,11 @@ res <- reslist[[which.max(cmsdist)]]
 print(ggplot() +
   theme_bw() + 
   geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=5, data=res$lines, alpha=0.2, show.legend=FALSE) +
-  geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
+  geom_line(aes(x = y, y = l30, linetype = bullet),  data = res$bullets) +
 #  geom_hline(yintercept = res$threshold) +
 #  geom_hline(yintercept = - res$threshold) +
-  scale_colour_brewer("",palette="Set1") +
+#  scale_colour_brewer("",palette="Set1") +
+  scale_linetype_discrete("") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
   ylim(c(-6,6)) +
@@ -1040,10 +1042,11 @@ res <- reslist[[11]]  # number 2
 print(ggplot() +
   theme_bw() + 
   geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=5, data=res$lines, alpha=0.2, show.legend=FALSE) +
-  geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
+  geom_line(aes(x = y, y = l30, linetype = bullet),  data = res$bullets) +
 #  geom_hline(yintercept = res$threshold) +
 #  geom_hline(yintercept = - res$threshold) +
-  scale_colour_brewer("",palette="Set1") +
+#  scale_colour_brewer("",palette="Set1") +
+  scale_linetype_discrete("") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
   ylim(c(-6,6)) +
@@ -1055,12 +1058,12 @@ print(ggplot() +
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works perfectly. Unfortunately the matches are not always that convincing.}
 \end{figure}
 \hh{XXX a lot more about the Hamby study. Fifteen unknown bullets (i.e. 90 lands) compared to two times ten known bullets (i.e. 120 lands) makes $90 \times 120 = 10,800$ land to land comparisons, out of which 180 are actual matches. It is not reasonable to assume that we can match all lands, but we can try to maximize the number of matches. }
-Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 23 pairs of lands with at least twelve CMS in common are matches. For smaller number of CMS, the percentage of false positives quickly increases. Taking cross-correlation into account (see Figure~\ref{fig:ccfs-match}) increases the number of matches. A cross-correlation of above 0.75 in the Hamby study is indicative of a match. There are 67 land-land comparisons with a cross-correlation of above 0.75.   
+Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 29 pairs of lands with at least sixteen CMS in common are matches. For smaller number of CMS, the percentage of false positives quickly increases. Taking cross-correlation into account (see Figure~\ref{fig:ccfs-match}) increases the number of matches. A cross-correlation of above 0.75 in the Hamby study is indicative of a match. There are 67 land-land comparisons with a cross-correlation of above 0.75.   
 \begin{figure}
 \begin{subfigure}[t]{\linewidth}
 \caption{Distribution of maximal CMS.}
 <<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\linewidth'>>=
-bstats <- read.csv("data-35/bullet-stats.csv")
+bstats <- read.csv("data-35-25/bullet-stats.csv")
 ggplot(data=bstats) + 
   geom_bar(aes(x=factor(cms))) + theme_bw() +
   theme(legend.position="bottom") + 
@@ -1068,7 +1071,7 @@ ggplot(data=bstats) +
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{All land-to-land comparisons a maximum number of CMS of twelve or more are matches.}
+\caption{All land-to-land comparisons a maximum number of CMS of sixteen or more are matches.}
 <<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='\\linewidth'>>=
 ggplot(data=bstats) + 
   geom_bar(aes(x=factor(cms), fill=match), position="fill") +
