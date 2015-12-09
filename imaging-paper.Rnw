@@ -157,7 +157,7 @@ Bullet matching is a process in forensic science done to determine whether two b
 
 The new scrutiny of the procedure culminated with the 2009 National Academy of Sciences report \cite{NAS:2009}. The report concluded that minimal research had been done exploring the reliability of these ballistic identification methods. In fact, the report says the forensic evidence ``including, for example, bite marks and firearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
 
-Rifling in the barrel creates striation marks on the bullet during the firing process (and grooves). These marks are claimed to be unique to the barrel, as described in a 1992 AFTE article \cite{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows." \footnote{\url{https://www.ncjrs.gov/app/publications/Abstract.aspx?id=254151}}, \footnote{AFTE 1992 theory of identification \url{http://projects.nfstc.org/firearms/module09/fir_m09_t05_05.htm}}
+Rifling in the barrel creates striation marks on the bullet during the firing process (and grooves). These marks are claimed to be unique to the barrel, as described in a 1992 AFTE article \cite{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows." %\footnote{\url{https://www.ncjrs.gov/app/publications/Abstract.aspx?id=254151}}
 
 The primary goal in this type of forensic analysis is to identify markings in an attempt to match two bullets. Since gun barrels should produce similar markings on bullets fired consecutively, the careful analysis of these surface images can help us determine whether two bullets are a match. However, this process has traditionally required forensic experts to perform the analysis, and required physical examination of the bullets. We've produced a framework which, in software, allows for the analysis of the surface topologies, and the transcription of the markings into a 2D plotting framework which we believe makes identification of matches easier for the lay person.
 
@@ -565,7 +565,7 @@ Several lighting options are available to tweak in order to highlight markings i
 The application includes a button which allows the automatic creation of a residual plot from the Loess fits of two bullets. An x coordinate value can be selected, and a cross-section of the two bullet at the x value will be taken. The previously described Loess regression procedure will be applied to the two cross sections. A residual plot will be produced beneath the surface plots allowing for an assessment of the similarity of the markings. It is intended that users will perform this procedure at different x values in order to see whether the markings indicate a match at different points along the bullet.
 
 \section{Approach to automatic matching}
-Applying the  loess fit to a range of different surface cross cuts (see Figures~\ref{fig:manualmatch} and Figure~\ref{fig:manualmatch}, with cross cuts from 50 to 150) shows the striation marks across two bullets. Cross cuts of bullet 1 are shown on the left (cross cuts with values below 100) and cross cuts of bullets 2 are shown on the right (cross cuts with values above 100). A lot of the striation marks align, allowing for an easy visual assessment of the shared similarities between the two bullets. 
+Applying the  loess fit to a range of different surface cross cuts (see Figures~\ref{fig:manualmatch} and~\ref{fig:manualmatch-rgl}, with cross cuts from 50 to 150) shows the striation marks across two bullets. Cross cuts of bullet 1 are shown on the left (cross cuts with values below 100) and cross cuts of bullets 2 are shown on the right (cross cuts with values above 100). A lot of the striation marks align, allowing for an easy visual assessment of the shared similarities between the two bullets. 
 
 \begin{figure}[hbtp]
 <<side-by-side, echo=FALSE, eval=FALSE>>=
@@ -940,6 +940,9 @@ ggplot() +
 \end{figure}
 \afterpage{\clearpage}
 
+\subsection{Varying smoothing factor}
+\hh{XXX it would be good to have a discussion of the smoothing factor XXX}
+
 \subsection{Automated matching algorithm}
 
 Figure~\ref{fig:match} gives an overview of the automated matching routine: 
@@ -998,7 +1001,6 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 @
 \caption{\label{fig:barrel2}All lands from the first bullet shot from barrel 2 are compared to the first land of the second bullet shot from barrel 2. The largest number of CMS is eleven, observed with land six of the first bullet. }
 \end{figure}
-\afterpage{clearpage}
 
 
 \hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
