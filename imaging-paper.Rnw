@@ -287,7 +287,7 @@ This resolves to
 
 
 The scatterplot in Figure~\ref{fig:residual} shows the residuals of such a fit.
-\hh{In this instance, the radius is estimated as $\hat{r} = \Sexpr{pars$radius}\mu m = \Sexpr{pars$radius/1000}mm$, which is consistent with a 9 mm bullet fired in a Ruger P-85. }
+\hh{In this instance, the radius is estimated as $\hat{r} = \Sexpr{pars$radius}\mu m = \Sexpr{pars$radius/1000}mm$ and the land covers about \Sexpr{diff(range(dbr111$theta))} degrees.  Both of these estimates are consistent with a 9 mm bullet fired in a Ruger P-85.}
 The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For a surface cross cut at $x = 100$ there is a residual circular structure that does not show up for all cross sections. 
 
 
@@ -942,24 +942,19 @@ ggplot() +
 
 \subsection{Automated matching algorithm}
 
-Figure~\ref{fig:match} gives an overview of the rest of the automated matching routine: after smoothing the scan with a loess of a very small span, shown in (a), we define a striation mark as a groove or a peak if \hh{XXX }
+Figure~\ref{fig:match} gives an overview of the automated matching routine: 
+We first identify a stable region for each bullet and pick the lowest crosscut level in this region \hh{(assumption here: lower crosscut levels show better expression of individual marks XXX need to still check)}
 
-Two lines are defined as a match, if their peak/groove base at the threshold overlaps. If there is no overlap, a peak/groove leads to a mismatch. We then count the number of maximum consecutive matches. In this example, the number of consecutive matching striations (CMS) is fifteen, a very high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match, and which are part of current practice in assessing bullet matches  \cite{nichols:2003}.
-
-
-
-\hh{The automated matching routine is then as follows:
-Identify a stable region for each bullet and pick the lowest crosscut level in this region (assumption here: lower crosscut levels show better expression of individual marks XXX need to still check)
-
-All of the other steps are done on pairs of bullets:
+All of the other steps are done on pairs of bullet lands:
 \begin{enumerate}
 \item Smooth the two crosscuts by a loess with a very small span (see Figure~\ref{fig:smooth}). 
 \item Use cross-correlation to find the best alignment along the crosscuts: Shift one of the crosscuts by the lag indicated by the cross-correlation function (see Figure~\ref{fig:ccf} for the cross-correlation function and Figure~\ref{fig:crosscutX} for the resulting shift).
 \item Using a rolling average, identify peaks and grooves for each of the crosscuts. We define a region around the extrema on each side as one third of the distance to the next extrema (see Figure~\ref{fig:smoothcutb}). 
 \item Match grooves and peaks between crosscuts: based on the regions around the extrema as defined above, we identify joint regions between two crosscuts as those areas, in which at least two of the individual regions touch. A joint region is defined as the smallest interval that covers all of the touching regions. A joint region is called a match between the crosscuts, if all of the crosscut-specific regions are of the same type of extrema, i.e.\ either all peaks or all valleys. In Figure~\ref{fig:match} all matches are colored corresponding to their type of extrema. Non-matching regions are left grey.
 \item Identify the maximal number of CMS (consecutive matching striae) between the two crosscuts by counting consecutive matching lines. 
+In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a  high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match, and which are part of current practice in assessing bullet matches  \cite{nichols:2003}.
 \end{enumerate}
-}
+
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
 
 
@@ -1028,7 +1023,7 @@ qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}
 \caption{Overlaid lines of the land of the unknown bullet F-3 and the land with the top matching CMS.}
-<<top, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth', warning = FALSE>>=
+<<top, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\textwidth', warning = FALSE>>=
 res <- reslist[[which.max(cmsdist)]]  
 #res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
 
@@ -1049,7 +1044,7 @@ print(ggplot() +
 @
 
 \caption{Overlaid lines of the land of the unknown bullet F-3 and the land with the second top matching CMS.}
-<<top2, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth', warning = FALSE>>=
+<<top2, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\textwidth', warning = FALSE>>=
 #res <- reslist[[which.max(cmsdist)]]  
 res <- reslist[[11]]  # number 2
 
@@ -1226,6 +1221,7 @@ qplot(pred, forest, geom="jitter", data=CCFs, colour=match) + theme_bw() +
 \begin{enumerate}
 \item the Hamby study only includes 35 bullets - this is not a particularly realistic scenario for automatic matching. Adding more non-matches into the mix is going to make things more realistic. 
 \item The matching algorithm is sensitive to the parameter choices made. The distance between crosscuts (currently 25$\mu m$) to evaluate stability, as well as the cross-correlation factor (currently 0.9) we set as a minimum are affecting the final outcome. Another parameter is the amount of smoothing in identifying peaks and grooves (currently a window of 57.8375$\mu m$ is used, corresponding to a window of 17 values to the left and the right of an observation). While we tried to lay out in the paper the impact each of the parameter choices has on the matching, we are still far from an optimized scenario. 
+\item reducing subjectivity: `the concept of counting striations is subjective and based on experience, but it does tend to be consistent within a single examiner' \cite{miller:1998}.
 \item involve multiple crosscuts for each bullet in a match?
 \item we get probabilities for matches. 
 \item We don't have a solution for subclass characteristics
