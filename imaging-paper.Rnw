@@ -152,18 +152,14 @@ Bullet matching is a process in forensic science done to determine whether two b
 
 The new scrutiny of the procedure culminated with the 2009 National Academy of Sciences report \cite{NAS:2009}. The report concluded that minimal research had been done exploring the reliability of these ballistic identification methods. In fact, the report says the forensic evidence ``including, for example, bite marks and firearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
 
-\section{Problem Statement}
-\eh{XXX do we still need this section?}
-
-\section{Methodology}
-Throughout this section, we will work with images from the James Hamby Consecutively Rifled Ruger Barrel Study \cite{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
-
 Rifling in the barrel creates striation marks on the bullet during the firing process (and grooves). These marks are claimed to be unique to the barrel, as described in a 1992 AFTE article \cite{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows." \footnote{\url{https://www.ncjrs.gov/app/publications/Abstract.aspx?id=254151}}, \footnote{AFTE 1992 theory of identification \url{http://projects.nfstc.org/firearms/module09/fir_m09_t05_05.htm}}
 
-3D topographical images of each bullet were taken using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). 
-x3p is a container format conforming to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. 
-%The x3p format was developed as a means for forensic examiners to easily exchange images in a standard format. 
-x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government Firearm Forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
+The primary goal in this type of forensic analysis is to identify markings in an attempt to match two bullets. Since gun barrels should produce similar markings on bullets fired consecutively, the careful analysis of these surface images can help us determine whether two bullets are a match. However, this process has traditionally required forensic experts to perform the analysis, and required physical examination of the bullets. We've produced a framework which, in software, allows for the analysis of the surface topologies, and the transcription of the markings into a 2D plotting framework which we believe makes identification of matches easier for the lay person.
+
+\section{Methodology}
+Throughout this paper, we will work with images from the James Hamby Consecutively Rifled Ruger Barrel Study \cite{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
+
+3D topographical images of each bullet were taken using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). x3p is a container format conforming to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government Firearm Forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
 
 \begin{figure}[hbtp]
   \centering
@@ -180,8 +176,6 @@ x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url
 \caption{An example of a scan of a bullet land from one groove to the next. }
 \end{figure}
 Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}, which show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic.
-
-The primary goal in this type of forensic analysis is to identify markings in an attempt to match two bullets. Gun barrels should produce similar markings on bullets fired consecutively, and the careful analysis of these surface images can help us determine whether two bullets are a match. However, this process has traditionally required forensic experts to perform the analysis, also required physical examination of the bullets. We've produced a framework which, in software, allows for the analysis of the surface topologies, and also transcribes the markings into a 2D plotting framework which we believe makes identification of matches easier for the lay person.
 
 An initial naive approach leads us to fixing a particular value of a coordinate, and then producing a plot of the heights across values of the other coordinate. Figure \ref{fig:fixedX} gives a plot resulting from such a procedure. It can be seem that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
