@@ -133,7 +133,7 @@ imgdir <- "Figure/"
 codedir <- "code"
 datadir <- "app/images/Hamby252_3DX3P1of2/"
 
-options(replace.assign=TRUE,scipen=3)
+options(replace.assign=TRUE,scipen=3, digits=2)
 @
 
 
@@ -1115,13 +1115,13 @@ Neither one of these methods allows for an assessment of cross-correlations. Thi
 library(rpart)
 library(rpart.plot)
 CCFs <- read.csv("data-35-25/bullet-stats.csv")
-includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest"))
+includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist"))
 rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 
 per <- rp1$frame$yval # predictive probability for each node in the tree
 prp(rp1, extra = 101, box.col=c("grey90", "orange")[as.numeric(per > 0.5)+1])
 
-CCFs$pred35 <- predict(rp1)
+CCFs$pred <- predict(rp1)
 @
 \caption{\label{fig:tree}Decision tree of matching bullets based on recursive partitioning.}
 \end{figure}
@@ -1136,25 +1136,57 @@ xtable(xtabs(~I(pred>0.5)+match, data=CCFs))
 CCFs$bullet <- gsub("-[0-9]$", "", CCFs$b2)
 bullets <- CCFs %>% group_by(bullet) %>% summarize(
   n = n(),
-  pred = sum(pred35 > 0.5)
+  pred = sum(pred > 0.5),
+  forest = sum(forest > 0.5)
 )
 
 qplot(data=bullets, pred, reorder(bullet, pred/n)) + 
   theme_bw()  + ylab("") + 
   scale_x_continuous("Number of correctly predicted land-to-land matches", 
-                     breaks = 3*0:4, limits=c(0,12))
+                     breaks = 3*0:4, limits=c(0,12)) 
 @
-\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree. For each bullet at least one land is correctly matched. Unknown bullet B is the hardest for the algorithm to match.}
+\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree. For each bullet at least one land is correctly matched. Unknown bullets B and M are the hardest for the algorithm to match.}
 \end{figure}
 
-%' 
-%' <<rforest, echo=FALSE>>=
-%' library(randomForest)
-%' rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=300)
-%' CCFs$forest <- predict(rtrees)
-%' importance(rtrees)
-%' @
-%' 
+
+<<rforest, echo=FALSE, message=FALSE>>=
+library(randomForest)
+library(reshape2)
+rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=300)
+
+errors <- data.frame(rtrees$err.rate)
+errors$id <- 1:nrow(errors)
+CCFs$forest <- predict(rtrees, type="prob")[,2]
+@
+
+Figure~\ref{fig:oob} shows the cumulative out-of-bag error (OOB) rate.
+
+\begin{figure}
+<<oob, echo=FALSE, fig.width=7, fig.height=3, out.width='\\linewidth'>>=
+qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Number of trees") + ylab("Out of Bag Error (OOB)")
+@
+\caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
+\end{figure}
+
+\begin{table}
+\centering
+<<importance, echo=FALSE, results='asis'>>=
+imp <- data.frame(importance(rtrees))
+imp$Variable <- row.names(imp)
+imp <- imp[order(-imp$MeanDecreaseGini),]
+names(imp)[1] <- "Mean Decrease Gini"
+print(xtable(imp[,2:1]), include.rownames=FALSE, floating = FALSE)
+@
+\caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. }
+\end{table}
+
+\begin{figure}
+<<tree:forest, echo=FALSE, fig.width=5, fig.height=6, out.width='\\linewidth'>>=
+qplot(pred, forest, geom="point", data=CCFs, colour=match) + theme_bw() +
+  theme(legend.position="bottom")
+@
+\caption{\label{fig:tree-forest}Scatterplot of prediction results from the tree (horizontal) and the forest (vertical). Each point corresponds to a land-to-land comparison. Matches are indicated in blue.}
+\end{figure}
 
 \paragraph{Acknowledgment} Thanks to the men and women behind the software R\cite{R}, and the authors of the R packages  knitr \cite{knitr} and ggplot2 \cite{ggplot2}.
 \section{Conclusion}
