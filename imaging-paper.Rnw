@@ -522,10 +522,10 @@ melt.df$part <- gsub("resid", "", melt.df$part)
 actual.df <- my.loessactual$data[1:minrows,]
 
 qplot(y, resid, data=melt.df, #colour=factor(x), 
-      geom="line", size=I(.75), colour=I("grey70")) + 
+      geom="line", size=I(.75), linetype=I(3)) + 
   facet_wrap(~part, ncol=2) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
-  geom_line(data = actual.df, aes(y, resid), colour="black", size=.75, alpha=0.5) + ggtitle("Land 5 of Bullet 1 in black") + ylab("Residuals of Loess Fit")
+  geom_line(data = actual.df, aes(y, resid), linetype=1, size=.75) + ggtitle("Land 5 of Bullet 1 in black") + ylab("Residuals of Loess Fit")
 @    
 \caption{\label{fig:loessfits} Residuals of a loess fit to bullets 1 and 2 from barrel 1. Land 5 of bullet 1 is shown in black. }
 \end{figure}
