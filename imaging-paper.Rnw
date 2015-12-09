@@ -194,6 +194,7 @@ library(zoo)
 library(tidyr)
 library(rpart)
 library(rpart.plot)
+library(xtable)
 
 cols = c(alpha("grey60", alpha=0.6), alpha("black", 0.5))
 
