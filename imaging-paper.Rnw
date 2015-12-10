@@ -366,7 +366,7 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
   ylab("Residuals from circular fit") +
   ggtitle("Bullet 1-5 in black")
 @
-\caption{Circle fit for each cross section of bullet 2, with bullet 1-5 overlaid.\label{fig:circlefits} \hh{Bullet 1-5 matches best with the first land of the second bullet.}}%
+\caption{Circle fit for each cross section of bullet 2, with bullet 1-5 overlaid.\label{fig:circlefits} Bullet 1-5 matches best with the bullet 2-1}
 \end{figure}
 
 \subsection{Loess Fit}
@@ -939,7 +939,7 @@ ggplot() +
 \afterpage{\clearpage}
 
 \subsection{Varying smoothing factor}
-\hh{XXX it would be good to have a discussion of the smoothing factor XXX}
+As mentioned, the algorithm for peak/valley detection depends on the selection of a smoothing window, called the smoothing factor. In particular, for detecting and removing the grooves prior to fitting a Loess regression, we selected a smoothing factor of 35
 
 \subsection{Automated matching algorithm}
 
