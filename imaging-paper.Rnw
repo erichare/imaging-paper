@@ -1069,7 +1069,7 @@ print(ggplot() +
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works perfectly. Unfortunately the matches are not always that convincing.}
 \end{figure}
 
-Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 29 pairs of lands with at least sixteen CMS in common are matches. However, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by Miller \cite{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, XXXX
+Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 29 pairs of lands with at least sixteen CMS in common are matches. There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are 2.2 maximal CMS between known non-matches (with a standard deviation of 1.4). Known matches share on average 8.2 maximal CMS, with a standard deviation of 5.8. Secondly, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by Miller \cite{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, between two lands that share fifteen consecutively matched striae. The number of peaks and valleys, their heights and depths as well as the overall pattern are in relative good agreement. \hh{XXX something re-assuring that visually we can tell them apart? I don't know - this could just as well be a case where the crosscuts are very different. }
 %
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
@@ -1117,7 +1117,7 @@ print(ggplot() +
 \caption{\label{fig:mismatch}Known mismatch with a surprisingly large number of maximal consecutive matching striae (fifteen) and a small distance between the crosscuts. }
 \end{figure}
 
-For smaller number of CMS, the percentage of false positives quickly increases. Taking cross-correlation into account (see Figure~\ref{fig:ccfs-match}) increases the number of matches. A cross-correlation of above 0.75 in the Hamby study is indicative of a match. There are 97 land-to-land comparisons with a cross-correlation of above 0.75.   
+For smaller numbers of CMS, the percentage of false positives quickly increases. However, if we take other features of the image into account, we can increase the number of correct matches considerably: a high amount of cross-correlation between the two crosscuts (see Figure~\ref{fig:ccfs-match}) is indicative for a match; e.g.\  in the Hamby study only known matches have a cross-correlation of 0.75 or higher. There are 97 land-to-land comparisons with a cross-correlation of above 0.75.   
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:distr.dist}Relationship between maximal CMS, distances between crosscuts and matches.}
@@ -1146,6 +1146,7 @@ ggplot(data=bstats) + theme_bw() +
 \caption{A small distance between crosscuts or a large cross-correlation between crosscuts are indicative of matches between lands.}
 \end{figure}
 
+Similarly, the Euclidean distance between two crosscuts across the range of loess residuals is strongly correlated to known matches. Out of the 48 pairs of land-to-land crosscuts with a distance of less than .25, 47 correspond to known matches (the single known mismatch consists of a pair of crosscuts that both are very flat with peaks and vallyes of less than 1.5$\mu m$). The average distance between known matches in the Hamby study is $1.9\mu m$ with a standard deviation of $2.3\mu m$; while known mismatches have an average  distance of  3.3$\mu m$ with a standard deviation of $1.9\mu m$.
 
 
 
@@ -1220,8 +1221,26 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 imp <- data.frame(importance(rtrees))
 imp$Variable <- row.names(imp)
 imp <- imp[order(-imp$MeanDecreaseGini),]
-names(imp)[1] <- "Mean Decrease Gini"
-print(xtable(imp[,2:1]), include.rownames=FALSE, floating = FALSE)
+names(imp)[1] <- "Importance"
+imp <- imp[,2:1]
+imp$meanMatch <- sapply(imp$Variable, function(var) {
+  mean(subset(CCFs, match)[,var])
+})
+imp$sdMatch <- sapply(imp$Variable, function(var) {
+  sd(subset(CCFs, match)[,var])
+})
+imp$meanNonMatch <- sapply(imp$Variable, function(var) {
+  mean(subset(CCFs, !match)[,var])
+})
+imp$sdNonMatch <- sapply(imp$Variable, function(var) {
+  sd(subset(CCFs, !match)[,var])
+})
+imp$meanMatch <- round(imp$meanMatch,1)
+imp$sdMatch <- sprintf("(%.2f)", imp$sdMatch)
+imp$meanNonMatch <- round(imp$meanNonMatch,1)
+imp$sdNonMatch <- sprintf("(%.2f)", imp$sdNonMatch)
+
+print(xtable(imp, align="clrrrrr"), include.rownames=FALSE, floating = FALSE)
 @
 \caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. }
 \end{table}
