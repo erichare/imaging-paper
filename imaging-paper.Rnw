@@ -1275,7 +1275,7 @@ row.names(imp) <- 1:nrow(imp)
 names(imp)[-(1:2)] <- c("Match", "(sd)", "Non-Match", "(sd)")
 print(xtable(imp, align="clrrcrc"), floating = FALSE)
 @
-\caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Match and Non-Match show averages of each of the variables for macthes and non-matches only. In parentheses behind the means, standard deviations are given}
+\caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Match and Non-Match show averages of each of the variables for matches and non-matches only. In parentheses behind the means, standard deviations are given}
 \end{table*}
 
 The rows in the table are ordered according to descending importance. The variable with the most predictive power by far is cross-correlation (ccf), followed by the number of matches (num.matches) and the Euclidean distance between the crosscuts (distr.dist). The maximal consecutively matching striae (cms) is found in seventh position.
