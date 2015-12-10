@@ -943,21 +943,21 @@ As mentioned, the algorithm for peak/valley detection depends on the selection o
 \centering
 \begin{subfigure}[t]{\linewidth}
 \caption{Groove detection for bullet 1-5 at a smoothing factor of 35.\label{fig:smoothfac1}}{%
-<<smoothfac1, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth'>>=
+<<smoothfac1, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
 get_grooves(br111_bullet, smoothfactor = 35, smoothplot = TRUE)$plot
 @
     }
 \end{subfigure}    
 \begin{subfigure}[t]{\linewidth}
     \caption{Groove detection for bullet 1-5 at a smoothing factor of 5.\label{fig:smoothfac2}}{%
-<<smoothfac2, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth'>>=
+<<smoothfac2, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
 get_grooves(br111_bullet, smoothfactor = 5, smoothplot = TRUE)$plot
 @
     }
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
     \caption{Groove detection for bullet 1-5 at a smoothing factor of 65.\label{fig:smoothfac3}}{%
-<<smoothfac3, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth'>>=
+<<smoothfac3, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
 get_grooves(br111_bullet, smoothfactor = 65, smoothplot = TRUE)$plot
 @
     }
