@@ -937,7 +937,33 @@ ggplot() +
 \afterpage{\clearpage}
 
 \subsection{Varying smoothing factor}
-As mentioned, the algorithm for peak/valley detection depends on the selection of a smoothing window, called the smoothing factor. In particular, for detecting and removing the grooves prior to fitting a Loess regression, we selected a smoothing factor of 35
+As mentioned, the algorithm for peak/valley detection depends on the selection of a smoothing window, called the smoothing factor. In particular, for detecting and removing the grooves prior to fitting a Loess regression, we selected a smoothing factor of 35. We can investigate the performance of groove detection across different smoothing factors.
+
+\begin{figure}[hbtp]
+\centering
+\begin{subfigure}[t]{\linewidth}
+\caption{Crosscuts at $x = 100$.\label{fig:smoothfac1}}{%
+<<smoothfac1, echo=FALSE, fig.width=7, fig.height=2, out.width='\\textwidth'>>=
+get_grooves(br111_bullet, smoothfactor = 35, smoothplot = TRUE)$plot
+@
+    }
+\end{subfigure}    
+\begin{subfigure}[t]{\linewidth}
+    \caption{Adjusted (Bullet 1-5 horizontally shifted) crosscuts at $x = 100$.\label{fig:smoothfac2}}{%
+<<smoothfac2, echo=FALSE, fig.width=7, fig.height=2, out.width='\\textwidth'>>=
+get_grooves(br111_bullet, smoothfactor = 5, smoothplot = TRUE)$plot
+@
+    }
+\end{subfigure}
+\begin{subfigure}[t]{\linewidth}
+    \caption{Adjusted (Bullet 1-5 horizontally shifted) crosscuts at $x = 100$.\label{fig:smoothfac3}}{%
+<<smoothfac3, echo=FALSE, fig.width=7, fig.height=2, out.width='\\textwidth'>>=
+get_grooves(br111_bullet, smoothfactor = 55, smoothplot = TRUE)$plot
+@
+    }
+\end{subfigure}
+\caption{\label{fig:varysmooth}Lines showing surface crosscuts at $x = 100$. A horizontal shift of the values of Bullet 1-5 to the right shows the similarity of the striation marks.}
+\end{figure}
 
 \subsection{Automated matching algorithm}
 
