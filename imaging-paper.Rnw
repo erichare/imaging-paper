@@ -1244,7 +1244,20 @@ qplot(data=bm, value, reorder(bullet, value/n), size=I(2.5),
 \end{figure}
 %
 However, this does not carry a lot of weight because of the few bullet comparisons in question: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
-Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e. whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we can therefore introduce an interval of `inconclusive' results in the middle of the spectrum. 
+Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e. whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we can therefore introduce an interval of `inconclusive' results in the middle of the spectrum. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree ($x$-axis) and the random forest ($y$-axis). Overall, there is a lot of agreement; out of 10,800 land-to-land comparisons, only 13 cases result in a different decision. 
+
+\begin{figure}[hbtp]
+<<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='\\linewidth'>>=
+qplot(pred, forest, geom="jitter", data=CCFs, colour=match) + theme_bw() +
+  theme(legend.position="bottom") +
+  geom_vline(xintercept=0.5, colour="grey50") +
+  geom_hline(yintercept=0.5, colour="grey50") + 
+  xlab("Predictions from decision tree") +
+  ylab("Predictions from random forest")   +
+  scale_colour_brewer(palette="Paired")
+@
+\caption{\label{fig:tree-forest}Scatterplot of prediction results from the tree (horizontal) and the forest (vertical). Each point corresponds to a land-to-land comparison. Known matches are indicated in blue. Matches predicted by the decision tree are on the right half of the plot, matches predicted by the random forest are in the upper half. }
+\end{figure}
 
 Besides a probabilistic quantification of matches, we get from a random forest an assessment of the importance of each of the features derived from the bullets' 3d topological surface measurements. Table~\ref{tab:importance} shows an overview of the importance of each variable measured as the mean decrease in the gini index when the variable in question is included in a tree.
 \begin{table*}[tbhp]
@@ -1278,22 +1291,11 @@ print(xtable(imp, align="clrrcrc"), floating = FALSE)
 \caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Match and Non-Match show averages of each of the variables for matches and non-matches only. In parentheses behind the means, standard deviations are given}
 \end{table*}
 
-The rows in the table are ordered according to descending importance. The variable with the most predictive power by far is cross-correlation (ccf), followed by the number of matches (num.matches) and the Euclidean distance between the crosscuts (distr.dist). The maximal consecutively matching striae (cms) is found in seventh position.
+The rows in the table are ordered according to descending importance. The variable with the most predictive power by far is cross-correlation (ccf), followed by the number of matches (num.matches) and the Euclidean distance between the crosscuts (distr.dist). The maximal consecutively matching striae (cms) is found only in seventh position.
 
-\begin{figure}[hbtp]
-<<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='\\linewidth'>>=
-qplot(pred, forest, geom="jitter", data=CCFs, colour=match) + theme_bw() +
-  theme(legend.position="bottom") +
-  geom_vline(xintercept=0.5, colour="grey50") +
-  geom_hline(yintercept=0.5, colour="grey50") + 
-  xlab("Predictions from decision tree") +
-  ylab("Predictions from random forest")   +
-  scale_colour_brewer(palette="Paired")
-@
-\caption{\label{fig:tree-forest}Scatterplot of prediction results from the tree (horizontal) and the forest (vertical). Each point corresponds to a land-to-land comparison. Known matches are indicated in blue. Matches predicted by the decision tree are on the right half of the plot, matches predicted by the random forest are in the upper half. }
-\end{figure}
 
 \paragraph{Acknowledgment} Thanks to the men and women behind the software R\cite{R}, and the authors of the R packages  knitr \cite{knitr} and ggplot2 \cite{ggplot2}.
+
 This work was funded in part by the Center for Statistics and Applications in Forensic Evidence (CSAFE).
 \section{Conclusion}
 
