@@ -1294,6 +1294,7 @@ qplot(pred, forest, geom="jitter", data=CCFs, colour=match) + theme_bw() +
 \end{figure}
 
 \paragraph{Acknowledgment} Thanks to the men and women behind the software R\cite{R}, and the authors of the R packages  knitr \cite{knitr} and ggplot2 \cite{ggplot2}.
+This work was funded in part by the Center for Statistics and Applications in Forensic Evidence (CSAFE).
 \section{Conclusion}
 
 \hh{Things we discussed}
