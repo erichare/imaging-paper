@@ -1172,10 +1172,10 @@ prp(rp1, extra = 101, box.col=vals[as.numeric(per > 0.5)+1])
 
 CCFs$pred <- predict(rp1)
 @
-\caption{\label{fig:tree}Decision tree of matching bullets based on recursive partitioning.}
+\caption{\label{fig:tree}Decision tree of matching bullets based on recursive partitioning. The rectangular nodes are the leaves, giving a short summary consisting of the number of observations in the leaf (bottom left), the corresponding percentage of the total (bottom right). The number at the top shows the fraction of these observations that are a match. A 1 or a 0 therefore indicate a homogeneous (or perfect) node. }
 \end{figure}
 
-\hh{XXX still need discussion of the results from random forests \cite{breiman:2001, randomForest}}
+Another benefit is that we can not only apply a single decision tree, but several hundred of them to combine in a random forest \cite{breiman:2001, randomForest}. This allows us to quantify XXXX
 
 \begin{figure}[hbtp]
 <<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
@@ -1237,7 +1237,7 @@ imp$sdNonMatch <- sapply(imp$Variable, function(var) {
 imp$meanMatch <- round(imp$meanMatch,1)
 imp$sdMatch <- sprintf("(%5.2f)", imp$sdMatch)
 imp$meanNonMatch <- round(imp$meanNonMatch,1)
-imp$sdNonMatch <- sprintf("(%5.2f)", imp$sdNonMatch)
+imp$sdNonMatch <- sprintf("(%6.2f)", imp$sdNonMatch)
 
 names(imp)[-(1:2)] <- c("Match", "(sd)", "Non-Match", "(sd)")
 print(xtable(imp, align="clrrlrl"), include.rownames=FALSE, floating = FALSE)
