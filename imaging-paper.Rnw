@@ -1197,26 +1197,6 @@ CCFs$pred <- predict(rp1)
 \caption{\label{fig:tree}Decision tree of matching bullets based on recursive partitioning. The rectangular nodes are the leaves, giving a short summary consisting of the number of observations in the leaf (bottom left), the corresponding percentage of the total (bottom right). The number at the top shows the fraction of these observations that are a match. A 1 or a 0 therefore indicate a homogeneous (or perfect) node. }
 \end{figure}
 
-Another benefit is that we can not only apply a single decision tree, but several hundred of them to combine in a random forest \cite{breiman:2001, randomForest}. This allows us to quantify XXXX
-
-\begin{figure}[hbtp]
-<<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
-CCFs$bullet <- gsub("-[0-9]$", "", CCFs$b2)
-bullets <- CCFs %>% group_by(bullet) %>% summarize(
-  n = n(),
-  pred = sum(pred > 0.5),
-  forest = sum(forest > 0.5)
-)
-
-qplot(data=bullets, pred, reorder(bullet, pred/n)) + 
-  theme_bw()  + ylab("") + 
-  scale_x_continuous("Number of correctly predicted land-to-land matches", 
-                     breaks = 3*0:4, limits=c(0,12))
-@
-\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree. For each bullet at least one land is correctly matched. Unknown bullets B and M are the hardest for the algorithm to match.}
-\end{figure}
-
-
 <<rforest, echo=FALSE, message=FALSE>>=
 library(randomForest)
 library(reshape2)
@@ -1227,15 +1207,46 @@ errors$id <- 1:nrow(errors)
 CCFs$forest <- predict(rtrees, type="prob")[,2]
 @
 
-Figure~\ref{fig:oob} shows the cumulative out-of-bag error (OOB) rate.
 
+Another benefit is that we can not only apply a single decision tree, but several hundred of them to combine in a random forest \cite{breiman:2001, randomForest}. In a random forest multiple trees are fitted. For each of these trees, only two thirds of the observations are used for fitting, while predictions for the remaining third  are used to evaluate the tree's predictive power and accuracy, or its reverse, the error rate. Because errors are determined from the one third of held-back observations, this error rate is called the out-of bag (OOB) error. 
+Figure~\ref{fig:oob} shows the cumulative out-of-bag error (OOB) rate for 300 trees. 
+%
 \begin{figure}[hbtp]
 <<oob, echo=FALSE, fig.width=7, fig.height=3, out.width='\\linewidth'>>=
 qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Number of trees") + ylab("Out of Bag Error (OOB)")
 @
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
 \end{figure}
+%
+After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0056. This is a weighted average between false positives of 0.00028 and false negatives of 0.32. Note that these error rates are based on land-to-land comparisons and will be much lower for bullet-to-bullet matches. In the case of the Hamby study, the error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
+\begin{figure}[hbtp]
+<<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
+CCFs$bullet <- gsub("-[0-9]$", "", CCFs$b2)
+bullets <- CCFs %>% group_by(bullet) %>% summarize(
+  n = n(),
+  pred = sum(pred > 0.5),
+  forest = sum(forest > 0.5)
+)
+library(reshape2)
+bm <- melt(data=bullets, id.var=c("bullet", "n"))
 
+bm$prediction <- c("Tree", "Random Forest")[as.numeric(bm$variable)]
+qplot(data=bm, value, reorder(bullet, value/n), size=I(2.5), 
+      shape=prediction, colour=prediction, alpha=I(0.6)) + 
+  theme_bw()  + ylab("") + 
+#  scale_shape_manual(values=c(1,2)) +
+  scale_x_continuous("Number of correctly predicted land-to-land matches", 
+                     breaks = 3*0:4, limits=c(0,12),
+                     minor_breaks = 1:11) +
+  theme(legend.position = "bottom")
+@
+\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree. Both results for the tree as well as the random forest are shown. For each bullet at least two lands are correctly matched. Unknown bullets B and M are the hardest for the algorithm to match.}
+\end{figure}
+%
+However, this does not carry a lot of weight because of the few bullet comparisons in question: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
+Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e. whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we can therefore introduce an interval of `inconclusive' results in the middle of the spectrum. 
+
+Besides a probabilistic quantification of matches, we get from a random forest an assessment of the importance of each of the features derived from the bullets' 3d topological surface measurements. Table~\ref{tab:importance} shows an overview of the importance of each variable measured as the mean decrease in the gini index when the variable in question is included in a tree.
 \begin{table*}[tbhp]
 \centering
 <<importance, echo=FALSE, results='asis'>>=
@@ -1259,13 +1270,15 @@ imp$sdNonMatch <- sapply(imp$Variable, function(var) {
 imp$meanMatch <- round(imp$meanMatch,1)
 imp$sdMatch <- sprintf("(%5.2f)", imp$sdMatch)
 imp$meanNonMatch <- round(imp$meanNonMatch,1)
-imp$sdNonMatch <- sprintf("(%6.2f)", imp$sdNonMatch)
-
+imp$sdNonMatch <- sprintf("(%7.2f)", imp$sdNonMatch)
+row.names(imp) <- 1:nrow(imp)
 names(imp)[-(1:2)] <- c("Match", "(sd)", "Non-Match", "(sd)")
-print(xtable(imp, align="clrrlrl"), include.rownames=FALSE, floating = FALSE)
+print(xtable(imp, align="clrrcrc"), floating = FALSE)
 @
 \caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Match and Non-Match show averages of each of the variables for macthes and non-matches only. In parentheses behind the means, standard deviations are given}
 \end{table*}
+
+The rows in the table are ordered according to descending importance. The variable with the most predictive power by far is cross-correlation (ccf), followed by the number of matches (num.matches) and the Euclidean distance between the crosscuts (distr.dist). The maximal consecutively matching striae (cms) is found in seventh position.
 
 \begin{figure}[hbtp]
 <<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='\\linewidth'>>=
