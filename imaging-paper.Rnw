@@ -290,9 +290,7 @@ The scatterplot in Figure~\ref{fig:residual} shows the residuals of such a fit.
 \hh{In this instance, the radius is estimated as $\hat{r} = \Sexpr{pars$radius}\mu m = \Sexpr{pars$radius/1000}mm$ and the land covers about \Sexpr{diff(range(dbr111$theta))} degrees.  Both of these estimates are consistent with a 9 mm bullet fired in a Ruger P-85.}
 The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For a surface cross cut at $x = 100$ there is a residual circular structure that does not show up for all cross sections. 
 
-
--%\hh{XXX add parameter estimates? $\hat{r} \approx 4500$ - indicating a 9 mm bullet, amount of degrees covered by land?  }
-
+%\hh{XXX add parameter estimates? $\hat{r} \approx 4500$ - indicating a 9 mm bullet, amount of degrees covered by land?  }
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
@@ -320,10 +318,10 @@ qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x),
   theme(legend.position="bottom")
 @
 \end{subfigure}
-\caption{\label{fig:residual} Residual structure of  circular fits at two different cross-section. Both residual plots show systematic structures, indicating that a circular fit is not entirely appropriate. }
+\caption{\label{fig:residual} Residual structure of circular fits at two different cross-section. Both residual plots show systematic structures, indicating that a circular fit is not entirely appropriate.}
 \end{figure}
 
-A single cylinder as a fit is unlikely to be a particularly good fit, because  there seem to be quite massive deformations in vertical direction. Even when we fit a circle to each cross section of the bullet, as in Figure~\ref{fig:circlefits}, we can not address all of these issues. While the wider circumference at the base of the bullet can be resolved by individual circular fits, the systematic residual structure in Figure~\ref{fig:residualb} stays the same.
+A single cylinder as a fit is unlikely to be a particularly good fit, because there seem to be quite massive deformations in the vertical direction. Even when we fit a circle to each cross section of the bullet, as in Figure~\ref{fig:circlefits}, we can not address all of these issues. While the wider circumference at the base of the bullet can be resolved by individual circular fits, the systematic residual structure in Figure~\ref{fig:residualb} stays the same.
 
 <<bullet1, echo=FALSE, cache=TRUE>>=
 db1 <- NULL
@@ -366,7 +364,7 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
   ylab("Residuals from circular fit") +
   ggtitle("Bullet 1-5 in black")
 @
-\caption{Circle fit for each cross section of bullet 2, with bullet 1-5 overlaid.\label{fig:circlefits} Bullet 1-5 matches best with the bullet 2-1}
+\caption{Circle fit for each cross section of bullet 2, with bullet 1-5 overlaid.\label{fig:circlefits} Bullet 1-5 matches best with the bullet 2-1.}
 \end{figure}
 
 \subsection{Loess Fit}
