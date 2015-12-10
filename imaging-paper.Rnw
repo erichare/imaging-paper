@@ -1146,9 +1146,8 @@ ggplot(data=bstats) + theme_bw() +
 \caption{A small distance between crosscuts or a large cross-correlation between crosscuts are indicative of matches between lands.}
 \end{figure}
 
-Similarly, the Euclidean distance between two crosscuts across the range of loess residuals is strongly correlated to known matches. Out of the 48 pairs of land-to-land crosscuts with a distance of less than .25, 47 correspond to known matches (the single known mismatch consists of a pair of crosscuts that both are very flat with peaks and vallyes of less than 1.5$\mu m$). The average distance between known matches in the Hamby study is $1.9\mu m$ with a standard deviation of $2.3\mu m$; while known mismatches have an average  distance of  3.3$\mu m$ with a standard deviation of $1.9\mu m$.
-
-
+Similarly, the Euclidean distance between two crosscuts across the range of loess residuals is strongly correlated to known matches. Out of the 48 pairs of land-to-land crosscuts with a distance of less than .25, 47 correspond to known matches (the single known mismatch consists of a pair of crosscuts that both are very flat with peaks and valleys of less than 1.5$\mu m$). The average distance between known matches in the Hamby study is $1.9\mu m$ with a standard deviation of $2.3\mu m$; while known mismatches have an average  distance of  3.3$\mu m$ with a standard deviation of $1.9\mu m$.
+Both of these additional variables show large, if not significant, differences between matches and non-matches. Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of  a set of feature variables derived from the 3d topological surface measurements. There are quite large differences in these averages, indicating that we can successfully employ machine learning methods to distinguish matches from non-matches.
 
 
 Using recursive partitioning, we fit a decision tree \cite{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 123 lands is being matched correctly. Interestingly, the number of consecutive matching striae only features as the last step in this evaluation. At this point in the tree, the first false positive matches are introduced into the results: out of the ten land-to-land comparisons three are mis-matched.
@@ -1215,7 +1214,7 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
 \end{figure}
 
-\begin{table}
+\begin{table*}[tbhp]
 \centering
 <<importance, echo=FALSE, results='asis'>>=
 imp <- data.frame(importance(rtrees))
@@ -1236,14 +1235,15 @@ imp$sdNonMatch <- sapply(imp$Variable, function(var) {
   sd(subset(CCFs, !match)[,var])
 })
 imp$meanMatch <- round(imp$meanMatch,1)
-imp$sdMatch <- sprintf("(%.2f)", imp$sdMatch)
+imp$sdMatch <- sprintf("(%5.2f)", imp$sdMatch)
 imp$meanNonMatch <- round(imp$meanNonMatch,1)
-imp$sdNonMatch <- sprintf("(%.2f)", imp$sdNonMatch)
+imp$sdNonMatch <- sprintf("(%5.2f)", imp$sdNonMatch)
 
-print(xtable(imp, align="clrrrrr"), include.rownames=FALSE, floating = FALSE)
+names(imp)[-(1:2)] <- c("Match", "(sd)", "Non-Match", "(sd)")
+print(xtable(imp, align="clrrlrl"), include.rownames=FALSE, floating = FALSE)
 @
-\caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. }
-\end{table}
+\caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Match and Non-Match show averages of each of the variables for macthes and non-matches only. In parentheses behind the means, standard deviations are given}
+\end{table*}
 
 \begin{figure}[hbtp]
 <<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='\\linewidth'>>=
