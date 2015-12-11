@@ -286,10 +286,8 @@ This resolves to
 
 
 The scatterplot in Figure~\ref{fig:residual} shows the residuals of such a fit.
-\hh{In this instance, the radius is estimated as $\hat{r} = \Sexpr{pars$radius}\mu m = \Sexpr{pars$radius/1000}mm$ and the land covers about \Sexpr{diff(range(dbr111$theta))} degrees.  Both of these estimates are consistent with a 9 mm bullet fired in a Ruger P-85.}
+In this instance, the radius is estimated as $\hat{r} = \Sexpr{pars$radius}\mu m = \Sexpr{pars$radius/1000}mm$ and the land covers about \Sexpr{diff(range(dbr111$theta))} degrees.  Both of these estimates are consistent with a 9 mm bullet fired in a Ruger P-85.
 The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For a surface cross cut at $x = 100$ there is a residual circular structure that does not show up for all cross sections. 
-
-%\hh{XXX add parameter estimates? $\hat{r} \approx 4500$ - indicating a 9 mm bullet, amount of degrees covered by land?  }
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
@@ -381,7 +379,6 @@ The procedure can be described as follows:
     \item For each $y$ value, smooth out any deviations occurring near the minima by twice applying a rolling average with a pre-set \textbf{smoothing factor}. (Figure~\ref{fig:loess_step3}, smoothing factor of 35, corresponding to 55$\mu m$).
 %    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor as above. (Figure~\ref{fig:loess_step3}).
     \item Determine the location of the peak of the left groove by finding the first double-smoothed value $y_i$ that is the maximum within its smoothing window (e.g.\ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$, $i = 1, ..., 17$). We call the location of this peak $p_{left}$ (see Figure~\ref{fig:loess_step47}). 
-    %\hh{XXX By peak, do you mean the location of the peak or its height or both?} XXX never mind, found the answer below
     \item Similarly, determine the location of the valley of the left groove by finding the first double-smoothed $y_j$ that is the minimum within its smoothing window. Call the location of this valley $v_{left}$.
     \item Reverse the order of the $y$ values and repeat the previous two steps to find the peak and valley of the right groove, $(p_{right}, v_{right})$.
     \item Trim the surface measurements to values within the two grooves (i.e.\ remove all records with $y_i < v_{left}$ and $y_i > v_{right}$). (Figure \ref{fig:loess_step47}).
@@ -971,7 +968,8 @@ get_peaks(br111.loess$data, smoothfactor = 65)$plot
 \subsection{Automated matching algorithm}
 
 Figure~\ref{fig:match} gives an overview of the automated matching routine: 
-We first identify a stable region for each bullet and pick the lowest crosscut level in this region \hh{(assumption here: lower crosscut levels show better expression of individual marks XXX need to still check)}
+We first identify a stable region for each bullet and pick the lowest crosscut level in this region, because typically, individual characteristics are best express at the lower end of the bullet. 
+%\hh{(assumption here: lower crosscut levels show better expression of individual marks XXX checked XXX crosscuts-and-sd.R)}
 
 All of the other steps are done on pairs of bullet lands:
 \begin{enumerate}
