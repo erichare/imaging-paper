@@ -977,7 +977,7 @@ All of the other steps are done on pairs of bullet lands:
 \item Using a rolling average, identify peaks and grooves for each of the crosscuts. We define a region around the extrema on each side as one third of the distance to the next extrema (see Figure~\ref{fig:smoothcutb}). 
 \item Match grooves and peaks between crosscuts: based on the regions around the extrema as defined above, we identify joint regions between two crosscuts as those areas, in which at least two of the individual regions touch. A joint region is defined as the smallest interval that covers all of the touching regions. A joint region is called a match between the crosscuts, if all of the crosscut-specific regions are of the same type of extrema, i.e.\ either all peaks or all valleys. In Figure~\ref{fig:match} all matches are colored corresponding to their type of extrema. Non-matching regions are left grey.
 \item Identify the maximal number of CMS (consecutive matching striae) between the two crosscuts by counting consecutive matching lines. 
-In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a  high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match, and which are part of current practice in assessing bullet matches  \cite{nichols:2003}.
+In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a  high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti \cite{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match, and which are part of current practice in assessing bullet matches  \cite{nichols:1997, nichols:2003}.
 \end{enumerate}
 
 \hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
@@ -1296,25 +1296,22 @@ The rows in the table are ordered according to descending importance. The variab
 
 \section{Conclusion}
 
-\hh{Things we discussed}
-\begin{enumerate}
-\item the Hamby study only includes 35 bullets - this is not a particularly realistic scenario for automatic matching. Adding more non-matches into the mix is going to make things more realistic. 
-\item The matching algorithm is sensitive to the parameter choices made. The distance between crosscuts (currently 25$\mu m$) to evaluate stability, as well as the cross-correlation factor (currently 0.9) we set as a minimum are affecting the final outcome. Another parameter is the amount of smoothing in identifying peaks and grooves (currently a window of 57.8375$\mu m$ is used, corresponding to a window of 17 values to the left and the right of an observation). While we tried to lay out in the paper the impact each of the parameter choices has on the matching, we are still far from an optimized scenario. 
-\item reducing subjectivity: `the concept of counting striations is subjective and based on experience, but it does tend to be consistent within a single examiner' \cite{miller:1998}.
+We have presented ...
+\hh{XXX Quick summary of the main points of the paper XXX }
 
-\item The analysis by Miller \cite{miller:1998} involved comparisons of 50 pairs of bullets against IBIS results (at the time consisting of 1,600 bullets of the same characteristics).  
+The matching algorithm is sensitive to the parameter choices made. The distance between crosscuts (currently 25$\mu m$) to evaluate stability, as well as the cross-correlation factor (currently 0.9) we set as a minimum are affecting the final outcome. Another parameter is the amount of smoothing in identifying peaks and grooves (currently a window of 57.8375$\mu m$ is used, corresponding to a window of 17 values to the left and the right of an observation). While we tried to lay out in the paper the impact each of the parameter choices has on the matching, we are still far from an optimized scenario. 
 
-The feasibility of a database of ballistic images was evaluated in a 2008 report \cite{nap:2008} by the National Research Council. Part of the evaluation was based  on Integrated Ballistics Identification System (IBIS) -- to be precise, on the IBIS Heritage Line, which is based on 2d microscopic images. The findings of the report are 
+ The Hamby study serves as our evaluation `database'. It consists of only  35 bullets -- this is obviously not a particularly realistic scenario for automatic matching. But this is what at the moment  is available to us. As the NIST database expands, this might get into more challenging territory. 
+ 
+The feasibility of a database of ballistic images was evaluated in a 2008 report \cite{nap:2008} by the National Research Council. The evaluation was investigating the scalability of NIBIN (National Integrated Ballistic Information Network), which uses proprietary matching algorithms provided by IBIS. The bottomline of the report was that in spite of the many technical and practical hurdles, solutions to all but one problem could be found. The remaining problem is simply that statistically the quality of the matching algorithm could not withstand a hugely increased number of records while still maintaining a reasonable workload for forensic examiners, who have to examine possible matches suggested by the system. 
+The findings of the NRC report on ballistic imaging are based on two-dimensional greyscale images, which the committee argued were not reliable enough for distinguishing extremely fine marks. 
+The report also found, that results from 2d images are improved upon by matches based on 3d images. This is consistent with the importance of features found here: out of the top six features in Table~\ref{tab:importance}, only the number of matches and mismatches are available for a match based on 2d features.
 
-While microscopy allows some 3d effects (using different lighting and the innate ability of our eyes to move focus), in images this is reduced to a color shade of a pixel at best. This means that out of the top six features in Table~\ref{tab:importance}, only the number of matches and mismatches are available for a match, which vastly reduces the quality of automated matches. 
+By suggesting an automated algorithm that first identifies lands, then identifies peaks and valleys on this land, we reduce subjectivity and with it possible sources of bias. [T]`he concept of counting striations is subjective and based on experience, but it does tend to be consistent within a single examiner' \cite{miller:1998}.
+For a fair assessment of the adequacy of an algorithm we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package x3rplus \cite{x3prplus}, and the code to produce this paper is available at \hh{XXX, Eric ... we need a website}. Obviously, this is only a first step, but in times of the Netflix challenge and the many Data Science challenges hosted by Kaggle, we should not let the quality of the matching algorithm be the problem that stands in the way.
 
+Only a much larger database and transparent communication of results will give us  answers to whether automatic matching of ballistic evidence is really feasible. Whether there really is individualization of this evidence, as is often silently assumed. And in the case, that individualization is a reasonable assumption, whether  there is a way to be able to distinguish between individual and subclass characteristics. 
 
-
-
-\item involve multiple crosscuts for each bullet in a match?
-\item we get probabilities for matches. 
-\item We don't have a solution for subclass characteristics
-\end{enumerate}
 
 Things to be dicussed in the future
 \begin{enumerate}
