@@ -938,30 +938,56 @@ As mentioned, the algorithm for peak/valley detection depends on the selection o
 A larger smoothing factor on the other hand, like 65, seems to be a more plausible option. Most of the peaks/valleys present which are detected by a smoothing factor of 35 are also detected at 65. However, some notable issues arise. Notice that the peak on the left hand side of the image is smoothed out, and thus not detected. On the right hand side, the peak is just barely still present and hence detected. But in many cases, the large windows are smoothing out some of the structure that we wish to see. Furthermore, it can be seen that the peaks/valleys are often shifted relative to their position in the original loess residuals, or in the smoothed data with smaller smoothing factors.
 
 \begin{figure}[hbtp]
-\centering
-\begin{subfigure}[t]{\linewidth}
-\caption{Peak and valley detection for bullet 1-5 at a smoothing factor of 35.\label{fig:smoothfac1}}{%
-<<smoothfac1, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
+%\centering
+%\begin{subfigure}[t]{\linewidth}
+%\caption{Peak and valley detection for bullet 1-5 at a smoothing factor of 35.\label{fig:smoothfac1}}{%
+<<smoothfac1, echo=FALSE, fig.width=7, fig.height=6, out.width='\\linewidth', warning=FALSE>>=
 br111.groove <- get_grooves(br111_bullet)
 br111.loess <- fit_loess(br111_bullet, br111.groove)
-get_peaks(br111.loess$data, smoothfactor = 35)$plot
+
+peaks1 <- get_peaks(br111.loess$data, smoothfactor = 15)
+peaks1$lines$smoothfactor = 15
+peaks1$plot$data$smoothfactor = 15
+peaks2 <- get_peaks(br111.loess$data, smoothfactor = 5)
+peaks2$lines$smoothfactor = 5
+peaks2$plot$data$smoothfactor = 5
+peaks3 <- get_peaks(br111.loess$data, smoothfactor = 35)
+peaks3$lines$smoothfactor = 35
+peaks3$plot$data$smoothfactor = 35
+
+peaks <- rbind(peaks1$lines, peaks2$lines, peaks3$lines)
+smooths <- rbind(peaks1$plot$data, peaks2$plot$data, 
+                 peaks3$plot$data)
+  
+  ggplot() + theme_bw() +
+    geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, 
+              data=peaks,  alpha=0.2) +
+    geom_vline(aes(xintercept=extrema, colour=factor(type)), data= peaks) +
+    scale_colour_brewer(palette="Set2") + 
+    scale_fill_brewer(palette="Set2") +
+    theme(legend.position="none") + 
+    facet_grid(smoothfactor~., labeller="label_both") +
+    geom_line(aes(x=y, y=resid, group=x), data=br111.loess$data,  
+              colour="grey50") +
+    geom_line(aes(x=y, y=smoothed), data=smooths) +
+  ylab(expression(paste("Crosscut values (in ",mu,"m)", sep=""))) 
 @
-    }
-\end{subfigure}    
-\begin{subfigure}[t]{\linewidth}
-    \caption{Peak and valley detection for bullet 1-5 at a smoothing factor of 5.\label{fig:smoothfac2}}{%
-<<smoothfac2, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
-get_peaks(br111.loess$data, smoothfactor = 5)$plot
-@
-    }
-\end{subfigure}
-\begin{subfigure}[t]{\linewidth}
-    \caption{Peak and valley detection for bullet 1-5 at a smoothing factor of 65.\label{fig:smoothfac3}}{%
-<<smoothfac3, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
-get_peaks(br111.loess$data, smoothfactor = 65)$plot
-@
-    }
-\end{subfigure}
+%'     }
+%' \end{subfigure}    
+%' \begin{subfigure}[t]{\linewidth}
+%'     \caption{Peak and valley detection for bullet 1-5 at a smoothing factor of 5.\label{fig:smoothfac2}}{%
+%' <<smoothfac2, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
+%' get_peaks(br111.loess$data, smoothfactor = 5)$plot
+%' @
+%'     }
+%' \end{subfigure}
+%' \begin{subfigure}[t]{\linewidth}
+%'     \caption{Peak and valley detection for bullet 1-5 at a smoothing factor of 65.\label{fig:smoothfac3}}{%
+%' <<smoothfac3, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
+%' get_peaks(br111.loess$data, smoothfactor = 65)$plot
+%' @
+%'     }
+%' \end{subfigure}
 \caption{\label{fig:varysmooth} Peak/valley detection at smoothing factors of 35, 5, and 65 respectively. Note that a smoothing factor of 5 yields enough noise that many very minimal overlapping peaks and valleys are detected, while a smoothing factor of 65 over-smoothes and causes the peaks/valleys to either disappear or be horizontally shifted from their position in the original loess residuals.}
 \end{figure}
 
@@ -1301,14 +1327,15 @@ We have presented an algorithm which detects the most prominent but least releva
 
 The matching algorithm is sensitive to the parameter choices made. The distance between crosscuts (currently 25$\mu m$) to evaluate stability, as well as the cross-correlation factor (currently 0.9) we set as a minimum are affecting the final outcome. Another parameter is the amount of smoothing in identifying peaks and grooves (currently a window of 57.8375$\mu m$ is used, corresponding to a window of 17 values to the left and the right of an observation). While we tried to lay out in the paper the impact each of the parameter choices has on the matching, we are still far from an optimized scenario. 
 
- The Hamby study serves as our evaluation `database'. It consists of only  35 bullets -- this is obviously not a particularly realistic scenario for automatic matching. But this is what at the moment  is available to us. As the NIST database expands, this might get into more challenging territory. 
+The Hamby study serves as our evaluation `database'. It consists of only  35 bullets -- this is obviously not a particularly realistic scenario for automatic matching. But this is what at the moment  is available to us. As the NIST database expands, this might get into more challenging territory. 
  
 The feasibility of a database of ballistic images was evaluated in a 2008 report~\cite{nap:2008} by the National Research Council. The evaluation was investigating the scalability of NIBIN (National Integrated Ballistic Information Network), which uses proprietary matching algorithms provided by IBIS. The bottomline of the report was that in spite of the many technical and practical hurdles, solutions to all but one problem could be found. The remaining problem is simply that statistically the quality of the matching algorithm could not withstand a hugely increased number of records while still maintaining a reasonable workload for forensic examiners, who have to examine possible matches suggested by the system. 
 The findings of the NRC report on ballistic imaging are based on two-dimensional greyscale images, which the committee argued were not reliable enough for distinguishing extremely fine marks. 
 The report also found, that results from 2d images are improved upon by matches based on 3d images. This is consistent with the importance of features found here: out of the top six features in Table~\ref{tab:importance}, only the number of matches and mismatches are available for a match based on 2d features.
 
 By suggesting an automated algorithm that first identifies lands, then identifies peaks and valleys on this land, we reduce subjectivity and with it possible sources of bias. [T]`he concept of counting striations is subjective and based on experience, but it does tend to be consistent within a single examiner'~\cite{miller:1998}.
-For a fair assessment of the adequacy of an algorithm we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package x3rplus~\cite{x3prplus}, and the code to produce this paper is available at \url{http://www.github.com/erichare/imaging-paper}. Obviously, this is only a first step, but in times of the Netflix prize~\cite{koren:2009, toescher:2009, piotte:2009} and the many Data Science challenges hosted by Kaggle, we should not let the quality of the matching algorithm be the problem that stands in the way.
+
+For a fair assessment of the adequacy of an algorithm we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package x3rplus~\cite{x3prplus}, and the code to produce this paper is available at \url{http://www.github.com/erichare/imaging-paper}. Obviously, this is only a first step, but in times of the Netflix prize~\cite{koren:2009, toescher:2009, piotte:2009} and the many Data Science challenges hosted by Kaggle\footnote{kaggle home:\url{https://www.kaggle.com/solutions/competitions}}, we should not let the quality of the matching algorithm be the problem that stands in the way.
 
 Only a much larger database and transparent communication of results will give us  answers to whether automatic matching of ballistic evidence is really feasible. Whether there really is individualization of this evidence, as is often silently assumed. And in the case, that individualization is a reasonable assumption, whether  there is a way to be able to distinguish between individual and subclass characteristics. 
 
