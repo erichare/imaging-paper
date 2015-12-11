@@ -942,27 +942,29 @@ As mentioned, the algorithm for peak/valley detection depends on the selection o
 \begin{figure}[hbtp]
 \centering
 \begin{subfigure}[t]{\linewidth}
-\caption{Groove detection for bullet 1-5 at a smoothing factor of 35.\label{fig:smoothfac1}}{%
+\caption{Peak and valley detection for bullet 1-5 at a smoothing factor of 35.\label{fig:smoothfac1}}{%
 <<smoothfac1, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
-get_grooves(br111_bullet, smoothfactor = 35, smoothplot = TRUE)$plot
+br111.groove <- get_grooves(br111_bullet)
+br111.loess <- fit_loess(br111_bullet, br111.groove)
+get_peaks(br111.loess$data, smoothfactor = 35)$plot
 @
     }
 \end{subfigure}    
 \begin{subfigure}[t]{\linewidth}
-    \caption{Groove detection for bullet 1-5 at a smoothing factor of 5.\label{fig:smoothfac2}}{%
+    \caption{Peak and valley detection for bullet 1-5 at a smoothing factor of 5.\label{fig:smoothfac2}}{%
 <<smoothfac2, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
-get_grooves(br111_bullet, smoothfactor = 5, smoothplot = TRUE)$plot
+get_peaks(br111.loess$data, smoothfactor = 5)$plot
 @
     }
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-    \caption{Groove detection for bullet 1-5 at a smoothing factor of 65.\label{fig:smoothfac3}}{%
+    \caption{Peak and valley detection for bullet 1-5 at a smoothing factor of 65.\label{fig:smoothfac3}}{%
 <<smoothfac3, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
-get_grooves(br111_bullet, smoothfactor = 65, smoothplot = TRUE)$plot
+get_peaks(br111.loess$data, smoothfactor = 65)$plot
 @
     }
 \end{subfigure}
-\caption{\label{fig:varysmooth} Groove detection at smoothing factors of 35, 5, and 65 respectively. Note that a smoothing factor of 5 yields enough variation prior to the groove that the right groove is not detected properly, while a smoothing factor of 65 over-smoothes and causes the peak on the right to disappear, so that the peak and groove are both not detected properly.}
+\caption{\label{fig:varysmooth} Peak/valley detection at smoothing factors of 35, 5, and 65 respectively. Note that a smoothing factor of 5 yields enough noise that many very minimal overlapping peaks and valleys are detected, while a smoothing factor of 65 over-smoothes and causes the peaks/valleys to either disappear or be horizontally shifted from their position in the original loess residuals.}
 \end{figure}
 
 \subsection{Automated matching algorithm}
