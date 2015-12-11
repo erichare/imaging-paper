@@ -1297,8 +1297,7 @@ The rows in the table are ordered according to descending importance. The variab
 
 \section{Conclusion}
 
-We have presented ...
-\hh{XXX Quick summary of the main points of the paper XXX }
+We have presented an algorithm which detects the most prominent but least relevant structure of a bullet from a ballistics identification perspective, removes these features, and produces residuals which allows for the easy identification of markings. We've generalized this algorithm to align the residuals from two bullets to automatically determine whether they are matches. We created a random forest model using many of the features to provide a probabilistic assessment of the quality of a match, along with the most relevant features. Finally, we've provided an easy-to-use open-source backend, and web frontend to many of these features.
 
 The matching algorithm is sensitive to the parameter choices made. The distance between crosscuts (currently 25$\mu m$) to evaluate stability, as well as the cross-correlation factor (currently 0.9) we set as a minimum are affecting the final outcome. Another parameter is the amount of smoothing in identifying peaks and grooves (currently a window of 57.8375$\mu m$ is used, corresponding to a window of 17 values to the left and the right of an observation). While we tried to lay out in the paper the impact each of the parameter choices has on the matching, we are still far from an optimized scenario. 
 
@@ -1309,8 +1308,7 @@ The findings of the NRC report on ballistic imaging are based on two-dimensional
 The report also found, that results from 2d images are improved upon by matches based on 3d images. This is consistent with the importance of features found here: out of the top six features in Table~\ref{tab:importance}, only the number of matches and mismatches are available for a match based on 2d features.
 
 By suggesting an automated algorithm that first identifies lands, then identifies peaks and valleys on this land, we reduce subjectivity and with it possible sources of bias. [T]`he concept of counting striations is subjective and based on experience, but it does tend to be consistent within a single examiner'~\cite{miller:1998}.
-For a fair assessment of the adequacy of an algorithm we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package x3rplus~\cite{x3prplus}, and the code to produce this paper is available at \hh{XXX, Eric ... we need a website} \eh{XXX can we just put the GitHub link here?} \hh{github is fine!}. Obviously, this is only a first step, but in times of the Netflix prize~\cite{koren:2009, toescher:2009, piotte:2009} and the many Data Science challenges hosted by Kaggle, we should not let the quality of the matching algorithm be the problem that stands in the way.
-
+For a fair assessment of the adequacy of an algorithm we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package x3rplus~\cite{x3prplus}, and the code to produce this paper is available at \url{http://www.github.com/erichare/imaging-paper}. Obviously, this is only a first step, but in times of the Netflix prize~\cite{koren:2009, toescher:2009, piotte:2009} and the many Data Science challenges hosted by Kaggle, we should not let the quality of the matching algorithm be the problem that stands in the way.
 
 Only a much larger database and transparent communication of results will give us  answers to whether automatic matching of ballistic evidence is really feasible. Whether there really is individualization of this evidence, as is often silently assumed. And in the case, that individualization is a reasonable assumption, whether  there is a way to be able to distinguish between individual and subclass characteristics. 
 
