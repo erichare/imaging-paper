@@ -28,7 +28,7 @@
 \usepackage{booktabs} % Horizontal rules in tables
 \usepackage{fix-cm}	 % Custom font sizes - used for the initial letter in the document
 \usepackage{float}
-\usepackage{afterpage}
+%\usepackage{afterpage}
 
 % declare the path(s) where your graphic files are
 \graphicspath{{Figure/}{Images/}}
@@ -73,6 +73,17 @@
 
     \renewcommand{\topfraction}{0.99}	% max fraction of floats at top
     \renewcommand{\bottomfraction}{0.99}	% max fraction of floats at bottom
+% parameters for text pages
+\setcounter{topnumber}{2}
+    \setcounter{bottomnumber}{2}
+    \setcounter{totalnumber}{4}     % 2 may work better
+    \setcounter{dbltopnumber}{2}    % for 2-column pages
+    \renewcommand{\dbltopfraction}{0.9}	% fit big float above 2-col. text
+    \renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
+    %   Parameters for FLOAT pages (not text pages):
+    \renewcommand{\floatpagefraction}{0.7}	% require fuller float pages
+	% N.B.: floatpagefraction MUST be less than topfraction !!
+    \renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
 
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
@@ -931,10 +942,10 @@ ggplot() +
 \end{subfigure}
 \caption{\label{fig:match}Matching striation marks: smooth (a), identify peaks and valley (b), and match peaks and valleys between crosscuts (c).}
 \end{figure}
-\afterpage{\clearpage}
+%\afterpage{\clearpage}
 
 \subsection{Varying smoothing factor}
-As mentioned, the algorithm for peak/valley detection depends on the selection of a smoothing window, called the smoothing factor. In particular, for detecting and removing the grooves prior to fitting a Loess regression, and for detecting the peaks/valleys of the loess residuals, we selected a smoothing factor of 35. We can investigate the performance of peak/valley detection across different smoothing factors. Figure \ref{fig:varysmooth} displays the resulting peaks and valleys across smoothing factors of 5, 15, and 35 respectively. It is immediately clear that a small smoothing factor like 5 is a poor choice. This results in a significant amount of noise in the data such that even just a point or two can skew the rolling average enough for a peak or valley to be detected. Given that the striation patterns are typically much larger, we are in effect muddying the waters by performing such minimal smoothing.
+As mentioned earlier, the algorithm for peak/valley detection depends on the selection of a smoothing window, called the smoothing factor. In particular, for detecting and removing the grooves prior to fitting a Loess regression we selected a smoothing factor of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 15 seems more appropriate. We can investigate the performance of peak/valley detection across different smoothing factors. Figure~\ref{fig:varysmooth} displays the resulting peaks and valleys across smoothing factors of 5, 15, and 35, respectively. The dark line corresponds to the smoothed values, while the grey line in the back shows the unsmoothed values of the surface measurements. The choice of smoothing factor is a classical decision of a bias/variance trade-off. It is immediately clear that a small smoothing factor like 5 is a poor choice. It results in a significant amount of noise in the data such that even just a point or two can skew the rolling average enough for a peak or valley to be detected. Given that the striation patterns are typically much larger, we are in effect muddying the waters by performing such minimal smoothing.
 
 A larger smoothing factor on the other hand, like 35, seems to be a more plausible option. Most of the peaks/valleys present which are detected by a smoothing factor of 15 are also detected at 35. However, some notable issues arise. Notice that the valley on the right hand side of the image is smoothed out, and thus not detected. On the left hand side, a double peak is detected - that might be a questionable decision - but there are several peaks in the middle, that are being smoothed out, for example the peak at around $y = 750$ or the triple-peak pattern around $y=1,100$. That is, in many cases, large windows are smoothing out some of the structure that we wish to see. Furthermore, it can be seen that the peaks/valleys are often shifted relative to their position in the original loess residuals, or in the smoothed data with smaller smoothing factors.
 
@@ -989,7 +1000,7 @@ smooths <- rbind(peaks1$plot$data, peaks2$plot$data,
 %' @
 %'     }
 %' \end{subfigure}
-\caption{\label{fig:varysmooth} Peak/valley detection at smoothing factors of 35, 5, and 65 respectively. Note that a smoothing factor of 5 yields enough noise that many very minimal overlapping peaks and valleys are detected, while a smoothing factor of 65 over-smoothes and causes the peaks/valleys to either disappear or be horizontally shifted from their position in the original loess residuals.}
+\caption{\label{fig:varysmooth} Peak/valley detection at smoothing factors of 5, 15, and 35, respectively. Note that a smoothing factor of 5 yields enough noise that many very minimal overlapping peaks and valleys are detected, while a smoothing factor of 35 might over-smoothe and cause the peaks/valleys to either disappear or be horizontally shifted from their position in the original loess residuals.}
 \end{figure}
 
 \subsection{Automated matching algorithm}
@@ -1008,7 +1019,7 @@ All of the other steps are done on pairs of bullet lands:
 In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a  high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti~\cite{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match, and which are part of current practice in assessing bullet matches~\cite{nichols:1997, nichols:2003, nichols:2003b}.
 \end{enumerate}
 
-\hh{XXX next step: how does this matching work in known non-matches? distribution of CMS under a null of no match? }
+In order to get a better understanding of  how  this matching works in known matches and non-matches, we next investigate the algorithm's performance in a test scenario.
 
 
 \begin{figure}[hbtp]
@@ -1054,8 +1065,6 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 
 
 \hh{XXX what would be good is to get the line identifications and project them back onto the surface. }
-
-\hh{XXX needs more work: how does crosscut impact the results?  For the same bullet: how far apart can crosscuts be to still result in a match?}
 
 \section{Evaluation}
 Using the James Hamby study, we run all unknown bullets against all known bullets for matches. The algorithm is using land-to-land matches, i.e. we are running $15 \times 6 = 90$ lands from unkown bullets against $2 \times 10 \times 6 = 120$ lands from known bullets, yielding a total of $10,800$ comparisons with 180 known land-to-land matches. 
@@ -1125,7 +1134,7 @@ ggplot(data=bstats) +
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{All land-to-land comparisons a maximum number of CMS of thirteen or more are matches.}
+\caption{All land-to-land comparisons with a maximum number of CMS of thirteen or higher are matches.}
 <<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='\\linewidth'>>=
 ggplot(data=bstats) + 
   geom_bar(aes(x=factor(cms), fill=match), position="fill") +
