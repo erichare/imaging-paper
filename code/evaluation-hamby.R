@@ -1,5 +1,5 @@
 span <- 15
-dataStr <- sprintf("data-%d-25", span)
+dataStr <- sprintf("data-new-%d-25", span)
 datas <- file.path(dataStr, dir(dataStr, pattern="RData"))
 datas <- datas[grep(paste0(dataStr,"/u.*"), datas)]
 
@@ -54,6 +54,14 @@ CCFs$resID <- rep(1:120, length=nrow(CCFs))
 CCFs <- CCFs[order(as.character(CCFs$b2)),]
 CCFs$b2 <- factor(as.character(CCFs$b2))
 
+splits <- strsplit(as.character(CCFs$b1), split="/")
+CCFs$b1 <- sapply(splits, function(x) x[length(x)])
+CCFs$b1 <- gsub(".x3p","", CCFs$b1)
+  
+splits <- strsplit(as.character(CCFs$b2), split="/")
+CCFs$b2 <- sapply(splits, function(x) x[length(x)])
+CCFs$b2 <- gsub(".x3p","", CCFs$b2)
+
 
 matches <- read.csv("csvs/matches.csv", header=FALSE, stringsAsFactors = FALSE)
 matches$V3 <- paste("Ukn Bullet",matches$V3)
@@ -68,6 +76,7 @@ mm <- subset(mm, value != "Ukn Bullet ")
 CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
 CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
 CCFs$match <- CCFs$id.x == CCFs$id.y
+CCFs$span <- span
 
 write.csv(CCFs, file=file.path(dataStr, "bullet-stats.csv"), row.names=FALSE)
 
@@ -120,11 +129,17 @@ library(rpart.plot)
 includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
 rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 prp(rp1, extra = 101)
+CCFs$pred <- predict(rp1)
+xtabs(~(pred>.5)+match, data=CCFs)
+
+
+library(randomForest)
+rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=300)
+
+CCFs$forest <- predict(rtrees, type="prob")[,2]
 
 qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=0.1) + facet_wrap(~match)
 
-CCFs$pred <- predict(rp1)
-xtabs(~(pred>.5)+match, data=CCFs)
 
 # the ccf/num.matches distribution of non-matches looks like a normal distribution - 
 # let's find a mean and compute (a standardized) distance from that
