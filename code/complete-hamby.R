@@ -8,8 +8,7 @@ library(zoo)
 knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
 unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 
-span <- 35
-dataStr <- sprintf("data-%d-25", span) # using crosscuts-25.csv
+
 
 ###############
 # can we identify the barrels the unknown bullets came from?
@@ -91,20 +90,19 @@ names(bullets_processed) <- as.character(ccs$path)
 
 bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth
 
-for (j in 1:90) {
-  reslist <- lapply(knowns, function(x) {
-    cat("Processing", j, "vs", basename(x$path), "\n")
-      
-      br1 <- filter(bullets_smoothed, bullet == x$path)
-      br2 <- filter(bullets_smoothed, bullet == unknowns[[j]]$path)
-
-    new_bulletGetMaxCMSXXX(br1, br2, span=span)
-  })
-  save(reslist, file=file.path(dataStr, sprintf("unkn%d.RData", j)))
+for (span in c(10, 20, 25, 30, 40)) {
+    dataStr <- sprintf("data-%d-25", span) # using crosscuts-25.csv
+    
+    if (!file.exists(dataStr)) dir.create(dataStr)
+    for (j in 1:90) {
+        reslist <- lapply(knowns, function(x) {
+            cat("Processing", j, "vs", basename(x$path), "with span", span, "\n")
+            
+            br1 <- filter(bullets_smoothed, bullet == x$path)
+            br2 <- filter(bullets_smoothed, bullet == unknowns[[j]]$path)
+            
+            new_bulletGetMaxCMSXXX(br1, br2, span=span)
+        })
+        save(reslist, file=file.path(dataStr, sprintf("unkn%d.RData", j)))
+    }
 }
-
-
-
-
-
-  
