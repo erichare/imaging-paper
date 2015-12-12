@@ -1323,10 +1323,9 @@ For a fair assessment of the adequacy of an algorithm we need transparency. Our 
 
 Only a much larger database and transparent communication of results will give us  answers to whether automatic matching of ballistic evidence is really feasible. Whether there really is individualization of this evidence, as is often silently assumed. And in the case, that individualization is a reasonable assumption, whether  there is a way to be able to distinguish between individual and subclass characteristics. 
 
+An approach that might help in determining this difference comes from Biometrics, is suggested by Jain et al~\cite{jain:2015:tphil, jain:2015} and has been successfully applied in the Aadhar project (the effort by the Unique Identification Authority of India (UIDAI) to provide a unique 12-digit identification number to approximately 1.2 billion residents of India based on ten fingerprints and two irises).
+This approach uses dictionary learning based on small square patches  of 64x64 or 32x32 pixels. For matching bullets, a simpler, one-dimensional window approach might be sufficient to match striation marks because of the physical forces  leading to the existence of these marks.  
 
-Things to be dicussed in the future
-\begin{enumerate}
-\item reduce the stretch of crosscuts and match smaller pieces. This allows for both a more realistic scenario, as well as a quantification of the individuality of the segment.
 \end{enumerate}
 
 \paragraph{Acknowledgment} Thanks to the men and women behind the software R~\cite{R}, and the authors of the R packages  knitr~\cite{knitr} and ggplot2~\cite{ggplot2}.
