@@ -622,11 +622,11 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
 @
 
 \includegraphics[width=\columnwidth]{images/side-by-side-manual-match.png}
-\caption{\label{fig:manualmatch}\hh{Manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
+\caption{\label{fig:manualmatch}Manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}
 \end{figure}
 \begin{figure}[hbtp]
 \includegraphics[width=\columnwidth]{images/matchup-rgl.png}
-\caption{\label{fig:manualmatch-rgl}\hh{Different view of the manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}}
+\caption{\label{fig:manualmatch-rgl}Different view of the manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}
 \end{figure}
 
 
@@ -1325,8 +1325,6 @@ Only a much larger database and transparent communication of results will give u
 
 An approach that might help in determining this difference comes from Biometrics, is suggested by Jain et al~\cite{jain:2015:tphil, jain:2015} and has been successfully applied in the Aadhar project (the effort by the Unique Identification Authority of India (UIDAI) to provide a unique 12-digit identification number to approximately 1.2 billion residents of India based on ten fingerprints and two irises).
 This approach uses dictionary learning based on small square patches  of 64x64 or 32x32 pixels. For matching bullets, a simpler, one-dimensional window approach might be sufficient to match striation marks because of the physical forces  leading to the existence of these marks.  
-
-\end{enumerate}
 
 \paragraph{Acknowledgment} Thanks to the men and women behind the software R~\cite{R}, and the authors of the R packages  knitr~\cite{knitr} and ggplot2~\cite{ggplot2}.
 
