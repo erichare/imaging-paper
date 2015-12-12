@@ -1,4 +1,4 @@
-span <- 35
+span <- 15
 dataStr <- sprintf("data-%d-25", span)
 datas <- file.path(dataStr, dir(dataStr, pattern="RData"))
 datas <- datas[grep(paste0(dataStr,"/u.*"), datas)]
@@ -105,7 +105,7 @@ CCFs <- read.csv(file.path(dataStr, "bullet-stats.csv"))
 
 qplot(factor(cms), data=CCFs)
 ggplot(data=CCFs) + geom_bar(aes(x=factor(cms), fill=match), position="fill")
-sum(CCFs$cms >= 16)
+sum(CCFs$cms >= 13)
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match))
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=ccf, colour=match)) + facet_wrap(~match)
 ggplot(data=CCFs) + geom_bar(aes(x=factor(non_cms), fill=match), position="fill")
@@ -123,8 +123,8 @@ prp(rp1, extra = 101)
 
 qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=0.1) + facet_wrap(~match)
 
-CCFs$pred35 <- predict(rp1)
-xtabs(~(pred35>.5)+match, data=CCFs)
+CCFs$pred <- predict(rp1)
+xtabs(~(pred>.5)+match, data=CCFs)
 
 # the ccf/num.matches distribution of non-matches looks like a normal distribution - 
 # let's find a mean and compute (a standardized) distance from that

@@ -1211,7 +1211,7 @@ library(rpart.plot)
 library(RColorBrewer)
 vals = alpha(brewer.pal(3, name="Paired"), alpha=0.5)
 
-CCFs <- read.csv("data-35-25/bullet-stats.csv")
+CCFs <- read.csv("data-15-25/bullet-stats.csv")
 includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist"))
 rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 
@@ -1245,7 +1245,7 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
 \end{figure}
 %
-After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0056. This is a weighted average between false positives of 0.00028 and false negatives of 0.32. Note that these error rates are based on land-to-land comparisons and will be much lower for bullet-to-bullet matches. In the case of the Hamby study, the error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
+After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0049. This is a weighted average between false positives of 0.00028 and false negatives of 0.2778. Note that these error rates are based on land-to-land comparisons and will be much lower for bullet-to-bullet matches. In the case of the Hamby study, the error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
 \begin{figure}[hbtp]
 <<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
 CCFs$bullet <- gsub("-[0-9]$", "", CCFs$b2)
@@ -1267,7 +1267,7 @@ qplot(data=bm, value, reorder(bullet, value/n), size=I(2.5),
                      minor_breaks = 1:11) +
   theme(legend.position = "bottom")
 @
-\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree. Both results for the tree as well as the random forest are shown. For each bullet at least two lands are correctly matched. Unknown bullets B and M are the hardest for the algorithm to match.}
+\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree. Both results for the tree as well as the random forest are shown. For each bullet at least four lands are correctly matched. Unknown bullets B and M are the hardest for the algorithm to match.}
 \end{figure}
 %
 However, this does not carry a lot of weight because of the few bullet comparisons in question: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
