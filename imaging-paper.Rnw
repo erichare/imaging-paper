@@ -905,7 +905,8 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
   ggplot() + theme_bw() +
     geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, 
               data=peaks,  alpha=0.2) +
-    geom_vline(aes(xintercept=extrema, colour=factor(type)), data= peaks) +
+    geom_vline(aes(xintercept=extrema, colour=factor(type)), 
+               data= peaks, alpha=0.7) +
     scale_colour_brewer(palette="Set2") + 
     scale_fill_brewer(palette="Set2") +
     theme(legend.position="none") + 
@@ -950,9 +951,6 @@ As mentioned earlier, the algorithm for peak/valley detection depends on the sel
 A larger smoothing factor on the other hand, like 35, seems to be a more plausible option. Most of the peaks/valleys present which are detected by a smoothing factor of 15 are also detected at 35. However, some notable issues arise. Notice that the valley on the right hand side of the image is smoothed out, and thus not detected. On the left hand side, a double peak is detected - that might be a questionable decision - but there are several peaks in the middle, that are being smoothed out, for example the peak at around $y = 750$ or the triple-peak pattern around $y=1,100$. That is, in many cases, large windows are smoothing out some of the structure that we wish to see. Furthermore, it can be seen that the peaks/valleys are often shifted relative to their position in the original loess residuals, or in the smoothed data with smaller smoothing factors.
 
 \begin{figure}[hbtp]
-%\centering
-%\begin{subfigure}[t]{\linewidth}
-%\caption{Peak and valley detection for bullet 1-5 at a smoothing factor of 35.\label{fig:smoothfac1}}{%
 <<smoothfac1, echo=FALSE, fig.width=7, fig.height=5.2, out.width='\\linewidth', warning=FALSE>>=
 br111.groove <- get_grooves(br111_bullet)
 br111.loess <- fit_loess(br111_bullet, br111.groove)
@@ -974,7 +972,7 @@ smooths <- rbind(peaks1$plot$data, peaks2$plot$data,
   ggplot() + theme_bw() +
     geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, 
               data=peaks,  alpha=0.2) +
-    geom_vline(aes(xintercept=extrema, colour=factor(type)), data= peaks) +
+    geom_vline(aes(xintercept=extrema, colour=factor(type)), data= peaks, alpha=.7) +
     scale_colour_brewer(palette="Set2") + 
     scale_fill_brewer(palette="Set2") +
     theme(legend.position="none") + 
@@ -984,22 +982,6 @@ smooths <- rbind(peaks1$plot$data, peaks2$plot$data,
     geom_line(aes(x=y, y=smoothed), data=smooths) +
   ylab(expression(paste("Crosscut values (in ",mu,"m)", sep=""))) 
 @
-%'     }
-%' \end{subfigure}    
-%' \begin{subfigure}[t]{\linewidth}
-%'     \caption{Peak and valley detection for bullet 1-5 at a smoothing factor of 5.\label{fig:smoothfac2}}{%
-%' <<smoothfac2, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
-%' get_peaks(br111.loess$data, smoothfactor = 5)$plot
-%' @
-%'     }
-%' \end{subfigure}
-%' \begin{subfigure}[t]{\linewidth}
-%'     \caption{Peak and valley detection for bullet 1-5 at a smoothing factor of 65.\label{fig:smoothfac3}}{%
-%' <<smoothfac3, echo=FALSE, fig.width=7, fig.height=3, out.width='\\textwidth', warning=FALSE>>=
-%' get_peaks(br111.loess$data, smoothfactor = 65)$plot
-%' @
-%'     }
-%' \end{subfigure}
 \caption{\label{fig:varysmooth} Peak/valley detection at smoothing factors of 5, 15, and 35, respectively. Note that a smoothing factor of 5 yields enough noise that many very minimal overlapping peaks and valleys are detected, while a smoothing factor of 35 might over-smoothe and cause the peaks/valleys to either disappear or be horizontally shifted from their position in the original loess residuals.}
 \end{figure}
 
@@ -1268,7 +1250,7 @@ qplot(data=bm, value, reorder(bullet, value/n), size=I(2.5),
                      minor_breaks = 1:11) +
   theme(legend.position = "bottom")
 @
-\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree. Both results for the tree and the random forest are shown. For each bullet at least four lands are correctly matched. Unknown bullets B and M are the hardest for the algorithm to match.}
+\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree (maximum possible number is 12). Both results for the tree and the random forest are shown. For each bullet at least four lands are correctly matched. Unknown bullets B and M are the hardest for the algorithm to match.}
 \end{figure}
 %
 However, this does not carry a lot of weight because of the few bullet comparisons in question: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
@@ -1276,7 +1258,8 @@ Another thing to note about the  the random forest's error rates is that they ar
 
 \begin{figure}[hbtp]
 <<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='\\linewidth'>>=
-qplot(pred, forest, geom="jitter", data=bstats, colour=match) + theme_bw() +
+qplot(pred, forest, geom="jitter", data=bstats, colour=match, 
+      shape=match) + theme_bw() +
   theme(legend.position="bottom") +
   geom_vline(xintercept=0.5, colour="grey50") +
   geom_hline(yintercept=0.5, colour="grey50") + 
