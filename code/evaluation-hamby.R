@@ -3,13 +3,6 @@ dataStr <- sprintf("data-new-%d-25", span)
 datas <- file.path(dataStr, dir(dataStr, pattern="RData"))
 datas <- datas[grep(paste0(dataStr,"/u.*"), datas)]
 
-maxCMS <- sapply(datas, function(x) {
-  load(x)
-  cmsdist <- sapply(reslist, function(x) x$maxCMS)
-  max(cmsdist)
-})
-
-
 CCFs <- plyr::ldply(datas, function(x) {
   load(x)
   cmsdist <- sapply(reslist, function(x) x$maxCMS)
@@ -78,7 +71,24 @@ CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
 CCFs$match <- CCFs$id.x == CCFs$id.y
 CCFs$span <- span
 
+
+library(rpart)
+library(rpart.plot)
+includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
+rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
+prp(rp1, extra = 101)
+CCFs$pred <- predict(rp1)
+
+library(randomForest)
+rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=300)
+CCFs$forest <- predict(rtrees, type="prob")[,2]
+
 write.csv(CCFs, file=file.path(dataStr, "bullet-stats.csv"), row.names=FALSE)
+
+
+##################################################
+
+
 
 # diagnostics
 
@@ -124,19 +134,6 @@ qplot(cms, distr.sd, geom="jitter", data=CCFs, colour=match, alpha=I(0.5))
 
 qplot(factor(cms), fill=match, data=CCFs) + facet_wrap(~b2)
 
-library(rpart)
-library(rpart.plot)
-includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
-rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
-prp(rp1, extra = 101)
-CCFs$pred <- predict(rp1)
-xtabs(~(pred>.5)+match, data=CCFs)
-
-
-library(randomForest)
-rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=300)
-
-CCFs$forest <- predict(rtrees, type="prob")[,2]
 
 qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=0.1) + facet_wrap(~match)
 
