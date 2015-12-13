@@ -150,6 +150,13 @@ datadir <- "app/images/Hamby252_3DX3P1of2/"
 
 options(replace.assign=TRUE,scipen=3, digits=2)
 bstats <- read.csv("data-15-25/bullet-stats.csv")
+
+scrubPath <- function(x) {
+  splits <- strsplit(as.character(x), split="/")
+  last <- sapply(splits, function(x) x[length(x)])
+  gsub(".x3p","", last)
+}
+
 @
 
 
@@ -1050,25 +1057,26 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 
 \section{Evaluation}
 Using the James Hamby study, we run all unknown bullets against all known bullets for matches. The algorithm is using land-to-land matches, i.e. we are running $15 \times 6 = 90$ lands from unkown bullets against $2 \times 10 \times 6 = 120$ lands from known bullets, yielding a total of $10,800$ comparisons with 180 known land-to-land matches. 
- When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the number of maximum consecutive matching striae between land D-5 and all 120 known lands. Two lands show a high CMS. These correspond to the known matches, shown in Figures~\ref{fig:hamby-perfect}b and c. 
+ When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the number of maximum consecutive matching striae between land C-3 and all 120 known lands. Two lands show a high CMS. These correspond to the known matches, shown in Figures~\ref{fig:hamby-perfect}b and c. 
  Unfortunately, not all results are as clear cut. 
 It is not reasonable to assume that we can match all lands, but we can try to maximize the number of matches to get an overview of what we can reasonably expect from an automated match. 
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{.49\textwidth}
-\caption{Maximal number of CMS between unknown Bullet D land 5 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
+\caption{Maximal number of CMS between unknown Bullet C land 3 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
 <<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth'>>=
-load("data-new-25-25/unkn17.RData")
+load("data-25-25/unkn9.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
 
 qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
 @
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}
-\caption{Overlaid lines of D-5 and the land with the top matching CMS.}
+\caption{Overlaid lines of C-3 and the land with the top matching CMS.}
 <<top, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\textwidth', warning = FALSE>>=
 res <- reslist[[which.max(cmsdist)]]  
 #res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
+res$bullets$bullet <- scrubPath(res$bullets$bullet)
 
 print(ggplot() +
   theme_bw() + 
@@ -1083,9 +1091,10 @@ print(ggplot() +
 
 @
 
-\caption{Overlaid lines of D-5 and the land with the second top matching CMS.}
+\caption{Overlaid lines of C-3 and the land with the second top matching CMS.}
 <<top2, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\textwidth', warning = FALSE>>=
-res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
+res <- reslist[[which(cmsdist==14)]]  # number 2
+res$bullets$bullet <- scrubPath(res$bullets$bullet)
 
 print(ggplot() +
   theme_bw() + 
@@ -1132,9 +1141,7 @@ ggplot(data=bstats) +
 <<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\linewidth', warning=FALSE>>=
 load("data-25-25/unkn47.RData")
 res <- reslist[[106]]
-splits <- strsplit(as.character(res$bullets$bullet), split="/")
-last <- sapply(splits, function(x) x[length(x)])
-res$bullets$bullet <- gsub(".x3p","", last)
+res$bullets$bullet <- scrubPath(res$bullets$bullet)
 
 print(ggplot() +
   theme_bw() + 
