@@ -953,18 +953,18 @@ ggplot() +
 %\afterpage{\clearpage}
 
 \subsection{Varying smoothing factor}
-As mentioned earlier, the algorithm for peak/valley detection depends on the selection of a smoothing window, called the smoothing factor. In particular, for detecting and removing the grooves prior to fitting a Loess regression we selected a smoothing factor of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 15 seems more appropriate. We can investigate the performance of peak/valley detection across different smoothing factors. Figure~\ref{fig:varysmooth} displays the resulting peaks and valleys across smoothing factors of 5, 15, and 35, respectively. The dark line corresponds to the smoothed values, while the grey line in the back shows the unsmoothed values of the surface measurements. The choice of smoothing factor is a classical decision of a bias/variance trade-off. It is immediately clear that a small smoothing factor like 5 is a poor choice. It results in a significant amount of noise in the data such that even just a point or two can skew the rolling average enough for a peak or valley to be detected. Given that the striation patterns are typically much larger, we are in effect muddying the waters by performing such minimal smoothing.
+As mentioned earlier, the algorithm for peak/valley detection depends on the selection of a smoothing window, called the smoothing factor. In particular, for detecting and removing the grooves prior to fitting a Loess regression we selected a smoothing factor of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 15 seems more appropriate. We can investigate the performance of peak/valley detection across different smoothing factors. Figure~\ref{fig:varysmooth} displays the resulting peaks and valleys across smoothing factors of 5, 25, and 35, respectively. The dark line corresponds to the smoothed values, while the grey line in the back shows the unsmoothed values of the surface measurements. The choice of smoothing factor is a classical decision of a bias/variance trade-off. It is immediately clear that a small smoothing factor like 5 is a poor choice. It results in a significant amount of noise in the data such that even just a point or two can skew the rolling average enough for a peak or valley to be detected. Given that the striation patterns are typically much larger, we are in effect muddying the waters by performing such minimal smoothing.
 
-A larger smoothing factor on the other hand, like 35, seems to be a more plausible option. Most of the peaks/valleys present which are detected by a smoothing factor of 15 are also detected at 35. However, some notable issues arise. Notice that the valley on the right hand side of the image is smoothed out, and thus not detected. On the left hand side, a double peak is detected - that might be a questionable decision - but there are several peaks in the middle, that are being smoothed out, for example the peak at around $y = 750$ or the triple-peak pattern around $y=1,100$. That is, in many cases, large windows are smoothing out some of the structure that we wish to see. Furthermore, it can be seen that the peaks/valleys are often shifted relative to their position in the original loess residuals, or in the smoothed data with smaller smoothing factors.
+A larger smoothing factor on the other hand, like 35, seems to be a more plausible option. Most of the peaks/valleys present which are detected by a smoothing factor of 25 are also detected at 35. However, some notable issues arise. Notice that the valley on the right hand side of the image is smoothed out, and thus not detected. On the left hand side, a double peak is detected - that might be a questionable decision - but there are several peaks in the middle, that are being smoothed out, for example the peak at around $y = 750$. That is, in many cases, large windows are smoothing out some of the structure that we wish to see. Furthermore, it can be seen that the peaks/valleys are often shifted relative to their position in the original loess residuals, or in the smoothed data with smaller smoothing factors.
 
 \begin{figure}[hbtp]
 <<smoothfac1, echo=FALSE, fig.width=7, fig.height=5.2, out.width='\\linewidth', warning=FALSE>>=
 br111.groove <- get_grooves(br111_bullet)
 br111.loess <- fit_loess(br111_bullet, br111.groove)
 
-peaks1 <- get_peaks(br111.loess$data, smoothfactor = 15)
-peaks1$lines$smoothfactor = 15
-peaks1$plot$data$smoothfactor = 15
+peaks1 <- get_peaks(br111.loess$data, smoothfactor = 25)
+peaks1$lines$smoothfactor = 25
+peaks1$plot$data$smoothfactor = 25
 peaks2 <- get_peaks(br111.loess$data, smoothfactor = 5)
 peaks2$lines$smoothfactor = 5
 peaks2$plot$data$smoothfactor = 5
@@ -989,7 +989,7 @@ smooths <- rbind(peaks1$plot$data, peaks2$plot$data,
     geom_line(aes(x=y, y=smoothed), data=smooths) +
   ylab(expression(paste("Crosscut values (in ",mu,"m)", sep=""))) 
 @
-\caption{\label{fig:varysmooth} Peak/valley detection at smoothing factors of 5, 15, and 35, respectively. Note that a smoothing factor of 5 yields enough noise that many very minimal overlapping peaks and valleys are detected, while a smoothing factor of 35 might over-smoothe and cause the peaks/valleys to either disappear or be horizontally shifted from their position in the original loess residuals.}
+\caption{\label{fig:varysmooth} Peak/valley detection at smoothing factors of 5, 25, and 35, respectively. Note that a smoothing factor of 5 yields enough noise that many very minimal overlapping peaks and valleys are detected, while a smoothing factor of 35 might over-smooth and cause the peaks/valleys to either disappear or shift  horizontally  from their position in the original loess residuals.}
 \end{figure}
 
 \subsection{Automated matching algorithm}
@@ -1032,9 +1032,6 @@ list_of_matches <- lapply(25:30, function(i) {
     theme_bw() + 
     geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=6, data=lines, alpha=0.2) +
     geom_line(aes(x = y, y = l30, linetype = bullet),  data = lofX, alpha=0.6) +
-#    geom_hline(yintercept = threshold) +
-#    geom_hline(yintercept = - threshold) +
-#    scale_colour_brewer("",palette="Set1") +
     scale_linetype_discrete("") +
     scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1.2), legend.justification=c(1,1),
