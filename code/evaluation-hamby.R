@@ -95,7 +95,7 @@ write.csv(CCFs, file=file.path(dataStr, "bullet-stats.csv"), row.names=FALSE)
 
 idx <- which(CCFs$match & CCFs$cms <= 6)
 idx <- which(!CCFs$match & CCFs$ccf > .7)
-idx <- which(!CCFs$match & CCFs$cms == 15)
+idx <- which(!CCFs$match & CCFs$cms == 12)
 idx <- which(CCFs$cms == 11)
 
 for ( i in idx) {

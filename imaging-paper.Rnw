@@ -1191,7 +1191,7 @@ Both of these additional variables show large, if not significant, differences b
 
 
 Using recursive partitioning, we fit a decision tree~\cite{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 123 lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
-Instead of CMS, cross-correlation (ccf) between the crosscuts is very important in the matching process  by the decision tree. Aside from  cross correlation, the number of matches (num.matches) and mismatches (mis.matches) is involved in the decision. 
+Instead of CMS, cross-correlation (ccf) between the crosscuts is very important in the matching process  by the decision tree. Aside from  cross correlation, the number of matches (num.matches) is involved in the decision. 
 Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
 Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3d surface structure. 
 
@@ -1217,6 +1217,7 @@ bstats$pred <- predict(rp1)
 <<rforest, echo=FALSE, message=FALSE>>=
 library(randomForest)
 library(reshape2)
+set.seed(20151227)
 rtrees <- randomForest(factor(match)~., data=bstats[,includes], ntree=300)
 
 errors <- data.frame(rtrees$err.rate)
@@ -1235,7 +1236,7 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
 \end{figure}
 %
-After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0045. This is a weighted average between false positives of 0.000094 and false negatives of 0.27. Note that these error rates are based on land-to-land comparisons and will be much lower for bullet-to-bullet matches. In the case of the Hamby study, the error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
+After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0046. This is a weighted average between false positives of 0.000094 and false negatives of 0.27. Note that these error rates are based on land-to-land comparisons and will be much lower for bullet-to-bullet matches. In the case of the Hamby study, the error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
 \begin{figure}[hbtp]
 <<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
 bstats$bullet <- gsub("-[0-9]$", "", bstats$b2)
@@ -1257,11 +1258,11 @@ qplot(data=bm, value, reorder(bullet, value/n), size=I(2.5),
                      minor_breaks = 1:11) +
   theme(legend.position = "bottom")
 @
-\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree (maximum possible number is 12). Both results for the tree and the random forest are shown. For each bullet at least four lands are correctly matched. Unknown bullets B and M are the hardest for the algorithm to match.}
+\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree (maximum possible number is 12). Both results for the tree and the random forest are shown. For each bullet at least three lands are correctly matched. Unknown bullet B is the hardest for the algorithm to match.}
 \end{figure}
 %
 However, this does not carry a lot of weight because of the few bullet comparisons in question: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
-Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we can therefore introduce an interval of `inconclusive' results in the middle of the spectrum. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree ($x$-axis) and the random forest ($y$-axis). Overall, there is a lot of agreement; out of 10,800 land-to-land comparisons, only 12 cases result in a different decision. 
+Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we can therefore introduce an interval of `inconclusive' results in the middle of the spectrum. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree ($x$-axis) and the random forest ($y$-axis). Overall, there is a lot of agreement; out of 10,800 land-to-land comparisons, only ten cases result in a different decision. 
 
 \begin{figure}[hbtp]
 <<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='\\linewidth'>>=
