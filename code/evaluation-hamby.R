@@ -181,8 +181,8 @@ prp(rp1, extra = 101, fallen.leaves=TRUE)
 # throw in all three evaluations into the mix:
 
 bstats <- NULL
-for (i in c(35, 30, 25)) {
-  dataStr <- sprintf("data-%d", i)
+for (i in c(5, 10, 15, 20, 25, 30, 35, 40)) {
+  dataStr <- sprintf("data-%d-25", i)
   temp <- read.csv(file.path(dataStr, "bullet-stats.csv"))
   includes <- setdiff(names(temp), c("b1", "b2", "data", "resID", "id.x", "id.y"))
   temp$diffx <- with(temp, abs(x1-x2))
@@ -190,9 +190,11 @@ for (i in c(35, 30, 25)) {
   rp <- rpart(match~., data=temp[,includes])
   
   prp(rp, extra = 101)
-  ch <- scan()
+  #ch <- scan()
   temp$pred <- predict(rp)
   temp$span <- i
+  temp$bullet <- NULL
+  temp$crosscutdist <- NULL
   bstats <- rbind(bstats, temp)
 }
 
