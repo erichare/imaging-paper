@@ -149,7 +149,7 @@ codedir <- "code"
 datadir <- "app/images/Hamby252_3DX3P1of2/"
 
 options(replace.assign=TRUE,scipen=3, digits=2)
-bstats <- read.csv("data-15-25/bullet-stats.csv")
+bstats <- read.csv("data-25-25/bullet-stats.csv")
 
 scrubPath <- function(x) {
   splits <- strsplit(as.character(x), split="/")
