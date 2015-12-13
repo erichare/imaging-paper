@@ -1058,7 +1058,7 @@ It is not reasonable to assume that we can match all lands, but we can try to ma
 \begin{subfigure}[t]{.49\textwidth}
 \caption{Maximal number of CMS between unknown Bullet D land 5 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
 <<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth'>>=
-load("data-15-25/unkn17.RData")
+load("data-new-25-25/unkn17.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
 
 qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
@@ -1130,16 +1130,16 @@ ggplot(data=bstats) +
 
 \begin{figure}[hbtp]
 <<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\linewidth', warning=FALSE>>=
-load("data-15-25/unkn37.RData")
-res <- reslist[[60]]
+load("data-25-25/unkn47.RData")
+res <- reslist[[106]]
+splits <- strsplit(as.character(res$bullets$bullet), split="/")
+last <- sapply(splits, function(x) x[length(x)])
+res$bullets$bullet <- gsub(".x3p","", last)
 
 print(ggplot() +
   theme_bw() + 
   geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=5, data=res$lines, alpha=0.2, show.legend=FALSE) +
   geom_line(aes(x = y, y = l30, linetype = bullet),  data = res$bullets) +
-#  geom_hline(yintercept = res$threshold) +
-#  geom_hline(yintercept = - res$threshold) +
-#  scale_colour_brewer("",palette="Set1") +
   scale_linetype_discrete("") + ylab("") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
@@ -1147,7 +1147,7 @@ print(ggplot() +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
 @
-\caption{\label{fig:mismatch}Known mismatch with a relatively large number of maximal consecutive matching striae (twelve) in the middle. Visual inspection easily reveals this as mismatch. }
+\caption{\label{fig:mismatch}Known mismatch with a relatively large number of maximal consecutive matching striae (twelve) in the middle. The pattern in the middle does look surprisingly similar, however the outer ends of the crosscuts easily reveals this as mismatch. }
 \end{figure}
 
 For smaller numbers of CMS, the percentage of false positives quickly increases. However, if we take other features of the image into account, we can increase the number of correct matches considerably: a high amount of cross-correlation between the two crosscuts (see Figure~\ref{fig:ccfs-match}) is indicative for a match; e.g.\  in the Hamby study only known matches have a cross-correlation of 0.75 or higher. There are 97 land-to-land comparisons with a cross-correlation of above 0.75.   

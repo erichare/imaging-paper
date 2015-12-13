@@ -1,4 +1,4 @@
-span <- 15
+span <- 25
 dataStr <- sprintf("data-new-%d-25", span)
 datas <- file.path(dataStr, dir(dataStr, pattern="RData"))
 datas <- datas[grep(paste0(dataStr,"/u.*"), datas)]
@@ -74,7 +74,7 @@ CCFs$span <- span
 
 library(rpart)
 library(rpart.plot)
-includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y"))
+includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "span", "forest"))
 rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 prp(rp1, extra = 101)
 CCFs$pred <- predict(rp1)
