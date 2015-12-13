@@ -1187,7 +1187,7 @@ Similarly, the Euclidean distance between two crosscuts across the range of loes
 Both of these additional variables show large, if not significant, differences between matches and non-matches. Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of  a set of feature variables derived from the 3d topological surface measurements. There are quite large differences in these averages, indicating that we can successfully employ machine learning methods to distinguish matches from non-matches.
 
 
-Using recursive partitioning, we fit a decision tree~\cite{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of 123 lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
+Using recursive partitioning, we fit a decision tree~\cite{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
 Instead of CMS, cross-correlation (ccf) between the crosscuts is very important in the matching process  by the decision tree. Aside from  cross correlation, the number of matches (num.matches) is involved in the decision. 
 Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
 Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3d surface structure. 
@@ -1214,7 +1214,7 @@ bstats$pred <- predict(rp1)
 <<rforest, echo=FALSE, message=FALSE>>=
 library(randomForest)
 library(reshape2)
-set.seed(20151227)
+set.seed(20151215)
 rtrees <- randomForest(factor(match)~., data=bstats[,includes], ntree=300)
 
 errors <- data.frame(rtrees$err.rate)
@@ -1233,7 +1233,7 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
 \end{figure}
 %
-After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0046. This is a weighted average between false positives of 0.000094 and false negatives of 0.27. Note that these error rates are based on land-to-land comparisons and will be much lower for bullet-to-bullet matches. In the case of the Hamby study, the error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
+After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0044. This is a weighted average between zero false positives and an error rate of false negatives of 0.26. Note that this error rate is based on land-to-land comparisons and will be much lower for bullet-to-bullet matches. In the case of the Hamby study, the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
 \begin{figure}[hbtp]
 <<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
 bstats$bullet <- gsub("-[0-9]$", "", bstats$b2)
@@ -1259,7 +1259,7 @@ qplot(data=bm, value, reorder(bullet, value/n), size=I(2.5),
 \end{figure}
 %
 However, this does not carry a lot of weight because of the few bullet comparisons in question: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
-Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we can therefore introduce an interval of `inconclusive' results in the middle of the spectrum. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree ($x$-axis) and the random forest ($y$-axis). Overall, there is a lot of agreement; out of 10,800 land-to-land comparisons, only ten cases result in a different decision. 
+Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we can therefore introduce an interval of `inconclusive' results in the middle of the spectrum. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree ($x$-axis) and the random forest ($y$-axis). Overall, there is a lot of agreement; out of 10,800 land-to-land comparisons, only four cases result in a different decision. 
 
 \begin{figure}[hbtp]
 <<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='\\linewidth'>>=
@@ -1307,7 +1307,7 @@ print(xtable(imp, align="clrrcrc"), floating = FALSE)
 \caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Match and Non-Match show averages of each of the variables for matches and non-matches only. In parentheses behind the means, standard deviations are given}
 \end{table*}
 
-The rows in the table are ordered according to descending importance. The variable with the most predictive power by far is cross-correlation (ccf), followed by the number of matches (num.matches) and the sum of the height of joint peaks (sumpeaks). The maximal consecutively matching striae (cms) is found only in sixth position.
+The rows in the table are ordered according to descending importance. The variable with the most predictive power by far is cross-correlation (ccf), followed by the number of matches (num.matches) and mismatches(num.mismatches), and the sum of the height of joint peaks (sumpeaks). The maximal consecutively matching striae (cms) is found only in sixth place.
 
 
 \section{Conclusion}
@@ -1320,9 +1320,9 @@ The Hamby study serves as our evaluation `database'. It consists of only  35 bul
  
 The feasibility of a database of ballistic images was evaluated in a 2008 report~\cite{nap:2008} by the National Research Council. The evaluation was investigating the scalability of NIBIN (National Integrated Ballistic Information Network), which uses proprietary matching algorithms provided by IBIS. The bottomline of the report was that in spite of the many technical and practical hurdles, solutions to all but one problem could be found. The remaining problem is simply that statistically the quality of the matching algorithm could not withstand a hugely increased number of records while still maintaining a reasonable workload for forensic examiners, who have to examine possible matches suggested by the system. 
 The findings of the NRC report on ballistic imaging are based on two-dimensional greyscale images, which the committee argued were not reliable enough for distinguishing extremely fine marks. 
-The report also found, that results from 2d images are improved upon by matches based on 3d images. This is consistent with the importance of features found here: out of the top six features in Table~\ref{tab:importance}, only the number of matches and mismatches are available for a match based on 2d features.
+The report also found, that results from 2d images are improved upon by matches based on 3d images. This is consistent with the importance of features found here: out of the top five features in Table~\ref{tab:importance}, only the number of matches and mismatches are available for a match based on 2d features.
 
-By suggesting an automated algorithm that first identifies lands, then identifies peaks and valleys on this land, we reduce subjectivity and with it possible sources of bias. [T]`he concept of counting striations is subjective and based on experience, but it does tend to be consistent within a single examiner'~\cite{miller:1998}.
+By suggesting an automated algorithm that first removes class characteristics, such as the grooves and the curvature of the bullet to reveal the region of the  land, then identifies peaks and valleys on this land, we reduce subjectivity and with it possible sources of bias. Counting CMS in particular, has been found to be subjective to the examiner: `the concept of counting striations is subjective and based on experience'~\cite{miller:1998}.
 
 For a fair assessment of the adequacy of an algorithm we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package x3rplus~\cite{x3prplus}, and the code to produce this paper is available at \url{http://www.github.com/erichare/imaging-paper}. Obviously, this is only a first step, but in times of the Netflix prize~\cite{koren:2009, toescher:2009, piotte:2009} and the many Data Science challenges hosted by Kaggle\footnote{kaggle home:\url{https://www.kaggle.com/solutions/competitions}}, we should not let the quality of the matching algorithm be the problem that stands in the way.
 
