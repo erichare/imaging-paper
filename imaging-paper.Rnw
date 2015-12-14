@@ -384,14 +384,10 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
 \end{figure}
 
 \subsection{Loess Fit}
-In an approach to improve upon the previous algorithm, we first have to eliminate 
-%To improve upon the previous algorithm, the first step must be to eliminate
-the grooves from the images under the assumption that they do not contain relevant information for determining a match.
+In an approach to improve upon the previous algorithm, we first have to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match.
 Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent.
-Surface measurements %beginning at $y = 0$ 
-reach local maxima around the peak of the groove at either end of the range of $y$, we can then follow the descent of the surface measurements inwards to the valley of the groove. 
-This marks the point at which we should trim the image. %We repeat a similar procedure for the right-hand groove by starting at the maximum y value and working backwards. 
-The procedure can be described as follows:
+Surface measurements reach local maxima around the peak of the groove at either end of the range of $y$, we can then follow the descent of the surface measurements inwards to the valley of the groove. 
+This marks the point at which we should trim the image. The procedure can be described as follows:
 
 \begin{enumerate}
     \item Fix an $x$ value (Figure~\ref{fig:loess_step1}, with $x$ set to 243.75$\mu m$).
