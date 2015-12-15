@@ -101,12 +101,12 @@
 
 \preauthor{\begin{flushleft}\large \lineskip 0.5em \usefont{OT1}{phv}{b}{sl} \color{DarkRed}} % Author font configuration
 
-\author{Eric Hare, Heike Hofmann} % Your name
+%\author{Eric Hare, Heike Hofmann} % Your name
 
 \postauthor{\footnotesize \usefont{OT1}{phv}{m}{sl} \color{Black} % Configuration for the institution name
 
-Department of Statistics and Statistical Laboratory,
-Iowa State University% Your institution
+%Department of Statistics and Statistical Laboratory,
+%Iowa State University% Your institution
 
 \par\end{flushleft}\HorRule} % Horizontal rule after the title
 
@@ -1326,7 +1326,7 @@ This approach uses dictionary learning based on small square patches  of 64x64 o
 
 \paragraph{Acknowledgment} Thanks to the men and women behind the software R~\cite{R}, and the authors of the R packages  knitr~\cite{knitr} and ggplot2~\cite{ggplot2}.
 
-This research was partially funded in part by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.
+This research was partially funded in part by... %the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.
 
 \bibliographystyle{abbrv}
 %%use following if all content of bibtex file should be shown
