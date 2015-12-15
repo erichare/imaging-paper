@@ -125,7 +125,7 @@ Iowa State University% Your institution
 %----------------------------------------------------------------------------------------
 
 % The first character should be within \initial{}
-\initial{F}\textbf{orensic examiners try to determine whether two guns were fired from the same barrel by analyzing them under a microscope in controlled conditions. Can we make the task simpler?}
+\initial{F}\textbf{orensic examiners try to determine whether two bullets were fired from the same barrel by analyzing them under a microscope in controlled conditions. Can we make the task simpler?}
 
 %----------------------------------------------------------------------------------------
 %	ARTICLE CONTENTS
@@ -171,18 +171,18 @@ scrubPath <- function(x) {
 % NRC report: \url{http://www.nap.edu/catalog/12162/ballistic-imaging}} }
 % \end{enumerate}
 
-Bullet matching is a process in forensic science done to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of the conviction of criminals in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\cite{giannelli:2011}.
+Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of the conviction of criminals in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\cite{giannelli:2011}.
 
-The new scrutiny of the procedure culminated with the 2009 National Academy of Sciences report~\cite{NAS:2009}. The report concluded that minimal research had been done exploring the reliability of these ballistic identification methods. In fact, the report says the forensic evidence ``including, for example, bite marks and firearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
+In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. ~\cite{NAS:2009}. The report concluded that minimal research had been done to explore the reliability of these ballistic identification methods. In fact, the report states that forensic evidence ``including, for example, bite marks and firearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
 
-Rifling in the barrel creates striation marks on the bullet during the firing process. These marks are claimed to be unique to the barrel, as described in a 1992 AFTE article~\cite{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows."
+Rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet during the firing process. These marks are assumed to be unique to the barrel, as described in a 1992 AFTE article~\cite{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows."
 
-The primary goal in this type of forensic analysis is to identify these striation markings in an attempt to match two bullets. Since gun barrels should produce similar markings on bullets fired consecutively, the careful analysis of these surface images can help us determine whether two bullets are a match. However, this process has traditionally required forensic experts to perform the analysis, and required physical examination of the bullets. We've produced a framework which, in software, allows for the analysis of the surface topologies, and the transcription of the markings into a 2D plotting framework which we believe makes identification of matches easier and more rooted in science for both the expert and the lay person.
+The primary goal in this type of forensic analysis is to identify these striation markings in an attempt to match two bullets. Since gun barrels should produce similar markings on bullets fired consecutively, the careful analysis of these surface images can help us determine whether two bullets are a match. However, this process has traditionally required forensic experts to perform the analysis, and required physical examination of the bullets. We propose a framework which allows for the analysis of the surface topologies, and the transcription of the markings into a 2D plotting framework which we believe makes identification of matches easier and more rooted in science for both the expert and the lay person.
 
 \section{Methodology}
-Throughout this paper, we will work with images from the James Hamby Consecutively Rifled Ruger Barrel Study~\cite{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
+Throughout this paper, we work with images from the James Hamby Consecutively Rifled Ruger Barrel Study~\cite{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
 
-3D topographical images of each bullet were taken using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). x3p is a container format conforming to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government Firearm Forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
+3D topographical images of each bullet were obtained using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). x3p is a container format conforming to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government firearm forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
 
 \begin{figure}[hbtp]
   \centering
@@ -198,9 +198,9 @@ Throughout this paper, we will work with images from the James Hamby Consecutive
 \end{subfigure}
 \caption{An example of a scan of a bullet land from one groove to the next. }
 \end{figure}
-Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". For notational simplicity, we will refer to a particular land of some bullet as Bullet-X-Y, where X is the bullet number, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}, which show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, or a feature that pertains to a particular class of firearms and is not unique at the individual bullet level.
+Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, or a feature that pertains to a particular class of firearms and is not unique at the individual bullet level.
 
-An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the heights across values of the other coordinate. Figure \ref{fig:fixedX} gives a plot resulting from such a procedure. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
+An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the heights across values of the other coordinate. Figure \ref{fig:fixedX} shows a plot resulting from such a procedure. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
 \begin{figure}[hbtp]
 <<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2, fig.width=6, out.width='\\linewidth'>>=
@@ -241,37 +241,37 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
 \caption{\label{fig:fixedX}Side profile of the surface measurements (in $\mu m$) of a bullet land across a fixed $x$ value. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
-It is clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
+The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. It is clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
 
 \subsection{Cylindrical Fit}
 
 One reasonable approach is to fit a circle to the curve and compute the residuals from this fit.
 
-For this, assume that $n$ data points are given in form of data tuples $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$ that are (approximately) located on a circle. We want to estimate the location of the center and radius of the best fitting circle using a least squares approach.
+For this, assume that $n$ data points are given in the form of data tuples $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$ that are (approximately) located on a circle. We want to estimate the location of the center and radius of the best fitting circle using a least squares approach.
 
 We minimize the following expression:
 \begin{equation}\label{eq:circle}
-D = \sum_{i=1}^n \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right)^2
+D = \sum_{i=1}^n \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right)^2,
 \end{equation}
-We do this by differentiating $D$ with respect to $r, a,$ and $b$:
-let us assume that $x_i$ and $y_i$ are centralized (i.e. $\sum x_i = \sum_i y_i = 0$). Note, if they are not, make a note of the current means, subtract them now and add them to $(\hat{a}, \hat{b})$ at the end. 
+by differentiating $D$ with respect to $r, a,$ and $b$:
+let us assume that $x_i$ and $y_i$ are centered (i.e. $\sum x_i = \sum_i y_i = 0$). Note, if they are not, make a note of the current means, subtract them now and add them to $(\hat{a}, \hat{b})$ at the end. 
 
 \noindent
 The  derivate of $D$ with respect to $r$ is:
 \begin{eqnarray*}
 \frac{d}{dr} D &=& 2 \sum_i \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right) 2 r = \\
-&=& 4 r \left( n r^2 - \sum_i (x_i-a)^2 - \sum_i(y_i-b)^2 \right) 
+&=& 4 r \left( n r^2 - \sum_i (x_i-a)^2 - \sum_i(y_i-b)^2 \right).
 \end{eqnarray*}
-For a minimum then holds:
+At the minimum:
 \begin{equation}\label{eq:rmin}
-\frac{d}{dr} D = 0 \stackrel{r \neq 0}{\iff} nr^2  = \sum_i (x_i-a)^2 + \sum_i(y_i-b)^2 
+\frac{d}{dr} D = 0 \stackrel{r \neq 0}{\iff} nr^2  = \sum_i (x_i-a)^2 + \sum_i(y_i-b)^2.
 \end{equation}
 %
 %
 The  derivative of $D$ with respect to $a$ is:
 \begin{eqnarray*}
 \frac{d}{da} D &=& 2 \sum_i \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right) 2 (x_i - a) = \\
-&=& -4 \left[ a \cdot nr^2 + \sum_i (x_i - a)^3  + \sum_i (x_i - a) (y_i - b)^2 \right]
+&=& -4 \left[ a \cdot nr^2 + \sum_i (x_i - a)^3  + \sum_i (x_i - a) (y_i - b)^2 \right].
 \end{eqnarray*}
 Using (\ref{eq:rmin}) for $nr^2$  in the equation above we get:
 \begin{eqnarray*}
@@ -282,21 +282,21 @@ Using (\ref{eq:rmin}) for $nr^2$  in the equation above we get:
 &=& -4 \left[ \sum_i (x_i-a)^2 x_i   + \sum_i x_i  (y_i - b)^2 \right] 
 \stackrel{\begin{array}{c}\sum_i x_i = 0\\
 \sum_i y_i = 0\end{array}}{=} \\
-&=& -4 \left[ \sum_i x_i^3   + \sum_i x_i y_i^2  - 2a s_{xx} - 2b s_{xy} \right], 
+&=& -4 \left[ \sum_i x_i^3   + \sum_i x_i y_i^2  - 2a s_{xx} - 2b s_{xy} \right],
 \end{eqnarray*}
 where $s_{xx} = \sum_i x_i^2, s_{xy} = \sum_i x_i y_i$ and $s_{yy} = \sum_i y_i^2$.
 
 \noindent
 Likewise, we get for the derivative of $D$ with respect to $b$:
 \begin{eqnarray*}
-\frac{d}{db} D &=& -4 \left[ \sum_i y_i^3   + \sum_i x_i^2 y_i - 2a s_{xy} - 2b s_{yy} \right] 
+\frac{d}{db} D &=& -4 \left[ \sum_i y_i^3   + \sum_i x_i^2 y_i - 2a s_{xy} - 2b s_{yy} \right].
 \end{eqnarray*}
-For the minimum we therefore get a system of two linear equations in $a$ and $b$:
+To find the minimum we therefore get a system of two linear equations in $a$ and $b$:
 \begin{eqnarray*}
 2 s_{xx} a + 2 s_{xy} b = c_1 && \text{ with } c_1 = \sum_i x_i^3 + x_i y_i^2 \\
 2 s_{xy} a + 2 s_{yy} b = c_2 &&\text{ with } c_2 = \sum_i x_i^2 y_i + y_i^3.
 \end{eqnarray*}
-This resolves to 
+The solution to the system is:
 \begin{eqnarray*}
 \hat{a} &=& \frac{c_1 s_{yy} - c_2 s_{xy}}{2 s_{xx} s_{yy} - 2 s_{xy}^2},\\
 \hat{b} &=& \frac{c_2 s_{xx} - c_1 s_{xy}}{2 s_{xx} s_{yy} - 2 s_{xy}^2}, \text{ and}\\
@@ -305,7 +305,7 @@ This resolves to
 
 
 The scatterplot in Figure~\ref{fig:residual} shows the residuals of such a fit.
-In this instance, the radius is estimated as $\hat{r} = \Sexpr{pars$radius}\mu m = \Sexpr{pars$radius/1000}mm$ and the land covers about \Sexpr{diff(range(dbr111$theta))} degrees.  Both of these estimates are consistent with a 9 mm bullet fired in a Ruger P-85.
+In this instance, the radius is estimated as $\hat{r} = \Sexpr{pars$radius}\mu m = \Sexpr{pars$radius/1000}mm$ and the land covers about \Sexpr{diff(range(dbr111$theta))} degrees.  Both of these estimates are consistent with a 9 mm bullet fired by a Ruger P-85.
 The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For a surface cross cut at $x = 100$ there is a residual circular structure that does not show up for all cross sections. 
 
 \begin{figure}[hbtp]
@@ -334,10 +334,10 @@ qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x),
   theme(legend.position="bottom")
 @
 \end{subfigure}
-\caption{\label{fig:residual} Residual structure of circular fits at two different cross-section. Both residual plots show systematic structures, indicating that a circular fit is not entirely appropriate.}
+\caption{\label{fig:residual} Residual structure of circular fits at two different cross sections. Both residual plots show systematic structures, indicating that a circular fit is not entirely appropriate.}
 \end{figure}
 
-A single cylinder as a fit is unlikely to be a particularly good fit, because there seem to be quite massive deformations in the vertical direction. Even when we fit a circle to each cross section of the bullet, as in Figure~\ref{fig:circlefits}, we can not address all of these issues. While the wider circumference at the base of the bullet can be resolved by individual circular fits, the systematic residual structure in Figure~\ref{fig:residualb} stays the same.
+A single cylinder as a fit is unlikely to be a particularly good fit, because there seem to be quite massive deformations in the vertical direction. Even when we fit a circle to each cross section of the bullet, as in Figure~\ref{fig:circlefits}, this does not address all of these issues. While the wider circumference at the base of the bullet can be resolved by individual circular fits, the systematic residual structure in Figure~\ref{fig:residualb} stays the same.
 
 <<bullet1, echo=FALSE, cache=TRUE>>=
 db1 <- NULL
@@ -384,7 +384,7 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
 \end{figure}
 
 \subsection{Loess Fit}
-In an approach to improve upon the previous algorithm, we first have to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match.
+In an attempt to improve upon the previous algorithm, we first have to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match.
 Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent.
 Surface measurements reach local maxima around the peak of the groove at either end of the range of $y$, we can then follow the descent of the surface measurements inwards to the valley of the groove. 
 This marks the point at which we should trim the image. The procedure can be described as follows:
@@ -401,7 +401,7 @@ This marks the point at which we should trim the image. The procedure can be des
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step1}Step 1 the Loess fit algorithm. For a fixed crosscut ($x$ held constant at 243.75 $\mu m$) of surface measurements for bullet 1-5 are plotted across different values of $y$.}
+\caption{\label{fig:loess_step1}Step 1 the loess fit algorithm. For a fixed crosscut ($x$ held constant at 243.75 $\mu m$) of surface measurements for bullet 1-5 are plotted across different values of $y$.}
 <<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 br121_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
@@ -416,7 +416,7 @@ p1
 @
 \end{subfigure}
 %\begin{subfigure}[t]{\linewidth}
-% \caption{\label{fig:loess_step2}Step 2 of the Loess fit algorithm. The height values are smoothed with a particular smoothing factor to remove noise in the deviations.}
+% \caption{\label{fig:loess_step2}Step 2 of the loess fit algorithm. The height values are smoothed with a particular smoothing factor to remove noise in the deviations.}
 <<loess_step2, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 subdata <- br111_bullet
 smoothfactor <- 35
@@ -431,7 +431,7 @@ p2 <- qplot(1.5625*(1:length(smoothed)), smoothed) + theme_bw() + xlab("y") +
 @
 %\end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step3}Step 2 of the Loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35. The orange rectangle shows an example of the smoothing window. Grooves and peaks will be detected, if they are not within the same window.}
+\caption{\label{fig:loess_step3}Step 2 of the loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35. The orange rectangle shows an example of the smoothing window. Grooves and peaks are detected, if they are not within the same window.}
 <<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 xloc=250
 p3 <- ggplot() +
@@ -443,7 +443,7 @@ p3
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step47}Steps 3 -- 6 of the Loess fitting algorithm. After smoothing the $y$ values left and right minima are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside these boundaries are removed (shown in grey)}
+\caption{\label{fig:loess_step47}Steps 3 -- 6 of the loess fitting algorithm. After smoothing the $y$ values left and right minima are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside these boundaries are removed (shown in grey)}
 <<loess_step47, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
     lengthdiff <- length(subdata$value) - length(smoothed_truefalse)
     
@@ -476,9 +476,9 @@ p3
 \caption{Overview of all six steps of the smoothing algorithm to identify and remove grooves from the bullet images.}
 \end{figure}
 
-The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a value of 35 for the smoothing factor seems to work quite well (later in the manuscript we investigate varying the smoothing factor). It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass and then added back to the result~\cite{tukey:1977}. This has the effect of introducing a little bit more variance into the smoothed data. We instead performed a second smoothing pass on the smoothed data, which has the effect of weighting observations near the center highest, while the weights linearly drop off as you reach the end of the smoothing window or smoothing factor.
+The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a value of 35 for the smoothing factor seems to work quite well (later in the manuscript we investigate varying the smoothing factor). It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass and then added back to the result~\cite{tukey:1977}. This has the effect of introducing a little bit more variance into the smoothed data. We instead performed a second smoothing pass on the smoothed data, which has the effect of weighting observations near the center highest, while the weights linearly drop off as we reach the end of the smoothing window or smoothing factor.
 
-Next, we fit a Loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the Loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from bullet 1-5. This is shown in Figure~\ref{fig:loessfits}. Bullet 2-1 is still the best match for bullet 1-5, but now the details of the match are more pronounced.
+Next, we fit a loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from bullet 1-5. This is shown in Figure~\ref{fig:loessfits}. Bullet 2-1 is still the best match for bullet 1-5, but now the details of the match are more pronounced.
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
@@ -493,9 +493,9 @@ my.loess$fitted + ylab("Surface measurements")
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_resid} Residuals of Loess fit for bullet 1-5.}
+\caption{\label{fig:loess_resid} Residuals of loess fit for bullet 1-5.}
 <<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE>>=
-my.loess$resid + ylab("Residuals of Loess Fit")
+my.loess$resid + ylab("Residuals of loess Fit")
 @
 \end{subfigure}
 \caption{Fit and residuals of a loess fit to bullet 1-5 (Barrel 1).}
@@ -542,7 +542,7 @@ qplot(y, resid, data=melt.df, #colour=factor(x),
       geom="line", size=I(.75), colour=I("grey70")) + 
   facet_wrap(~part, ncol=2) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
-  geom_line(data = actual.df, aes(y, resid), colour="black", size=.75, alpha=0.5) + ggtitle("Bullet 1-5 in black") + ylab("Residuals of Loess Fit")
+  geom_line(data = actual.df, aes(y, resid), colour="black", size=.75, alpha=0.5) + ggtitle("Bullet 1-5 in black") + ylab("Residuals of loess Fit")
 @    
 \caption{\label{fig:loessfits} Residuals of a loess fit to bullets 1 and 2 from barrel 1. Bullet 1-5 is shown in black. }
 \end{figure}
@@ -567,12 +567,12 @@ Several lighting options are available to tweak in order to highlight markings i
     \item \textbf{Fresnel Lighting} - Higher values create a wider, softer lighting across the surface.
 \end{enumerate}
 
-The application includes a button which allows the automatic creation of a residual plot from the Loess fits of two bullets. An x coordinate value can be selected as a cross cut, and a cross-section of the two bullet at the x value will be taken. The previously described Loess regression procedure will be applied to the two cross sections. A residual plot will be produced beneath the surface plots allowing for an assessment of the similarity of the markings. It is intended that users will perform this procedure at different x values in order to see whether the markings indicate a match at different points along the bullet.
+The application includes a button which allows the automatic creation of a residual plot from the loess fits of two bullets. An x coordinate value can be selected as a cross cut, and cross sections of the two bullets at the x value are taken. The previously described loess regression procedure is applied to the two cross sections. A residual plot is produced beneath the surface plots allowing for an assessment of the similarity of the markings. Users need to perform this procedure at different x values in order to see whether the markings indicate a match at different points along the bullet.
 
 Enhancements to the web application are still in progress. In particular, much of the automatic matching functionality described in the next section will be added in the future.
 
 \section{Approach to automatic matching}
-Applying the  loess fit to a range of different surface cross cuts (see Figures~\ref{fig:manualmatch} and~\ref{fig:manualmatch-rgl}, with cross cuts from 50 to 150) shows the striation marks across two bullets. Cross cuts of bullet 1 are shown on the left (cross cuts with values below 100) and cross cuts of bullets 2 are shown on the right (cross cuts with values above 100). A lot of the striation marks align, allowing for an easy visual assessment of the shared similarities between the two bullets. 
+Applying the loess fit to a range of different surface cross cuts (see Figures~\ref{fig:manualmatch} and~\ref{fig:manualmatch-rgl}, with cross cuts from 50 to 150) shows the striation marks across two bullets. Cross cuts of bullet 1 are shown on the left (cross cuts with values below 100) and cross cuts of bullets 2 are shown on the right (cross cuts with values above 100). Many of the striation marks align, allowing for an easy visual assessment of the shared similarities between the two bullets. 
 
 \begin{figure}[hbtp]
 <<side-by-side, echo=FALSE, eval=FALSE>>=
@@ -629,7 +629,7 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
 \end{figure}
 \begin{figure}[hbtp]
 \includegraphics[width=\columnwidth]{images/matchup-rgl.png}
-\caption{\label{fig:manualmatch-rgl}Different view of the manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}
+\caption{\label{fig:manualmatch-rgl}Different view of the manually adjusted side-by-side comparison of bullet 1-5 and bullet 2-1.}
 \end{figure}
 
 <<twolands100, cache=TRUE,  echo=FALSE>>=
@@ -718,12 +718,12 @@ qplot(y, resid, group=bullet, colour=bullet, data=lof,
   scale_colour_manual("", values=cols) + theme_bw() +
   theme(legend.position = c(.9, .2),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
-  ylab("Residuals of Loess fit")
+  ylab("Residuals of loess fit")
 @
     }
 \end{subfigure}    
 \begin{subfigure}[t]{\linewidth}
-    \caption{Adjusted (Bullet 1-5 horizontally shifted) crosscuts at $x = 100$.\label{fig:crosscutX}}{%
+    \caption{Adjusted (bullet 1-5 horizontally shifted) crosscuts at $x = 100$.\label{fig:crosscutX}}{%
 <<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
 # qplot(y, resid, group=bullet, colour=bullet, data=lofX, 
 #       geom="line", alpha=I(0.6)) + 
@@ -732,11 +732,11 @@ qplot(y, resid, group=bullet, colour=bullet, data=lof,
 qplot(y, resid, group=bullet, colour=bullet, data=lofY, 
       geom="line") + 
   scale_colour_manual("", values=cols) + theme_bw() +
-  theme(legend.position="none") + ylab("Residuals of Loess fit")
+  theme(legend.position="none") + ylab("Residuals of loess fit")
 @
     }
 \end{subfigure}
-\caption{\label{fig:cross100}Lines showing surface crosscuts at $x = 100$. A horizontal shift of the values of Bullet 1-5 to the right shows the similarity of the striation marks.}
+\caption{\label{fig:cross100}Lines showing surface crosscuts at $x = 100$. A horizontal shift of the values of bullet 1-5 to the right shows the similarity of the striation marks.}
 \end{figure}
 
 \subsection{Horizontal Alignment}
@@ -745,7 +745,7 @@ This horizontal shift is based on the cross-correlation between the two surface 
 \[
 (f * g) (k) = \sum_t f(t+k) g(t),
 \]
-with suitable defined limits of the summation. % (because variances of $f$ and $g$ do not change, the above equation is proportional to the correlation). 
+with suitably defined limits for the summation. % (because variances of $f$ and $g$ do not change, the above equation is proportional to the correlation). 
 
 \begin{figure}[hbtp]
 <<ccf, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '\\linewidth'>>=
@@ -762,7 +762,7 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 
 \subsection{Varying crosscuts}
 The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. This poses both a caveat to matching attempts as well as an opportunity: on the one hand we have to be aware of which crosscut level was used in a matching, but on the other hand we can use multiple crosscuts of the same bullet for an initial assessment of its quality. Both of these situations are assessed and discussed in more detail below: 
-Figure~\ref{fig:crosscuts} shows a sequence of crosscuts for bullet 1-5 (barrel 1) that are taken 50$\mu m$ apart, between 150$\mu m$  and 450$\mu m$. These are compared to a crosscut at 100$\mu m$. Initially this comparison constitutes an almost perfect match (consolidated by a CMS of fourteen) between the two crosscuts. However, the match quickly deteriorates with increasing distance to non-matches at a crosscut of $x = 300\mu m$ or higher.  Only if the crosscut is within 150$\mu m$ do we get a good visual match even when we know that the same bullet surface is being used. 
+Figure~\ref{fig:crosscuts} shows a sequence of crosscuts for bullet 1-5 (barrel 1) that are taken 50$\mu m$ apart, between 150$\mu m$  and 450$\mu m$. These are compared to a crosscut at 100$\mu m$. Initially this comparison constitutes an almost perfect match between the two crosscuts. However, the match quickly deteriorates with increasing distance to non-matches at a crosscut of $x = 300\mu m$ or higher.  Only if the crosscut is within 150$\mu m$ do we get a good visual match even when we know that the same bullet surface is being used. 
 Given that we have to expect some variation in nominally the same crosscut levels due to manual alignments in microscopes, we should take crosscut levels into account in the automatic matching routine by evaluating matches at several cross sections. 
 \begin{figure}[hbtp]
 <<crosscuts-vary, echo=FALSE, fig.width = 7, fig.height = 14, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
@@ -948,7 +948,7 @@ ggplot() +
 %\afterpage{\clearpage}
 
 \subsection{Varying smoothing factor}
-As mentioned earlier, the algorithm for peak/valley detection depends on the selection of a smoothing window, called the smoothing factor. In particular, for detecting and removing the grooves prior to fitting a Loess regression we selected a smoothing factor of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 25 seems more appropriate. We can investigate the performance of peak/valley detection across different smoothing factors. Figure~\ref{fig:varysmooth} displays the resulting peaks and valleys across smoothing factors of 5, 25, and 45, respectively. The dark line corresponds to the smoothed values, while the grey line in the back shows the unsmoothed values of the surface measurements. The choice of smoothing factor is a classical decision of a bias/variance trade-off. It is immediately clear that a small smoothing factor like 5 is a poor choice. It results in a significant amount of noise in the data such that even just a point or two can skew the rolling average enough for a peak or valley to be detected. Given that the striation patterns are typically much larger, we are in effect muddying the waters by performing such minimal smoothing.
+As mentioned earlier, the algorithm for peak/valley detection depends on the selection of a smoothing window, called the smoothing factor. In particular, for detecting and removing the grooves prior to fitting a loess regression we selected a smoothing factor of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 25 seems more appropriate. We can investigate the performance of peak/valley detection across different smoothing factors. Figure~\ref{fig:varysmooth} displays the resulting peaks and valleys across smoothing factors of 5, 25, and 45, respectively. The dark line corresponds to the smoothed values, while the grey line in the back shows the unsmoothed values of the surface measurements. The choice of smoothing factor is a classical decision of a bias/variance trade-off. It is immediately clear that a small smoothing factor like 5 is a poor choice. It results in a significant amount of noise in the data such that even just a point or two can skew the rolling average enough for a peak or valley to be detected. Given that the striation patterns are typically much larger, we are in effect muddying the waters by performing such minimal smoothing.
 
 A larger smoothing factor on the other hand, like 45, seems to be a more plausible option. Most of the peaks/valleys present which are detected by a smoothing factor of 25 are also detected at 45. However, some notable issues arise. Notice that the valley on the right hand side of the image is smoothed out, and thus not detected. On the left hand side, a double peak is detected - that might be a questionable decision - but there are several peaks in the middle, that are being smoothed out, for example the peak at around $y = 750$. That is, in many cases, large windows are smoothing out some of the structure that we wish to see. Furthermore, it can be seen that the peaks/valleys are often shifted relative to their position in the original loess residuals, or in the smoothed data with smaller smoothing factors.
 
@@ -990,7 +990,7 @@ smooths <- rbind(peaks1$plot$data, peaks2$plot$data,
 \subsection{Automated matching algorithm}
 
 Figure~\ref{fig:match} gives an overview of the automated matching routine: 
-We first identify a stable region for each bullet and pick the lowest crosscut level in this region, because typically, individual characteristics are best express at the lower end of the bullet. 
+We first identify a stable region for each bullet and pick the lowest crosscut level in this region, because typically, individual characteristics are best expressed at the lower end of the bullet. 
 %\hh{(assumption here: lower crosscut levels show better expression of individual marks XXX checked XXX crosscuts-and-sd.R)}
 
 All of the other steps are done on pairs of bullet lands:
@@ -1003,8 +1003,7 @@ All of the other steps are done on pairs of bullet lands:
 In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a  high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti~\cite{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match, and which are part of current practice in assessing bullet matches~\cite{nichols:1997, nichols:2003, nichols:2003b}.
 \end{enumerate}
 
-In order to get a better understanding of  how  this matching works in known matches and non-matches, we next investigate the algorithm's performance in a test scenario.
-
+Determining a CMS threshold that needs to be exceeded for us to declare a match is beyond the scope of this work, even though it is critically important in practice. We provide some ideas in the next section. %In order to get a better understanding of  how  this matching works in known matches and non-matches, we next investigate the algorithm's performance in a test scenario.
 
 \begin{figure}[hbtp]
 <<barrel2, echo=FALSE, fig.width = 7, fig.height=12, out.width='\\linewidth', warning=FALSE>>=
@@ -1052,7 +1051,7 @@ It is not reasonable to assume that we can match all lands, but we can try to ma
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{.49\textwidth}
-\caption{Maximal number of CMS between unknown Bullet C land 3 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
+\caption{Maximal number of CMS between unknown bullet C land 3 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
 <<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth'>>=
 load("data-25-25/unkn9.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
@@ -1101,7 +1100,7 @@ print(ggplot() +
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works perfectly. Unfortunately the matches are not always that convincing.}
 \end{figure}
 
-Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 36 pairs of lands with at least sixteen CMS in common are matches. There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$cms[!bstats$match])} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$cms[!bstats$match])}. Known matches share on average \Sexpr{mean(bstats$cms[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$cms[bstats$match])}. Secondly, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by Miller~\cite{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, between two lands that share twelve consecutively matched striae. Visually we can easily tell these two lands do not match well.
+Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 36 pairs of lands with at least sixteen CMS in common are matches. There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$cms[!bstats$match])} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$cms[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$cms[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$cms[bstats$match])}. Secondly, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by Miller~\cite{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, between two lands that share twelve consecutively matched striae. Visually we can easily tell these two lands do not match well.
 %
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
@@ -1215,7 +1214,7 @@ bstats$forest <- predict(rtrees, type="prob")[,2]
 @
 
 
-Another benefit is that we can not only apply a single decision tree, but several hundred of them to combine in a random forest~\cite{breiman:2001, randomForest}. In a random forest multiple trees are fitted. For each of these trees, only two thirds of the observations are used for fitting, while predictions for the remaining third  are used to evaluate the tree's predictive power and accuracy, or its reverse, the error rate. Because errors are determined from the one third of held-back observations, this error rate is called the out-of bag (OOB) error. 
+Another benefit is that we can not only apply a single decision tree, but several hundreds of them to combine in a random forest~\cite{breiman:2001, randomForest}. In a random forest multiple trees are fitted. For each of these trees, only two thirds of the observations are used for fitting, while predictions for the remaining third  are used to evaluate the tree's predictive power and accuracy, or its reverse, the error rate. Because errors are determined from the one third of held-back observations, this error rate is called the out-of bag (OOB) error. 
 Figure~\ref{fig:oob} shows the cumulative out-of-bag error (OOB) rate for 300 trees. 
 %
 \begin{figure}[hbtp]
@@ -1225,7 +1224,7 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
 \end{figure}
 %
-After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0044. This is a weighted average between zero false positives and an error rate of false negatives of 0.26. Note that this error rate is based on land-to-land comparisons and will be much lower for bullet-to-bullet matches. In the case of the Hamby study, the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
+After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0044. This is a weighted average between zero false positives and an error rate of false negatives of 0.26. Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
 \begin{figure}[hbtp]
 <<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
 bstats$bullet <- gsub("-[0-9]$", "", bstats$b2)
@@ -1325,7 +1324,7 @@ This approach uses dictionary learning based on small square patches  of 64x64 o
 
 \paragraph{Acknowledgment} Thanks to the men and women behind the software R~\cite{R}, and the authors of the R packages  knitr~\cite{knitr} and ggplot2~\cite{ggplot2}.
 
-This research was partially funded through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.
+This research was partially funded in part by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.
 
 \bibliographystyle{abbrv}
 %%use following if all content of bibtex file should be shown
