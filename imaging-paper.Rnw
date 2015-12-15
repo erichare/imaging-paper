@@ -198,7 +198,7 @@ Throughout this paper, we will work with images from the James Hamby Consecutive
 \end{subfigure}
 \caption{An example of a scan of a bullet land from one groove to the next. }
 \end{figure}
-Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}, which show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, or a feature that pertains to a particular class of firearms and is not unique at the individual bullet level.
+Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". For notational simplicity, we will refer to a particular land of some bullet as Bullet-X-Y, where X is the bullet number, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}, which show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, or a feature that pertains to a particular class of firearms and is not unique at the individual bullet level.
 
 An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the heights across values of the other coordinate. Figure \ref{fig:fixedX} gives a plot resulting from such a procedure. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
@@ -431,7 +431,7 @@ p2 <- qplot(1.5625*(1:length(smoothed)), smoothed) + theme_bw() + xlab("y") +
 @
 %\end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step3}Step 2 of the Loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35. The orange rectangle shows an example of the smoothing window. Groove and peak will be detected, if they are not within the same window.}
+\caption{\label{fig:loess_step3}Step 2 of the Loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35. The orange rectangle shows an example of the smoothing window. Grooves and peaks will be detected, if they are not within the same window.}
 <<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 xloc=250
 p3 <- ggplot() +
@@ -625,13 +625,12 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
 @
 
 \includegraphics[width=\columnwidth]{images/side-by-side-manual-match.png}
-\caption{\label{fig:manualmatch}Manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}
+\caption{\label{fig:manualmatch}Manually adjusted side-by-side comparison of bullet 1-5 and bullet 2-1.}
 \end{figure}
 \begin{figure}[hbtp]
 \includegraphics[width=\columnwidth]{images/matchup-rgl.png}
 \caption{\label{fig:manualmatch-rgl}Different view of the manually adjusted side-by-side comparison of land five of bullet 1 and land 1 of bullet 2.}
 \end{figure}
-
 
 <<twolands100, cache=TRUE,  echo=FALSE>>=
 images <- file.path(datadir, dir(datadir))
@@ -763,7 +762,7 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 
 \subsection{Varying crosscuts}
 The crosscut at which a comparison is done matters -- as crosscuts are further apart, more pronounced differences between the crosscuts show up. This poses both a caveat to matching attempts as well as an opportunity: on the one hand we have to be aware of which crosscut level was used in a matching, but on the other hand we can use multiple crosscuts of the same bullet for an initial assessment of its quality. Both of these situations are assessed and discussed in more detail below: 
-Figure~\ref{fig:crosscuts} shows a sequence of crosscuts for bullet land 1-5 (barrel 1) that are taken 50$\mu m$ apart, between 150$\mu m$  and 450$\mu m$. These  are compared to a crosscut at 100$\mu m$. Initially this comparison constitutes an almost perfect match (consolidated by a CMS of fourteen) between the two crosscuts. However, the match quickly deteriorates with increasing distance to non-matches at a crosscut of $x = 300\mu m$ or higher.  Only if the crosscut is within 150$\mu m$ do we get a good visual match even when we know that the same bullet surface is being used. 
+Figure~\ref{fig:crosscuts} shows a sequence of crosscuts for bullet 1-5 (barrel 1) that are taken 50$\mu m$ apart, between 150$\mu m$  and 450$\mu m$. These are compared to a crosscut at 100$\mu m$. Initially this comparison constitutes an almost perfect match (consolidated by a CMS of fourteen) between the two crosscuts. However, the match quickly deteriorates with increasing distance to non-matches at a crosscut of $x = 300\mu m$ or higher.  Only if the crosscut is within 150$\mu m$ do we get a good visual match even when we know that the same bullet surface is being used. 
 Given that we have to expect some variation in nominally the same crosscut levels due to manual alignments in microscopes, we should take crosscut levels into account in the automatic matching routine by evaluating matches at several cross sections. 
 \begin{figure}[hbtp]
 <<crosscuts-vary, echo=FALSE, fig.width = 7, fig.height = 14, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
@@ -871,7 +870,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
 @
 \caption{\label{fig:crosscuts2}Varying crosscuts for barrel 3, bullet 1. Initially, the match between crosscuts 25$\mu m$ apart is affected strongly by break off at the bottom of the bullet. At a crosscut level of $175\mu m$ the bullet pattern stabilizes. For this land, matches should not be attempted at lower crosscuts.}
 \end{figure}
-An opportunity that arises from comparing multiple crosscuts of a bullet's surface measurements is the following: by comparing cross sections that are not too far apart -- maybe 25 or 50 $\mu m$ for example -- we get an indication whether the crosscut is in a rapidly changing section of the surface, indicative of a break-off, or in a stable section, where we can expect to find matches to other surfaces reasonably well. In the approach here, we keep increasing the crosscut level until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of land 1-1 from barrel 3.
+An opportunity that arises from comparing multiple crosscuts of a bullet's surface measurements is the following: by comparing cross sections that are not too far apart -- maybe 25 or 50 $\mu m$ for example -- we get an indication whether the crosscut is in a rapidly changing section of the surface, indicative of a break-off, or in a stable section, where we can expect to find matches to other surfaces reasonably well. In the approach here, we keep increasing the crosscut level until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet 1-1 from barrel 3.
 `Stability' is here defined as two aligned crosscuts chosen 12.5$\mu m$ apart having a cross-correlation of at least 0.9. 
 
 \begin{figure}[hbtp]
