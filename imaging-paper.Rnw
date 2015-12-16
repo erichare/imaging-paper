@@ -1,24 +1,41 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Large Colored Title Article
-% LaTeX Template
-% Version 1.1 (25/11/12)
-%
-% This template has been downloaded from:
-% http://www.LaTeXTemplates.com
-%
-% Original author:
-% Frits Wenneker (http://www.howtotex.com)
-%
-% License:
-% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[review]{elsarticle}
 
-%----------------------------------------------------------------------------------------
-%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
-%----------------------------------------------------------------------------------------
+\usepackage{lineno,hyperref}
+\modulolinenumbers[5]
 
-\documentclass[DIV=calc, paper=letter, fontsize=10pt, twocolumn]{scrartcl}	 % A4 paper and 11pt font size
+\journal{Journal of Forensic Science International}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%% Elsevier bibliography styles
+%%%%%%%%%%%%%%%%%%%%%%%
+%% To change the style, put a % in front of the second line of the current style and
+%% remove the % from the second line of the style you would like to use.
+%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Numbered
+%\bibliographystyle{model1-num-names}
+
+%% Numbered without titles
+%\bibliographystyle{model1a-num-names}
+
+%% Harvard
+\bibliographystyle{model2-names.bst}\biboptions{authoryear}
+
+%% Vancouver numbered
+%\usepackage{numcompress}\bibliographystyle{model3-num-names}
+
+%% Vancouver name/year
+%\usepackage{numcompress}\bibliographystyle{model4-names}\biboptions{authoryear}
+
+%% APA style
+%\bibliographystyle{model5-names}\biboptions{authoryear}
+
+%% AMA style
+%\usepackage{numcompress}\bibliographystyle{model6-num-names}
+
+%% `Elsevier LaTeX' style
+%\bibliographystyle{elsarticle-num}
+%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage[USenglish]{babel}
 \usepackage[protrusion=true,expansion=true]{microtype} % Better typography
@@ -28,7 +45,7 @@
 \usepackage{booktabs} % Horizontal rules in tables
 \usepackage{fix-cm}	 % Custom font sizes - used for the initial letter in the document
 \usepackage{float}
-%\usepackage{afterpage}
+\usepackage{subcaption}
 
 % declare the path(s) where your graphic files are
 \graphicspath{{Figure/}{Images/}}
@@ -46,30 +63,10 @@
 \usepackage{url}
 
 
-% Headers - all currently empty
-\lhead{}
-\chead{}
-\rhead{}
-
-% Footers
-\lfoot{}
-\cfoot{}
-\rfoot{\footnotesize Page \thepage\ of \pageref{LastPage}} % "Page 1 of 2"
-
-\renewcommand{\headrulewidth}{0.0pt} % No header rule
-\renewcommand{\footrulewidth}{0.4pt} % Thin footer rule
 
 \usepackage{color}
 \newcommand{\hh}[1]{{\color{magenta} #1}}
 \newcommand{\eh}[1]{{\color{blue} #1}}
-
-\usepackage{lettrine} % Package to accentuate the first letter of the text
-\newcommand{\initial}[1]{ % Defines the command and style for the first letter
-\lettrine[lines=3,lhang=0.3,nindent=0em]{
-\color{DarkGoldenrod}
-{\textsf{#1}}}{}}
-
-\usepackage{subcaption} 
 
     \renewcommand{\topfraction}{0.99}	% max fraction of floats at top
     \renewcommand{\bottomfraction}{0.99}	% max fraction of floats at bottom
@@ -85,57 +82,46 @@
 	% N.B.: floatpagefraction MUST be less than topfraction !!
     \renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
 
-%----------------------------------------------------------------------------------------
-%	TITLE SECTION
-%----------------------------------------------------------------------------------------
-
-\usepackage{titling} % Allows custom title configuration
-
-\newcommand{\HorRule}{\color{DarkGoldenrod} \rule{\linewidth}{1pt}} % Defines the gold horizontal rule around the title
-
-\pretitle{\vspace{-30pt} \begin{flushleft} \HorRule \fontsize{50}{50} \usefont{OT1}{phv}{b}{n} \color{DarkRed} \selectfont} % Horizontal rule before the title
-
-\title{Matching Bullets} % Your article title
-
-\posttitle{\par\end{flushleft}\vskip 0.5em} % Whitespace under the title
-
-\preauthor{\begin{flushleft}\large \lineskip 0.5em \usefont{OT1}{phv}{b}{sl} \color{DarkRed}} % Author font configuration
-
-\author{Eric Hare, Heike Hofmann} % Your name
-
-\postauthor{\footnotesize \usefont{OT1}{phv}{m}{sl} \color{Black} % Configuration for the institution name
-
-Department of Statistics and Statistical Laboratory,
-Iowa State University% Your institution
-
-\par\end{flushleft}\HorRule} % Horizontal rule after the title
-
-\date{} % Add a date here if you would like one to appear underneath the title block
 
 %----------------------------------------------------------------------------------------
 
 \begin{document}
 
-\maketitle % Print the title
+\begin{frontmatter}
 
-\thispagestyle{fancy} % Enabling the custom headers/footers for the first page 
+\title{Matching Bullets}
+\tnotetext[mytitlenote]{Resources for this manuscript, including R code to reproduce any of the models, tables and figures, can be found at  \url{https://github.com/erichare/imaging-paper}.}
 
-%----------------------------------------------------------------------------------------
-%	ABSTRACT
-%----------------------------------------------------------------------------------------
+%% Group authors per affiliation:
+\author{Eric Hare, Heike Hofmann, Alicia Carriquiry}
+\address{Department of Statistics and Statistical Laboratory, Iowa State University}
+\fntext[myfootnote]{Since 1880.}
 
-% The first character should be within \initial{}
-\initial{\it{I}}\textbf{n 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is the primary goal. We propose a framework for the analysis of the 3D surface measurements which transcribes the markings into a 2D plotting framework. This makes identification of matches easier and more rooted in science for both the expert and the lay person. The automatic matching routine we propose manages to correctly predict 132 out of 180 known bullet land to bullet land matches.}
+%% or include affiliations in footnotes:
+\author[mymainaddress,mysecondaryaddress]{Elsevier Inc}
+\ead[url]{www.elsevier.com}
 
-%----------------------------------------------------------------------------------------
-%	ARTICLE CONTENTS
-%----------------------------------------------------------------------------------------
+\author[mysecondaryaddress]{Global Customer Service\corref{mycorrespondingauthor}}
+\cortext[mycorrespondingauthor]{Eric Hare}
+\ead{erichare@iastate.edu}
 
-%% Keywords that describe your work. Will show as 'Index Terms' in journal
-%% please capitalize first letter and insert punctuation after last keyword
-\paragraph{Keywords:} Data visualization, Statistical graphics, Statistical computing.
+\address[mymainaddress]{Department of Statistics and Statistical Laboratory, Iowa State University}
+\address[mysecondaryaddress]{secondary address -- CS?}
 
-%\tableofcontents
+\begin{abstract}
+In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is the primary goal. We propose a framework for the analysis of the 3D surface measurements which transcribes the markings into a 2D plotting framework. This makes identification of matches easier and more rooted in science for both the expert and the lay person. The automatic matching routine we propose manages to correctly predict 132 out of 180 known bullet land to bullet land matches.
+\end{abstract}
+
+\begin{keyword}
+\hh{XXX not the right keywords yet} Data visualization, Statistical graphics, Statistical computing.
+\end{keyword}
+
+\end{frontmatter}
+
+\linenumbers
+
+
+\tableofcontents
 
 
 <<setup, fig.keep='all', cache=FALSE, echo=FALSE, eval=TRUE, message=F, warning=F>>=
@@ -1328,9 +1314,8 @@ This approach uses dictionary learning based on small square patches  of 64x64 o
 
 This research was partially funded in part by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.
 
-\bibliographystyle{abbrv}
-%%use following if all content of bibtex file should be shown
-%\nocite{*}
+\section*{References}
+
 \bibliography{references}
 
 \end{document}
