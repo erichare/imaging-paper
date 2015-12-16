@@ -26,7 +26,11 @@ CCFs <- plyr::ldply(datas, function(x) {
     idx2 <- which(subLOFx2$y %in% ys)
     distr.dist <- mean((subLOFx1$val[idx1] - subLOFx2$val[idx2])^2, na.rm=TRUE)
     distr.sd <- sd(subLOFx1$val, na.rm=TRUE) + sd(subLOFx2$val, na.rm=TRUE)
-    
+    km <- which(res$lines$match)
+    knm <- which(!res$lines$match)
+    if (length(km) == 0) km <- c(length(knm)+1,0)
+    if (length(knm) == 0) knm <- c(length(km)+1,0)
+# browser()    
     # feature extraction
     data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), 
                distr.dist=distr.dist, 
@@ -35,6 +39,10 @@ CCFs <- plyr::ldply(datas, function(x) {
                num.matches = sum(res$lines$match), 
                num.mismatches = sum(!res$lines$match), 
                non_cms = x3prplus::maxCMS(!res$lines$match),
+               left_cms = max(knm[1] - km[1], 0),
+               right_cms = max(km[length(km)] - knm[length(knm)],0),
+               left_noncms = max(km[1] - knm[1], 0),
+               right_noncms = max(knm[length(knm)]-km[length(km)],0),
                sumpeaks = sum(abs(res$lines$heights[res$lines$match]))
                )
   })
