@@ -1103,6 +1103,19 @@ ggplot(data=bstats) +
   theme(legend.position="bottom") + 
   scale_fill_brewer(palette="Paired") +
   xlab("maximum CMS")
+
+@
+\end{subfigure}
+\begin{subfigure}[t]{\linewidth}
+\caption{Densities of maximum CMS for Known Matches (KM) and Known Non Matches (KNM).}
+<<cms-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
+ggplot(data=bstats) + 
+    geom_density(aes(x=cms, fill=match), alpha=0.5) +
+  xlab("maximum CMS") +
+  scale_fill_brewer("", palette="Paired", labels=c("KNM", "KM")) +
+  theme_bw() + 
+  theme(legend.position=c(1,1), legend.justification=c(1,1),
+        legend.background = element_rect(fill=alpha('white', 0.4))) 
 @
 \end{subfigure}
 \caption{\label{fig:cms}Overview of the maximal number of consecutive maximal striae compared to matches.}
@@ -1131,7 +1144,7 @@ print(ggplot() +
 For smaller numbers of CMS, the percentage of false positives quickly increases. However, if we take other features of the image into account, we can increase the number of correct matches considerably: a high amount of cross-correlation between the two cross sections (see Figure~\ref{fig:ccfs-match}) is indicative for a match; e.g.\  in the Hamby study only known matches have a cross-correlation of 0.75 or higher. There are 97 land-to-land comparisons with a cross-correlation of above 0.75.   
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:distr.dist}Relationship between maximal CMS, distances between cross sections and matches.}
+\caption{\label{fig:distr.dist}Relationship between maximal CMS and distances between cross sections.}
 <<distr.dist, echo=FALSE, fig.width=8, fig.height=4, out.width='.7\\linewidth'>>=
 ggplot(data=bstats) + 
     geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match), alpha=0.5) +
@@ -1141,10 +1154,27 @@ ggplot(data=bstats) +
   theme_bw() + 
   theme(legend.position="none") +
     xlab("maximum CMS")
+
 @
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:ccfs-match}Relationship between maximal CMS, cross-correlation between cross sections and matches.}
+\caption{Densities of distances between cross sections for Known Matches (KM) and Known Non Matches (KNM).}
+<<crosscut-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
+ggplot(data=bstats) + 
+    geom_density(aes(x=distr.dist, fill=match), alpha=0.5) +
+  xlab("Distances between cross sections") +
+  scale_fill_brewer("", palette="Paired", labels=c("KNM", "KM")) +
+  theme_bw() + 
+  theme(legend.position=c(1,1), legend.justification=c(1,1),
+        legend.background = element_rect(fill=alpha('white', 0.4))) 
+@
+\end{subfigure}
+\caption{Relationship between distances between cross sections. A small distance between cross sections is indicative of matches between lands.}
+\end{figure}
+
+\begin{figure}[hbtp]
+\begin{subfigure}[t]{\linewidth}
+\caption{\label{fig:ccfs-match}Relationship between maximal CMS and cross-correlation between cross sections.}
 <<ccfs-match, echo=FALSE, fig.width=8, fig.height=4, out.width='.7\\linewidth'>>=
 ggplot(data=bstats) + theme_bw() + 
   geom_jitter(aes(x=factor(cms), y=ccf, colour=match), alpha=.5) + 
@@ -1154,7 +1184,48 @@ ggplot(data=bstats) + theme_bw() +
   theme(legend.position="none")
 @
 \end{subfigure}
-\caption{A small distance between cross sections or a large cross-correlation between cross sections are indicative of matches between lands.}
+\begin{subfigure}[t]{\linewidth}
+\caption{Densities of distances between cross sections for Known Matches (KM) and Known Non Matches (KNM).}
+<<ccf-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
+ggplot(data=bstats) + 
+    geom_density(aes(x=ccf, fill=match), alpha=0.5) +
+  xlab("Cross-correlation between cross sections") +
+  scale_fill_brewer("", palette="Paired", labels=c("KNM", "KM")) +
+  theme_bw() + 
+  theme(legend.position=c(1,1), legend.justification=c(1,1),
+        legend.background = element_rect(fill=alpha('white', 0.4))) 
+@
+\end{subfigure}
+\begin{subfigure}[t]{\linewidth}
+\caption{Ratio of probabilities of $P(ccf > x \mid KM) / P(ccf > x \mid KNM)$.}
+<<ccf-ratio, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
+x <- seq(0,1, by=0.001)
+library(sm)
+km <- sm.density(bstats$ccf[bstats$match], display="none", eval.points=x)
+knm <- sm.density(bstats$ccf[!bstats$match], display="none", eval.points=x)
+dframe <- data.frame(x = x, km=km$estimate, knm=knm$estimate)
+dframe$kmtail <- rev(cumsum(rev(dframe$km)))/sum(dframe$km)
+dframe$knmtail <- rev(cumsum(rev(dframe$knm)))/sum(dframe$knm)
+
+densities <- data.frame(
+  x = rep(c(0, x, 1), times = 2),
+  estimate = c(0, km$estimate, 0, 0, knm$estimate,0),
+  match = rep(c("KM", "KNM"), each=1003))
+
+ggplot() +
+  geom_polygon(aes(x=x, y=estimate, fill=match, colour=match), 
+               data=densities, alpha=0.5) +
+  xlab("Cross-correlation between cross sections") +
+  scale_fill_brewer("", palette="Paired", labels=c("KNM", "KM")) +
+  scale_colour_brewer("", palette="Paired", labels=c("KNM", "KM")) +
+  theme_bw() + 
+  ylab("Density estimate") +
+  theme(legend.position=c(.975,1), legend.justification=c(1,1),
+        legend.background = element_rect(fill=alpha('white', 0.4))) +
+  geom_line(aes(x, pmin(5, kmtail/knmtail)), data=dframe) 
+@
+\end{subfigure}
+\caption{A large cross-correlation between cross sections is indicative of matches between lands.}
 \end{figure}
 
 Similarly, the Euclidean distance between two cross sections across the range of loess residuals is strongly correlated to known matches. Out of the 48 pairs of land-to-land cross sections with a distance of less than .25, 47 correspond to known matches (the single known mismatch consists of a pair of cross sections that both are very flat with peaks and valleys of less than 1.5$\mu m$). The average distance between known matches in the Hamby study is $\Sexpr{mean(bstats$distr.dist[bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$distr.dist[bstats$match])}\mu m$; while known mismatches have an average  distance of  $\Sexpr{mean(bstats$distr.dist[!bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$distr.dist[!bstats$match])}\mu m$.
