@@ -95,18 +95,18 @@
 %% Group authors per affiliation:
 \author{Eric Hare, Heike Hofmann, Alicia Carriquiry}
 \address{Department of Statistics and Statistical Laboratory, Iowa State University}
-\fntext[myfootnote]{Since 1880.}
+%\fntext[myfootnote]{Since 1880.}
 
 %% or include affiliations in footnotes:
-\author[mymainaddress,mysecondaryaddress]{Elsevier Inc}
-\ead[url]{www.elsevier.com}
+%\author[mymainaddress,mysecondaryaddress]{Elsevier Inc}
+%\ead[url]{www.elsevier.com}
 
-\author[mysecondaryaddress]{Global Customer Service\corref{mycorrespondingauthor}}
-\cortext[mycorrespondingauthor]{Eric Hare}
+%\author[mysecondaryaddress]{Global Customer Service\corref{mycorrespondingauthor}}
+\cortext[mycorrespondingauthor]{Corresponding author}
 \ead{erichare@iastate.edu}
 
-\address[mymainaddress]{Department of Statistics and Statistical Laboratory, Iowa State University}
-\address[mysecondaryaddress]{secondary address -- CS?}
+% \address[mymainaddress]{Department of Statistics and Statistical Laboratory, Iowa State University}
+% \address[mysecondaryaddress]{secondary address -- CS?}
 
 \begin{abstract}
 In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is the primary goal. We propose a framework for the analysis of the 3D surface measurements which transcribes the markings into a 2D plotting framework. This makes identification of matches easier and more rooted in science for both the expert and the lay person. The automatic matching routine we propose manages to correctly predict 132 out of 180 known bullet land to bullet land matches.
@@ -153,22 +153,22 @@ scrubPath <- function(x) {
 % \item DONE Description of the problem: Standard operating practice, 2009 NAS report
 % \item DONE Description of the Results
 % \item DONE Walkthrough of the process
-% \item \hh{XXX Alternative approaches: IBIS database and the NRC report\cite{nap:2008} against it\footnote{Fox report on the NRC report \url{http://goo.gl/XurSVl}.
+% \item \hh{XXX Alternative approaches: IBIS database and the NRC report\citep{nap:2008} against it\footnote{Fox report on the NRC report \url{http://goo.gl/XurSVl}.
 % NRC report: \url{http://www.nap.edu/catalog/12162/ballistic-imaging}} }
 % \end{enumerate}
 
-Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of the conviction of criminals in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\cite{giannelli:2011}.
+Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of the conviction of criminals in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\citep{giannelli:2011}.
 
-In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. ~\cite{NAS:2009}. The report concluded that minimal research had been done to explore the reliability of these ballistic identification methods. In fact, the report states that forensic evidence ``including, for example, bite marks and firearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
+In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. ~\citep{NAS:2009}. The report concluded that minimal research had been done to explore the reliability of these ballistic identification methods. In fact, the report states that forensic evidence ``including, for example, bite marks and firearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
 
-Rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet during the firing process. These marks are assumed to be unique to the barrel, as described in a 1992 AFTE article~\cite{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows."
+Rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet during the firing process. These marks are assumed to be unique to the barrel, as described in a 1992 AFTE article~\citep{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows."
 
 The primary goal in this type of forensic analysis is to identify these striation markings in an attempt to match two bullets. Since gun barrels should produce similar markings on bullets fired consecutively, the careful analysis of these surface images can help us determine whether two bullets are a match. However, this process has traditionally required forensic experts to perform the analysis, and required physical examination of the bullets. We propose a framework which allows for the analysis of the surface topologies, and the transcription of the markings into a 2D plotting framework which we believe makes identification of matches easier and more rooted in science for both the expert and the lay person.
 
 The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. We then describe a web application for visualizing and working with bullet surfaces. We proceed to describing an automatic matching routine which we evaluate on a small database of reference bullets.
 
 \section{Methodology}
-Throughout this paper, we work with images from the James Hamby Consecutively Rifled Ruger Barrel Study~\cite{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
+Throughout this paper, we work with images from the James Hamby Consecutively Rifled Ruger Barrel Study~\citep{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
 
 3D topographical images of each bullet were obtained using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). x3p is a container format conforming to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government firearm forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
 
@@ -299,7 +299,7 @@ The residuals are dominated, as expected, by the grooves, which show up as large
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:residuala}Residual structure of a surface cross section at $x = 1.5625$ (bottom of the bullet).}
-<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
+<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='.7\\linewidth'>>=
 qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
       geom="line", size=I(1)) +
 #  scale_colour_brewer("x", palette="Paired") + 
@@ -311,7 +311,7 @@ qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
 \end{subfigure}    
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:residualb} Residual structure of a surface cross section at $x = 100.00$}
-<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
+<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='.7\\linewidth'>>=
 #qplot(data=subset(dbr111, x <= 80*1.5625^2 & x >=75*1.5625^2), y, value-ypred,
 qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x), 
       geom="line", size=I(1)) +
@@ -390,22 +390,22 @@ This marks the point at which we should trim the image. The procedure can be des
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:loess_step1}Step 1 the loess fit algorithm. For a fixed cross section ($x$ held constant at 243.75 $\mu m$) of surface measurements for bullet 1-5 are plotted across different values of $y$.}
-<<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
-br111_bullet <- get_bullet(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
-br121_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
-br122_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-2.x3p", sep = "/"))
-br123_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-3.x3p", sep = "/"))
-br124_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-4.x3p", sep = "/"))
-br125_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-5.x3p", sep = "/"))
-br126_bullet <- get_bullet(paste(datadir,"Br1 Bullet 2-6.x3p", sep = "/"))
+<<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.7\\linewidth', warning=FALSE,  message=FALSE>>=
+br111_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
+br121_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
+br122_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-2.x3p", sep = "/"))
+br123_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-3.x3p", sep = "/"))
+br124_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-4.x3p", sep = "/"))
+br125_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-5.x3p", sep = "/"))
+br126_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-6.x3p", sep = "/"))
 
 p1 <- qplot(y, value, data = br111_bullet, size=I(1)) + theme_bw() + ylab("Surface measurements")
 p1
 @
 \end{subfigure}
-%\begin{subfigure}[t]{\linewidth}
-% \caption{\label{fig:loess_step2}Step 2 of the loess fit algorithm. The height values are smoothed with a particular smoothing factor to remove noise in the deviations.}
-<<loess_step2, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
+\begin{subfigure}[t]{\linewidth}
+\caption{\label{fig:loess_step3}Step 2 of the loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35. The orange rectangle shows an example of the smoothing window. Grooves and peaks are detected, if they are not within the same window.}
+<<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.7\\linewidth', warning=FALSE,  message=FALSE>>=
 subdata <- br111_bullet
 smoothfactor <- 35
 
@@ -413,14 +413,6 @@ value_filled <- na.fill(subdata$value, "extend")
 smoothed <- rollapply(value_filled, smoothfactor, function(x) mean(x))
 smoothed_truefalse <- rollapply(smoothed, smoothfactor, function(x) mean(x))
 
-p2 <- qplot(1.5625*(1:length(smoothed)), smoothed) + theme_bw() + xlab("y") +
-  ylab("Surface measurements")
-#p2
-@
-%\end{subfigure}
-\begin{subfigure}[t]{\linewidth}
-\caption{\label{fig:loess_step3}Step 2 of the loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35. The orange rectangle shows an example of the smoothing window. Grooves and peaks are detected, if they are not within the same window.}
-<<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 xloc=250
 p3 <- ggplot() +
   annotate("rect",xmin=xloc-17*1.5625, xmax=xloc+18*1.5625, ymin=80, ymax=200, fill=alpha("orange", alpha=0.5)) + 
@@ -432,7 +424,7 @@ p3
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:loess_step47}Steps 3 -- 6 of the loess fitting algorithm. After smoothing the $y$ values left and right minima are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside these boundaries are removed (shown in grey)}
-<<loess_step47, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
+<<loess_step47, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.7\\linewidth', warning=FALSE,  message=FALSE>>=
     lengthdiff <- length(subdata$value) - length(smoothed_truefalse)
     
     peak_ind_smoothed <- head(which(rollapply(smoothed_truefalse, 3, function(x) which.max(x) == 2)), n = 1)
@@ -464,14 +456,14 @@ p3
 \caption{Overview of all six steps of the smoothing algorithm to identify and remove grooves from the bullet images.}
 \end{figure}
 
-The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a value of 35 for the smoothing factor seems to work quite well (later in the manuscript we investigate varying the smoothing factor). It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass and then added back to the result~\cite{tukey:1977}. This has the effect of introducing a little bit more variance into the smoothed data. We instead performed a second smoothing pass on the smoothed data, which has the effect of weighting observations near the center highest, while the weights linearly drop off as we reach the end of the smoothing window or smoothing factor.
+The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a value of 35 for the smoothing factor seems to work quite well (later in the manuscript we investigate varying the smoothing factor). It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass and then added back to the result~\citep{tukey:1977}. This has the effect of introducing a little bit more variance into the smoothed data. We instead performed a second smoothing pass on the smoothed data, which has the effect of weighting observations near the center highest, while the weights linearly drop off as we reach the end of the smoothing window or smoothing factor.
 
 Next, we fit a loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from bullet 1-5. This is shown in Figure~\ref{fig:loessfits}. Bullet 2-1 is still the best match for bullet 1-5, but now the details of the match are more pronounced.
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:loess_fit} Loess fit for bullet 1-5.}
-<<loess_fit, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
+<<loess_fit, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.7\\linewidth', warning=FALSE,  message=FALSE>>=
 
 br111.groove <- get_grooves(br111_bullet)
 
@@ -482,7 +474,7 @@ my.loess$fitted + ylab("Surface measurements")
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:loess_resid} Residuals of loess fit for bullet 1-5.}
-<<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE>>=
+<<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.7\\linewidth', warning=FALSE>>=
 my.loess$resid + ylab("Residuals of loess Fit")
 @
 \end{subfigure}
@@ -536,7 +528,7 @@ qplot(y, resid, data=melt.df, #colour=factor(x),
 \end{figure}
 
 \section{Web Application}
-We have implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny~\cite{shiny}, allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly~\cite{plotly}, allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
+We have implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny~\citep{shiny}, allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly~\citep{plotly}, allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{images/app.png}
@@ -563,6 +555,7 @@ Enhancements to the web application are still in progress. In particular, much o
 Applying the loess fit to a range of different surface cross cuts (see Figures~\ref{fig:manualmatch} and~\ref{fig:manualmatch-rgl}, with cross cuts from 50 to 150) shows the striation marks across two bullets. Cross cuts of bullet 1 are shown on the left (cross cuts with values below 100) and cross cuts of bullets 2 are shown on the right (cross cuts with values above 100). Many of the striation marks align, allowing for an easy visual assessment of the shared similarities between the two bullets. 
 
 \begin{figure}[hbtp]
+\centering
 <<side-by-side, echo=FALSE, eval=FALSE>>=
 paths <- file.path(datadir, dir(datadir))
 
@@ -572,7 +565,7 @@ crosscuts <- crosscuts[crosscuts > 50]
 crosscuts <- crosscuts[crosscuts < 150]
 
 list_of_fits <- lapply(crosscuts, function(x) {
-  br111 <- get_bullet(paths[5], x = x)
+  br111 <- get_crosscut(paths[5], x = x)
   br111.groove <- get_grooves(br111)
   br111.groove$plot
   fit_loess(br111, br111.groove)
@@ -586,7 +579,7 @@ crosscuts <- crosscuts[crosscuts > 50]
 crosscuts <- crosscuts[crosscuts < 150]
 
 list_of_fits2 <- lapply(crosscuts, function(x) {
-  br111 <- get_bullet(paths[7], x)
+  br111 <- get_crosscut(paths[7], x)
   br111.groove <- get_grooves(br111)
   br111.groove$plot
   fit_loess(br111, br111.groove)
@@ -612,11 +605,12 @@ qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") +
   theme_bw()
 @
 
-\includegraphics[width=\columnwidth]{images/side-by-side-manual-match.png}
+\includegraphics[width=.7\columnwidth]{images/side-by-side-manual-match.png}
 \caption{\label{fig:manualmatch}Manually adjusted side-by-side comparison of bullet 1-5 and bullet 2-1.}
 \end{figure}
 \begin{figure}[hbtp]
-\includegraphics[width=\columnwidth]{images/matchup-rgl.png}
+\centering
+\includegraphics[width=.7\columnwidth]{images/matchup-rgl.png}
 \caption{\label{fig:manualmatch-rgl}Different view of the manually adjusted side-by-side comparison of bullet 1-5 and bullet 2-1.}
 \end{figure}
 
@@ -700,7 +694,7 @@ lines <- subset(lines, lineid != 0)
 \centering
 \begin{subfigure}[t]{\linewidth}
 \caption{Cross section at $x = 100$.\label{fig:crosscut}}{%
-<<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
+<<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.7\\textwidth'>>=
 qplot(y, resid, group=bullet, colour=bullet, data=lof, 
       geom="line") + 
   scale_colour_manual("", values=cols) + theme_bw() +
@@ -712,7 +706,7 @@ qplot(y, resid, group=bullet, colour=bullet, data=lof,
 \end{subfigure}    
 \begin{subfigure}[t]{\linewidth}
     \caption{Adjusted (bullet 1-5 horizontally shifted) cross sections at $x = 100$.\label{fig:crosscutX}}{%
-<<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
+<<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.7\\textwidth'>>=
 # qplot(y, resid, group=bullet, colour=bullet, data=lofX, 
 #       geom="line", alpha=I(0.6)) + 
 #   scale_colour_brewer(palette="Set1") + theme_bw() +
@@ -736,7 +730,7 @@ This horizontal shift is based on the cross-correlation between the two surface 
 with suitably defined limits for the summation. % (because variances of $f$ and $g$ do not change, the above equation is proportional to the correlation). 
 
 \begin{figure}[hbtp]
-<<ccf, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '\\linewidth'>>=
+<<ccf, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '.7\\linewidth'>>=
 lag <- ccf$lag[which.max(ccf$acf)]
 qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I("grey50")) + 
   theme_bw() + ylab("Correlation") + xlab("Lag k") +
@@ -753,7 +747,7 @@ The cross section at which a comparison is done matters -- as cross sections are
 Figure~\ref{fig:crosscuts} shows a sequence of cross sections for bullet 1-5 (barrel 1) that are taken 50$\mu m$ apart, between 150$\mu m$  and 450$\mu m$. These are compared to a cross section at 100$\mu m$. Initially this comparison constitutes an almost perfect match between the two cross sections. However, the match quickly deteriorates with increasing distance to non-matches at a cross section of $x = 300\mu m$ or higher.  Only if the cross section is within 150$\mu m$ do we get a good visual match even when we know that the same bullet surface is being used. 
 Given that we have to expect some variation in nominally the same cross section levels due to manual alignments in microscopes, we should take cross section levels into account in the automatic matching routine by evaluating matches at several cross sections. 
 \begin{figure}[hbtp]
-<<crosscuts-vary, echo=FALSE, fig.width = 7, fig.height = 14, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
+<<crosscuts-vary, echo=FALSE, fig.width = 7, fig.height = 14, out.width = '.7\\linewidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
 crosscuts <- seq(100, 450, by = 50)
 lof <- processBullets(paths[5], x = crosscuts)
@@ -809,7 +803,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
 %\hh{XXX Does this give us a way to automatically check for the bottom of the bullet? Attempt below} 
 
 \begin{figure}[hbtp]
-<<crosscuts-vary-b31, echo=FALSE, fig.width = 7, fig.height = 10, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
+<<crosscuts-vary-b31, echo=FALSE, fig.width = 7, fig.height = 10, out.width = '.7\\linewidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
 crosscuts <- seq(100,225, by=25)
 lof <- processBullets(paths[37], x = crosscuts)
@@ -865,7 +859,7 @@ An opportunity that arises from comparing multiple cross sections of a bullet's 
 \centering
     \begin{subfigure}[t]{\linewidth}
 \caption{Loess smooth at $x = 100$ (span is 0.03).\label{fig:smooth}}{%
-<<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
+<<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.7\\textwidth', warning=FALSE>>=
 qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=bullet) +
   geom_line(aes(y=l30), colour="grey70", size=0.5) +
   facet_grid(bullet~.) +
@@ -877,7 +871,7 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
 \caption{Using a rolling median peaks and grooves are identified for each cross section. \label{fig:smoothcutb}}{%
-<<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
+<<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.7\\textwidth', warning=FALSE>>=
 #images <- file.path(datadir, dir(datadir))
   lof <- processBullets(paths = images[c(5,7)], x = 100)
   lof <- bulletSmooth(lof)
@@ -908,7 +902,7 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
 \end{subfigure}    
 \begin{subfigure}[t]{\linewidth}
     \caption{Rectangles in the back identify a line on one of the bullets.  Matching striation marks are indicated by color filled rectangles and arked by an `o'. Mismatches are filled in grey and  marked by an `x'.   \label{fig:smoothcutd}}{%
-<<smoothmatch, echo=FALSE, dependson='twolands100match', fig.width=7, fig.height=2.75, out.width='\\textwidth', warning=FALSE>>=
+<<smoothmatch, echo=FALSE, dependson='twolands100match', fig.width=7, fig.height=2.75, out.width='.7\\textwidth', warning=FALSE>>=
 peaks1$lines$bullet <- b12[1]
 peaks2$lines$bullet <- b12[2]
 
@@ -941,7 +935,7 @@ As mentioned earlier, the algorithm for peak/valley detection depends on the sel
 A larger smoothing factor on the other hand, like 45, seems to be a more plausible option. Most of the peaks/valleys present which are detected by a smoothing factor of 25 are also detected at 45. However, some notable issues arise. Notice that the valley on the right hand side of the image is smoothed out, and thus not detected. On the left hand side, a double peak is detected - that might be a questionable decision - but there are several peaks in the middle, that are being smoothed out, for example the peak at around $y = 750$. That is, in many cases, large windows are smoothing out some of the structure that we wish to see. Furthermore, it can be seen that the peaks/valleys are often shifted relative to their position in the original loess residuals, or in the smoothed data with smaller smoothing factors.
 
 \begin{figure}[hbtp]
-<<smoothfac1, echo=FALSE, fig.width=7, fig.height=5.2, out.width='\\linewidth', warning=FALSE>>=
+<<smoothfac1, echo=FALSE, fig.width=7, fig.height=5.2, out.width='.7\\linewidth', warning=FALSE>>=
 br111.groove <- get_grooves(br111_bullet)
 br111.loess <- fit_loess(br111_bullet, br111.groove)
 
@@ -983,18 +977,18 @@ We first identify a stable region for each bullet and pick the lowest cross sect
 
 All of the other steps are done on pairs of bullet lands:
 \begin{enumerate}
-\item Smooth the two cross sections by a loess with a very small span (see Figure~\ref{fig:smooth}). 
-\item Use cross-correlation to find the best alignment along the cross sections: Shift one of the cross sections by the lag indicated by the cross-correlation function (see Figure~\ref{fig:ccf} for the cross-correlation function and Figure~\ref{fig:crosscutX} for the resulting shift).
-\item Using a rolling average, identify peaks and grooves for each of the cross sections. We define a region around the extrema on each side as one third of the distance to the next extrema (see Figure~\ref{fig:smoothcutb}). 
-\item Match grooves and peaks between cross sections: based on the regions around the extrema as defined above, we identify joint regions between two cross sections as those areas, in which at least two of the individual regions touch. A joint region is defined as the smallest interval that covers all of the touching regions. A joint region is called a match between the cross sections, if all of the cross section-specific regions are of the same type of extrema, i.e.\ either all peaks or all valleys. In Figure~\ref{fig:match} all matches are colored corresponding to their type of extrema. Non-matching regions are left grey.
-\item Identify the maximal number of CMS (consecutive matching striae) between the two cross sections by counting consecutive matching lines. 
-In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a  high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti~\cite{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match, and which are part of current practice in assessing bullet matches~\cite{nichols:1997, nichols:2003, nichols:2003b}.
+\item {\bf Smooth the two cross sections} by a loess with a very small span (see Figure~\ref{fig:smooth}). 
+\item Use cross-correlation to {\bf find the best alignment} along the cross sections: Shift one of the cross sections by the lag indicated by the cross-correlation function (see Figure~\ref{fig:ccf} for the cross-correlation function and Figure~\ref{fig:crosscutX} for the resulting shift).
+\item Using a rolling average, {\bf identify peaks and grooves} for each of the cross sections. We define a region around the extrema on each side as one third of the distance to the next extrema (see Figure~\ref{fig:smoothcutb}). 
+\item {\bf Match grooves and peaks between cross sections:} based on the regions around the extrema as defined above, we identify joint regions between two cross sections as those areas, in which at least two of the individual regions touch. A joint region is defined as the smallest interval that covers all of the touching regions. A joint region is called a match between the cross sections, if all of the cross section-specific regions are of the same type of extrema, i.e.\ either all peaks or all valleys. In Figure~\ref{fig:match} all matches are colored corresponding to their type of extrema. Non-matching regions are left grey.
+\item {\bf Identify the maximal number of CMS} (consecutive matching striae) between the two cross sections by counting consecutive matching lines. 
+In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a  high number indicative of a match between the bullets. For lead bullets, such as this, Biasotti~\citep{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match, and which are part of current practice in assessing bullet matches~\citep{nichols:1997, nichols:2003, nichols:2003b}.
 \end{enumerate}
 
 Determining a CMS threshold that needs to be exceeded for us to declare a match is beyond the scope of this work, even though it is critically important in practice. We provide some ideas in the next section. %In order to get a better understanding of  how  this matching works in known matches and non-matches, we next investigate the algorithm's performance in a test scenario.
 
 \begin{figure}[hbtp]
-<<barrel2, echo=FALSE, fig.width = 7, fig.height=12, out.width='\\linewidth', warning=FALSE>>=
+<<barrel2, echo=FALSE, fig.width = 7, fig.height=12, out.width='.7\\linewidth', warning=FALSE>>=
 
 list_of_matches <- lapply(25:30, function(i) {
   lof <- processBullets(paths = images[c(31,i)], x = 100)
@@ -1038,18 +1032,18 @@ Using the James Hamby study, we run all unknown bullets against all known bullet
 It is not reasonable to assume that we can match all lands, but we can try to maximize the number of matches to get an overview of what we can reasonably expect from an automated match. 
 
 \begin{figure}[hbtp]
-\begin{subfigure}[t]{.49\textwidth}
+\begin{subfigure}[t]{\textwidth}
 \caption{Maximal number of CMS between unknown bullet C land 3 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
-<<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth'>>=
+<<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.7\\textwidth'>>=
 load("data-25-25/unkn9.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
 
 qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
 @
 \end{subfigure}
-\begin{subfigure}[t]{.49\textwidth}
+\begin{subfigure}[t]{\textwidth}
 \caption{Overlaid lines of C-3 and the land with the top matching CMS.}
-<<top, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\textwidth', warning = FALSE>>=
+<<top, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.7\\textwidth', warning = FALSE>>=
 res <- reslist[[which.max(cmsdist)]]  
 #res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
@@ -1066,9 +1060,10 @@ print(ggplot() +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
 
 @
-
+\end{subfigure}
+\begin{subfigure}[t]{\textwidth}
 \caption{Overlaid lines of C-3 and the land with the second top matching CMS.}
-<<top2, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\textwidth', warning = FALSE>>=
+<<top2, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.7\\textwidth', warning = FALSE>>=
 res <- reslist[[which(cmsdist==14)]]  # number 2
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
 
@@ -1085,15 +1080,15 @@ print(ggplot() +
 
 @
 \end{subfigure}
-\caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works perfectly. Unfortunately the matches are not always that convincing.}
+\caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works very well. Unfortunately the matches are not always that convincing.}
 \end{figure}
 
-Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 36 pairs of lands with at least sixteen CMS in common are matches. There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$cms[!bstats$match])} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$cms[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$cms[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$cms[bstats$match])}. Secondly, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by Miller~\cite{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, between two lands that share twelve consecutively matched striae. Visually we can easily tell these two lands do not match well.
+Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 36 pairs of lands with at least sixteen CMS in common are matches. There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$cms[!bstats$match])} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$cms[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$cms[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$cms[bstats$match])}. Secondly, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by \citet{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, between two lands that share twelve consecutively matched striae. Visually we can easily tell these two lands do not match well.
 %
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
 \caption{Distribution of maximal CMS.}
-<<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\linewidth'>>=
+<<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
 ggplot(data=bstats) + 
   geom_bar(aes(x=factor(cms))) + theme_bw() +
   theme(legend.position="bottom") + 
@@ -1102,7 +1097,7 @@ ggplot(data=bstats) +
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
 \caption{All land-to-land comparisons with a maximum number of CMS of thirteen or higher are matches.}
-<<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='\\linewidth'>>=
+<<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
 ggplot(data=bstats) + 
   geom_bar(aes(x=factor(cms), fill=match), position="fill") +
   theme(legend.position="bottom") + 
@@ -1114,7 +1109,7 @@ ggplot(data=bstats) +
 \end{figure}
 
 \begin{figure}[hbtp]
-<<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\linewidth', warning=FALSE>>=
+<<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.7\\linewidth', warning=FALSE>>=
 load("data-25-25/unkn47.RData")
 res <- reslist[[106]]
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
@@ -1137,7 +1132,7 @@ For smaller numbers of CMS, the percentage of false positives quickly increases.
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:distr.dist}Relationship between maximal CMS, distances between cross sections and matches.}
-<<distr.dist, echo=FALSE, fig.width=8, fig.height=4, out.width='\\linewidth'>>=
+<<distr.dist, echo=FALSE, fig.width=8, fig.height=4, out.width='.7\\linewidth'>>=
 ggplot(data=bstats) + 
     geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match), alpha=0.5) +
    facet_wrap(~match, labeller="label_both") + xlab("maximum CMS") + 
@@ -1150,7 +1145,7 @@ ggplot(data=bstats) +
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}
 \caption{\label{fig:ccfs-match}Relationship between maximal CMS, cross-correlation between cross sections and matches.}
-<<ccfs-match, echo=FALSE, fig.width=8, fig.height=4, out.width='\\linewidth'>>=
+<<ccfs-match, echo=FALSE, fig.width=8, fig.height=4, out.width='.7\\linewidth'>>=
 ggplot(data=bstats) + theme_bw() + 
   geom_jitter(aes(x=factor(cms), y=ccf, colour=match), alpha=.5) + 
   facet_wrap(~match, labeller="label_both") + 
@@ -1166,13 +1161,13 @@ Similarly, the Euclidean distance between two cross sections across the range of
 Both of these additional variables show large, if not significant, differences between matches and non-matches. Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of  a set of feature variables derived from the 3d topological surface measurements. There are quite large differences in these averages, indicating that we can successfully employ machine learning methods to distinguish matches from non-matches.
 
 
-Using recursive partitioning, we fit a decision tree~\cite{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
+Using recursive partitioning, we fit a decision tree~\citep{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
 Instead of CMS, cross-correlation (ccf) between the cross sections is very important in the matching process  by the decision tree. Aside from  cross correlation, the number of matches (num.matches) is involved in the decision. 
 Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
 Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3d surface structure. 
 
 \begin{figure}[hbtp]
-<<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
+<<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.7\\linewidth'>>=
 library(rpart)
 library(rpart.plot)
 library(RColorBrewer)
@@ -1202,11 +1197,11 @@ bstats$forest <- predict(rtrees, type="prob")[,2]
 @
 
 
-Another benefit is that we can not only apply a single decision tree, but several hundreds of them to combine in a random forest~\cite{breiman:2001, randomForest}. In a random forest multiple trees are fitted. For each of these trees, only two thirds of the observations are used for fitting, while predictions for the remaining third  are used to evaluate the tree's predictive power and accuracy, or its reverse, the error rate. Because errors are determined from the one third of held-back observations, this error rate is called the out-of bag (OOB) error. 
+Another benefit is that we can not only apply a single decision tree, but several hundreds of them to combine in a random forest~\citep{breiman:2001, randomForest}. In a random forest multiple trees are fitted. For each of these trees, only two thirds of the observations are used for fitting, while predictions for the remaining third  are used to evaluate the tree's predictive power and accuracy, or its reverse, the error rate. Because errors are determined from the one third of held-back observations, this error rate is called the out-of bag (OOB) error. 
 Figure~\ref{fig:oob} shows the cumulative out-of-bag error (OOB) rate for 300 trees. 
 %
 \begin{figure}[hbtp]
-<<oob, echo=FALSE, fig.width=7, fig.height=3, out.width='\\linewidth'>>=
+<<oob, echo=FALSE, fig.width=7, fig.height=3, out.width='.7\\linewidth'>>=
 qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Number of trees") + ylab("Out of Bag Error (OOB)")
 @
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
@@ -1214,7 +1209,7 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 %
 After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0044. This is a weighted average between zero false positives and an error rate of false negatives of 0.26. Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
 \begin{figure}[hbtp]
-<<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='\\linewidth'>>=
+<<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.7\\linewidth'>>=
 bstats$bullet <- gsub("-[0-9]$", "", bstats$b2)
 bullets <- bstats %>% filter(match) %>% group_by(bullet) %>% summarize(
   n = n(),
@@ -1241,7 +1236,7 @@ However, this does not carry a lot of weight because of the few bullet compariso
 Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we can therefore introduce an interval of `inconclusive' results in the middle of the spectrum. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree ($x$-axis) and the random forest ($y$-axis). Overall, there is a lot of agreement; out of 10,800 land-to-land comparisons, only four cases result in a different decision. 
 
 \begin{figure}[hbtp]
-<<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='\\linewidth'>>=
+<<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='.7\\linewidth'>>=
 qplot(pred, forest, geom="jitter", data=bstats, colour=match, 
       shape=match) + theme_bw() +
   theme(legend.position="bottom") +
@@ -1297,20 +1292,20 @@ The matching algorithm is sensitive to the parameter choices made. The distance 
 
 The Hamby study serves as our evaluation `database'. It consists of only  35 bullets -- this is obviously not a particularly realistic scenario for automatic matching. But this is what at the moment  is available to us. As the NIST database expands, this might get into more challenging territory. 
  
-The feasibility of a database of ballistic images was evaluated in a 2008 report~\cite{nap:2008} by the National Research Council. The evaluation was investigating the scalability of NIBIN (National Integrated Ballistic Information Network), which uses proprietary matching algorithms provided by IBIS. The bottomline of the report was that in spite of the many technical and practical hurdles, solutions to all but one problem could be found. The remaining problem is simply that statistically the quality of the matching algorithm (in this case, of breech-face marks and firing pin impressions) could not withstand a hugely increased number of records while still maintaining a reasonable workload for forensic examiners, who have to examine possible matches suggested by the system. 
-The findings of the NRC report on ballistic imaging are based on two-dimensional greyscale images, which the committee argued were not reliable enough for distinguishing extremely fine marks. This finding coincides with the assessment by de Kinder et al \cite{dekinder:2004} based on the IBIS Heritage system. A further re-assessment in 2015 by de Ceuster et al \cite{deceuster:2015} came to the same conclusions based on the EvoFinder system. 
+The feasibility of a database of ballistic images was evaluated in a 2008 report~\citep{nap:2008} by the National Research Council. The evaluation was investigating the scalability of NIBIN (National Integrated Ballistic Information Network), which uses proprietary matching algorithms provided by IBIS. The bottomline of the report was that in spite of the many technical and practical hurdles, solutions to all but one problem could be found. The remaining problem is simply that statistically the quality of the matching algorithm (in this case, of breech-face marks and firing pin impressions) could not withstand a hugely increased number of records while still maintaining a reasonable workload for forensic examiners, who have to examine possible matches suggested by the system. 
+The findings of the NRC report on ballistic imaging are based on two-dimensional greyscale images, which the committee argued were not reliable enough for distinguishing extremely fine marks. This finding coincides with the assessment by \citet{dekinder:2004} based on the IBIS Heritage system. A further re-assessment by \citet{deceuster:2015} came to the same conclusions based on the EvoFinder system. 
 The NRC report also found, that results from 2d images are improved upon by matches based on 3d images. This is consistent with the importance of features found here: out of the top five features in Table~\ref{tab:importance}, only the number of matches and mismatches are available for a match based on 2d features.
 
-By suggesting an automated algorithm that first removes class characteristics, such as the grooves and the curvature of the bullet to reveal the region of the  land, then identifies peaks and valleys on this land, we reduce subjectivity and with it possible sources of bias. Counting CMS in particular, has been found to be subjective to the examiner: `the concept of counting striations is subjective and based on experience'~\cite{miller:1998}.
+By suggesting an automated algorithm that first removes class characteristics, such as the grooves and the curvature of the bullet to reveal the region of the  land, then identifies peaks and valleys on this land, we reduce subjectivity and with it possible sources of bias. Counting CMS in particular, has been found to be subjective to the examiner: `the concept of counting striations is subjective and based on experience'~\citep{miller:1998}.
 
-For a fair assessment of the adequacy of an algorithm we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package x3prplus~\cite{x3prplus}, and the code to produce this paper is available at \url{http://www.github.com/erichare/imaging-paper}. Obviously, this is only a first step, but in times of the Netflix prize~\cite{koren:2009, toescher:2009, piotte:2009} and the many Data Science challenges hosted by Kaggle\footnote{kaggle home:\url{https://www.kaggle.com/solutions/competitions}}, we should not let the quality of the matching algorithm be the problem that stands in the way.
+For a fair assessment of the adequacy of an algorithm we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package x3prplus~\citep{x3prplus}, and the code to produce this paper is available at \url{http://www.github.com/erichare/imaging-paper}. Obviously, this is only a first step, but in times of the Netflix prize~\citep{koren:2009, toescher:2009, piotte:2009} and the many Data Science challenges hosted by Kaggle\footnote{kaggle home:\url{https://www.kaggle.com/solutions/competitions}}, we should not let the quality of the matching algorithm be the problem that stands in the way.
 
 Only a much larger database and transparent communication of results will give us  answers to whether automatic matching of ballistic evidence is really feasible. Whether there really is individualization of this evidence, as is often silently assumed. And in the case, that individualization is a reasonable assumption, whether  there is a way to be able to distinguish between individual and subclass characteristics. 
 
-An approach that might help in determining this difference comes from Biometrics, is suggested by Jain et al~\cite{jain:2015:tphil, jain:2015} and has been successfully applied in the Aadhar project (the effort by the Unique Identification Authority of India (UIDAI) to provide a unique 12-digit identification number to approximately 1.2 billion residents of India based on ten fingerprints and two irises).
+An approach that might help in determining this difference comes from Biometrics, is suggested by \citet{jain:2015:tphil, jain:2015} and has been successfully applied in the Aadhar project (the effort by the Unique Identification Authority of India (UIDAI) to provide a unique 12-digit identification number to approximately 1.2 billion residents of India based on ten fingerprints and two irises).
 This approach uses dictionary learning based on small square patches  of 64x64 or 32x32 pixels. For matching bullets, a simpler, one-dimensional window approach might be sufficient to match striation marks because of the physical forces  leading to the existence of these marks.  
 
-\paragraph{Acknowledgment} Thanks to the men and women behind the software R~\cite{R}, and the authors of the R packages  knitr~\cite{knitr} and ggplot2~\cite{ggplot2}.
+\paragraph{Acknowledgment} Thanks to the men and women behind the software R~\citep{R}, and the authors of the R packages  knitr~\citep{knitr} and ggplot2~\citep{ggplot2}.
 
 This research was partially funded in part by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.
 
