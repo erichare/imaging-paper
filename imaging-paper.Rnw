@@ -1109,6 +1109,29 @@ ggplot(data=bstats) +
 \begin{subfigure}[t]{\linewidth}
 \caption{Densities of maximum CMS for Known Matches (KM) and Known Non Matches (KNM).}
 <<cms-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
+x <- seq(0,29, by=0.03)
+library(sm)
+km <- sm.density(bstats$cms[bstats$match], display="none", eval.points=x)
+knm <- sm.density(bstats$cms[!bstats$match], display="none", eval.points=x)
+dframe <- data.frame(x = x, km=km$estimate, knm=knm$estimate)
+dframe$kmtail <- rev(cumsum(rev(dframe$km)))/sum(dframe$km)
+dframe$knmtail <- rev(cumsum(rev(dframe$knm)))/sum(dframe$knm)
+
+densities <- data.frame(
+  match = rep(c("KM", "KNM"), each=(length(x)+2)),
+  x = rep(c(0, x, 29), times = 2),
+  estimate = c(0, km$estimate, 0, 0, knm$estimate,0))
+
+ggplot() +
+  geom_polygon(aes(x=x, y=estimate, fill=match, group=match), colour="black",
+               data=densities, alpha=0.5) +
+xlab("maximum CMS") +
+  scale_fill_brewer("", palette="Paired") +
+  ylab("Density estimates") +
+  theme_bw() + 
+  theme(legend.position=c(1,1), legend.justification=c(1,1),
+        legend.background = element_rect(fill=alpha('white', 0.4)))
+
 ggplot(data=bstats) + 
     geom_density(aes(x=cms, fill=match), alpha=0.5) +
   xlab("maximum CMS") +
@@ -1213,11 +1236,11 @@ densities <- data.frame(
   match = rep(c("KM", "KNM"), each=1003))
 
 ggplot() +
-  geom_polygon(aes(x=x, y=estimate, fill=match, colour=match), 
+  geom_polygon(aes(x=x, y=estimate, fill=match), colour="black",
                data=densities, alpha=0.5) +
   xlab("Cross-correlation between cross sections") +
   scale_fill_brewer("", palette="Paired", labels=c("KNM", "KM")) +
-  scale_colour_brewer("", palette="Paired", labels=c("KNM", "KM")) +
+#  scale_colour_brewer("", palette="Paired", labels=c("KNM", "KM")) +
   theme_bw() + 
   ylab("Density estimate") +
   theme(legend.position=c(.975,1), legend.justification=c(1,1),
