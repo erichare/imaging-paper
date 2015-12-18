@@ -557,54 +557,54 @@ Applying the loess fit to a range of different surface cross cuts (see Figures~\
 
 \begin{figure}[hbtp]
 \centering
-<<side-by-side, echo=FALSE, eval=FALSE>>=
-paths <- file.path(datadir, dir(datadir))
-
-br111 <- read.x3p(paths[5])
-crosscuts <- unique(fortify_x3p(br111)$x)
-crosscuts <- crosscuts[crosscuts > 50]
-crosscuts <- crosscuts[crosscuts < 150]
-
-list_of_fits <- lapply(crosscuts, function(x) {
-  br111 <- get_crosscut(paths[5], x = x)
-  br111.groove <- get_grooves(br111)
-  br111.groove$plot
-  fit_loess(br111, br111.groove)
-})
-
-lof <- lapply(list_of_fits, function(x) x$resid$data) %>% bind_rows
-
-br111 <- read.x3p(paths[7])
-crosscuts <- unique(fortify_x3p(br111)$x)
-crosscuts <- crosscuts[crosscuts > 50]
-crosscuts <- crosscuts[crosscuts < 150]
-
-list_of_fits2 <- lapply(crosscuts, function(x) {
-  br111 <- get_crosscut(paths[7], x)
-  br111.groove <- get_grooves(br111)
-  br111.groove$plot
-  fit_loess(br111, br111.groove)
-})
-
-lof2 <- lapply(list_of_fits2, function(x) x$resid$data) %>% bind_rows
-lof$bullet <- 1
-lof2$bullet <- 2
-
-LOF <- rbind(lof, lof2)
-
-subLOF1 <- LOF %>% filter(bullet == 1, x <= 100)
-subLOF2 <- LOF %>% filter(bullet == 2, x > 100)
-
-#subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
-subLOF1$y <- subLOF1$y + 19*1.5625 # working now!!!
-subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
-
-qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") + 
-  scale_fill_gradientn(limits=c(-5,5), 
-                       colors=c("grey5", "gold4","darkgoldenrod1","lightgoldenrod1", "lemonchiffon"),
-                       values = c(0,0.5, 0.75, 0.9, 1)) +
-  theme_bw()
-@
+%' <<side-by-side, echo=FALSE, eval=FALSE>>=
+%' paths <- file.path(datadir, dir(datadir))
+%' 
+%' br111 <- read.x3p(paths[5])
+%' crosscuts <- unique(fortify_x3p(br111)$x)
+%' crosscuts <- crosscuts[crosscuts > 50]
+%' crosscuts <- crosscuts[crosscuts < 150]
+%' 
+%' list_of_fits <- lapply(crosscuts, function(x) {
+%'   br111 <- get_crosscut(paths[5], x = x)
+%'   br111.groove <- get_grooves(br111)
+%'   br111.groove$plot
+%'   fit_loess(br111, br111.groove)
+%' })
+%' 
+%' lof <- lapply(list_of_fits, function(x) x$resid$data) %>% bind_rows
+%' 
+%' br111 <- read.x3p(paths[7])
+%' crosscuts <- unique(fortify_x3p(br111)$x)
+%' crosscuts <- crosscuts[crosscuts > 50]
+%' crosscuts <- crosscuts[crosscuts < 150]
+%' 
+%' list_of_fits2 <- lapply(crosscuts, function(x) {
+%'   br111 <- get_crosscut(paths[7], x)
+%'   br111.groove <- get_grooves(br111)
+%'   br111.groove$plot
+%'   fit_loess(br111, br111.groove)
+%' })
+%' 
+%' lof2 <- lapply(list_of_fits2, function(x) x$resid$data) %>% bind_rows
+%' lof$bullet <- 1
+%' lof2$bullet <- 2
+%' 
+%' LOF <- rbind(lof, lof2)
+%' 
+%' subLOF1 <- LOF %>% filter(bullet == 1, x <= 100)
+%' subLOF2 <- LOF %>% filter(bullet == 2, x > 100)
+%' 
+%' #subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
+%' subLOF1$y <- subLOF1$y + 19*1.5625 # working now!!!
+%' subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
+%' 
+%' qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") + 
+%'   scale_fill_gradientn(limits=c(-5,5), 
+%'                        colors=c("grey5", "gold4","darkgoldenrod1","lightgoldenrod1", "lemonchiffon"),
+%'                        values = c(0,0.5, 0.75, 0.9, 1)) +
+%'   theme_bw()
+%' @
 
 \includegraphics[width=.7\columnwidth]{images/side-by-side-manual-match.png}
 \caption{\label{fig:manualmatch}Manually adjusted side-by-side comparison of bullet 1-5 and bullet 2-1.}
@@ -1052,11 +1052,12 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 \caption{Unkn Bullet Q-4}
 \includegraphics[width=\linewidth]{images/q-4.png}
 \end{subfigure}
-\caption{\label{fig:fourflags}}
+\caption{\label{fig:fourflags}\hh{Images of the four lands that got flagged during the quality assessment. All of them show scratch marks across the striation marks from the barrel. They will be excluded from the remainder of the analysis.}}
 \end{figure}
 %
-Using the James Hamby study, we run all unknown bullets against all known bullets for matches. 
-The algorithm is using land-to-land matches, i.e. we are running $15 \times 6 = 90$ lands from unkown bullets against $2 \times 10 \times 6 = 120$ lands from known bullets, yielding a total of $10,800$ comparisons with 180 known land-to-land matches. 
+\hh{We exclude these four lands from the further matching considerations and 
+ run all unknown bullets against all known bullets for matches. 
+The algorithm is using land-to-land matches, i.e. we are running $15 \times 6 -2 = 90 - 2 = 88$ lands from unkown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. }
  When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the number of maximum consecutive matching striae between land C-3 and all 120 known lands. Two lands show a high CMS. These correspond to the known matches, shown in Figures~\ref{fig:hamby-perfect}b and c. 
  Unfortunately, not all results are as clear cut. 
 It is not reasonable to assume that we can match all lands, but we can try to maximize the number of matches to get an overview of what we can reasonably expect from an automated match. 
@@ -1323,14 +1324,23 @@ library(rpart.plot)
 library(RColorBrewer)
 vals = alpha(brewer.pal(3, name="Paired"), alpha=0.5)
 
-includes <- setdiff(names(bstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist"))
-rp1 <- rpart(match~., bstats[,includes])  # doesn't include cms at all !!!!
+includesVar <- setdiff(names(bstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist"))
+cc <- read.csv("csvs/crosscuts-25-new.csv")
+cc$bullet <- gsub(".*//","",cc$path)
+cc$bullet <- gsub(".x3p", "", cc$bullet)
+bstats$flagged <- bstats$b2 %in% cc$bullet[which(is.na(cc$cc))] |
+                  bstats$b1 %in% cc$bullet[which(is.na(cc$cc))]
+
+excludesObs <- which(bstats$flagged)
+
+rp1 <- rpart(match~., bstats[-excludesObs,includesVar])  # doesn't include cms at all !!!!
+
 
 per <- rp1$frame$yval # predictive probability for each node in the tree
 
 prp(rp1, extra = 101, box.col=vals[as.numeric(per > 0.5)+1])
 
-bstats$pred <- predict(rp1)
+bstats$pred <- predict(rp1, newdata=bstats)
 @
 \caption{\label{fig:tree}Decision tree of matching bullets based on recursive partitioning. The rectangular nodes are the leaves, giving a short summary consisting of the number of observations in the leaf (bottom left), the corresponding percentage of the total (bottom right). The number at the top shows the fraction of these observations that are a match. A 1 or a 0 therefore indicate a homogeneous (or perfect) node. }
 \end{figure}
@@ -1339,11 +1349,11 @@ bstats$pred <- predict(rp1)
 library(randomForest)
 library(reshape2)
 set.seed(20151215)
-rtrees <- randomForest(factor(match)~., data=bstats[,includes], ntree=300)
+rtrees <- randomForest(factor(match)~., data=bstats[-excludesObs,includesVar], ntree=300)
 
 errors <- data.frame(rtrees$err.rate)
 errors$id <- 1:nrow(errors)
-bstats$forest <- predict(rtrees, type="prob")[,2]
+bstats$forest <- predict(rtrees, type="prob", newdata=bstats)[,2]
 @
 
 
@@ -1379,7 +1389,7 @@ qplot(data=bm, value, reorder(bullet, value/n), size=I(2.5),
                      minor_breaks = 1:11) +
   theme(legend.position = "bottom")
 @
-\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree (maximum possible number is 12). Both results for the tree and the random forest are shown. For each bullet at least four lands are correctly matched. Unknown bullet B is the hardest for the algorithm to match.}
+\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree (maximum possible number is 12, except for Q and B, where the maximum is 11). Both results for the tree and the random forest are shown. For each bullet at least four lands are correctly matched. Unknown bullet B is the hardest for the algorithm to match.}
 \end{figure}
 %
 However, this does not carry a lot of weight because of the few bullet comparisons in question: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
@@ -1433,6 +1443,7 @@ print(xtable(imp, align="clrrcrc"), floating = FALSE)
 
 The rows in the table are ordered according to descending importance. The variable with the most predictive power by far is cross-correlation (ccf), followed by the number of matches (num.matches) and mismatches(num.mismatches), and the sum of the height of joint peaks (sumpeaks). The maximal consecutively matching striae (cms) is found only in sixth place.
 
+\hh{XXX Needs still an answer: under what circumstances do we decide on match/no-match successfully?}
 
 \section{Conclusion}
 
