@@ -113,7 +113,7 @@ In 2009, the National Academy of Sciences published a report questioning the sci
 \end{abstract}
 
 \begin{keyword}
-\hh{XXX not the right keywords yet} Data visualization, Statistical graphics, Statistical computing.
+\hh{XXX not the right keywords yet} 3d Topological Surface Measurement, Data visualization, Statistical graphics, Statistical computing.
 \end{keyword}
 
 \end{frontmatter}
@@ -552,7 +552,7 @@ The application includes a button which allows the automatic creation of a resid
 
 Enhancements to the web application are still in progress. In particular, much of the automatic matching functionality described in the next section will be added in the future.
 
-\section{Approach to automatic matching}
+\section{Automatic matching}
 Applying the loess fit to a range of different surface cross cuts (see Figures~\ref{fig:manualmatch} and~\ref{fig:manualmatch-rgl}, with cross cuts from 50 to 150) shows the striation marks across two bullets. Cross cuts of bullet 1 are shown on the left (cross cuts with values below 100) and cross cuts of bullets 2 are shown on the right (cross cuts with values above 100). Many of the striation marks align, allowing for an easy visual assessment of the shared similarities between the two bullets. 
 
 \begin{figure}[hbtp]
@@ -744,7 +744,7 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 
 
 \subsection{Varying cross sections}
-The cross section at which a comparison is done matters -- as cross sections are further apart, more pronounced differences between the cross sections show up. This poses both a caveat to matching attempts as well as an opportunity: on the one hand we have to be aware of which cross section level was used in a matching, but on the other hand we can use multiple cross sections of the same bullet for an initial assessment of its quality. Both of these situations are assessed and discussed in more detail below: 
+The cross section at which a comparison is done matters -- as cross sections are further apart, more pronounced differences between the cross sections show up. This poses both a caveat to matching attempts as well as an opportunity \hh{for quality control}: on the one hand we have to be aware of which cross section level was used in a matching, but on the other hand we can use multiple cross sections of the same bullet for an initial assessment of its quality. Both of these situations are assessed and discussed in more detail below: 
 Figure~\ref{fig:crosscuts} shows a sequence of cross sections for bullet 1-5 (barrel 1) that are taken 50$\mu m$ apart, between 150$\mu m$  and 450$\mu m$. These are compared to a cross section at 100$\mu m$. Initially this comparison constitutes an almost perfect match between the two cross sections. However, the match quickly deteriorates with increasing distance to non-matches at a cross section of $x = 300\mu m$ or higher.  Only if the cross section is within 150$\mu m$ do we get a good visual match even when we know that the same bullet surface is being used. 
 Given that we have to expect some variation in nominally the same cross section levels due to manual alignments in microscopes, we should take cross section levels into account in the automatic matching routine by evaluating matches at several cross sections. 
 \begin{figure}[hbtp]
@@ -853,8 +853,8 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
 @
 \caption{\label{fig:crosscuts2}Varying cross sections for barrel 3, bullet 1. Initially, the match between cross sections 25$\mu m$ apart is affected strongly by break off at the bottom of the bullet. At a cross section level of $175\mu m$ the bullet pattern stabilizes. For this land, matches should not be attempted at lower cross sections.}
 \end{figure}
-An opportunity that arises from comparing multiple cross sections of a bullet's surface measurements is the following: by comparing cross sections that are not too far apart -- maybe 25 or 50 $\mu m$ for example -- we get an indication whether the cross section is in a rapidly changing section of the surface, indicative of a break-off, or in a stable section, where we can expect to find matches to other surfaces reasonably well. In the approach here, we keep increasing the cross section level until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet 1-1 from barrel 3.
-`Stability' is here defined as two aligned cross sections chosen 12.5$\mu m$ apart having a cross-correlation of at least 0.9. 
+An opportunity that arises from comparing multiple cross sections of a bullet's surface measurements is the following: by comparing cross sections that are not too far apart -- maybe 25 or 50 $\mu m$ for example -- we get an indication whether the cross section is in a rapidly changing section of the surface, indicative of a break-off \hh{or some other damage}, or in a stable section, where we can expect to find matches to other surfaces reasonably well. In the approach here, we keep increasing the cross section level until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet 1-1 from barrel 3.
+`Stability' is here defined as two aligned cross sections chosen 25$\mu m$ apart having a cross-correlation of at least 0.9. 
 
 \begin{figure}[hbtp]
 \centering
@@ -880,8 +880,8 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
   lofX <- bAlign$bullet  
 
   b12 <- unique(lof$bullet)
-  peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = 30)
-  peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = 30)
+  peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = 25)
+  peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = 25)
   peaks1$lines$bullet <- b12[1]
   peaks2$lines$bullet <- b12[2]
   peaks <- rbind(peaks1$lines, peaks2$lines)
@@ -970,7 +970,7 @@ smooths <- rbind(peaks1$plot$data, peaks2$plot$data,
 \caption{\label{fig:varysmooth} Peak/valley detection at smoothing factors of 5, 25, and 45, respectively. Note that a smoothing factor of 5 yields enough noise that many very minimal overlapping peaks and valleys are detected, while a smoothing factor of 45 might over-smooth and cause the peaks/valleys to either disappear or shift  horizontally  from their position in the original loess residuals.}
 \end{figure}
 
-\subsection{Automated matching algorithm}
+\subsection{Algorithm}
 
 Figure~\ref{fig:match} gives an overview of the automated matching routine: 
 We first identify a stable region for each bullet and pick the lowest cross section level in this region, because typically, individual characteristics are best expressed at the lower end of the bullet. 
@@ -1027,7 +1027,36 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 \end{figure}
 
 \section{Evaluation}
-Using the James Hamby study, we run all unknown bullets against all known bullets for matches. The algorithm is using land-to-land matches, i.e. we are running $15 \times 6 = 90$ lands from unkown bullets against $2 \times 10 \times 6 = 120$ lands from known bullets, yielding a total of $10,800$ comparisons with 180 known land-to-land matches. 
+\hh{In order to get a better understanding of  how  the matching algorithm works in known matches and non-matches, we investigate its performance in a test scenario based on the James Hamby study.
+}
+\hh{As a first step, we automatically assess the quality of each of the lands by  checking that we can identify a stable region on each land. For this, we ues cross sections 25$\mu m$ apart and require a minimum of 0.9 for the cross correlation. Four lands from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these lands shows scratch marks across the surface.}
+%
+\begin{figure}
+\begin{subfigure}[t]{.49\textwidth}
+\caption{Br6 Bullet 2-1}
+%' <<echo=FALSE>>=
+%' b1 <- read.x3p(file.path(datadir, "Br6 Bullet 2-1.x3p"))
+%' image(b1$surface.matrix)
+%' @
+\includegraphics[width=\linewidth]{images/br6-2-1.png}
+\end{subfigure}
+\begin{subfigure}[t]{.49\textwidth}
+\caption{Br9 Bullet 2-4}
+\includegraphics[width=\linewidth]{images/br9-2-4.png}
+\end{subfigure}
+\begin{subfigure}[t]{.49\textwidth}
+\caption{Unkn Bullet B-2}
+\includegraphics[width=\linewidth]{images/b-2.png}
+\end{subfigure}
+\begin{subfigure}[t]{.49\textwidth}
+\caption{Unkn Bullet Q-4}
+\includegraphics[width=\linewidth]{images/q-4.png}
+\end{subfigure}
+\caption{\label{fig:fourflags}}
+\end{figure}
+%
+Using the James Hamby study, we run all unknown bullets against all known bullets for matches. 
+The algorithm is using land-to-land matches, i.e. we are running $15 \times 6 = 90$ lands from unkown bullets against $2 \times 10 \times 6 = 120$ lands from known bullets, yielding a total of $10,800$ comparisons with 180 known land-to-land matches. 
  When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the number of maximum consecutive matching striae between land C-3 and all 120 known lands. Two lands show a high CMS. These correspond to the known matches, shown in Figures~\ref{fig:hamby-perfect}b and c. 
  Unfortunately, not all results are as clear cut. 
 It is not reasonable to assume that we can match all lands, but we can try to maximize the number of matches to get an overview of what we can reasonably expect from an automated match. 
