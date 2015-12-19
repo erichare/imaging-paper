@@ -1038,19 +1038,19 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 %' b1 <- read.x3p(file.path(datadir, "Br6 Bullet 2-1.x3p"))
 %' image(b1$surface.matrix)
 %' @
-\includegraphics[width=\linewidth]{images/br6-2-1.png}
+\includegraphics[width=\linewidth]{images/br6-2-1-grey.png}
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}
 \caption{Br9 Bullet 2-4}
-\includegraphics[width=\linewidth]{images/br9-2-4.png}
+\includegraphics[width=\linewidth]{images/br9-2-4-grey.png}
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}
 \caption{Unkn Bullet B-2}
-\includegraphics[width=\linewidth]{images/b-2.png}
+\includegraphics[width=\linewidth]{images/b-2-grey.png}
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}
 \caption{Unkn Bullet Q-4}
-\includegraphics[width=\linewidth]{images/q-4.png}
+\includegraphics[width=\linewidth]{images/q-4-grey.png}
 \end{subfigure}
 \caption{\label{fig:fourflags}\hh{Images of the four lands that got flagged during the quality assessment. All of them show scratch marks across the striation marks from the barrel. They will be excluded from the remainder of the analysis.}}
 \end{figure}
