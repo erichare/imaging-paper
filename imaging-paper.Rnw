@@ -1370,7 +1370,7 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
 \end{figure}
 %
-After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0040. This is a weighted average between a false positive error rate of 0.000098 and an error rate of false negatives of 0.22. \hh{This out-of-bag error rate is over-estimating the actual error in the Hamby study: here, the final random forest based on 300 trees is able to correctly predict all known matches and non-matches (see Figures~\ref{fig:treeresults} and ~\ref{fig:tree-forest}).}
+After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0040. This is a weighted average between a false positive error rate of 0.000098 and an error rate of false negatives of 0.22. \hh{This out-of-bag error rate is over-estimating the actual error in the Hamby study: here, the final random forest based on 300 trees is able to correctly predict all known matches and non-matches (see Figures~\ref{fig:treeresult} and ~\ref{fig:tree-forest}).}
 Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
 \begin{figure}[hbtp]
 <<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.7\\linewidth'>>=
