@@ -1031,7 +1031,7 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 \section{Evaluation}
 \hh{In order to get a better understanding of  how  the matching algorithm works in known matches and non-matches, we investigate its performance in a test scenario based on the James Hamby study.
 }
-\hh{As a first step, we automatically assess the quality of each of the lands by  checking that we can identify a stable region on each land. For this, we ues cross sections 25$\mu m$ apart and require a minimum of 0.9 for the cross correlation. Four lands from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these lands shows scratch marks across the surface.}
+\hh{As a first step, we automatically assess the quality of each of the lands by  checking that we can identify a stable region on each land. For this, we use cross sections 25$\mu m$ apart and require a minimum of 0.9 for the cross correlation. Four lands from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these lands shows scratch marks across the surface.}
 %
 \begin{figure}
 \begin{subfigure}[t]{.49\textwidth}
