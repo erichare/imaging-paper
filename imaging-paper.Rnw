@@ -1056,8 +1056,7 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 \end{figure}
 %
 \hh{We exclude these four lands from the further matching considerations and 
- run all unknown bullets against all known bullets for matches. 
-The algorithm is using land-to-land matches, i.e. we are running $15 \times 6 -2 = 90 - 2 = 88$ lands from unkown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. }
+ run all remaining lands from the unknown bullets against all remaining lands from known bullets for matches, i.e. we are running $15 \times 6 -2 = 90 - 2 = 88$ lands from unkown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. Out of these comparisons, there are 172 known matches (KM), while the rest are known non-matches (KNM). }
  When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the number of maximum consecutive matching striae between land C-3 and all 120 known lands. Two lands show a high CMS. These correspond to the known matches, shown in Figures~\ref{fig:hamby-perfect}b and c. 
  Unfortunately, not all results are as clear cut. 
 It is not reasonable to assume that we can match all lands, but we can try to maximize the number of matches to get an overview of what we can reasonably expect from an automated match. 
@@ -1341,6 +1340,7 @@ per <- rp1$frame$yval # predictive probability for each node in the tree
 prp(rp1, extra = 101, box.col=vals[as.numeric(per > 0.5)+1])
 
 bstats$pred <- predict(rp1, newdata=bstats)
+bstats$pred[bstats$flagged] <- NA
 @
 \caption{\label{fig:tree}Decision tree of matching bullets based on recursive partitioning. The rectangular nodes are the leaves, giving a short summary consisting of the number of observations in the leaf (bottom left), the corresponding percentage of the total (bottom right). The number at the top shows the fraction of these observations that are a match. A 1 or a 0 therefore indicate a homogeneous (or perfect) node. }
 \end{figure}
@@ -1354,6 +1354,7 @@ rtrees <- randomForest(factor(match)~., data=bstats[-excludesObs,includesVar], n
 errors <- data.frame(rtrees$err.rate)
 errors$id <- 1:nrow(errors)
 bstats$forest <- predict(rtrees, type="prob", newdata=bstats)[,2]
+bstats$forest[bstats$flagged] <- NA
 @
 
 
@@ -1367,11 +1368,12 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
 \end{figure}
 %
-After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0044. This is a weighted average between zero false positives and an error rate of false negatives of 0.26. Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
+After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0040. This is a weighted average between a false positive error rate of 0.000098 and an error rate of false negatives of 0.22. \hh{This out-of-bag error rate is over-estimating the actual error in the Hamby study: here, the final random forest based on 300 trees is able to correctly predict all known matches and non-matches (see Figures~\ref{fig:treeresults} and ~\ref{fig:tree-forest}).}
+Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
 \begin{figure}[hbtp]
 <<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.7\\linewidth'>>=
 bstats$bullet <- gsub("-[0-9]$", "", bstats$b2)
-bullets <- bstats %>% filter(match) %>% group_by(bullet) %>% summarize(
+bullets <- bstats %>% filter(match, !flagged) %>% group_by(bullet) %>% summarize(
   n = n(),
   pred = sum(pred > 0.5),
   forest = sum(forest > 0.5)
@@ -1380,16 +1382,15 @@ library(reshape2)
 bm <- melt(data=bullets, id.var=c("bullet", "n"))
 
 bm$prediction <- c("Tree", "Random Forest")[as.numeric(bm$variable)]
-qplot(data=bm, value, reorder(bullet, value/n), size=I(2.5), 
+qplot(data=bm, 100*value/n, reorder(bullet, value/n), size=I(2.5), 
       shape=prediction, colour=prediction, alpha=I(0.6)) + 
   theme_bw()  + ylab("") + 
 #  scale_shape_manual(values=c(1,2)) +
-  scale_x_continuous("Number of correctly predicted land-to-land matches", 
-                     breaks = 3*0:4, limits=c(0,12),
-                     minor_breaks = 1:11) +
+  scale_x_continuous("Percent of correctly predicted land-to-land matches", 
+                     breaks = c(0,25,50,75,100), limits=c(0,100)) +
   theme(legend.position = "bottom")
 @
-\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree (maximum possible number is 12, except for Q and B, where the maximum is 11). Both results for the tree and the random forest are shown. For each bullet at least four lands are correctly matched. Unknown bullet B is the hardest for the algorithm to match.}
+\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree (maximum possible number is 12, except for Q and B, where the maximum is 11). Both results for the tree and the random forest are shown. In the tree, at least \hh{40\% of all possible} lands of a bullet are  matched correctly, while the random forest achieves perfect results. Unknown bullet B is the hardest for the tree to match.}
 \end{figure}
 %
 However, this does not carry a lot of weight because of the few bullet comparisons in question: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
@@ -1404,7 +1405,8 @@ qplot(pred, forest, geom="jitter", data=bstats, colour=match,
   geom_hline(yintercept=0.5, colour="grey50") + 
   xlab("Predictions from decision tree") +
   ylab("Predictions from random forest")   +
-  scale_colour_brewer(palette="Paired")
+  scale_colour_brewer(palette="Paired", labels=c("KNM", "KM")) +
+  scale_shape_discrete(labels=c("KNM", "KM"))
 @
 \caption{\label{fig:tree-forest}Scatterplot of prediction results from the tree (horizontal) and the forest (vertical). Each point corresponds to a land-to-land comparison. Known matches are indicated in blue. Matches predicted by the decision tree are on the right half of the plot, matches predicted by the random forest are in the upper half. }
 \end{figure}
