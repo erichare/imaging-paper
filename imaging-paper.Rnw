@@ -89,7 +89,7 @@
 
 \begin{frontmatter}
 
-\title{Matching Bullets}
+\title{Random Forests for Automatic Matching Bullet-Lands}
 \tnotetext[mytitlenote]{Resources for this manuscript, including R code to reproduce any of the models, tables and figures, can be found at  \url{https://github.com/erichare/imaging-paper}.}
 
 %% Group authors per affiliation:
@@ -109,11 +109,11 @@
 % \address[mysecondaryaddress]{secondary address -- CS?}
 
 \begin{abstract}
-In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is the primary goal. We propose a framework for the analysis of the 3D surface measurements which transcribes the markings into a 2D plotting framework. This makes identification of matches easier and more rooted in science for both the expert and the lay person. The automatic matching routine we propose manages to correctly predict 132 out of 180 known bullet land to bullet land matches.
+In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is the primary goal. We propose a framework for the analysis of the 3D surface measurements which transcribes the markings into a 2D plotting framework. This makes identification of matches easier and more rooted in science for both the expert and the lay person. The automatic matching routine we propose \hh{manages to (a) correctly identify lands with too much damage to be suitable for matching, and (b) correctly identify all 10,384 land-to-land matches.}
 \end{abstract}
 
 \begin{keyword}
-\hh{XXX not the right keywords yet} 3d Topological Surface Measurement, Data visualization, Statistical graphics, Statistical computing.
+\hh{XXX not the right keywords yet} 3d Topological Surface Measurement, Data visualization, Machine Learning, Feature importance.
 \end{keyword}
 
 \end{frontmatter}
@@ -156,6 +156,8 @@ scrubPath <- function(x) {
 % \item \hh{XXX Alternative approaches: IBIS database and the NRC report\citep{nap:2008} against it\footnote{Fox report on the NRC report \url{http://goo.gl/XurSVl}.
 % NRC report: \url{http://www.nap.edu/catalog/12162/ballistic-imaging}} }
 % \end{enumerate}
+
+\hh{XXX Alternative approach by \citet{roberge:2006}: using correlation to identify matches between pairs of bullets using a correlation measure, that `could be automated'. No algorithm implemented/available, no error rates of automated matching are given XXX}
 
 Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of the conviction of criminals in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\citep{giannelli:2011}.
 
@@ -1119,7 +1121,7 @@ Figure~\ref{fig:cms} shows the strong connection between the maximal number of c
 \begin{subfigure}[t]{\linewidth}
 \caption{Distribution of maximal CMS.}
 <<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
-ggplot(data=bstats) + 
+ggplot(data=subset(bstats, !flagged)) + 
   geom_bar(aes(x=factor(cms))) + theme_bw() +
   theme(legend.position="bottom") + 
   xlab("maximum CMS")
@@ -1128,7 +1130,7 @@ ggplot(data=bstats) +
 \begin{subfigure}[t]{\linewidth}
 \caption{All land-to-land comparisons with a maximum number of CMS of thirteen or higher are matches.}
 <<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
-ggplot(data=bstats) + 
+ggplot(data=subset(bstats, !flagged)) + 
   geom_bar(aes(x=factor(cms), fill=match), position="fill") +
   theme(legend.position="bottom") + 
   scale_fill_brewer(palette="Paired") +
@@ -1394,10 +1396,11 @@ qplot(data=bm, 100*value/n, reorder(bullet, value/n), size=I(2.5),
 \end{figure}
 %
 However, this does not carry a lot of weight because of the few bullet comparisons in question: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
-Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we can therefore introduce an interval of `inconclusive' results in the middle of the spectrum. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree ($x$-axis) and the random forest ($y$-axis). Overall, there is a lot of agreement; out of 10,800 land-to-land comparisons, only four cases result in a different decision. 
+Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we can therefore introduce an interval of `inconclusive' results in the middle of the spectrum. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree ($x$-axis) and the random forest ($y$-axis). \hh{The tree predicts 132 known matches correctly, with 40 false negatives and one false positive match. The random forest predicts all 172 known matches correctly as well as all 10,212 known non-matches.} 
+%Overall, there is a lot of agreement; out of 10,800 land-to-land comparisons, only four cases result in a different decision. 
 
 \begin{figure}[hbtp]
-<<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='.7\\linewidth'>>=
+<<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='.7\\linewidth', warning = FALSE>>=
 qplot(pred, forest, geom="jitter", data=bstats, colour=match, 
       shape=match) + theme_bw() +
   theme(legend.position="bottom") +
@@ -1444,8 +1447,6 @@ print(xtable(imp, align="clrrcrc"), floating = FALSE)
 \end{table*}
 
 The rows in the table are ordered according to descending importance. The variable with the most predictive power by far is cross-correlation (ccf), followed by the number of matches (num.matches) and mismatches(num.mismatches), and the sum of the height of joint peaks (sumpeaks). The maximal consecutively matching striae (cms) is found only in sixth place.
-
-\hh{XXX Needs still an answer: under what circumstances do we decide on match/no-match successfully?}
 
 \section{Conclusion}
 
