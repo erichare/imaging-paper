@@ -129,7 +129,6 @@ In 2009, the National Academy of Sciences published a report questioning the sci
 #wd <- getwd()
 library(extrafont)
 library(knitr)
-opts_chunk$set(fig.path='Figure/fig-', cache.path='cache/', fig.align='center', fig.width=5, fig.height=5, fig.show='hold', par=TRUE, cache=F, tidy=T, concordance=TRUE, autodep=TRUE, root.dir="../", comment="|", dev="CairoPDF")
 imgdir <- "Figure/"
 codedir <- "code"
 datadir <- "app/images/Hamby252_3DX3P1of2/"
@@ -1327,14 +1326,14 @@ vals = alpha(brewer.pal(3, name="Paired"), alpha=0.5)
 
 includesVar <- setdiff(names(bstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist"))
 cc <- read.csv("csvs/crosscuts-25-new.csv")
-cc$bullet <- gsub(".*//","",cc$path)
-cc$bullet <- gsub(".x3p", "", cc$bullet)
-bstats$flagged <- bstats$b2 %in% cc$bullet[which(is.na(cc$cc))] |
-                  bstats$b1 %in% cc$bullet[which(is.na(cc$cc))]
+# cc$bullet <- gsub(".*//","",cc$path)
+# cc$bullet <- gsub(".x3p", "", cc$bullet)
+# bstats$flagged <- bstats$b2 %in% cc$bullet[which(is.na(cc$cc))] |
+#                   bstats$b1 %in% cc$bullet[which(is.na(cc$cc))]
 
-excludesObs <- which(bstats$flagged)
+#excludesObs <- which(bstats$flagged)
 
-rp1 <- rpart(match~., bstats[-excludesObs,includesVar])  # doesn't include cms at all !!!!
+rp1 <- rpart(match~., subset(bstats, !flagged)[,includesVar])  # doesn't include cms at all !!!!
 
 
 per <- rp1$frame$yval # predictive probability for each node in the tree
@@ -1351,7 +1350,7 @@ bstats$pred[bstats$flagged] <- NA
 library(randomForest)
 library(reshape2)
 set.seed(20151215)
-rtrees <- randomForest(factor(match)~., data=bstats[-excludesObs,includesVar], ntree=300)
+rtrees <- randomForest(factor(match)~., data=subset(bstats, !flagged)[,includesVar], ntree=300)
 
 errors <- data.frame(rtrees$err.rate)
 errors$id <- 1:nrow(errors)
