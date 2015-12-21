@@ -1,41 +1,13 @@
-\documentclass[review]{elsarticle}
+\documentclass[11pt]{article}
+\usepackage[margin = 1in]{geometry}
 
 \usepackage{lineno,hyperref}
 \modulolinenumbers[5]
+\usepackage{setspace}
+\doublespacing
 
-\journal{Journal of Forensic Science International}
 
-%%%%%%%%%%%%%%%%%%%%%%%
-%% Elsevier bibliography styles
-%%%%%%%%%%%%%%%%%%%%%%%
-%% To change the style, put a % in front of the second line of the current style and
-%% remove the % from the second line of the style you would like to use.
-%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Numbered
-%\bibliographystyle{model1-num-names}
-
-%% Numbered without titles
-%\bibliographystyle{model1a-num-names}
-
-%% Harvard
-\bibliographystyle{model2-names.bst}\biboptions{authoryear}
-
-%% Vancouver numbered
-%\usepackage{numcompress}\bibliographystyle{model3-num-names}
-
-%% Vancouver name/year
-%\usepackage{numcompress}\bibliographystyle{model4-names}\biboptions{authoryear}
-
-%% APA style
-%\bibliographystyle{model5-names}\biboptions{authoryear}
-
-%% AMA style
-%\usepackage{numcompress}\bibliographystyle{model6-num-names}
-
-%% `Elsevier LaTeX' style
-%\bibliographystyle{elsarticle-num}
-%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage[USenglish]{babel}
 \usepackage[protrusion=true,expansion=true]{microtype} % Better typography
@@ -44,6 +16,7 @@
 \usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
 \usepackage{booktabs} % Horizontal rules in tables
 \usepackage{fix-cm}	 % Custom font sizes - used for the initial letter in the document
+\usepackage{natbib}
 \usepackage{float}
 \usepackage{subcaption}
 
@@ -85,56 +58,28 @@
 
 %----------------------------------------------------------------------------------------
 
-\begin{document}
-
-\begin{frontmatter}
-
 \title{Random Forests for Automatic Matching Bullet-Lands}
-\tnotetext[mytitlenote]{Resources for this manuscript, including R code to reproduce any of the models, tables and figures, can be found at  \url{https://github.com/erichare/imaging-paper}.}
+\author{Eric Hare{\footnote{Corresponding author: erichare@iastate.edu}}, Heike Hofmann, Alicia Carriquiry\\
+Department of Statistics and Statistical Laboratory, Iowa State University}
 
-%% Group authors per affiliation:
-\author{Eric Hare, Heike Hofmann, Alicia Carriquiry}
-\address{Department of Statistics and Statistical Laboratory, Iowa State University}
-%\fntext[myfootnote]{Since 1880.}
 
-%% or include affiliations in footnotes:
-%\author[mymainaddress,mysecondaryaddress]{Elsevier Inc}
-%\ead[url]{www.elsevier.com}
-
-%\author[mysecondaryaddress]{Global Customer Service\corref{mycorrespondingauthor}}
-\cortext[mycorrespondingauthor]{Corresponding author}
-\ead{erichare@iastate.edu}
-
-% \address[mymainaddress]{Department of Statistics and Statistical Laboratory, Iowa State University}
-% \address[mysecondaryaddress]{secondary address -- CS?}
+\begin{document}
+\maketitle
 
 \begin{abstract}
 In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is the primary goal. We propose a framework for the analysis of the 3D surface measurements which transcribes the markings into a 2D plotting framework. This makes identification of matches easier and more rooted in science for both the expert and the lay person. The automatic matching routine we propose \hh{manages to (a) correctly identify lands with too much damage to be suitable for matching, and (b) correctly identify all 10,384 land-to-land matches.}
 \end{abstract}
 
-\begin{keyword}
-\hh{XXX not the right keywords yet} 3d Topological Surface Measurement, Data visualization, Machine Learning, Feature importance.
-\end{keyword}
+\paragraph{Keywords:} \hh{XXX not the right keywords yet} 3d Topological Surface Measurement, Data visualization, Machine Learning, Feature importance.
 
-\end{frontmatter}
 
+\newpage
 \linenumbers
 
 
 \tableofcontents
 
-\hh{
-Todo list for journal shape-up: there is a lot of good material, we mainly need to focus on what story to tell and make that a solid argument.
-\begin{enumerate}
-\item take out a few things: no circular fit, no figures 9 and 10 
-\item do we need the web app?
-\item out: lots of the figures can go into a supplement, together with a discussion. In the paper we then have a summary of what can be seen, so that we can focus on the results. 
-\item add: formula for loess fit and its s.e.
-\item add: comparison of error rates to those of FEs in Hamby study.
-\item change: emphasis in varying cross section. once a stable region is found, how little change is happening? 
-\item add: Why do we take the lowest stable cross section?
-\end{enumerate}
-}
+
 
 <<setup, fig.keep='all', cache=FALSE, echo=FALSE, eval=TRUE, message=F, warning=F>>=
 #rm(list=ls())
@@ -158,25 +103,30 @@ scrubPath <- function(x) {
 
 
 \section{Introduction}
+\hh{
+Todo list for journal shape-up: there is a lot of good material, we mainly need to focus on what story to tell and make that a solid argument.
+\begin{enumerate}
+\item take out a few things: no circular fit, no figures 9 and 10 
+\item do we need the web app?
+\item out: lots of the figures can go into a supplement, together with a discussion. In the paper we then have a summary of what can be seen, so that we can focus on the results. 
+\item add: formula for loess fit and its s.e.
+\item add: comparison of error rates to those of FEs in Hamby study.
+\item change: emphasis in varying cross section. once a stable region is found, how little change is happening? 
+\item add: Why do we take the lowest stable cross section?
+\end{enumerate}
+}
+Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of the conviction  in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\citep{giannelli:2011}.
 
-% Rough outline:
-% \begin{enumerate}
-% \item DONE Description of the problem: Standard operating practice, 2009 NAS report
-% \item DONE Description of the Results
-% \item DONE Walkthrough of the process
-% \item \hh{XXX Alternative approaches: IBIS database and the NRC report\citep{nap:2008} against it\footnote{Fox report on the NRC report \url{http://goo.gl/XurSVl}.
-% NRC report: \url{http://www.nap.edu/catalog/12162/ballistic-imaging}} }
-% \end{enumerate}
+In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. ~\citep{NAS:2009}. The report states that ``[m]uch forensic evidence -- including, for example, bite marks and firearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
 
-\hh{XXX Alternative approach by \citet{roberge:2006}: using correlation to identify matches between pairs of bullets using a correlation measure, that `could be automated'. No algorithm implemented/available, no error rates of automated matching are given XXX}
-
-Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of the conviction of criminals in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\citep{giannelli:2011}.
-
-In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. ~\citep{NAS:2009}. The report concluded that minimal research had been done to explore the reliability of these ballistic identification methods. In fact, the report states that forensic evidence ``including, for example, bite marks and firearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
 
 Rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet during the firing process. These marks are assumed to be unique to the barrel, as described in a 1992 AFTE article~\citep{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows."
 
 The primary goal in this type of forensic analysis is to identify these striation markings in an attempt to match two bullets. Since gun barrels should produce similar markings on bullets fired consecutively, the careful analysis of these surface images can help us determine whether two bullets are a match. However, this process has traditionally required forensic experts to perform the analysis, and required physical examination of the bullets. We propose a framework which allows for the analysis of the surface topologies, and the transcription of the markings into a 2D plotting framework which we believe makes identification of matches easier and more rooted in science for both the expert and the lay person.
+
+\hh{XXX More detailed discussion of automatic approaches and database discussion XXX}
+\hh{XXX Alternative approach by \citet{roberge:2006}: using correlation to identify matches between pairs of bullets using a correlation measure, that `could be automated'. No algorithm implemented/available, no error rates of automated matching are given XXX}
+
 
 The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. We then describe a web application for visualizing and working with bullet surfaces. We proceed to describing an automatic matching routine which we evaluate on a small database of reference bullets.
 
@@ -315,7 +265,7 @@ The residuals are dominated, as expected, by the grooves, which show up as large
   \centering
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{\label{fig:residuala}Residual structure of a surface cross section at $x = 1.5625$ (bottom of the bullet).}
-<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='.7\\linewidth'>>=
+<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='.5\\linewidth'>>=
 qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
       geom="line", size=I(1)) +
 #  scale_colour_brewer("x", palette="Paired") + 
@@ -327,7 +277,7 @@ qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
 \end{subfigure}    
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{\label{fig:residualb} Residual structure of a surface cross section at $x = 100.00$}
-<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='.7\\linewidth'>>=
+<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='.5\\linewidth'>>=
 #qplot(data=subset(dbr111, x <= 80*1.5625^2 & x >=75*1.5625^2), y, value-ypred,
 qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x), 
       geom="line", size=I(1)) +
@@ -374,10 +324,10 @@ db2 <- db2 %>% group_by(part, x) %>% do (
 
 \begin{figure}[hbtp]
   \centering
-<<circlefits, echo=FALSE, fig.width=7, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
+<<circlefits, echo=FALSE, fig.width=10, fig.height=5, out.width='\\linewidth', warning=FALSE>>=
 qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
       geom="line", size=I(.75), colour=I("grey70")) + 
-  facet_wrap(~part, ncol=2) + scale_colour_brewer(palette="Paired") +
+  facet_wrap(~part, ncol=3) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
   geom_line(aes(y, resid, group = x), colour="black", size=.75, alpha=0.5,
              data = filter(db1, part==5, x == 100)[,c("y", "resid", "x")]) +
@@ -407,7 +357,7 @@ This marks the point at which we should trim the image. The procedure can be des
   \centering
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{\label{fig:loess_step1}Step 1 the loess fit algorithm. For a fixed cross section ($x$ held constant at 243.75 $\mu m$) of surface measurements for bullet 1-5 are plotted across different values of $y$.}
-<<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.7\\linewidth', warning=FALSE,  message=FALSE>>=
+<<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\linewidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 br121_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
 br122_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-2.x3p", sep = "/"))
@@ -422,7 +372,7 @@ p1
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{\label{fig:loess_step3}Step 2 of the loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35. The orange rectangle shows an example of the smoothing window. Grooves and peaks are detected, if they are not within the same window.}
-<<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.7\\linewidth', warning=FALSE,  message=FALSE>>=
+<<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\linewidth', warning=FALSE,  message=FALSE>>=
 subdata <- br111_bullet
 smoothfactor <- 35
 
@@ -441,7 +391,7 @@ p3
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{\label{fig:loess_step47}Steps 3 -- 6 of the loess fitting algorithm. After smoothing the $y$ values left and right minima are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside these boundaries are removed (shown in grey)}
-<<loess_step47, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.7\\linewidth', warning=FALSE,  message=FALSE>>=
+<<loess_step47, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\linewidth', warning=FALSE,  message=FALSE>>=
     lengthdiff <- length(subdata$value) - length(smoothed_truefalse)
     
     peak_ind_smoothed <- head(which(rollapply(smoothed_truefalse, 3, function(x) which.max(x) == 2)), n = 1)
@@ -481,7 +431,7 @@ Next, we fit a loess regression to the data. Figure \ref{fig:loess_fit} provides
   \centering
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{\label{fig:loess_fit} Loess fit for bullet 1-5.}
-<<loess_fit, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.7\\linewidth', warning=FALSE,  message=FALSE>>=
+<<loess_fit, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\linewidth', warning=FALSE,  message=FALSE>>=
 
 br111.groove <- get_grooves(br111_bullet)
 
@@ -492,7 +442,7 @@ my.loess$fitted + ylab("Surface measurements")
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{\label{fig:loess_resid} Residuals of loess fit for bullet 1-5.}
-<<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.7\\linewidth', warning=FALSE>>=
+<<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\linewidth', warning=FALSE>>=
 my.loess$resid + ylab("Residuals of loess Fit")
 @
 \end{subfigure}
@@ -501,7 +451,7 @@ my.loess$resid + ylab("Residuals of loess Fit")
 
 \begin{figure}[hbtp]
   \centering
-<<loessfits, echo=FALSE, fig.width=7, fig.height=7, out.width='\\linewidth', warning=FALSE>>=
+<<loessfits, echo=FALSE, fig.width=10, fig.height=5, out.width='\\linewidth', warning=FALSE>>=
 br121.groove <- get_grooves(br121_bullet)
 br122.groove <- get_grooves(br122_bullet)
 br123.groove <- get_grooves(br123_bullet)
@@ -539,7 +489,7 @@ actual.df <- my.loessactual$data[1:minrows,]
 
 qplot(y, resid, data=melt.df, #colour=factor(x), 
       geom="line", size=I(.75), colour=I("grey70")) + 
-  facet_wrap(~part, ncol=2) + scale_colour_brewer(palette="Paired") +
+  facet_wrap(~part, ncol=3) + scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
   geom_line(data = actual.df, aes(y, resid), colour="black", size=.75, alpha=0.5) + ggtitle("Bullet 1-5 in black") + ylab("Residuals of loess Fit")
 @    
@@ -713,7 +663,7 @@ lines <- subset(lines, lineid != 0)
 \centering
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{Cross section at $x = 100$.\label{fig:crosscut}}{%
-<<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.7\\textwidth'>>=
+<<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.5\\textwidth'>>=
 qplot(y, resid, group=bullet, colour=bullet, data=lof, 
       geom="line") + 
   scale_colour_manual("", values=cols) + theme_bw() +
@@ -725,7 +675,7 @@ qplot(y, resid, group=bullet, colour=bullet, data=lof,
 \end{subfigure}    
 \begin{subfigure}[t]{\linewidth}\centering
     \caption{Adjusted (bullet 1-5 horizontally shifted) cross sections at $x = 100$.\label{fig:crosscutX}}{%
-<<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.7\\textwidth'>>=
+<<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='.5\\textwidth'>>=
 # qplot(y, resid, group=bullet, colour=bullet, data=lofX, 
 #       geom="line", alpha=I(0.6)) + 
 #   scale_colour_brewer(palette="Set1") + theme_bw() +
@@ -750,7 +700,7 @@ with suitably defined limits for the summation. % (because variances of $f$ and 
 
 \begin{figure}[hbtp]
   \centering
-<<ccf, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '.7\\linewidth'>>=
+<<ccf, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '.5\\linewidth'>>=
 lag <- ccf$lag[which.max(ccf$acf)]
 qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I("grey50")) + 
   theme_bw() + ylab("Correlation") + xlab("Lag k") +
@@ -768,7 +718,7 @@ Figure~\ref{fig:crosscuts} shows a sequence of cross sections for bullet 1-5 (ba
 Given that we have to expect some variation in nominally the same cross section levels due to manual alignments in microscopes, we should take cross section levels into account in the automatic matching routine by evaluating matches at several cross sections. 
 \begin{figure}[hbtp]
   \centering
-<<crosscuts-vary, echo=FALSE, fig.width = 7, fig.height = 12, out.width = '.7\\linewidth', cache=TRUE, warning = FALSE>>=
+<<crosscuts-vary, echo=FALSE, fig.width = 7, fig.height = 12, out.width = '.5\\linewidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
 crosscuts <- seq(100, 400, by = 50)
 lof <- processBullets(paths[5], x = crosscuts)
@@ -824,7 +774,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
 
 \begin{figure}[hbtp]
   \centering
-<<crosscuts-vary-b31, echo=FALSE, fig.width = 7, fig.height = 10, out.width = '.7\\linewidth', cache=TRUE, warning = FALSE>>=
+<<crosscuts-vary-b31, echo=FALSE, fig.width = 7, fig.height = 10, out.width = '.5\\linewidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
 crosscuts <- seq(100,225, by=25)
 lof <- processBullets(paths[37], x = crosscuts)
@@ -880,7 +830,7 @@ An opportunity that arises from comparing multiple cross sections of a bullet's 
 \centering
     \begin{subfigure}[t]{\linewidth}\centering
 \caption{Loess smooth at $x = 100$ (span is 0.03).\label{fig:smooth}}{%
-<<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.7\\textwidth', warning=FALSE>>=
+<<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE>>=
 qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=bullet) +
   geom_line(aes(y=l30), colour="grey70", size=0.5) +
   facet_grid(bullet~.) +
@@ -892,7 +842,7 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{Using a rolling median peaks and grooves are identified for each cross section. \label{fig:smoothcutb}}{%
-<<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.7\\textwidth', warning=FALSE>>=
+<<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE>>=
 #images <- file.path(datadir, dir(datadir))
   lof <- processBullets(paths = images[c(5,7)], x = 100)
   lof <- bulletSmooth(lof)
@@ -923,7 +873,7 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
 \end{subfigure}    
 \begin{subfigure}[t]{\linewidth}\centering
     \caption{Rectangles in the back identify a line on one of the bullets.  Matching striation marks are indicated by color filled rectangles and arked by an `o'. Mismatches are filled in grey and  marked by an `x'.   \label{fig:smoothcutd}}{%
-<<smoothmatch, echo=FALSE, dependson='twolands100match', fig.width=7, fig.height=2.75, out.width='.7\\textwidth', warning=FALSE>>=
+<<smoothmatch, echo=FALSE, dependson='twolands100match', fig.width=7, fig.height=2.75, out.width='.5\\textwidth', warning=FALSE>>=
 peaks1$lines$bullet <- b12[1]
 peaks2$lines$bullet <- b12[2]
 
@@ -957,7 +907,7 @@ A larger smoothing factor on the other hand, like 45, seems to be a more plausib
 
 \begin{figure}[hbtp]
   \centering
-<<smoothfac1, echo=FALSE, fig.width=7, fig.height=5.2, out.width='.7\\linewidth', warning=FALSE>>=
+<<smoothfac1, echo=FALSE, fig.width=7, fig.height=5.2, out.width='.5\\linewidth', warning=FALSE>>=
 br111.groove <- get_grooves(br111_bullet)
 br111.loess <- fit_loess(br111_bullet, br111.groove)
 
@@ -1011,7 +961,7 @@ Determining a CMS threshold that needs to be exceeded for us to declare a match 
 
 \begin{figure}[hbtp]
   \centering
-<<barrel2, echo=FALSE, fig.width = 7, fig.height=12, out.width='.7\\linewidth', warning=FALSE>>=
+<<barrel2, echo=FALSE, fig.width = 7, fig.height=12, out.width='.5\\linewidth', warning=FALSE>>=
 
 list_of_matches <- lapply(25:30, function(i) {
   lof <- processBullets(paths = images[c(31,i)], x = 100)
@@ -1087,7 +1037,7 @@ It is not reasonable to assume that we can match all lands, but we can try to ma
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\textwidth}\centering
 \caption{Maximal number of CMS between unknown bullet C land 3 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
-<<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.7\\textwidth'>>=
+<<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
 load("data-25-25/unkn9.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
 
@@ -1096,7 +1046,7 @@ qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
 \end{subfigure}
 \begin{subfigure}[t]{\textwidth}\centering
 \caption{Overlaid lines of C-3 and the land with the top matching CMS.}
-<<top, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.7\\textwidth', warning = FALSE>>=
+<<top, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.5\\textwidth', warning = FALSE>>=
 res <- reslist[[which.max(cmsdist)]]  
 #res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
@@ -1116,7 +1066,7 @@ print(ggplot() +
 \end{subfigure}
 \begin{subfigure}[t]{\textwidth}\centering
 \caption{Overlaid lines of C-3 and the land with the second top matching CMS.}
-<<top2, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.7\\textwidth', warning = FALSE>>=
+<<top2, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.5\\textwidth', warning = FALSE>>=
 res <- reslist[[which(cmsdist==14)]]  # number 2
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
 
@@ -1142,7 +1092,7 @@ Figure~\ref{fig:cms} shows the strong connection between the maximal number of c
   \centering
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{Distribution of maximal CMS.}
-<<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
+<<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.5\\linewidth'>>=
 ggplot(data=subset(bstats, !flagged)) + 
   geom_bar(aes(x=factor(cms))) + theme_bw() +
   theme(legend.position="bottom") + 
@@ -1151,7 +1101,7 @@ ggplot(data=subset(bstats, !flagged)) +
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{All land-to-land comparisons with a maximum number of CMS of thirteen or higher are matches.}
-<<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
+<<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\linewidth'>>=
 ggplot(data=subset(bstats, !flagged)) + 
   geom_bar(aes(x=factor(cms), fill=match), position="fill") +
   theme(legend.position="bottom") + 
@@ -1162,7 +1112,7 @@ ggplot(data=subset(bstats, !flagged)) +
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{Densities of maximum CMS for Known Matches (KM) and Known Non Matches (KNM).}
-<<cms-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
+<<cms-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\linewidth'>>=
 x <- seq(0,29, by=0.03)
 km <- sm.density(bstats$cms[bstats$match], display="none", eval.points=x)
 knm <- sm.density(bstats$cms[!bstats$match], display="none", eval.points=x)
@@ -1201,7 +1151,7 @@ xlab("maximum CMS") +
 
 \begin{figure}[hbtp]
   \centering
-<<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.7\\linewidth', warning=FALSE>>=
+<<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.5\\linewidth', warning=FALSE>>=
 load("data-25-25/unkn47.RData")
 res <- reslist[[106]]
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
@@ -1225,7 +1175,7 @@ For smaller numbers of CMS, the percentage of false positives quickly increases.
   \centering
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{\label{fig:distr.dist}Relationship between maximal CMS and distances between cross sections.}
-<<distr.dist, echo=FALSE, fig.width=8, fig.height=4, out.width='.7\\linewidth'>>=
+<<distr.dist, echo=FALSE, fig.width=8, fig.height=4, out.width='.5\\linewidth'>>=
 ggplot(data=bstats) + 
     geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match), alpha=0.5) +
    facet_wrap(~match, labeller="label_both") + xlab("maximum CMS") + 
@@ -1238,7 +1188,7 @@ ggplot(data=bstats) +
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{Densities of distances between cross sections for Known Matches (KM) and Known Non Matches (KNM).}
-<<crosscut-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
+<<crosscut-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\linewidth'>>=
 ggplot(data=bstats) + 
     geom_density(aes(x=distr.dist, fill=match), alpha=0.5) +
   xlab("Distances between cross sections") +
@@ -1281,7 +1231,7 @@ ggplot() +
   \centering
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{\label{fig:ccfs-match}Relationship between maximal CMS and cross-correlation between cross sections.}
-<<ccfs-match, echo=FALSE, fig.width=8, fig.height=4, out.width='.7\\linewidth'>>=
+<<ccfs-match, echo=FALSE, fig.width=8, fig.height=4, out.width='.5\\linewidth'>>=
 ggplot(data=bstats) + theme_bw() + 
   geom_jitter(aes(x=factor(cms), y=ccf, colour=match), alpha=.5) + 
   facet_wrap(~match, labeller="label_both") + 
@@ -1292,7 +1242,7 @@ ggplot(data=bstats) + theme_bw() +
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{Densities of distances between cross sections for Known Matches (KM) and Known Non Matches (KNM).}
-<<ccf-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
+<<ccf-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\linewidth'>>=
 ggplot(data=bstats) + 
     geom_density(aes(x=ccf, fill=match), alpha=0.5) +
   xlab("Cross-correlation between cross sections") +
@@ -1304,7 +1254,7 @@ ggplot(data=bstats) +
 \end{subfigure}
 \begin{subfigure}[t]{\linewidth}\centering
 \caption{Ratio of probabilities of $P(ccf > x \mid KM) / P(ccf > x \mid KNM)$.}
-<<ccf-ratio, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.7\\linewidth'>>=
+<<ccf-ratio, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\linewidth'>>=
 x <- seq(0,1, by=0.001)
 library(sm)
 km <- sm.density(bstats$ccf[bstats$match], display="none", eval.points=x)
@@ -1345,7 +1295,7 @@ Neither one of these methods allows for an assessment of cross-correlations. Thi
 
 \begin{figure}[hbtp]
   \centering
-<<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.7\\linewidth'>>=
+<<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.5\\linewidth'>>=
 library(rpart)
 library(rpart.plot)
 library(RColorBrewer)
@@ -1391,7 +1341,7 @@ Figure~\ref{fig:oob} shows the cumulative out-of-bag error (OOB) rate for 300 tr
 %
 \begin{figure}[hbtp]
   \centering
-<<oob, echo=FALSE, fig.width=7, fig.height=3, out.width='.7\\linewidth'>>=
+<<oob, echo=FALSE, fig.width=7, fig.height=3, out.width='.5\\linewidth'>>=
 qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Number of trees") + ylab("Out of Bag Error (OOB)")
 @
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
@@ -1401,7 +1351,7 @@ After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0
 Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
 \begin{figure}[hbtp]
   \centering
-<<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.7\\linewidth'>>=
+<<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.5\\linewidth'>>=
 bstats$bullet <- gsub("-[0-9]$", "", bstats$b2)
 bullets <- bstats %>% filter(match, !flagged) %>% group_by(bullet) %>% summarize(
   n = n(),
@@ -1429,7 +1379,7 @@ Another thing to note about the  the random forest's error rates is that they ar
 
 \begin{figure}[hbtp]
   \centering
-<<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='.7\\linewidth', warning = FALSE>>=
+<<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='.5\\linewidth', warning = FALSE>>=
 qplot(pred, forest, geom="jitter", data=bstats, colour=match, 
       shape=match) + theme_bw() +
   theme(legend.position="bottom") +
@@ -1502,8 +1452,11 @@ This approach uses dictionary learning based on small square patches  of 64x64 o
 
 This research was partially funded in part by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.
 
-\section*{References}
+Resources for this manuscript, including R code to reproduce any of the models, tables and figures, can be found at  \url{https://github.com/erichare/imaging-paper}.
 
+%% Harvard
+\bibliographystyle{model2-names.bst}
+%\biboptions{authoryear}
 \bibliography{references}
 
 \end{document}
