@@ -141,6 +141,7 @@ The primary goal in this type of forensic analysis is to identify these striatio
 
 \hh{XXX More detailed discussion of automatic approaches and database discussion XXX}
 \hh{XXX Alternative approach by \citet{roberge:2006}: using correlation to identify matches between pairs of bullets using a correlation measure, that `could be automated'. No algorithm implemented/available, no error rates of automated matching are given XXX}
+\hh{XXX Interesting paper by \citet{ma:2004} with  emphasis on ccf and acf. They are using a stylus instrument for measureing the big curvature XXX -- the advantage of our approach is that nobody needs to look at anything until after the matching is done.  }
 
 
 The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. We then describe a web application for visualizing and working with bullet surfaces. We proceed to describing an automatic matching routine which we evaluate on a small database of reference bullets.
