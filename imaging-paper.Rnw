@@ -40,6 +40,7 @@
 \usepackage{color}
 \newcommand{\hh}[1]{{\color{magenta} #1}}
 \newcommand{\eh}[1]{{\color{blue} #1}}
+\newcommand{\ac}[1]{{\color{darkgreen} #1}}
 
     \renewcommand{\topfraction}{0.99}	% max fraction of floats at top
     \renewcommand{\bottomfraction}{0.99}	% max fraction of floats at bottom
@@ -64,6 +65,7 @@ Department of Statistics and Statistical Laboratory, Iowa State University}
 
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 \maketitle
 
 \begin{abstract}
