@@ -65,7 +65,6 @@ Department of Statistics and Statistical Laboratory, Iowa State University}
 
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
 \maketitle
 
 \begin{abstract}
