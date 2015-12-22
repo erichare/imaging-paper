@@ -142,7 +142,18 @@ The primary goal in this type of forensic analysis is to identify these striatio
 \hh{XXX More detailed discussion of automatic approaches and database discussion XXX}
 \hh{XXX Alternative approach by \citet{roberge:2006}: using correlation to identify matches between pairs of bullets using a correlation measure, that `could be automated'. No algorithm implemented/available, no error rates of automated matching are given XXX}
 \hh{XXX Interesting paper by \citet{ma:2004} with  emphasis on ccf and acf. They are using a stylus instrument for measureing the big curvature XXX -- the advantage of our approach is that nobody needs to look at anything until after the matching is done.  }
-
+\hh{XXX Hamby study: 507 participants returned results. If a match was reported, these matches were correct. But eight (out of $15 \times 507 = 7,605$) bullets were not matched conclusively, resulting in a false negative rate of 0.0011.}
+% \hh{XXX for Hamby study: automated systems were successfully used for matching:
+% \begin{verbatim}
+% In addition to individuals examining the test sets using optical comparison microscopy, five test sets were examined using ‘ballistics’ imaging equipment. The test sets were examined using the following systems with correct answers reported by the participants. This information indicates that these systems – when properly used – can provide appropriate data:
+% \begin{itemize}
+% \item Intelligent Automation’s SciClopsTM - Dr. Ben Bachrach (Maryland, United States);
+% \item Automated Land Identification System (ALIS) - Mr. Tsuneo Uchiyama (Tokyo, Japan);
+% \item Integrated Ballistics Identification System (IBIS) TM – Mr. Robert Thompson (California, United States);
+% \item BulletTRAX-3DTM - Forensic Technology Scientists (Montreal, Canada) (2 sets)
+% \end{itemize}
+% \end{verbatim}. }
+% 
 
 The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. We then describe a web application for visualizing and working with bullet surfaces. We proceed to describing an automatic matching routine which we evaluate on a small database of reference bullets.
 
