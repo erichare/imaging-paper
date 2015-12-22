@@ -99,6 +99,21 @@ scrubPath <- function(x) {
   gsub(".x3p","", last)
 }
 
+library(RColorBrewer)
+library(ggplot2)
+library(scales)
+library(dplyr)
+library(x3pr)
+library(x3prplus)
+library(grid)
+library(gridExtra)
+library(zoo)
+library(tidyr)
+library(rpart)
+library(rpart.plot)
+library(xtable)
+library(sm)
+
 @
 
 
@@ -137,12 +152,12 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[b]{\linewidth}\centering
+\begin{subfigure}[t]{.49\linewidth}\centering
 \caption{View from the side.\label{fig:sidex3p}}{%
       \includegraphics[width=\linewidth]{images/sidex3p.png}
     }
 \end{subfigure}    
-\begin{subfigure}[b]{\linewidth}\centering
+\begin{subfigure}[t]{.49\linewidth}\centering
     \caption{View from the top.\label{fig:topx3p}}{%
     \includegraphics[width=\linewidth]{images/topx3p.png}
     }
@@ -155,21 +170,7 @@ An initial naive approach to analyzing the striation patterns leads us to fixing
 
 \begin{figure}[hbtp]
   \centering
-<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2, fig.width=6, out.width='\\linewidth'>>=
-library(RColorBrewer)
-library(ggplot2)
-library(scales)
-library(dplyr)
-library(x3pr)
-library(x3prplus)
-library(grid)
-library(gridExtra)
-library(zoo)
-library(tidyr)
-library(rpart)
-library(rpart.plot)
-library(xtable)
-library(sm)
+<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2, fig.width=6, out.width='0.5\\linewidth'>>=
 
 cols = c(alpha("grey60", alpha=0.6), alpha("black", 0.5))
 
@@ -263,9 +264,9 @@ The residuals are dominated, as expected, by the grooves, which show up as large
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{\linewidth}\centering
-\caption{\label{fig:residuala}Residual structure of a surface cross section at $x = 1.5625$ (bottom of the bullet).}
-<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='.5\\linewidth'>>=
+\begin{subfigure}[b]{.49\linewidth}\centering
+\caption{\label{fig:residuala}Residual structure at $x = 1.5625$ (bottom of the bullet).}
+<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
 qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
       geom="line", size=I(1)) +
 #  scale_colour_brewer("x", palette="Paired") + 
@@ -275,9 +276,9 @@ qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
   theme(legend.position="bottom")
 @
 \end{subfigure}    
-\begin{subfigure}[t]{\linewidth}\centering
-\caption{\label{fig:residualb} Residual structure of a surface cross section at $x = 100.00$}
-<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='.5\\linewidth'>>=
+\begin{subfigure}[b]{.49\linewidth}\centering
+\caption{\label{fig:residualb} Residual structure at $x = 100.00$}
+<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
 #qplot(data=subset(dbr111, x <= 80*1.5625^2 & x >=75*1.5625^2), y, value-ypred,
 qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x), 
       geom="line", size=I(1)) +
@@ -325,16 +326,19 @@ db2 <- db2 %>% group_by(part, x) %>% do (
 \begin{figure}[hbtp]
   \centering
 <<circlefits, echo=FALSE, fig.width=10, fig.height=5, out.width='\\linewidth', warning=FALSE>>=
+db2$land <- db2$part
+db1$land <- db1$part
 qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
       geom="line", size=I(.75), colour=I("grey70")) + 
-  facet_wrap(~part, ncol=3) + scale_colour_brewer(palette="Paired") +
+  facet_wrap(~land, ncol=3, labeller="label_both") + 
+  scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
   geom_line(aes(y, resid, group = x), colour="black", size=.75, alpha=0.5,
-             data = filter(db1, part==5, x == 100)[,c("y", "resid", "x")]) +
+             data = filter(db1, land==5, x == 100)[,c("y", "resid", "x")]) +
   ylab("Residuals from circular fit") +
   ggtitle("Bullet 1-5 in black")
 @
-\caption{Circle fit for each cross section of bullet 2, with bullet 1-5 overlaid.\label{fig:circlefits} Bullet 1-5 matches best with the bullet 2-1.}
+\caption{Circle fit for each cross section of bullet 2, with bullet 1-5 overlaid.\label{fig:circlefits} Bullet 1-5 matches best with bullet 2-1.}
 \end{figure}
 
 \subsection{Loess Fit}
@@ -429,9 +433,9 @@ Next, we fit a loess regression to the data. Figure \ref{fig:loess_fit} provides
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{.49\linewidth}\centering
 \caption{\label{fig:loess_fit} Loess fit for bullet 1-5.}
-<<loess_fit, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\linewidth', warning=FALSE,  message=FALSE>>=
+<<loess_fit, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
 
 br111.groove <- get_grooves(br111_bullet)
 
@@ -440,9 +444,9 @@ my.loess <- fit_loess(br111_bullet, br111.groove)
 my.loess$fitted + ylab("Surface measurements")
 @
 \end{subfigure}
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{.49\linewidth}\centering
 \caption{\label{fig:loess_resid} Residuals of loess fit for bullet 1-5.}
-<<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\linewidth', warning=FALSE>>=
+<<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE>>=
 my.loess$resid + ylab("Residuals of loess Fit")
 @
 \end{subfigure}
@@ -486,10 +490,11 @@ melt.df <- my.df %>%
 melt.df$part <- gsub("resid", "", melt.df$part)
 
 actual.df <- my.loessactual$data[1:minrows,]
-
+melt.df$land <- melt.df$part
 qplot(y, resid, data=melt.df, #colour=factor(x), 
       geom="line", size=I(.75), colour=I("grey70")) + 
-  facet_wrap(~part, ncol=3) + scale_colour_brewer(palette="Paired") +
+  facet_wrap(~land, ncol=3, labeller="label_both") + 
+  scale_colour_brewer(palette="Paired") +
   theme_bw() + theme(legend.position="bottom") + 
   geom_line(data = actual.df, aes(y, resid), colour="black", size=.75, alpha=0.5) + ggtitle("Bullet 1-5 in black") + ylab("Residuals of loess Fit")
 @    
