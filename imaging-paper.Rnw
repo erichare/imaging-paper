@@ -1,87 +1,89 @@
-\documentclass[11pt]{article}
-\usepackage[margin = 1in]{geometry}
+% Template for the submission to:
+%   The Annals of Probability           [aop]
+%   The Annals of Applied Probability   [aap]
+%   The Annals of Statistics            [aos] 
+%   The Annals of Applied Statistics    [aoas]
+%   Stochastic Systems                  [ssy]
+%
+%Author: In this template, the places where you need to add information
+%        (or delete line) are indicated by {???}.  Mostly the information
+%        required is obvious, but some explanations are given in lines starting
+%Author:
+%All other lines should be ignored.  After editing, there should be
+%no instances of ??? after this line.
 
+% use option [preprint] to remove info line at bottom
+% journal options: aop,aap,aos,aoas,ssy
+% natbib option: authoryear
+\documentclass[aoas]{imsart}
+
+\usepackage{amsthm,amsmath,natbib}
+\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+
+% provide arXiv number if available:
+\arxiv{arXiv:0000.0000}
+
+% put your definitions there:
+\startlocaldefs
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{subcaption}
 \usepackage{lineno,hyperref}
 \modulolinenumbers[5]
-\usepackage{setspace}
-\doublespacing
 
-
-
-
-\usepackage[USenglish]{babel}
-\usepackage[protrusion=true,expansion=true]{microtype} % Better typography
-\usepackage{amsmath,amsfonts,amsthm} % Math packages
-\usepackage[svgnames]{xcolor} % Enabling colors by their 'svgnames'
-\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
-\usepackage{booktabs} % Horizontal rules in tables
-\usepackage{fix-cm}	 % Custom font sizes - used for the initial letter in the document
-\usepackage{natbib}
-\usepackage{float}
-\usepackage{subcaption}
-
-% declare the path(s) where your graphic files are
-\graphicspath{{Figure/}{Images/}}
-% and their extensions so you won't have to specify these with
-% every instance of \includegraphics
-\DeclareGraphicsExtensions{.pdf,.jpg,.png}
-
-\usepackage{sectsty} % Enables custom section titles
-\allsectionsfont{\usefont{OT1}{phv}{b}{n}} % Change the font of all section commands
-
-\usepackage{fancyhdr} % Needed to define custom headers/footers
-\pagestyle{fancy} % Enables the custom headers/footers
-\usepackage{lastpage} % Used to determine the number of pages in the document (for "Page X of Total")
-
-\usepackage{url}
-
-
-
-\usepackage{color}
 \newcommand{\hh}[1]{{\color{magenta} #1}}
 \newcommand{\eh}[1]{{\color{blue} #1}}
 \newcommand{\ac}[1]{{\color{darkgreen} #1}}
 
-    \renewcommand{\topfraction}{0.99}	% max fraction of floats at top
-    \renewcommand{\bottomfraction}{0.99}	% max fraction of floats at bottom
-% parameters for text pages
-\setcounter{topnumber}{2}
-    \setcounter{bottomnumber}{2}
-    \setcounter{totalnumber}{4}     % 2 may work better
-    \setcounter{dbltopnumber}{2}    % for 2-column pages
-    \renewcommand{\dbltopfraction}{0.9}	% fit big float above 2-col. text
-    \renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
-    %   Parameters for FLOAT pages (not text pages):
-    \renewcommand{\floatpagefraction}{0.7}	% require fuller float pages
-	% N.B.: floatpagefraction MUST be less than topfraction !!
-    \renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
-
-
-%----------------------------------------------------------------------------------------
-
-\title{Random Forests for Automatic Matching Bullet-Lands}
-\author{Eric Hare{\footnote{Corresponding author: erichare@iastate.edu}}, Heike Hofmann, Alicia Carriquiry\\
-Department of Statistics and Statistical Laboratory, Iowa State University}
-
+\endlocaldefs
 
 \begin{document}
-\maketitle
 
+\begin{frontmatter}
+
+% "Title of the paper"
+\title{Automatic Matching of Bullet Lands}
+\runtitle{Automatic Matching of Bullet Lands}
+
+% indicate corresponding author with \corref{}
+\begin{aug}
+\author{\fnms{Eric} \snm{Hare}\corref{}\ead[label=e1]{erichare@iastate.edu}\thanksref{t1, m1}},
+\author{\fnms{Heike} \snm{Hofmann}\ead[label=e2]{hofmann@iastate.edu}\thanksref{m1}}
+\and
+\author{\fnms{Alicia} \snm{Carriquiry}\ead[label=e3]{alicia@iastate.edu}\thanksref{m1}}
+
+\thankstext{t1}{Thanks to somebody \hh{XXX acknowledge the grant here? XXX}} 
+\affiliation{Iowa State University\thanksmark{m1}}
+
+\address{Address of the Authors\\
+Department of Statistics and Statistical Laboratory\\ Snedecor Hall\\
+Ames Iowa 50011-1210\\
+\printead{e1}\\
+\phantom{E-mail:\ }\printead*{e2}\\
+\phantom{E-mail:\ }\printead*{e3}}
+
+\runauthor{E. Hare et al.}
+\end{aug}
 \begin{abstract}
-some change, just for fun
 In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is the primary goal. We propose a framework for the analysis of the 3D surface measurements which transcribes the markings into a 2D plotting framework. This makes identification of matches easier and more rooted in science for both the expert and the lay person. The automatic matching routine we propose \hh{manages to (a) correctly identify lands with too much damage to be suitable for matching, and (b) correctly identify all 10,384 land-to-land matches.}
 \end{abstract}
 
-\paragraph{Keywords:} \hh{XXX not the right keywords yet} 3d Topological Surface Measurement, Data visualization, Machine Learning, Feature importance.
+%\begin{keyword}[class=MSC]
+%\kwd[Primary ]{}
+%\kwd{}
+%\kwd[; secondary ]{}
+%\end{keyword}
 
+\begin{keyword}
+\kwd{3d Topological Surface Measurement}
+\kwd{Data visualization}
+\kwd{Machine Learning}
+\kwd{Feature importance}
+\kwd{Cross-correlation function}
+\end{keyword}
 
-\newpage
+\end{frontmatter}
+
 \linenumbers
-
-
-\tableofcontents
-
-
 
 <<setup, fig.keep='all', cache=FALSE, echo=FALSE, eval=TRUE, message=F, warning=F>>=
 #rm(list=ls())
@@ -154,6 +156,7 @@ BulletTRAX-3DTM - Forensic Technology Scientists (Montreal, Canada) (2 sets)
 
 The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. We then describe a web application for visualizing and working with bullet surfaces. We proceed to describing an automatic matching routine which we evaluate on a small database of reference bullets.
 
+
 \section{Methodology}
 Throughout this paper, we work with images from the James Hamby Consecutively Rifled Ruger Barrel Study~\citep{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
 
@@ -161,14 +164,14 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{.49\linewidth}\centering
+\begin{subfigure}[t]{.49\textwidth}\centering
 \caption{View from the side.\label{fig:sidex3p}}{%
-      \includegraphics[width=\linewidth]{images/sidex3p.png}
+      \includegraphics[width=\textwidth]{images/sidex3p.png}
     }
 \end{subfigure}    
-\begin{subfigure}[t]{.49\linewidth}\centering
+\begin{subfigure}[t]{.49\textwidth}\centering
     \caption{View from the top.\label{fig:topx3p}}{%
-    \includegraphics[width=\linewidth]{images/topx3p.png}
+    \includegraphics[width=\textwidth]{images/topx3p.png}
     }
 \end{subfigure}
 \caption{An example of a scan of a bullet land from one groove to the next. }
@@ -179,7 +182,7 @@ An initial naive approach to analyzing the striation patterns leads us to fixing
 
 \begin{figure}[hbtp]
   \centering
-<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2, fig.width=6, out.width='0.5\\linewidth'>>=
+<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2, fig.width=6, out.width='0.5\\textwidth'>>=
 
 cols = c(alpha("grey60", alpha=0.6), alpha("black", 0.5))
 
@@ -273,9 +276,9 @@ The residuals are dominated, as expected, by the grooves, which show up as large
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[b]{.49\linewidth}\centering
+\begin{subfigure}[b]{.49\textwidth}\centering
 \caption{\label{fig:residuala}Residual structure at $x = 1.5625$ (bottom of the bullet).}
-<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
+<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\textwidth'>>=
 qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
       geom="line", size=I(1)) +
 #  scale_colour_brewer("x", palette="Paired") + 
@@ -285,9 +288,9 @@ qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
   theme(legend.position="bottom")
 @
 \end{subfigure}    
-\begin{subfigure}[b]{.49\linewidth}\centering
+\begin{subfigure}[b]{.49\textwidth}\centering
 \caption{\label{fig:residualb} Residual structure at $x = 100.00$}
-<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\linewidth'>>=
+<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\textwidth'>>=
 #qplot(data=subset(dbr111, x <= 80*1.5625^2 & x >=75*1.5625^2), y, value-ypred,
 qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x), 
       geom="line", size=I(1)) +
@@ -334,7 +337,7 @@ db2 <- db2 %>% group_by(part, x) %>% do (
 
 \begin{figure}[hbtp]
   \centering
-<<circlefits, echo=FALSE, fig.width=10, fig.height=5, out.width='\\linewidth', warning=FALSE>>=
+<<circlefits, echo=FALSE, fig.width=10, fig.height=5, out.width='\\textwidth', warning=FALSE>>=
 db2$land <- db2$part
 db1$land <- db1$part
 qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
@@ -368,9 +371,9 @@ This marks the point at which we should trim the image. The procedure can be des
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{\label{fig:loess_step1}Step 1 the loess fit algorithm. For a fixed cross section ($x$ held constant at 243.75 $\mu m$) of surface measurements for bullet 1-5 are plotted across different values of $y$.}
-<<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\linewidth', warning=FALSE,  message=FALSE>>=
+<<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 br121_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
 br122_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-2.x3p", sep = "/"))
@@ -383,9 +386,9 @@ p1 <- qplot(y, value, data = br111_bullet, size=I(1)) + theme_bw() + ylab("Surfa
 p1
 @
 \end{subfigure}
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{\label{fig:loess_step3}Step 2 of the loess fit algorithm. The  height values are smoothed twice with a smoothing factor of 35. The orange rectangle shows an example of the smoothing window. Grooves and peaks are detected, if they are not within the same window.}
-<<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\linewidth', warning=FALSE,  message=FALSE>>=
+<<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE,  message=FALSE>>=
 subdata <- br111_bullet
 smoothfactor <- 35
 
@@ -402,9 +405,9 @@ p3 <- ggplot() +
 p3
 @
 \end{subfigure}
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{\label{fig:loess_step47}Steps 3 -- 6 of the loess fitting algorithm. After smoothing the $y$ values left and right minima are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside these boundaries are removed (shown in grey)}
-<<loess_step47, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\linewidth', warning=FALSE,  message=FALSE>>=
+<<loess_step47, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE,  message=FALSE>>=
     lengthdiff <- length(subdata$value) - length(smoothed_truefalse)
     
     peak_ind_smoothed <- head(which(rollapply(smoothed_truefalse, 3, function(x) which.max(x) == 2)), n = 1)
@@ -442,9 +445,9 @@ Next, we fit a loess regression to the data. Figure \ref{fig:loess_fit} provides
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{.49\linewidth}\centering
+\begin{subfigure}[t]{.49\textwidth}\centering
 \caption{\label{fig:loess_fit} Loess fit for bullet 1-5.}
-<<loess_fit, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE,  message=FALSE>>=
+<<loess_fit, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\textwidth', warning=FALSE,  message=FALSE>>=
 
 br111.groove <- get_grooves(br111_bullet)
 
@@ -453,9 +456,9 @@ my.loess <- fit_loess(br111_bullet, br111.groove)
 my.loess$fitted + ylab("Surface measurements")
 @
 \end{subfigure}
-\begin{subfigure}[t]{.49\linewidth}\centering
+\begin{subfigure}[t]{.49\textwidth}\centering
 \caption{\label{fig:loess_resid} Residuals of loess fit for bullet 1-5.}
-<<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\linewidth', warning=FALSE>>=
+<<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
 my.loess$resid + ylab("Residuals of loess Fit")
 @
 \end{subfigure}
@@ -464,7 +467,7 @@ my.loess$resid + ylab("Residuals of loess Fit")
 
 \begin{figure}[hbtp]
   \centering
-<<loessfits, echo=FALSE, fig.width=10, fig.height=5, out.width='\\linewidth', warning=FALSE>>=
+<<loessfits, echo=FALSE, fig.width=10, fig.height=5, out.width='\\textwidth', warning=FALSE>>=
 br121.groove <- get_grooves(br121_bullet)
 br122.groove <- get_grooves(br122_bullet)
 br123.groove <- get_grooves(br123_bullet)
@@ -675,7 +678,7 @@ lines <- subset(lines, lineid != 0)
 @
 \begin{figure}[hbtp]
 \centering
-\begin{subfigure}[b]{.49\linewidth}\centering
+\begin{subfigure}[b]{.49\textwidth}\centering
 \caption{Cross section at $x = 100$.\label{fig:crosscut}}{%
 <<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
 qplot(y, resid, group=bullet, colour=bullet, data=lof, 
@@ -687,7 +690,7 @@ qplot(y, resid, group=bullet, colour=bullet, data=lof,
 @
     }
 \end{subfigure}    
-\begin{subfigure}[b]{.49\linewidth}\centering
+\begin{subfigure}[b]{.49\textwidth}\centering
     \caption{Adjusted (bullet 1-5 horizontally shifted) cross sections at $x = 100$.\label{fig:crosscutX}}{%
 <<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
 # qplot(y, resid, group=bullet, colour=bullet, data=lofX, 
@@ -714,7 +717,7 @@ with suitably defined limits for the summation. % (because variances of $f$ and 
 
 \begin{figure}[hbtp]
   \centering
-<<ccf, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '.5\\linewidth'>>=
+<<ccf, echo=FALSE, fig.width = 7, fig.height = 3, out.width = '.5\\textwidth'>>=
 lag <- ccf$lag[which.max(ccf$acf)]
 qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I("grey50")) + 
   theme_bw() + ylab("Correlation") + xlab("Lag k") +
@@ -732,7 +735,7 @@ Figure~\ref{fig:crosscuts} shows a sequence of cross sections for bullet 1-5 (ba
 Given that we have to expect some variation in nominally the same cross section levels due to manual alignments in microscopes, we should take cross section levels into account in the automatic matching routine by evaluating matches at several cross sections. 
 \begin{figure}[hbtp]
   \centering
-<<crosscuts-vary, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
+<<crosscuts-vary, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\textwidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
 crosscuts <- seq(100, 400, by = 50)
 lof <- processBullets(paths[5], x = crosscuts)
@@ -788,7 +791,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
 
 \begin{figure}[hbtp]
   \centering
-<<crosscuts-vary-b31, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\linewidth', cache=TRUE, warning = FALSE>>=
+<<crosscuts-vary-b31, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\textwidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
 crosscuts <- seq(100,250, by=25)
 lof <- processBullets(paths[37], x = crosscuts)
@@ -842,7 +845,7 @@ An opportunity that arises from comparing multiple cross sections of a bullet's 
 
 \begin{figure}[hbtp]
 \centering
-    \begin{subfigure}[t]{\linewidth}\centering
+    \begin{subfigure}[t]{\textwidth}\centering
 \caption{Loess smooth at $x = 100$ (span is 0.03).\label{fig:smooth}}{%
 <<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE>>=
 qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=bullet) +
@@ -854,7 +857,7 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
 @
     }
 \end{subfigure}
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{Using a rolling median peaks and grooves are identified for each cross section. \label{fig:smoothcutb}}{%
 <<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE>>=
 #images <- file.path(datadir, dir(datadir))
@@ -885,7 +888,7 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
 @
 }
 \end{subfigure}    
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
     \caption{Rectangles in the back identify a line on one of the bullets.  Matching striation marks are indicated by color filled rectangles and arked by an `o'. Mismatches are filled in grey and  marked by an `x'.   \label{fig:smoothcutd}}{%
 <<smoothmatch, echo=FALSE, dependson='twolands100match', fig.width=7, fig.height=2.75, out.width='.5\\textwidth', warning=FALSE>>=
 peaks1$lines$bullet <- b12[1]
@@ -921,7 +924,7 @@ A larger smoothing factor on the other hand, like 45, seems to be a more plausib
 
 \begin{figure}[hbtp]
   \centering
-<<smoothfac1, echo=FALSE, fig.width=7, fig.height=5.2, out.width='.5\\linewidth', warning=FALSE>>=
+<<smoothfac1, echo=FALSE, fig.width=7, fig.height=5.2, out.width='.5\\textwidth', warning=FALSE>>=
 br111.groove <- get_grooves(br111_bullet)
 br111.loess <- fit_loess(br111_bullet, br111.groove)
 
@@ -975,7 +978,7 @@ Determining a CMS threshold that needs to be exceeded for us to declare a match 
 
 \begin{figure}[hbtp]
   \centering
-<<barrel2, echo=FALSE, fig.width = 10, fig.height=6, out.width='\\linewidth', warning=FALSE>>=
+<<barrel2, echo=FALSE, fig.width = 10, fig.height=6, out.width='\\textwidth', warning=FALSE>>=
 
 list_of_matches <- lapply(25:30, function(i) {
   lof <- processBullets(paths = images[c(31,i)], x = 100)
@@ -1025,19 +1028,19 @@ grid.arrange(list_of_matches[[1]], list_of_matches[[2]], list_of_matches[[3]],
 %' b1 <- read.x3p(file.path(datadir, "Br6 Bullet 2-1.x3p"))
 %' image(b1$surface.matrix)
 %' @
-\includegraphics[width=\linewidth]{images/br6-2-1-grey.png}
+\includegraphics[width=\textwidth]{images/br6-2-1-grey.png}
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}\centering
 \caption{Br9 Bullet 2-4}
-\includegraphics[width=\linewidth]{images/br9-2-4-grey.png}
+\includegraphics[width=\textwidth]{images/br9-2-4-grey.png}
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}\centering
 \caption{Unkn Bullet B-2}
-\includegraphics[width=\linewidth]{images/b-2-grey.png}
+\includegraphics[width=\textwidth]{images/b-2-grey.png}
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}\centering
 \caption{Unkn Bullet Q-4}
-\includegraphics[width=\linewidth]{images/q-4-grey.png}
+\includegraphics[width=\textwidth]{images/q-4-grey.png}
 \end{subfigure}
 \caption{\label{fig:fourflags}\hh{Images of the four lands that got flagged during the quality assessment. All of them show scratch marks across the striation marks from the barrel. They will be excluded from the remainder of the analysis.}}
 \end{figure}
@@ -1104,18 +1107,18 @@ Figure~\ref{fig:cms} shows the strong connection between the maximal number of c
 %
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{Distribution of maximal CMS.}
-<<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.5\\linewidth'>>=
+<<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
 ggplot(data=subset(bstats, !flagged)) + 
   geom_bar(aes(x=factor(cms))) + theme_bw() +
   theme(legend.position="bottom") + 
   xlab("maximum CMS")
 @
 \end{subfigure}
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{All land-to-land comparisons with a maximum number of CMS of thirteen or higher are matches.}
-<<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\linewidth'>>=
+<<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
 ggplot(data=subset(bstats, !flagged)) + 
   geom_bar(aes(x=factor(cms), fill=match), position="fill") +
   theme(legend.position="bottom") + 
@@ -1124,9 +1127,9 @@ ggplot(data=subset(bstats, !flagged)) +
 
 @
 \end{subfigure}
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{Densities of maximum CMS for Known Matches (KM) and Known Non Matches (KNM).}
-<<cms-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\linewidth'>>=
+<<cms-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
 x <- seq(0,29, by=0.03)
 km <- sm.density(bstats$cms[bstats$match], display="none", eval.points=x)
 knm <- sm.density(bstats$cms[!bstats$match], display="none", eval.points=x)
@@ -1165,7 +1168,7 @@ xlab("maximum CMS") +
 
 \begin{figure}[hbtp]
   \centering
-<<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.5\\linewidth', warning=FALSE>>=
+<<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.5\\textwidth', warning=FALSE>>=
 load("data-25-25/unkn47.RData")
 res <- reslist[[106]]
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
@@ -1187,9 +1190,9 @@ print(ggplot() +
 For smaller numbers of CMS, the percentage of false positives quickly increases. However, if we take other features of the image into account, we can increase the number of correct matches considerably: a high amount of cross-correlation between the two cross sections (see Figure~\ref{fig:ccfs-match}) is indicative for a match; e.g.\  in the Hamby study only known matches have a cross-correlation of 0.75 or higher. There are 97 land-to-land comparisons with a cross-correlation of above 0.75.   
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{\label{fig:distr.dist}Relationship between maximal CMS and distances between cross sections.}
-<<distr.dist, echo=FALSE, fig.width=8, fig.height=4, out.width='.5\\linewidth'>>=
+<<distr.dist, echo=FALSE, fig.width=8, fig.height=4, out.width='.5\\textwidth'>>=
 ggplot(data=bstats) + 
     geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match), alpha=0.5) +
    facet_wrap(~match, labeller="label_both") + xlab("maximum CMS") + 
@@ -1200,9 +1203,9 @@ ggplot(data=bstats) +
     xlab("maximum CMS")
 @
 \end{subfigure}
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{Densities of distances between cross sections for Known Matches (KM) and Known Non Matches (KNM).}
-<<crosscut-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\linewidth'>>=
+<<crosscut-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
 ggplot(data=bstats) + 
     geom_density(aes(x=distr.dist, fill=match), alpha=0.5) +
   xlab("Distances between cross sections") +
@@ -1243,9 +1246,9 @@ ggplot() +
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{\label{fig:ccfs-match}Relationship between maximal CMS and cross-correlation between cross sections.}
-<<ccfs-match, echo=FALSE, fig.width=8, fig.height=4, out.width='.5\\linewidth'>>=
+<<ccfs-match, echo=FALSE, fig.width=8, fig.height=4, out.width='.5\\textwidth'>>=
 ggplot(data=bstats) + theme_bw() + 
   geom_jitter(aes(x=factor(cms), y=ccf, colour=match), alpha=.5) + 
   facet_wrap(~match, labeller="label_both") + 
@@ -1254,9 +1257,9 @@ ggplot(data=bstats) + theme_bw() +
   theme(legend.position="none")
 @
 \end{subfigure}
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{Densities of distances between cross sections for Known Matches (KM) and Known Non Matches (KNM).}
-<<ccf-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\linewidth'>>=
+<<ccf-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
 ggplot(data=bstats) + 
     geom_density(aes(x=ccf, fill=match), alpha=0.5) +
   xlab("Cross-correlation between cross sections") +
@@ -1266,9 +1269,9 @@ ggplot(data=bstats) +
         legend.background = element_rect(fill=alpha('white', 0.4))) 
 @
 \end{subfigure}
-\begin{subfigure}[t]{\linewidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{Ratio of probabilities of $P(ccf > x \mid KM) / P(ccf > x \mid KNM)$.}
-<<ccf-ratio, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\linewidth'>>=
+<<ccf-ratio, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
 x <- seq(0,1, by=0.001)
 library(sm)
 km <- sm.density(bstats$ccf[bstats$match], display="none", eval.points=x)
@@ -1309,7 +1312,7 @@ Neither one of these methods allows for an assessment of cross-correlations. Thi
 
 \begin{figure}[hbtp]
   \centering
-<<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.5\\linewidth'>>=
+<<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.5\\textwidth'>>=
 library(rpart)
 library(rpart.plot)
 library(RColorBrewer)
@@ -1355,7 +1358,7 @@ Figure~\ref{fig:oob} shows the cumulative out-of-bag error (OOB) rate for 300 tr
 %
 \begin{figure}[hbtp]
   \centering
-<<oob, echo=FALSE, fig.width=7, fig.height=3, out.width='.5\\linewidth'>>=
+<<oob, echo=FALSE, fig.width=7, fig.height=3, out.width='.5\\textwidth'>>=
 qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Number of trees") + ylab("Out of Bag Error (OOB)")
 @
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
@@ -1365,7 +1368,7 @@ After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0
 Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
 \begin{figure}[hbtp]
   \centering
-<<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.5\\linewidth'>>=
+<<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.5\\textwidth'>>=
 bstats$bullet <- gsub("-[0-9]$", "", bstats$b2)
 bullets <- bstats %>% filter(match, !flagged) %>% group_by(bullet) %>% summarize(
   n = n(),
@@ -1393,7 +1396,7 @@ Another thing to note about the  the random forest's error rates is that they ar
 
 \begin{figure}[hbtp]
   \centering
-<<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='.5\\linewidth', warning = FALSE>>=
+<<tree:forest, echo=FALSE, fig.width=6, fig.height=6.25, out.width='.5\\textwidth', warning = FALSE>>=
 qplot(pred, forest, geom="jitter", data=bstats, colour=match, 
       shape=match) + theme_bw() +
   theme(legend.position="bottom") +
@@ -1468,9 +1471,19 @@ This research was partially funded in part by the Center for Statistics and Appl
 
 Resources for this manuscript, including R code to reproduce any of the models, tables and figures, can be found at  \url{https://github.com/erichare/imaging-paper}.
 
+% AOS,AOAS: If there are supplements please fill:
+%\begin{supplement}[id=suppA]
+%  \sname{Supplement A}
+%  \stitle{Title}
+%  \slink[doi]{10.1214/00-AOASXXXXSUPP}
+%  \sdatatype{.pdf}" 
+%  \sdescription{Some text}
+%\end{supplement}
+
 %% Harvard
 \bibliographystyle{model2-names.bst}
 %\biboptions{authoryear}
 \bibliography{references}
+
 
 \end{document}
