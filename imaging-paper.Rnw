@@ -67,6 +67,7 @@ Department of Statistics and Statistical Laboratory, Iowa State University}
 \maketitle
 
 \begin{abstract}
+some change, just for fun
 In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is the primary goal. We propose a framework for the analysis of the 3D surface measurements which transcribes the markings into a 2D plotting framework. This makes identification of matches easier and more rooted in science for both the expert and the lay person. The automatic matching routine we propose \hh{manages to (a) correctly identify lands with too much damage to be suitable for matching, and (b) correctly identify all 10,384 land-to-land matches.}
 \end{abstract}
 
@@ -143,17 +144,12 @@ The primary goal in this type of forensic analysis is to identify these striatio
 \hh{XXX Alternative approach by \citet{roberge:2006}: using correlation to identify matches between pairs of bullets using a correlation measure, that `could be automated'. No algorithm implemented/available, no error rates of automated matching are given XXX}
 \hh{XXX Interesting paper by \citet{ma:2004} with  emphasis on ccf and acf. They are using a stylus instrument for measureing the big curvature XXX -- the advantage of our approach is that nobody needs to look at anything until after the matching is done.  }
 \hh{XXX Hamby study: 507 participants returned results. If a match was reported, these matches were correct. But eight (out of $15 \times 507 = 7,605$) bullets were not matched conclusively, resulting in a false negative rate of 0.0011.}
-% \hh{XXX for Hamby study: automated systems were successfully used for matching:
-% \begin{verbatim}
-% In addition to individuals examining the test sets using optical comparison microscopy, five test sets were examined using ‘ballistics’ imaging equipment. The test sets were examined using the following systems with correct answers reported by the participants. This information indicates that these systems – when properly used – can provide appropriate data:
-% \begin{itemize}
-% \item Intelligent Automation’s SciClopsTM - Dr. Ben Bachrach (Maryland, United States);
-% \item Automated Land Identification System (ALIS) - Mr. Tsuneo Uchiyama (Tokyo, Japan);
-% \item Integrated Ballistics Identification System (IBIS) TM – Mr. Robert Thompson (California, United States);
-% \item BulletTRAX-3DTM - Forensic Technology Scientists (Montreal, Canada) (2 sets)
-% \end{itemize}
-% \end{verbatim}. }
-% 
+\hh{XXX for Hamby study: automated systems were successfully used for matching:
+ Intelligent Automation's SciClops - Dr. Ben Bachrach (Maryland, United States);
+Automated Land Identification System (ALIS) - Mr. Tsuneo Uchiyama (Tokyo, Japan);
+Integrated Ballistics Identification System (IBIS) – Mr. Robert Thompson (California, United States);
+BulletTRAX-3DTM - Forensic Technology Scientists (Montreal, Canada) (2 sets)
+ }
 
 The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. We then describe a web application for visualizing and working with bullet surfaces. We proceed to describing an automatic matching routine which we evaluate on a small database of reference bullets.
 
