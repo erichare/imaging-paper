@@ -535,7 +535,7 @@ lines <- matches %>% group_by(lineid) %>% summarise(
 lines <- subset(lines, lineid != 0)
 @
 
-\subsection{Horizontal Alignment}
+\subsection{Horizontal alignment}
 A single cross section across the surface of the two lands in Figure~\ref{fig:manualmatch-rgl} is shown in Figure~\ref{fig:cross100}.  This figure gives the signatures of bullets 1-5 and 2-1 at a surface cross section of $x = 100$. Striation marks show up in this representations as peaks and valleys.  The individual characteristics are quite prominent and, again, suggest a match between the lands. A horizontal shift of one of the signatures (result shown in (b)) emphasizes the strong similarities. 
 %
 \begin{figure}[hbtp]
@@ -588,7 +588,7 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 \end{figure}
 
 
-\subsection{Varying cross sections}
+\subsection{Impact of cross sections}
 The cross section on which a comparison between signatures is based matters -- signatures from cross sections that are further apart, show more pronounced differences between the signatures. 
 This poses both a caveat to matching attempts as well as an opportunity \hh{for quality control}: we have to be aware of which cross section level was used in a matching. An assessment of this situation shows that, visually, matches degrade if the signatures upon which the match is based are from cross sections further than 200$\mu m$ apart  (see supplement \hh{XXX section XXX} for a more thorough discussion).
 However, we can extract signatures from multiple cross sections of the same bullet land for an initial assessment of its quality. \hh{XXX shift cross section discussion into the supplement XXX}
@@ -648,6 +648,51 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
 %An opportunity that arises from comparing multiple cross sections of a bullet's surface measurements is the following:
 by comparing signatures from cross sections that are not too far apart --  25 $\mu m$ to 50 $\mu m$ -- we get an indication whether the signatures come from a rapidly changing section of the surface, indicative of a break-off \hh{or some other damage}, or from a stable section, where we can have a reasonable expectation of finding matches to other signatures. In the approach here, we keep increasing the cross section until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet 1-1 from barrel 3, where
 `stability' is  defined as two aligned signatures from cross sections chosen 25$\mu m$ apart having a cross-correlation of at least 0.9. 
+
+\hh{XXX Why do we use the lowest possible cross section? XXX}
+
+\subsection{Varying smoothing factor}\label{sec:smoothing}
+As mentioned earlier, the algorithm for peak/valley detection depends on the selection of a smoothing window, called the smoothing factor. In particular, for detecting and removing the grooves prior to fitting a loess regression we selected a smoothing factor of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 25 seems more appropriate. We can investigate the performance of peak/valley detection across different smoothing factors. Figure~\ref{fig:varysmooth} displays the resulting peaks and valleys across smoothing factors of 5, 25, and 45, respectively. The dark line corresponds to the smoothed values, while the grey line in the back shows the unsmoothed values of the surface measurements. The choice of smoothing factor is a classical decision of a bias/variance trade-off. It is immediately clear that a small smoothing factor like 5 is a poor choice. It results in a significant amount of noise in the data such that even just a point or two can skew the rolling average enough for a peak or valley to be detected. Given that the striation patterns are typically much larger, we are in effect muddying the waters by performing such minimal smoothing.
+
+A larger smoothing factor on the other hand, like 45, seems to be a more plausible option. Most of the peaks/valleys present which are detected by a smoothing factor of 25 are also detected at 45. However, some notable issues arise. Notice that the valley on the right hand side of the image is smoothed out, and thus not detected. On the left hand side, a double peak is detected - that might be a questionable decision - but there are several peaks in the middle, that are being smoothed out, for example the peak at around $y = 750$. That is, in many cases, large windows are smoothing out some of the structure that we wish to see. Furthermore, it can be seen that the peaks/valleys are often shifted relative to their position in the original loess residuals, or in the smoothed data with smaller smoothing factors.
+
+\begin{figure}[hbtp]
+  \centering
+<<smoothfac1, echo=FALSE, fig.width=7, fig.height=5.2, out.width='.5\\textwidth', warning=FALSE>>=
+br111.groove <- get_grooves(br111_bullet)
+br111.loess <- fit_loess(br111_bullet, br111.groove)
+
+peaks1 <- get_peaks(br111.loess$data, smoothfactor = 25)
+peaks1$lines$smoothfactor = 25
+peaks1$plot$data$smoothfactor = 25
+peaks2 <- get_peaks(br111.loess$data, smoothfactor = 5)
+peaks2$lines$smoothfactor = 5
+peaks2$plot$data$smoothfactor = 5
+peaks3 <- get_peaks(br111.loess$data, smoothfactor = 45)
+peaks3$lines$smoothfactor = 45
+peaks3$plot$data$smoothfactor = 45
+
+peaks <- rbind(peaks1$lines, peaks2$lines, peaks3$lines)
+smooths <- rbind(peaks1$plot$data, peaks2$plot$data, 
+                 peaks3$plot$data)
+  
+  ggplot() + theme_bw() +
+    geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, 
+              data=peaks,  alpha=0.2) +
+    geom_vline(aes(xintercept=extrema, colour=factor(type)), data= peaks, alpha=.7) +
+    scale_colour_brewer(palette="Set2") + 
+    scale_fill_brewer(palette="Set2") +
+    theme(legend.position="none") + 
+    facet_grid(smoothfactor~., labeller="label_both") +
+    geom_line(aes(x=y, y=resid, group=x), data=br111.loess$data,  
+              colour="grey50") +
+    geom_line(aes(x=y, y=smoothed), data=smooths) +
+  ylab(expression(paste("Cross section values (in ",mu,"m)", sep=""))) 
+@
+\caption{\label{fig:varysmooth} Peak/valley detection at smoothing factors of 5, 25, and 45, respectively. Note that a smoothing factor of 5 yields enough noise that many very minimal overlapping peaks and valleys are detected, while a smoothing factor of 45 might over-smooth and cause the peaks/valleys to either disappear or shift  horizontally  from their position in the original loess residuals.}
+\end{figure}
+
+\subsection{Algorithm}
 
 \begin{figure}[hbtp]
 \centering
@@ -722,50 +767,6 @@ ggplot() +
 \caption{\label{fig:match}Matching striation marks: smooth (a), identify peaks and valley (b), and match peaks and valleys between cross sections (c).}
 \end{figure}
 %\afterpage{\clearpage}
-
-\subsection{Varying smoothing factor}\label{sec:smoothing}
-As mentioned earlier, the algorithm for peak/valley detection depends on the selection of a smoothing window, called the smoothing factor. In particular, for detecting and removing the grooves prior to fitting a loess regression we selected a smoothing factor of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 25 seems more appropriate. We can investigate the performance of peak/valley detection across different smoothing factors. Figure~\ref{fig:varysmooth} displays the resulting peaks and valleys across smoothing factors of 5, 25, and 45, respectively. The dark line corresponds to the smoothed values, while the grey line in the back shows the unsmoothed values of the surface measurements. The choice of smoothing factor is a classical decision of a bias/variance trade-off. It is immediately clear that a small smoothing factor like 5 is a poor choice. It results in a significant amount of noise in the data such that even just a point or two can skew the rolling average enough for a peak or valley to be detected. Given that the striation patterns are typically much larger, we are in effect muddying the waters by performing such minimal smoothing.
-
-A larger smoothing factor on the other hand, like 45, seems to be a more plausible option. Most of the peaks/valleys present which are detected by a smoothing factor of 25 are also detected at 45. However, some notable issues arise. Notice that the valley on the right hand side of the image is smoothed out, and thus not detected. On the left hand side, a double peak is detected - that might be a questionable decision - but there are several peaks in the middle, that are being smoothed out, for example the peak at around $y = 750$. That is, in many cases, large windows are smoothing out some of the structure that we wish to see. Furthermore, it can be seen that the peaks/valleys are often shifted relative to their position in the original loess residuals, or in the smoothed data with smaller smoothing factors.
-
-\begin{figure}[hbtp]
-  \centering
-<<smoothfac1, echo=FALSE, fig.width=7, fig.height=5.2, out.width='.5\\textwidth', warning=FALSE>>=
-br111.groove <- get_grooves(br111_bullet)
-br111.loess <- fit_loess(br111_bullet, br111.groove)
-
-peaks1 <- get_peaks(br111.loess$data, smoothfactor = 25)
-peaks1$lines$smoothfactor = 25
-peaks1$plot$data$smoothfactor = 25
-peaks2 <- get_peaks(br111.loess$data, smoothfactor = 5)
-peaks2$lines$smoothfactor = 5
-peaks2$plot$data$smoothfactor = 5
-peaks3 <- get_peaks(br111.loess$data, smoothfactor = 45)
-peaks3$lines$smoothfactor = 45
-peaks3$plot$data$smoothfactor = 45
-
-peaks <- rbind(peaks1$lines, peaks2$lines, peaks3$lines)
-smooths <- rbind(peaks1$plot$data, peaks2$plot$data, 
-                 peaks3$plot$data)
-  
-  ggplot() + theme_bw() +
-    geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, 
-              data=peaks,  alpha=0.2) +
-    geom_vline(aes(xintercept=extrema, colour=factor(type)), data= peaks, alpha=.7) +
-    scale_colour_brewer(palette="Set2") + 
-    scale_fill_brewer(palette="Set2") +
-    theme(legend.position="none") + 
-    facet_grid(smoothfactor~., labeller="label_both") +
-    geom_line(aes(x=y, y=resid, group=x), data=br111.loess$data,  
-              colour="grey50") +
-    geom_line(aes(x=y, y=smoothed), data=smooths) +
-  ylab(expression(paste("Cross section values (in ",mu,"m)", sep=""))) 
-@
-\caption{\label{fig:varysmooth} Peak/valley detection at smoothing factors of 5, 25, and 45, respectively. Note that a smoothing factor of 5 yields enough noise that many very minimal overlapping peaks and valleys are detected, while a smoothing factor of 45 might over-smooth and cause the peaks/valleys to either disappear or shift  horizontally  from their position in the original loess residuals.}
-\end{figure}
-
-\subsection{Algorithm}
-
 Figure~\ref{fig:match} gives an overview of the automated matching routine: 
 We first identify a stable region for each bullet and pick the lowest cross section level in this region, because typically, individual characteristics are best expressed at the lower end of the bullet. 
 %\hh{(assumption here: lower cross section levels show better expression of individual marks XXX checked XXX crosscuts-and-sd.R)}
