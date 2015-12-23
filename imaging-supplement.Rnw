@@ -1,0 +1,272 @@
+% Template for the submission to:
+%   The Annals of Probability           [aop]
+%   The Annals of Applied Probability   [aap]
+%   The Annals of Statistics            [aos] 
+%   The Annals of Applied Statistics    [aoas]
+%   Stochastic Systems                  [ssy]
+%
+%Author: In this template, the places where you need to add information
+%        (or delete line) are indicated by {???}.  Mostly the information
+%        required is obvious, but some explanations are given in lines starting
+%Author:
+%All other lines should be ignored.  After editing, there should be
+%no instances of ??? after this line.
+
+% use option [preprint] to remove info line at bottom
+% journal options: aop,aap,aos,aoas,ssy
+% natbib option: authoryear
+\documentclass[aoas]{imsart}
+
+\usepackage{amsthm,amsmath,natbib}
+\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+
+% provide arXiv number if available:
+\arxiv{arXiv:0000.0000}
+
+% put your definitions there:
+\startlocaldefs
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{subcaption}
+\usepackage{lineno,hyperref}
+\modulolinenumbers[5]
+
+\newcommand{\hh}[1]{{\color{magenta} #1}}
+\newcommand{\eh}[1]{{\color{blue} #1}}
+\newcommand{\ac}[1]{{\color{darkgreen} #1}}
+
+\endlocaldefs
+
+\begin{document}
+
+\begin{frontmatter}
+
+% "Title of the paper"
+\title{Supplement to Automatic Matching of Bullet Lands}
+\runtitle{Supplement: Automatic Matching of Bullet Lands}
+
+% indicate corresponding author with \corref{}
+\begin{aug}
+\author{\fnms{Eric} \snm{Hare}\corref{}\ead[label=e1]{erichare@iastate.edu}\thanksref{m1}},
+\author{\fnms{Heike} \snm{Hofmann}\ead[label=e2]{hofmann@iastate.edu}\thanksref{m1}}
+\and
+\author{\fnms{Alicia} \snm{Carriquiry}\ead[label=e3]{alicia@iastate.edu}\thanksref{m1}}
+
+\affiliation{Iowa State University\thanksmark{m1}}
+
+\runauthor{E. Hare et al.}
+\end{aug}
+
+\end{frontmatter}
+
+\linenumbers
+\tableofcontents
+\newpage
+<<setup, fig.keep='all', cache=FALSE, echo=FALSE, eval=TRUE, message=F, warning=F>>=
+#rm(list=ls())
+#wd <- getwd()
+library(extrafont)
+library(knitr)
+imgdir <- "Figure/"
+codedir <- "code"
+datadir <- "app/images/Hamby252_3DX3P1of2/"
+
+options(replace.assign=TRUE,scipen=3, digits=2)
+bstats <- read.csv("data-25-25/bullet-stats.csv")
+
+scrubPath <- function(x) {
+  splits <- strsplit(as.character(x), split="/")
+  last <- sapply(splits, function(x) x[length(x)])
+  gsub(".x3p","", last)
+}
+
+library(RColorBrewer)
+library(ggplot2)
+library(scales)
+library(dplyr)
+library(x3pr)
+library(x3prplus)
+library(grid)
+library(gridExtra)
+library(zoo)
+library(tidyr)
+library(rpart)
+library(rpart.plot)
+library(xtable)
+library(sm)
+
+@
+
+\begin{figure}[hbtp]
+  \centering
+<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2, fig.width=6, out.width='0.5\\textwidth'>>=
+
+cols = c(alpha("grey60", alpha=0.6), alpha("black", 0.5))
+
+br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
+dbr111 <- fortify_x3p(br111)
+
+pars <- data.frame(getCircle(dbr111$y, dbr111$value))
+dbr111$theta <- acos((dbr111$y-pars$x0)/pars$radius)/pi*180
+dbr111 <- dbr111 %>% mutate(
+  xpred = cos(theta/180*pi)*pars$radius + pars$x0,
+  ypred = sin(theta/180*pi)*pars$radius + pars$y0
+)
+
+qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom="line", size=I(1)) +
+  geom_line(aes(x=xpred, y=ypred, group=x), 
+            colour="grey30", size=0.25) +
+#  ylab(expression(paste("Surface Measurements (in ",mu,m,")", sep=""))) + 
+  ylab("") +
+  theme_bw() + 
+  theme(legend.position="bottom") #+ coord_equal()
+@
+\caption{\label{fig:fixedX}Side profile of the surface measurements (in $\mu m$) of a bullet land across a fixed $x$ value. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
+\end{figure}
+
+\section{Cylindrical Fit}
+
+One reasonable approach is to fit a circle to the curve and compute the residuals from this fit.
+
+For this, assume that $n$ data points are given in the form of data tuples $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$ that are (approximately) located on a circle. We want to estimate the location of the center and radius of the best fitting circle using a least squares approach.
+
+We minimize the following expression:
+\begin{equation}\label{eq:circle}
+D = \sum_{i=1}^n \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right)^2,
+\end{equation}
+by differentiating $D$ with respect to $r, a,$ and $b$:
+let us assume that $x_i$ and $y_i$ are centered (i.e. $\sum x_i = \sum_i y_i = 0$). Note, if they are not, make a note of the current means, subtract them now and add them to $(\hat{a}, \hat{b})$ at the end. 
+
+\noindent
+The  derivate of $D$ with respect to $r$ is:
+\begin{eqnarray*}
+\frac{d}{dr} D &=& 2 \sum_i \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right) 2 r = \\
+&=& 4 r \left( n r^2 - \sum_i (x_i-a)^2 - \sum_i(y_i-b)^2 \right).
+\end{eqnarray*}
+At the minimum:
+\begin{equation}\label{eq:rmin}
+\frac{d}{dr} D = 0 \stackrel{r \neq 0}{\iff} nr^2  = \sum_i (x_i-a)^2 + \sum_i(y_i-b)^2.
+\end{equation}
+%
+%
+The  derivative of $D$ with respect to $a$ is:
+\begin{eqnarray*}
+\frac{d}{da} D &=& 2 \sum_i \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right) 2 (x_i - a) = \\
+&=& -4 \left[ a \cdot nr^2 + \sum_i (x_i - a)^3  + \sum_i (x_i - a) (y_i - b)^2 \right].
+\end{eqnarray*}
+Using (\ref{eq:rmin}) for $nr^2$  in the equation above we get:
+\begin{eqnarray*}
+\frac{d}{da} D &=& -4 \left[  \sum_i a(x_i-a)^2 +  \sum_i a(y_i-b)^2  + \right. \\
+&& \phantom{-4 \ \ } \left . \sum_i (x_i - a)^3  + \sum_i (x_i - a) (y_i - b)^2 \right]  = \\
+&=& -4 \left[ \sum_i (x_i-a)^2 (a + x_i - a)  + \right.\\
+&& \phantom{-4 \ \ } \left .\sum_i (x_i - a + a) (y_i - b)^2 \right] = \\
+&=& -4 \left[ \sum_i (x_i-a)^2 x_i   + \sum_i x_i  (y_i - b)^2 \right] 
+\stackrel{\begin{array}{c}\sum_i x_i = 0\\
+\sum_i y_i = 0\end{array}}{=} \\
+&=& -4 \left[ \sum_i x_i^3   + \sum_i x_i y_i^2  - 2a s_{xx} - 2b s_{xy} \right],
+\end{eqnarray*}
+where $s_{xx} = \sum_i x_i^2, s_{xy} = \sum_i x_i y_i$ and $s_{yy} = \sum_i y_i^2$.
+
+\noindent
+Likewise, we get for the derivative of $D$ with respect to $b$:
+\begin{eqnarray*}
+\frac{d}{db} D &=& -4 \left[ \sum_i y_i^3   + \sum_i x_i^2 y_i - 2a s_{xy} - 2b s_{yy} \right].
+\end{eqnarray*}
+To find the minimum we therefore get a system of two linear equations in $a$ and $b$:
+\begin{eqnarray*}
+2 s_{xx} a + 2 s_{xy} b = c_1 && \text{ with } c_1 = \sum_i x_i^3 + x_i y_i^2 \\
+2 s_{xy} a + 2 s_{yy} b = c_2 &&\text{ with } c_2 = \sum_i x_i^2 y_i + y_i^3.
+\end{eqnarray*}
+The solution to the system is:
+\begin{eqnarray*}
+\hat{a} &=& \frac{c_1 s_{yy} - c_2 s_{xy}}{2 s_{xx} s_{yy} - 2 s_{xy}^2},\\
+\hat{b} &=& \frac{c_2 s_{xx} - c_1 s_{xy}}{2 s_{xx} s_{yy} - 2 s_{xy}^2}, \text{ and}\\
+\hat{r^2} &=& \frac{1}{n}s_{xx} + \frac{1}{n}s_{yy} + \hat{a}^2 + \hat{b}^2.
+\end{eqnarray*}
+
+
+The scatterplot in Figure~\ref{fig:residual} shows the residuals of such a fit.
+In this instance, the radius is estimated as $\hat{r} = \Sexpr{pars$radius}\mu m = \Sexpr{pars$radius/1000}mm$ and the land covers about \Sexpr{diff(range(dbr111$theta))} degrees.  Both of these estimates are consistent with a 9 mm bullet fired by a Ruger P-85.
+The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For a surface cross cut at $x = 100$ there is a residual circular structure that does not show up for all cross sections. 
+
+\begin{figure}[hbtp]
+  \centering
+\begin{subfigure}[b]{.49\textwidth}\centering
+\caption{\label{fig:residuala}Residual structure at $x = 1.5625$ (bottom of the bullet).}
+<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\textwidth'>>=
+qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
+      geom="line", size=I(1)) +
+#  scale_colour_brewer("x", palette="Paired") + 
+  theme_bw() + 
+  geom_hline(yintercept = 0, colour="grey50") +
+  ylab(expression(paste("Residuals (in ",mu,"m)", sep=""))) + 
+  theme(legend.position="bottom")
+@
+\end{subfigure}    
+\begin{subfigure}[b]{.49\textwidth}\centering
+\caption{\label{fig:residualb} Residual structure at $x = 100.00$}
+<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\textwidth'>>=
+#qplot(data=subset(dbr111, x <= 80*1.5625^2 & x >=75*1.5625^2), y, value-ypred,
+qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x), 
+      geom="line", size=I(1)) +
+#  scale_colour_brewer("x", palette="Paired") + 
+  geom_hline(yintercept = 0, colour="grey50") +
+  theme_bw() + 
+  ylab(expression(paste("Residuals (in ",mu,"m)", sep=""))) + 
+  theme(legend.position="bottom")
+@
+\end{subfigure}
+\caption{\label{fig:residual} Residual structure of circular fits at two different cross sections. Both residual plots show systematic structures, indicating that a circular fit is not entirely appropriate.}
+\end{figure}
+
+A single cylinder as a fit is unlikely to be a particularly good fit, because there seem to be quite massive deformations in the vertical direction. Even when we fit a circle to each cross section of the bullet, as in Figure~\ref{fig:circlefits}, this does not address all of these issues. While the wider circumference at the base of the bullet can be resolved by individual circular fits, the systematic residual structure in Figure~\ref{fig:residualb} stays the same.
+
+<<bullet1, echo=FALSE, cache=TRUE>>=
+db1 <- NULL
+for (i in 1:6) {
+  bname <- sprintf(file.path(datadir, "Br1 Bullet 1-%d.x3p"), i)
+  dbi <- fortify_x3p(read.x3p(bname))
+  dbi$part <- i
+  db1 <- rbind(db1, dbi)
+}
+
+db1 <- db1 %>% group_by(part, x) %>% do (
+    data.frame(., predCircle(.$y, .$value))
+  )
+@
+
+<<bullet2, echo=FALSE, cache=TRUE>>=
+db2 <- NULL
+for (i in 1:6) {
+  bname <- sprintf(file.path(datadir, "Br1 Bullet 2-%d.x3p"), i)
+  dbi <- fortify_x3p(read.x3p(bname))
+  dbi$part <- i
+  db2 <- rbind(db2, dbi)
+}
+
+db2 <- db2 %>% group_by(part, x) %>% do (
+    data.frame(., predCircle(.$y, .$value))
+  )
+
+@
+
+\begin{figure}[hbtp]
+  \centering
+<<circlefits, echo=FALSE, fig.width=10, fig.height=5, out.width='\\textwidth', warning=FALSE>>=
+db2$land <- db2$part
+db1$land <- db1$part
+qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
+      geom="line", size=I(.75), colour=I("grey70")) + 
+  facet_wrap(~land, ncol=3, labeller="label_both") + 
+  scale_colour_brewer(palette="Paired") +
+  theme_bw() + theme(legend.position="bottom") + 
+  geom_line(aes(y, resid, group = x), colour="black", size=.75, alpha=0.5,
+             data = filter(db1, land==5, x == 100)[,c("y", "resid", "x")]) +
+  ylab("Residuals from circular fit") +
+  ggtitle("Bullet 1-5 in black")
+@
+\caption{Circle fit for each cross section of bullet 2, with bullet 1-5 overlaid.\label{fig:circlefits} Bullet 1-5 matches best with bullet 2-1.}
+\end{figure}
+
+
+
+\end{document}

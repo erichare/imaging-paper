@@ -84,7 +84,8 @@ In 2009, the National Academy of Sciences published a report questioning the sci
 \end{frontmatter}
 
 \linenumbers
-
+\tableofcontents
+\newpage
 <<setup, fig.keep='all', cache=FALSE, echo=FALSE, eval=TRUE, message=F, warning=F>>=
 #rm(list=ls())
 #wd <- getwd()
@@ -154,7 +155,8 @@ Integrated Ballistics Identification System (IBIS) – Mr. Robert Thompson (Cali
 BulletTRAX-3DTM - Forensic Technology Scientists (Montreal, Canada) (2 sets)
  }
 
-The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. We then describe a web application for visualizing and working with bullet surfaces. We proceed to describing an automatic matching routine which we evaluate on a small database of reference bullets.
+The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. %We then describe a web application for visualizing and working with bullet surfaces. 
+We then proceed to describing an automatic matching routine which we evaluate on a small database of reference bullets.
 
 
 \section{Methodology}
@@ -176,9 +178,9 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 \end{subfigure}
 \caption{An example of a scan of a bullet land from one groove to the next. }
 \end{figure}
-Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, or a feature that pertains to a particular class of firearms and is not unique at the individual bullet level.
+Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, or a feature that pertains to a particular class of firearms and is not unique at the individual barrel/bullet level.
 
-An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the heights across values of the other coordinate. Figure \ref{fig:fixedX} shows a plot resulting from such a procedure. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
+An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the surface measurements across. Figure \ref{fig:fixedX} shows a plot resulting from such a procedure. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
 \begin{figure}[hbtp]
   \centering
@@ -209,149 +211,6 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
 
 The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. It is clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
 
-\subsection{Cylindrical Fit}
-
-One reasonable approach is to fit a circle to the curve and compute the residuals from this fit.
-
-For this, assume that $n$ data points are given in the form of data tuples $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$ that are (approximately) located on a circle. We want to estimate the location of the center and radius of the best fitting circle using a least squares approach.
-
-We minimize the following expression:
-\begin{equation}\label{eq:circle}
-D = \sum_{i=1}^n \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right)^2,
-\end{equation}
-by differentiating $D$ with respect to $r, a,$ and $b$:
-let us assume that $x_i$ and $y_i$ are centered (i.e. $\sum x_i = \sum_i y_i = 0$). Note, if they are not, make a note of the current means, subtract them now and add them to $(\hat{a}, \hat{b})$ at the end. 
-
-\noindent
-The  derivate of $D$ with respect to $r$ is:
-\begin{eqnarray*}
-\frac{d}{dr} D &=& 2 \sum_i \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right) 2 r = \\
-&=& 4 r \left( n r^2 - \sum_i (x_i-a)^2 - \sum_i(y_i-b)^2 \right).
-\end{eqnarray*}
-At the minimum:
-\begin{equation}\label{eq:rmin}
-\frac{d}{dr} D = 0 \stackrel{r \neq 0}{\iff} nr^2  = \sum_i (x_i-a)^2 + \sum_i(y_i-b)^2.
-\end{equation}
-%
-%
-The  derivative of $D$ with respect to $a$ is:
-\begin{eqnarray*}
-\frac{d}{da} D &=& 2 \sum_i \left( r^2 - (x_i-a)^2 - (y_i-b)^2 \right) 2 (x_i - a) = \\
-&=& -4 \left[ a \cdot nr^2 + \sum_i (x_i - a)^3  + \sum_i (x_i - a) (y_i - b)^2 \right].
-\end{eqnarray*}
-Using (\ref{eq:rmin}) for $nr^2$  in the equation above we get:
-\begin{eqnarray*}
-\frac{d}{da} D &=& -4 \left[  \sum_i a(x_i-a)^2 +  \sum_i a(y_i-b)^2  + \right. \\
-&& \phantom{-4 \ \ } \left . \sum_i (x_i - a)^3  + \sum_i (x_i - a) (y_i - b)^2 \right]  = \\
-&=& -4 \left[ \sum_i (x_i-a)^2 (a + x_i - a)  + \right.\\
-&& \phantom{-4 \ \ } \left .\sum_i (x_i - a + a) (y_i - b)^2 \right] = \\
-&=& -4 \left[ \sum_i (x_i-a)^2 x_i   + \sum_i x_i  (y_i - b)^2 \right] 
-\stackrel{\begin{array}{c}\sum_i x_i = 0\\
-\sum_i y_i = 0\end{array}}{=} \\
-&=& -4 \left[ \sum_i x_i^3   + \sum_i x_i y_i^2  - 2a s_{xx} - 2b s_{xy} \right],
-\end{eqnarray*}
-where $s_{xx} = \sum_i x_i^2, s_{xy} = \sum_i x_i y_i$ and $s_{yy} = \sum_i y_i^2$.
-
-\noindent
-Likewise, we get for the derivative of $D$ with respect to $b$:
-\begin{eqnarray*}
-\frac{d}{db} D &=& -4 \left[ \sum_i y_i^3   + \sum_i x_i^2 y_i - 2a s_{xy} - 2b s_{yy} \right].
-\end{eqnarray*}
-To find the minimum we therefore get a system of two linear equations in $a$ and $b$:
-\begin{eqnarray*}
-2 s_{xx} a + 2 s_{xy} b = c_1 && \text{ with } c_1 = \sum_i x_i^3 + x_i y_i^2 \\
-2 s_{xy} a + 2 s_{yy} b = c_2 &&\text{ with } c_2 = \sum_i x_i^2 y_i + y_i^3.
-\end{eqnarray*}
-The solution to the system is:
-\begin{eqnarray*}
-\hat{a} &=& \frac{c_1 s_{yy} - c_2 s_{xy}}{2 s_{xx} s_{yy} - 2 s_{xy}^2},\\
-\hat{b} &=& \frac{c_2 s_{xx} - c_1 s_{xy}}{2 s_{xx} s_{yy} - 2 s_{xy}^2}, \text{ and}\\
-\hat{r^2} &=& \frac{1}{n}s_{xx} + \frac{1}{n}s_{yy} + \hat{a}^2 + \hat{b}^2.
-\end{eqnarray*}
-
-
-The scatterplot in Figure~\ref{fig:residual} shows the residuals of such a fit.
-In this instance, the radius is estimated as $\hat{r} = \Sexpr{pars$radius}\mu m = \Sexpr{pars$radius/1000}mm$ and the land covers about \Sexpr{diff(range(dbr111$theta))} degrees.  Both of these estimates are consistent with a 9 mm bullet fired by a Ruger P-85.
-The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For a surface cross cut at $x = 100$ there is a residual circular structure that does not show up for all cross sections. 
-
-\begin{figure}[hbtp]
-  \centering
-\begin{subfigure}[b]{.49\textwidth}\centering
-\caption{\label{fig:residuala}Residual structure at $x = 1.5625$ (bottom of the bullet).}
-<<residual2, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\textwidth'>>=
-qplot(data=subset(dbr111, x <= 1.5625), y, value-ypred, #colour=factor(x),
-      geom="line", size=I(1)) +
-#  scale_colour_brewer("x", palette="Paired") + 
-  theme_bw() + 
-  geom_hline(yintercept = 0, colour="grey50") +
-  ylab(expression(paste("Residuals (in ",mu,"m)", sep=""))) + 
-  theme(legend.position="bottom")
-@
-\end{subfigure}    
-\begin{subfigure}[b]{.49\textwidth}\centering
-\caption{\label{fig:residualb} Residual structure at $x = 100.00$}
-<<residual, dependson='fixedX', echo=FALSE, warning=FALSE, fig.height=3, out.width='\\textwidth'>>=
-#qplot(data=subset(dbr111, x <= 80*1.5625^2 & x >=75*1.5625^2), y, value-ypred,
-qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x), 
-      geom="line", size=I(1)) +
-#  scale_colour_brewer("x", palette="Paired") + 
-  geom_hline(yintercept = 0, colour="grey50") +
-  theme_bw() + 
-  ylab(expression(paste("Residuals (in ",mu,"m)", sep=""))) + 
-  theme(legend.position="bottom")
-@
-\end{subfigure}
-\caption{\label{fig:residual} Residual structure of circular fits at two different cross sections. Both residual plots show systematic structures, indicating that a circular fit is not entirely appropriate.}
-\end{figure}
-
-A single cylinder as a fit is unlikely to be a particularly good fit, because there seem to be quite massive deformations in the vertical direction. Even when we fit a circle to each cross section of the bullet, as in Figure~\ref{fig:circlefits}, this does not address all of these issues. While the wider circumference at the base of the bullet can be resolved by individual circular fits, the systematic residual structure in Figure~\ref{fig:residualb} stays the same.
-
-<<bullet1, echo=FALSE, cache=TRUE>>=
-db1 <- NULL
-for (i in 1:6) {
-  bname <- sprintf(file.path(datadir, "Br1 Bullet 1-%d.x3p"), i)
-  dbi <- fortify_x3p(read.x3p(bname))
-  dbi$part <- i
-  db1 <- rbind(db1, dbi)
-}
-
-db1 <- db1 %>% group_by(part, x) %>% do (
-    data.frame(., predCircle(.$y, .$value))
-  )
-@
-
-<<bullet2, echo=FALSE, cache=TRUE>>=
-db2 <- NULL
-for (i in 1:6) {
-  bname <- sprintf(file.path(datadir, "Br1 Bullet 2-%d.x3p"), i)
-  dbi <- fortify_x3p(read.x3p(bname))
-  dbi$part <- i
-  db2 <- rbind(db2, dbi)
-}
-
-db2 <- db2 %>% group_by(part, x) %>% do (
-    data.frame(., predCircle(.$y, .$value))
-  )
-
-@
-
-\begin{figure}[hbtp]
-  \centering
-<<circlefits, echo=FALSE, fig.width=10, fig.height=5, out.width='\\textwidth', warning=FALSE>>=
-db2$land <- db2$part
-db1$land <- db1$part
-qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x), 
-      geom="line", size=I(.75), colour=I("grey70")) + 
-  facet_wrap(~land, ncol=3, labeller="label_both") + 
-  scale_colour_brewer(palette="Paired") +
-  theme_bw() + theme(legend.position="bottom") + 
-  geom_line(aes(y, resid, group = x), colour="black", size=.75, alpha=0.5,
-             data = filter(db1, land==5, x == 100)[,c("y", "resid", "x")]) +
-  ylab("Residuals from circular fit") +
-  ggtitle("Bullet 1-5 in black")
-@
-\caption{Circle fit for each cross section of bullet 2, with bullet 1-5 overlaid.\label{fig:circlefits} Bullet 1-5 matches best with bullet 2-1.}
-\end{figure}
 
 \subsection{Loess Fit}
 In an attempt to improve upon the previous algorithm, we first have to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match.
@@ -513,91 +372,92 @@ qplot(y, resid, data=melt.df, #colour=factor(x),
 \caption{\label{fig:loessfits} Residuals of a loess fit to bullets 1 and 2 from barrel 1. Bullet 1-5 is shown in black. }
 \end{figure}
 
-\section{Web Application}
-We have implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny~\citep{shiny}, allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly~\citep{plotly}, allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
-
-\begin{figure*}
-\includegraphics[width=\textwidth]{images/app.png}
-\caption{\label{fig:app}{Screenshot of the web interface for analyzing bullet images.}}
-\end{figure*}
-
-The mouse is the primary control input for interacting with the surface plots. One can mouse over the plots to view the coordinate values for each point. Clicking and dragging anywhere on the plot will allow rotation. Scrolling up and down allows the user to zoom out and and respectively. There are also a set of controls available at the top right of the page, which will allow the selection of some other rotation methods, taking of screenshots, and reseting the camera to the default view.
-
-Several lighting options are available to tweak in order to highlight markings in on the bullets more strongly:
-
-\begin{enumerate}
-    \item \textbf{Ambient Lighting} - Lighting which is used to simulate the light naturally present in the environment.
-    \item \textbf{Diffuse Lighting} - Setting this value higher will cause the surface to re-emit a higher proportion of light.
-    \item \textbf{Specular Lighting} - The lighting which appears on the surface when illuminated.
-    \item \textbf{Roughness Lighting} - The amount of light reflected by the roughness of the surface.
-    \item \textbf{Fresnel Lighting} - Higher values create a wider, softer lighting across the surface.
-\end{enumerate}
-
-The application includes a button which allows the automatic creation of a residual plot from the loess fits of two bullets. An x coordinate value can be selected as a cross cut, and cross sections of the two bullets at the x value are taken. The previously described loess regression procedure is applied to the two cross sections. A residual plot is produced beneath the surface plots allowing for an assessment of the similarity of the markings. Users need to perform this procedure at different x values in order to see whether the markings indicate a match at different points along the bullet.
-
-Enhancements to the web application are still in progress. In particular, much of the automatic matching functionality described in the next section will be added in the future.
+% \section{Web Application}
+% We have implemented a web interface to automate many of the steps outlined in the previous section. The web interface, developed using Shiny~\citep{shiny}, allows a user to upload two x3p files representing scans of a bullet between two grooves. A 3D viewer, using Plotly~\citep{plotly}, allows the user to rotate and zoom to examine surface features of the images. A screenshot of the application is available in Figure \ref{fig:app}. The application is available at the url \url{http://erichare.shinyapps.io/x3prproto}.
+% 
+% \begin{figure*}
+% \includegraphics[width=\textwidth]{images/app.png}
+% \caption{\label{fig:app}{Screenshot of the web interface for analyzing bullet images.}}
+% \end{figure*}
+% 
+% The mouse is the primary control input for interacting with the surface plots. One can mouse over the plots to view the coordinate values for each point. Clicking and dragging anywhere on the plot will allow rotation. Scrolling up and down allows the user to zoom out and and respectively. There are also a set of controls available at the top right of the page, which will allow the selection of some other rotation methods, taking of screenshots, and reseting the camera to the default view.
+% 
+% Several lighting options are available to tweak in order to highlight markings in on the bullets more strongly:
+% 
+% \begin{enumerate}
+%     \item \textbf{Ambient Lighting} - Lighting which is used to simulate the light naturally present in the environment.
+%     \item \textbf{Diffuse Lighting} - Setting this value higher will cause the surface to re-emit a higher proportion of light.
+%     \item \textbf{Specular Lighting} - The lighting which appears on the surface when illuminated.
+%     \item \textbf{Roughness Lighting} - The amount of light reflected by the roughness of the surface.
+%     \item \textbf{Fresnel Lighting} - Higher values create a wider, softer lighting across the surface.
+% \end{enumerate}
+% 
+% The application includes a button which allows the automatic creation of a residual plot from the loess fits of two bullets. An x coordinate value can be selected as a cross cut, and cross sections of the two bullets at the x value are taken. The previously described loess regression procedure is applied to the two cross sections. A residual plot is produced beneath the surface plots allowing for an assessment of the similarity of the markings. Users need to perform this procedure at different x values in order to see whether the markings indicate a match at different points along the bullet.
+% 
+% Enhancements to the web application are still in progress. In particular, much of the automatic matching functionality described in the next section will be added in the future.
 
 \section{Automatic matching}
-Applying the loess fit to a range of different surface cross cuts (see Figures~\ref{fig:manualmatch} and~\ref{fig:manualmatch-rgl}, with cross cuts from 50 to 150) shows the striation marks across two bullets. Cross cuts of bullet 1 are shown on the left (cross cuts with values below 100) and cross cuts of bullets 2 are shown on the right (cross cuts with values above 100). Many of the striation marks align, allowing for an easy visual assessment of the shared similarities between the two bullets. 
+Applying the loess fit to a range of different surface cross cuts (see Figure~\ref{fig:manualmatch-rgl}, with cross cuts from 50 to 150) shows the striation marks from two bullets. Cross cuts of bullet 1 are shown on the left (cross cuts with values below 100) and cross cuts of bullets 2 are shown on the right (cross cuts with values above 100). Many of the striation marks align, allowing for an easy visual assessment of the shared similarities between the two bullets. 
 
-\begin{figure}[hbtp]
-\centering
-%' <<side-by-side, echo=FALSE, eval=FALSE>>=
-%' paths <- file.path(datadir, dir(datadir))
-%' 
-%' br111 <- read.x3p(paths[5])
-%' crosscuts <- unique(fortify_x3p(br111)$x)
-%' crosscuts <- crosscuts[crosscuts > 50]
-%' crosscuts <- crosscuts[crosscuts < 150]
-%' 
-%' list_of_fits <- lapply(crosscuts, function(x) {
-%'   br111 <- get_crosscut(paths[5], x = x)
-%'   br111.groove <- get_grooves(br111)
-%'   br111.groove$plot
-%'   fit_loess(br111, br111.groove)
-%' })
-%' 
-%' lof <- lapply(list_of_fits, function(x) x$resid$data) %>% bind_rows
-%' 
-%' br111 <- read.x3p(paths[7])
-%' crosscuts <- unique(fortify_x3p(br111)$x)
-%' crosscuts <- crosscuts[crosscuts > 50]
-%' crosscuts <- crosscuts[crosscuts < 150]
-%' 
-%' list_of_fits2 <- lapply(crosscuts, function(x) {
-%'   br111 <- get_crosscut(paths[7], x)
-%'   br111.groove <- get_grooves(br111)
-%'   br111.groove$plot
-%'   fit_loess(br111, br111.groove)
-%' })
-%' 
-%' lof2 <- lapply(list_of_fits2, function(x) x$resid$data) %>% bind_rows
-%' lof$bullet <- 1
-%' lof2$bullet <- 2
-%' 
-%' LOF <- rbind(lof, lof2)
-%' 
-%' subLOF1 <- LOF %>% filter(bullet == 1, x <= 100)
-%' subLOF2 <- LOF %>% filter(bullet == 2, x > 100)
-%' 
-%' #subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
-%' subLOF1$y <- subLOF1$y + 19*1.5625 # working now!!!
-%' subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
-%' 
-%' qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") + 
-%'   scale_fill_gradientn(limits=c(-5,5), 
-%'                        colors=c("grey5", "gold4","darkgoldenrod1","lightgoldenrod1", "lemonchiffon"),
-%'                        values = c(0,0.5, 0.75, 0.9, 1)) +
-%'   theme_bw()
-%' @
+% \begin{figure}[hbtp]
+% \centering
+% %' <<side-by-side, echo=FALSE, eval=FALSE>>=
+% %' paths <- file.path(datadir, dir(datadir))
+% %' 
+% %' br111 <- read.x3p(paths[5])
+% %' crosscuts <- unique(fortify_x3p(br111)$x)
+% %' crosscuts <- crosscuts[crosscuts > 50]
+% %' crosscuts <- crosscuts[crosscuts < 150]
+% %' 
+% %' list_of_fits <- lapply(crosscuts, function(x) {
+% %'   br111 <- get_crosscut(paths[5], x = x)
+% %'   br111.groove <- get_grooves(br111)
+% %'   br111.groove$plot
+% %'   fit_loess(br111, br111.groove)
+% %' })
+% %' 
+% %' lof <- lapply(list_of_fits, function(x) x$resid$data) %>% bind_rows
+% %' 
+% %' br111 <- read.x3p(paths[7])
+% %' crosscuts <- unique(fortify_x3p(br111)$x)
+% %' crosscuts <- crosscuts[crosscuts > 50]
+% %' crosscuts <- crosscuts[crosscuts < 150]
+% %' 
+% %' list_of_fits2 <- lapply(crosscuts, function(x) {
+% %'   br111 <- get_crosscut(paths[7], x)
+% %'   br111.groove <- get_grooves(br111)
+% %'   br111.groove$plot
+% %'   fit_loess(br111, br111.groove)
+% %' })
+% %' 
+% %' lof2 <- lapply(list_of_fits2, function(x) x$resid$data) %>% bind_rows
+% %' lof$bullet <- 1
+% %' lof2$bullet <- 2
+% %' 
+% %' LOF <- rbind(lof, lof2)
+% %' 
+% %' subLOF1 <- LOF %>% filter(bullet == 1, x <= 100)
+% %' subLOF2 <- LOF %>% filter(bullet == 2, x > 100)
+% %' 
+% %' #subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
+% %' subLOF1$y <- subLOF1$y + 19*1.5625 # working now!!!
+% %' subLOF <- rbind(data.frame(subLOF1), data.frame(subLOF2))
+% %' 
+% %' qplot(x, y, fill = resid, colour=I(NA), data=subLOF, geom="tile") + 
+% %'   scale_fill_gradientn(limits=c(-5,5), 
+% %'                        colors=c("grey5", "gold4","darkgoldenrod1","lightgoldenrod1", "lemonchiffon"),
+% %'                        values = c(0,0.5, 0.75, 0.9, 1)) +
+% %'   theme_bw()
+% %' @
+% 
+% \includegraphics[width=.7\columnwidth]{images/side-by-side-manual-match.png}
+% \caption{\label{fig:manualmatch}Manually adjusted side-by-side comparison of bullet 1-5 and bullet 2-1.}
+% \end{figure}
 
-\includegraphics[width=.7\columnwidth]{images/side-by-side-manual-match.png}
-\caption{\label{fig:manualmatch}Manually adjusted side-by-side comparison of bullet 1-5 and bullet 2-1.}
-\end{figure}
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=.7\columnwidth]{images/matchup-rgl.png}
-\caption{\label{fig:manualmatch-rgl}Different view of the manually adjusted side-by-side comparison of bullet 1-5 and bullet 2-1.}
+\caption{\label{fig:manualmatch-rgl}3d view of the manually adjusted side-by-side comparison of bullet 1-5 and bullet 2-1 after removing the curvature.}
 \end{figure}
 
 <<twolands100, cache=TRUE,  echo=FALSE>>=
