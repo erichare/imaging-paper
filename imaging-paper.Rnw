@@ -590,12 +590,9 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 
 \subsection{Varying cross sections}
 The cross section on which a comparison between signatures is based matters -- signatures from cross sections that are further apart, show more pronounced differences between the signatures. 
-This poses both a caveat to matching attempts as well as an opportunity \hh{for quality control}: on the one hand we have to be aware of which cross section level was used in a matching, but on the other hand we can extract signatures from multiple cross sections of the same bullet for an initial assessment of its quality. \hh{XXX shift cross section discussion into the supplement XXX}
-Both of these situations are assessed and discussed in more detail below: 
-
-%\afterpage{\clearpage}
-
-%\hh{XXX Does this give us a way to automatically check for the bottom of the bullet? Attempt below} 
+This poses both a caveat to matching attempts as well as an opportunity \hh{for quality control}: we have to be aware of which cross section level was used in a matching. An assessment of this situation shows that, visually, matches degrade if the signatures upon which the match is based are from cross sections further than 200$\mu m$ apart  (see supplement \hh{XXX section XXX} for a more thorough discussion).
+However, we can extract signatures from multiple cross sections of the same bullet land for an initial assessment of its quality. \hh{XXX shift cross section discussion into the supplement XXX}
+This situation is assessed and discussed in more detail below: 
 
 \begin{figure}[hbtp]
   \centering
@@ -646,10 +643,11 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
              lop[[4]], lop[[5]], lop[[6]],
              ncol=2)
 @
-\caption{\label{fig:crosscuts2}Varying cross sections for barrel 3, bullet 1. Initially, the match between cross sections 25$\mu m$ apart is affected strongly by break off at the bottom of the bullet. At a cross section level of $175\mu m$ the bullet pattern stabilizes. For this land, matches should not be attempted at lower cross sections.}
+\caption{\label{fig:crosscuts2}Varying cross sections for barrel 3, bullet 1. Initially, the match between cross sections 25$\mu m$ apart is affected strongly by some break off at the bottom of the bullet. At a cross section level of $175\mu m$ the bullet pattern stabilizes. For this land, matches should not be attempted at lower cross sections.}
 \end{figure}
-An opportunity that arises from comparing multiple cross sections of a bullet's surface measurements is the following: by comparing cross sections that are not too far apart -- maybe 25 or 50 $\mu m$ for example -- we get an indication whether the cross section is in a rapidly changing section of the surface, indicative of a break-off \hh{or some other damage}, or in a stable section, where we can expect to find matches to other surfaces reasonably well. In the approach here, we keep increasing the cross section level until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet 1-1 from barrel 3.
-`Stability' is here defined as two aligned cross sections chosen 25$\mu m$ apart having a cross-correlation of at least 0.9. 
+%An opportunity that arises from comparing multiple cross sections of a bullet's surface measurements is the following:
+by comparing signatures from cross sections that are not too far apart --  25 $\mu m$ to 50 $\mu m$ -- we get an indication whether the signatures come from a rapidly changing section of the surface, indicative of a break-off \hh{or some other damage}, or from a stable section, where we can have a reasonable expectation of finding matches to other signatures. In the approach here, we keep increasing the cross section until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet 1-1 from barrel 3, where
+`stability' is  defined as two aligned signatures from cross sections chosen 25$\mu m$ apart having a cross-correlation of at least 0.9. 
 
 \begin{figure}[hbtp]
 \centering

@@ -268,7 +268,7 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
 \end{figure}
 
 
-\subsection{Assessing cross-correlation between signatures at multiple cross sections}
+\section{Assessing cross-correlation between signatures at multiple cross sections}
 
 Figure~\ref{fig:crosscuts} shows a sequence of cross sections for bullet 1-5 (barrel 1) that are taken 50$\mu m$ apart, between 150$\mu m$  and 400$\mu m$. These are compared to a cross section at 100$\mu m$. Initially this comparison constitutes an almost perfect match between the two cross sections. However, the match quickly deteriorates with increasing distance to non-matches at a cross section of $x = 300\mu m$ or higher.  Only if the cross section is within 150$\mu m$ do we get a good visual match even when we know that the same bullet surface is being used. 
 Given that we have to expect some variation in nominally the same cross section levels due to manual alignments in microscopes, we should take cross section levels into account in the automatic matching routine by evaluating matches at several cross sections. 
