@@ -1,20 +1,3 @@
-% Template for the submission to:
-%   The Annals of Probability           [aop]
-%   The Annals of Applied Probability   [aap]
-%   The Annals of Statistics            [aos] 
-%   The Annals of Applied Statistics    [aoas]
-%   Stochastic Systems                  [ssy]
-%
-%Author: In this template, the places where you need to add information
-%        (or delete line) are indicated by {???}.  Mostly the information
-%        required is obvious, but some explanations are given in lines starting
-%Author:
-%All other lines should be ignored.  After editing, there should be
-%no instances of ??? after this line.
-
-% use option [preprint] to remove info line at bottom
-% journal options: aop,aap,aos,aoas,ssy
-% natbib option: authoryear
 \documentclass[aoas]{imsart}
 
 \usepackage{amsthm,amsmath,natbib}
@@ -166,21 +149,23 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{.49\textwidth}\centering
+\begin{subfigure}[t]{.54\textwidth}\centering
 \caption{View from the side.\label{fig:sidex3p}}{%
       \includegraphics[width=\textwidth]{images/sidex3p.png}
     }
 \end{subfigure}    
-\begin{subfigure}[t]{.49\textwidth}\centering
+\begin{subfigure}[t]{.45\textwidth}\centering
     \caption{View from the top.\label{fig:topx3p}}{%
     \includegraphics[width=\textwidth]{images/topx3p.png}
     }
 \end{subfigure}
 \caption{An example of a scan of a bullet land from one groove to the next. }
 \end{figure}
-Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, or a feature that pertains to a particular class of firearms and is not unique at the individual barrel/bullet level.
+Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
 
-An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the surface measurements across. Figure \ref{fig:fixedX} shows a plot resulting from such a procedure. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
+\hh{In an approach to analyze the striation pattern we extract a {\emph bullet profile} or {\emph signature} \cite{ma:2004} by taking a cross section across the surface measurements for a fixed value of $x$.}
+%An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the surface measurements across. 
+Figure \ref{fig:fixedX} shows a plot of a bullet signature. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
 \begin{figure}[hbtp]
   \centering
@@ -1340,8 +1325,7 @@ Resources for this manuscript, including R code to reproduce any of the models, 
 %  \sdescription{Some text}
 %\end{supplement}
 
-%% Harvard
-\bibliographystyle{model2-names.bst}
+\bibliographystyle{imsart-nameyear.bst}
 %\biboptions{authoryear}
 \bibliography{references}
 
