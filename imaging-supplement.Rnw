@@ -268,5 +268,60 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
 \end{figure}
 
 
+\subsection{Assessing cross-correlation between signatures at multiple cross sections}
 
+Figure~\ref{fig:crosscuts} shows a sequence of cross sections for bullet 1-5 (barrel 1) that are taken 50$\mu m$ apart, between 150$\mu m$  and 400$\mu m$. These are compared to a cross section at 100$\mu m$. Initially this comparison constitutes an almost perfect match between the two cross sections. However, the match quickly deteriorates with increasing distance to non-matches at a cross section of $x = 300\mu m$ or higher.  Only if the cross section is within 150$\mu m$ do we get a good visual match even when we know that the same bullet surface is being used. 
+Given that we have to expect some variation in nominally the same cross section levels due to manual alignments in microscopes, we should take cross section levels into account in the automatic matching routine by evaluating matches at several cross sections. 
+\begin{figure}[hbtp]
+  \centering
+<<crosscuts-vary, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\textwidth', cache=TRUE, warning = FALSE>>=
+paths <- file.path(datadir, dir(datadir))
+crosscuts <- seq(100, 400, by = 50)
+lof <- processBullets(paths[5], x = crosscuts)
+lof$bullet <- paste(lof$bullet, lof$x)
+
+reslist <- lapply(crosscuts[-1], function(cc) {
+#  browser()
+  b2 <- subset(lof, x %in% c(cc, 100))
+  lofX <- bulletSmooth(b2)
+  bAlign = bulletAlign(lofX)
+  lofX <- bAlign$bullet
+    b12 <- unique(b2$bullet)
+  peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = 25)
+  peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = 25)
+
+#  threshold <- bulletPickThreshold(lofX, thresholds = seq(0.3, 1.5, by = 0.05))
+#  lines <- striation_identify(lofX, threshold = threshold)
+  peaks1$lines$bullet <- b12[1]
+  peaks2$lines$bullet <- b12[2]
+  lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
+
+  maxCMS <- maxCMS(lines$match==TRUE)
+  list(maxCMS = maxCMS, ccf = bAlign$ccf, lines=lines, bullets=lofX)
+})
+
+ccfs <- sapply(reslist, function(res) res$ccf)
+
+lop <- lapply(reslist, function(res) {
+ggplot() +
+  theme_bw() + 
+  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
+  geom_line(aes(x = y, y = l30, linetype=bullet),   data = res$bullets, alpha=0.6) +
+  scale_colour_brewer("", palette="Set1", na.value=alpha("grey50", alpha=0.5)) +
+  scale_linetype_discrete("") +
+  scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
+  theme(legend.position = c(1,1.2), legend.justification=c(1,1),
+        legend.background = element_rect(fill=alpha('white', 0.4))) + 
+  ylim(c(-6,6)) +
+  geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)) +
+    ylab("") + xlab("")
+})
+
+
+grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
+             ncol = 2)
+@
+\caption{\label{fig:crosscuts}Overview of the variations in the surface along different cross sections. Cross section at $x = 100$ is compared to cross sections every 50$\mu m$. With every step away from the original cross section site, the number of differences between the cross sections increases, and the number of maximum CMS decreases from initially 14 to  3 or fewer at $x = 300\mu m$ and higher. }
+\end{figure}
 \end{document}
