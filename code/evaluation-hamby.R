@@ -33,8 +33,8 @@ CCFs <- plyr::ldply(datas, function(x) {
 # browser()    
     # feature extraction
     data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), 
-               distr.dist=distr.dist, 
-               distr.sd = distr.sd,
+               D=distr.dist, 
+               sd.D = distr.sd,
                b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
                num.matches = sum(res$lines$match), 
                num.mismatches = sum(!res$lines$match), 
@@ -133,7 +133,7 @@ CCFs <- read.csv(file.path(dataStr, "bullet-stats.csv"))
 qplot(factor(cms), data=CCFs)
 ggplot(data=CCFs) + geom_bar(aes(x=factor(cms), fill=match), position="fill")
 sum(CCFs$cms >= 13)
-ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=distr.dist, colour=match))
+ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=D, colour=match))
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=ccf, colour=match)) + facet_wrap(~match)
 ggplot(data=CCFs) + geom_bar(aes(x=factor(non_cms), fill=match), position="fill")
 qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=I(0.5)) + facet_wrap(~match)

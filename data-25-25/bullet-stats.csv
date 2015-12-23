@@ -1,4 +1,4 @@
-"b2","b1","ccf","lag","distr.dist","distr.sd","x1","x2","num.matches","num.mismatches","non_cms","sumpeaks","cms","data","resID","id.x","id.y","match","span","pred","forest","flagged","bullet"
+"b2","b1","ccf","lag","D","sd.D","x1","x2","num.matches","num.nonmatches","CNMS","S","CMS","data","resID","id.x","id.y","match","span","pred","forest","flagged","bullet"
 "Ukn Bullet B-1","Br5 Bullet 1-4",0.210328337061975,242,1.47425393025928,1.67414899429502,150,125,1,15,12,0.826761244751353,1,"data-25-25/unkn1.RData",64,22,38,FALSE,25,0.00323624595469256,0,FALSE,"Ukn Bullet B"
 "Ukn Bullet B-1","Br7 Bullet 1-6",0.419087106213778,43,0.394963040782029,1.10647383846936,100,125,4,28,13,1.92731977396032,2,"data-25-25/unkn1.RData",90,36,38,FALSE,25,0.00323624595469256,0,FALSE,"Ukn Bullet B"
 "Ukn Bullet B-1","Br3 Bullet 1-1",0.351396689694637,119,0.903835345289913,1.45813150396399,175,125,6,21,11,5.44590177443603,3,"data-25-25/unkn1.RData",37,13,38,FALSE,25,0.00323624595469256,0,FALSE,"Ukn Bullet B"
