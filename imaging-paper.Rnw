@@ -194,23 +194,27 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
 \caption{\label{fig:fixedX}Side profile of the surface measurements (in $\mu m$) of a bullet land across a fixed $x$ value. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
-The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. It is clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
+The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. \hh{While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of the fit and the remaining residual structure can be found in the supplement.} \hh{XXX Reference to the supplement? XXX}
+%It is clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
 
+%\subsection{Loess Fit}
+\hh{Instead, we use multiple loess fits to model the overall structure in order to identify the bullet markings. }
 
-\subsection{Loess Fit}
-In an attempt to improve upon the previous algorithm, we first have to eliminate the grooves from the images under the assumption that they do not contain relevant information for determining a match.
-Fortunately, the location and appearance of the grooves in these 2d plots is quite consistent.
+\subsection{Identify Grooves}
+%In an attempt to improve upon the previous algorithm, w
+We first have to \hh{identify} the \hh{locations of the left and right}  groove in the image. \hh{The grooves are not assumed to contain information relevant for determining matches, they also dominate the structure, and therefore need  to be removed.}  
+Fortunately, the location and appearance of the grooves in the surface profiles is quite consistent.
 Surface measurements reach local maxima around the peak of the groove at either end of the range of $y$, we can then follow the descent of the surface measurements inwards to the valley of the groove. 
 This marks the point at which we should trim the image. The procedure can be described as follows:
 
 \begin{enumerate}
-    \item Fix an $x$ value (Figure~\ref{fig:loess_step1}, with $x$ set to 243.75$\mu m$).
-    \item For each $y$ value, smooth out any deviations occurring near the minima by twice applying a rolling average with a pre-set \textbf{smoothing factor}. (Figure~\ref{fig:loess_step3}, smoothing factor of 35, corresponding to 55$\mu m$).
+    \item Fix an $x$ value \hh{to extract a bullet signature} (Figure~\ref{fig:loess_step1}, with $x$ set to 243.75$\mu m$).
+    \item For each $y$ value, smooth out any deviations occurring near the minima by twice applying a rolling average with a pre-set \emph{smoothing factor} $s$. (Figure~\ref{fig:loess_step3}, smoothing factor $s = 35$ corresponding to 55$\mu m$).
 %    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor as above. (Figure~\ref{fig:loess_step3}).
-    \item Determine the location of the peak of the left groove by finding the first double-smoothed value $y_i$ that is the maximum within its smoothing window (e.g.\ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$, $i = 1, ..., 17$). We call the location of this peak $p_{left}$ (see Figure~\ref{fig:loess_step47}). 
-    \item Similarly, determine the location of the valley of the left groove by finding the first double-smoothed $y_j$ that is the minimum within its smoothing window. Call the location of this valley $v_{left}$.
-    \item Reverse the order of the $y$ values and repeat the previous two steps to find the peak and valley of the right groove, $(p_{right}, v_{right})$.
-    \item Trim the surface measurements to values within the two grooves (i.e.\ remove all records with $y_i < v_{left}$ and $y_i > v_{right}$). (Figure \ref{fig:loess_step47}).
+    \item Determine the location of the peak of the left groove by finding the first double-smoothed value $y_i$ that is the maximum within its smoothing window (e.g.\ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$, where $i$ is between 1  and $\lfloor s/2 \rfloor$). We call the location of this peak $p_{\ell}$ (see Figure~\ref{fig:loess_step47}). 
+    \item Similarly, determine the location of the valley of the left groove by finding the first double-smoothed $y_j$ that is the minimum within its smoothing window. Call the location of this valley $v_{\ell}$.
+    \item Reverse the order of the $y$ values and repeat the previous two steps to find the peak and valley of the right groove, $(p_{r}, v_{r})$.
+    \item Trim the surface measurements to values within the two grooves (i.e.\ remove all records with $y_i < v_{\ell}$ and $y_i > v_{r}$) (see Figure~\ref{fig:loess_step47}).
 \end{enumerate}
 
 \begin{figure}[hbtp]
@@ -283,9 +287,10 @@ p3
 \caption{Overview of all six steps of the smoothing algorithm to identify and remove grooves from the bullet images.}
 \end{figure}
 
-The ``smoothing factor" described in the algorithm represents the window size to use for a rolling average. Higher values of the smoothing factor therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a value of 35 for the smoothing factor seems to work quite well (later in the manuscript we investigate varying the smoothing factor). It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass and then added back to the result~\citep{tukey:1977}. This has the effect of introducing a little bit more variance into the smoothed data. We instead performed a second smoothing pass on the smoothed data, which has the effect of weighting observations near the center highest, while the weights linearly drop off as we reach the end of the smoothing window or smoothing factor.
+The smoothing factor $s$ introduced in the algorithm represents the window size to use for a rolling average. Higher values of $s$ therefore lead to more smoothed results. In the groove detection portion of this algorithm, we wish to remove most of the deviation but still maintain enough signal in the groove to detect it. Empirically, a value of $s = 35$ for the smoothing factor seems to work quite well (the smoothing factor is further discussed in section~\ref{sec:smoothing}). It is important to note that the smoothing pass is done twice. That is, the smoothed data is once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass and then added back to the result~\citep{tukey:1977}. This has the effect of introducing a bit more variance back into the smoothed data. 
+We instead performed a second smoothing pass on the smoothed data, which has the effect of weighting observations near the center of the window the highest, while the weights linearly drop off as we reach either end of the smoothing window.
 
-Next, we fit a loess regression to the data. Figure \ref{fig:loess_fit} provides a look at the loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure \ref{fig:loess_resid} shows the residuals from this fit. We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from bullet 1-5. This is shown in Figure~\ref{fig:loessfits}. Bullet 2-1 is still the best match for bullet 1-5, but now the details of the match are more pronounced.
+Next, we fit a loess regression to the data. Figure~\ref{fig:loess_fit} provides a look at the loess fit, in blue, overlaid against the processed image of part 1 of bullet 1. The fit seems to do a reasonable job of capturing the structure of the image. Figure~\ref{fig:loess_resid} shows the residuals from this fit. We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from bullet 1-5. This is shown in Figure~\ref{fig:loessfits}. Bullet 2-1 is still the best match for bullet 1-5, but now the details of the match are more pronounced.
 
 \begin{figure}[hbtp]
   \centering
@@ -762,7 +767,7 @@ ggplot() +
 \end{figure}
 %\afterpage{\clearpage}
 
-\subsection{Varying smoothing factor}
+\subsection{Varying smoothing factor}\label{sec:smoothing}
 As mentioned earlier, the algorithm for peak/valley detection depends on the selection of a smoothing window, called the smoothing factor. In particular, for detecting and removing the grooves prior to fitting a loess regression we selected a smoothing factor of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 25 seems more appropriate. We can investigate the performance of peak/valley detection across different smoothing factors. Figure~\ref{fig:varysmooth} displays the resulting peaks and valleys across smoothing factors of 5, 25, and 45, respectively. The dark line corresponds to the smoothed values, while the grey line in the back shows the unsmoothed values of the surface measurements. The choice of smoothing factor is a classical decision of a bias/variance trade-off. It is immediately clear that a small smoothing factor like 5 is a poor choice. It results in a significant amount of noise in the data such that even just a point or two can skew the rolling average enough for a peak or valley to be detected. Given that the striation patterns are typically much larger, we are in effect muddying the waters by performing such minimal smoothing.
 
 A larger smoothing factor on the other hand, like 45, seems to be a more plausible option. Most of the peaks/valleys present which are detected by a smoothing factor of 25 are also detected at 45. However, some notable issues arise. Notice that the valley on the right hand side of the image is smoothed out, and thus not detected. On the left hand side, a double peak is detected - that might be a questionable decision - but there are several peaks in the middle, that are being smoothed out, for example the peak at around $y = 750$. That is, in many cases, large windows are smoothing out some of the structure that we wish to see. Furthermore, it can be seen that the peaks/valleys are often shifted relative to their position in the original loess residuals, or in the smoothed data with smaller smoothing factors.
