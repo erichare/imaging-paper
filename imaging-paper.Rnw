@@ -14,6 +14,21 @@
 \usepackage{lineno,hyperref}
 \modulolinenumbers[5]
 
+\renewcommand{\topfraction}{0.99}	% max fraction of floats at top
+\renewcommand{\bottomfraction}{0.99}	% max fraction of floats at bottom
+% parameters for text pages
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}     % 2 may work better
+\setcounter{dbltopnumber}{2}    % for 2-column pages
+\renewcommand{\dbltopfraction}{0.9}	% fit big float above 2-col. text
+\renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
+%   Parameters for FLOAT pages (not text pages):
+\renewcommand{\floatpagefraction}{0.7}	% require fuller float pages
+% N.B.: floatpagefraction MUST be less than topfraction !!
+\renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
+
+
 \newcommand{\hh}[1]{{\color{magenta} #1}}
 \newcommand{\eh}[1]{{\color{blue} #1}}
 \newcommand{\ac}[1]{{\color{darkgreen} #1}}
@@ -81,7 +96,6 @@ datadir <- "app/images/Hamby252_3DX3P1of2/"
 
 options(replace.assign=TRUE,scipen=3, digits=2)
 bstats <- read.csv("data-25-25/bullet-stats.csv")
-names(bstats)[9:10] <- c("#matches", "#non-matches")
 
 scrubPath <- function(x) {
   splits <- strsplit(as.character(x), split="/")
@@ -385,7 +399,7 @@ Applying the loess fit to a range of different surface cross sections (see Figur
 \hh{In this section, we are going to describe the algorithm for matching signatures first, and discuss the impact of paramater choices in the subsections thereafter.} 
 
 
-\subsection{Algorithm}
+\subsection{Algorithm}\label{sec:algorithm}
 <<twolands100, cache=TRUE,  echo=FALSE>>=
 images <- file.path(datadir, dir(datadir))
 
@@ -617,7 +631,7 @@ A single cross section across the surface of the two lands in Figure~\ref{fig:ma
 <<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
 qplot(y, resid, group=bullet, colour=bullet, data=lof, 
       geom="line") + 
-  scale_colour_manual("", values=cols) + theme_bw() +
+  scale_colour_manual("Matches", values=cols) + theme_bw() +
   theme(legend.position = c(.9, .2),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylab("Residuals of loess fit")
@@ -798,7 +812,7 @@ ggplot() + theme_bw() +
  run all remaining lands from the unknown bullets against all remaining lands from known bullets for matches, i.e. we are running $15 \times 6 -2 = 90 - 2 = 88$ lands from unkown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. Out of these comparisons, there are 172 known matches (KM), while the rest are known non-matches (KNM). }
  When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the distribution of the number of maximum consecutive matching striae between land C-3 and all 118 known lands. Two lands show a high CMS. These correspond to the known matches with C-3, shown in Figures~\ref{fig:hamby-perfect}b and c. 
  Unfortunately, not all results are as clear cut. 
-It might not be reasonable to assume that we can match all lands, but the idea is to try to maximize the number of matches to get an overview of what we can reasonably expect from an automated match. 
+It might not be reasonable to assume that we can match all lands, but the idea is to try to maximize the number of matches to get an overview of what we might be able to expect from an automated match. 
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\textwidth}\centering
@@ -810,7 +824,7 @@ cmsdist <- sapply(reslist, function(x) x$maxCMS)
 qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
 @
 \end{subfigure}
-\begin{subfigure}[t]{.49\textwidth}\centering
+\begin{subfigure}[b]{.49\textwidth}\centering
 \caption{Overlaid signatures of C-3 and the land with the top matching CMS.}
 <<top, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\textwidth', warning = FALSE>>=
 res <- reslist[[which.max(cmsdist)]]  
@@ -830,8 +844,8 @@ print(ggplot() +
 
 @
 \end{subfigure}
-\begin{subfigure}[t]{.49\textwidth}\centering
-\caption{Overlaid signatures of C-3 and the land with the second top matching CMS.}
+\begin{subfigure}[b]{.49\textwidth}\centering
+\caption{Top 2 match with C-3 based on CMS.}
 <<top2, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\textwidth', warning = FALSE>>=
 res <- reslist[[which(cmsdist==14)]]  # number 2
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
@@ -852,72 +866,78 @@ print(ggplot() +
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works very well. Unfortunately the matches are not always that convincing.}
 \end{figure}
 
-Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 42 pairs of lands with at least thirteen CMS in common are matches. There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$cms[!bstats$match])} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$cms[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$cms[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$cms[bstats$match])}. Secondly, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by \citet{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, between two lands that share twelve consecutively matched striae. Visually we can easily tell these two lands do not match well.
+Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 42 pairs of lands with at least thirteen CMS in common are matches. 
 %
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[b]{\textwidth}\centering
-\caption{Distribution of maximal CMS.}
-<<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
+%' \begin{subfigure}[b]{\textwidth}\centering
+%' \caption{}
+\begin{minipage}[t]{.47\textwidth}
+<<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth'>>=
 ggplot(data=subset(bstats, !flagged)) + 
   geom_bar(aes(x=factor(CMS))) + theme_bw() +
   theme(legend.position="bottom") + 
   xlab("maximum CMS")
 @
-\end{subfigure}
-\begin{subfigure}[b]{\textwidth}\centering
-\caption{Conditional barchart \citep{hummel}: heights show probability of match/non-match given a specific CMS. All land-to-land comparisons with at least 13 CMS are matches.}
-<<cms-spines, echo=FALSE,  fig.width=7, fig.height=4, out.width='.5\\textwidth'>>=
+%\end{subfigure}
+%\begin{subfigure}[b]{\textwidth}\centering
+\end{minipage}
+\begin{minipage}[t]{.52\textwidth}
+<<cms-spines, echo=FALSE,  fig.width=7, fig.height=4, out.width='\\textwidth'>>=
+bstats$km <- c( "KNM", "KM")[as.numeric(bstats$match)+1]
 ggplot(data=subset(bstats, !flagged)) + 
-  geom_bar(aes(x=factor(CMS), fill=match), position="fill") +
+  geom_bar(aes(x=factor(CMS), fill=km), position="fill") +
   theme(legend.position="bottom") + 
-  scale_fill_brewer(palette="Paired") +
+  scale_fill_brewer("", palette="Paired") +
   xlab("maximum CMS")
 
 @
-\end{subfigure}
-\begin{subfigure}[t]{\textwidth}\centering
-\caption{Densities of maximum CMS for Known Matches (KM) and Known Non Matches (KNM).}
-<<cms-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
-x <- seq(0,29, by=0.03)
-km <- sm.density(bstats$CMS[bstats$match], display="none", eval.points=x)
-knm <- sm.density(bstats$CMS[!bstats$match], display="none", eval.points=x)
-dframe <- data.frame(x = x, km=km$estimate, knm=knm$estimate)
-dframe$kmtail <- rev(cumsum(rev(dframe$km)))/sum(dframe$km)
-dframe$knmtail <- rev(cumsum(rev(dframe$knm)))/sum(dframe$knm)
-
-densities <- data.frame(
-  match = rep(c("KM", "KNM"), each=(length(x)+2)),
-  x = rep(c(0, x, 29), times = 2),
-  estimate = c(0, km$estimate, 0, 0, knm$estimate,0))
-
-ggplot() +
-  geom_polygon(aes(x=x, y=estimate, fill=match, group=match), colour="black",
-               data=densities, alpha=0.5) +
-xlab("maximum CMS") +
-  scale_fill_brewer("", palette="Paired") +
-  ylab("Density estimates") +
-  theme_bw() + 
-  theme(legend.position=c(1,1), legend.justification=c(1,1),
-        legend.background = element_rect(fill=alpha('white', 0.4))) +
-  geom_line(aes(x=x, y=pmin(0.2, kmtail/knmtail/10)), data=dframe) 
-
-# ggplot(data=bstats) + 
-#     geom_density(aes(x=cms, fill=match), alpha=0.5) +
-#   xlab("maximum CMS") +
-#   scale_fill_brewer("", palette="Paired") +
-#   theme_bw() + 
-#   theme(legend.position=c(1,1), legend.justification=c(1,1),
-#         legend.background = element_rect(fill=alpha('white', 0.4))) 
-
-@
-\end{subfigure}
-\caption{\label{fig:cms}Overview of the maximal number of consecutive maximal striae compared to matches.}
+\end{minipage}
+%' \end{subfigure}
+%' \begin{subfigure}[t]{\textwidth}\centering
+%' \caption{\label{fig:cms-dens}Densities of maximum CMS for Known Matches (KM) and Known Non Matches (KNM).}
+%' <<cms-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.6\\textwidth'>>=
+%' x <- seq(0,29, by=0.03)
+%' km <- sm.density(bstats$CMS[bstats$match],h=2, model="Normal", display="none", eval.points=x)
+%' knm <- sm.density(bstats$CMS[!bstats$match],h=1, display="none", eval.points=x)
+%' dframe <- data.frame(x = x, km=km$estimate, knm=knm$estimate)
+%' dframe$kmtail <- rev(cumsum(rev(dframe$km)))/sum(dframe$km)
+%' dframe$knmtail <- rev(cumsum(rev(dframe$knm)))/sum(dframe$knm)
+%' 
+%' densities <- data.frame(
+%'   match = rep(c("KM", "KNM"), each=(length(x)+2)),
+%'   x = rep(c(0, x, 29), times = 2),
+%'   estimate = c(0, km$estimate, 0, 0, knm$estimate,0))
+%' 
+%' ggplot() +
+%'   geom_polygon(aes(x=x, y=estimate, fill=match, group=match), colour="black",
+%'                data=densities, alpha=0.5) +
+%' xlab("maximum CMS") +
+%'   scale_fill_brewer("", palette="Paired") +
+%'   ylab("Density estimates") +
+%'   theme_bw() + 
+%'   theme(legend.position=c(1,1), legend.justification=c(1,1),
+%'         legend.background = element_rect(fill=alpha('white', 0.4))) 
+%' #  geom_line(aes(x=x, y=pmin(0.2, kmtail/knmtail/10)), data=dframe) 
+%' 
+%' # ggplot(data=bstats) + 
+%' #     geom_density(aes(x=cms, fill=match), alpha=0.5) +
+%' #   xlab("maximum CMS") +
+%' #   scale_fill_brewer("", palette="Paired") +
+%' #   theme_bw() + 
+%' #   theme(legend.position=c(1,1), legend.justification=c(1,1),
+%' #         legend.background = element_rect(fill=alpha('white', 0.4))) 
+%' 
+%' @
+%' \end{subfigure}
+\caption{\label{fig:cms}Distribution of maximal CMS (left). Conditional barchart \citep{hummel} on the right: heights show probability of match/non-match given a specific CMS. All land-to-land comparisons with at least 13 CMS are matches.}
 \end{figure}
+%
+There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$cms[!bstats$match])} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$cms[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$cms[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$cms[bstats$match])}. Secondly, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by \citet{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, between two lands that share twelve consecutively matched striae. Visually we can easily tell that these two lands do not match well.
 
 \begin{figure}[hbtp]
   \centering
-<<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.5\\textwidth', warning=FALSE>>=
+<<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.65\\textwidth', warning=FALSE>>=
 load("data-25-25/unkn47.RData")
 res <- reslist[[106]]
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
@@ -936,123 +956,158 @@ print(ggplot() +
 \caption{\label{fig:mismatch}Known mismatch with a relatively large number of maximal consecutive matching striae (twelve) in the middle. The pattern in the middle does look surprisingly similar, however the outer ends of the cross sections easily reveals this as mismatch. }
 \end{figure}
 
-For smaller numbers of CMS, the percentage of false positives quickly increases. However, if we take other features of the image into account, we can increase the number of correct matches considerably: a high amount of cross-correlation between the two cross sections (see Figure~\ref{fig:ccfs-match}) is indicative for a match; e.g.\  in the Hamby study only known matches have a cross-correlation of 0.75 or higher. There are 97 land-to-land comparisons with a cross-correlation of above 0.75.   
-\begin{figure}[hbtp]
-  \centering
-\begin{subfigure}[t]{\textwidth}\centering
-\caption{\label{fig:D}Relationship between maximal CMS and distances between cross sections.}
-<<D, echo=FALSE, fig.width=8, fig.height=4, out.width='.5\\textwidth'>>=
-ggplot(data=bstats) + 
-    geom_jitter(aes(x=factor(CMS), y=D, colour=match), alpha=0.5) +
-   facet_wrap(~match, labeller="label_both") + xlab("maximum CMS") + 
-  ylab("Distance between cross sections") +
-  scale_colour_brewer(palette="Paired") +
-  theme_bw() + 
-  theme(legend.position="none") +
-    xlab("maximum CMS")
-@
-\end{subfigure}
-\begin{subfigure}[t]{\textwidth}\centering
-\caption{Densities of distances between cross sections for Known Matches (KM) and Known Non Matches (KNM).}
-<<crosscut-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
-ggplot(data=bstats) + 
-    geom_density(aes(x=D, fill=match), alpha=0.5) +
-  xlab("Distances between cross sections") +
-  scale_fill_brewer("", palette="Paired") +
-  theme_bw() + 
-  theme(legend.position=c(1,1), legend.justification=c(1,1),
-        legend.background = element_rect(fill=alpha('white', 0.4))) 
-
-
-
-x <- seq(0,20, by=0.02)
-km <- sm.density(bstats$D[bstats$match], display="none", eval.points=x)
-knm <- sm.density(bstats$D[!bstats$match], display="none", eval.points=x)
-dframe <- data.frame(x = x, km=km$estimate, knm=knm$estimate)
-dframe$kmtail <- rev(cumsum(rev(dframe$km)))/sum(dframe$km)
-dframe$knmtail <- rev(cumsum(rev(dframe$knm)))/sum(dframe$knm)
-
-densities <- data.frame(
-  match = rep(c("KM", "KNM"), each=(length(x)+2)),
-  x = rep(c(0, x, 29), times = 2),
-  estimate = c(0, km$estimate, 0, 0, knm$estimate,0))
-
-ggplot() +
-  geom_polygon(aes(x=x, y=estimate, fill=match, group=match), colour="black",
-               data=densities, alpha=0.5) +
-  xlab("Distances between cross sections") +
-  scale_fill_brewer("", palette="Paired") +
-  ylab("Density estimates") +
-  theme_bw() + 
-  theme(legend.position=c(1,1), legend.justification=c(1,1),
-        legend.background = element_rect(fill=alpha('white', 0.4))) +
-  geom_line(aes(x=x, y=pmin(0.2, kmtail/knmtail/10)), data=dframe) 
-
-@
-\end{subfigure}
-\caption{Relationship between distances between cross sections. A small distance between cross sections is indicative of matches between lands.}
-\end{figure}
+For smaller numbers of CMS, the percentage of false positives quickly increases. However, if we take other features of the image into account, we can increase the number of correct matches considerably: Figure~\ref{fig:densities} gives an overview of the densities of all of the features derived earlier, distinguishing between known matches (KM) and known non-matches (KNM). The densities of almost all of the features show strong differences between matches and non matches, e.g\ a high amount of cross-correlation between two signatures is indicative for a match --  in the Hamby study only known matches have a cross-correlation of 0.75 or higher. There are 97 land-to-land comparisons with a cross-correlation of above 0.75.   
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{\textwidth}\centering
-\caption{\label{fig:ccfs-match}Relationship between maximal CMS and cross-correlation between cross sections.}
-<<ccfs-match, echo=FALSE, fig.width=8, fig.height=4, out.width='.5\\textwidth'>>=
-ggplot(data=bstats) + theme_bw() + 
-  geom_jitter(aes(x=factor(CMS), y=ccf, colour=match), alpha=.5) + 
-  facet_wrap(~match, labeller="label_both") + 
-    scale_colour_brewer(palette="Paired") +
-  xlab("maximum CMS") + ylab("Cross-correlation") +
-  theme(legend.position="none")
-@
-\end{subfigure}
-\begin{subfigure}[t]{\textwidth}\centering
-\caption{Densities of distances between cross sections for Known Matches (KM) and Known Non Matches (KNM).}
-<<ccf-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
-ggplot(data=bstats) + 
-    geom_density(aes(x=ccf, fill=match), alpha=0.5) +
-  xlab("Cross-correlation between cross sections") +
-  scale_fill_brewer("", palette="Paired") +
-  theme_bw() + 
-  theme(legend.position=c(1,1), legend.justification=c(1,1),
-        legend.background = element_rect(fill=alpha('white', 0.4))) 
-@
-\end{subfigure}
-\begin{subfigure}[t]{\textwidth}\centering
-\caption{Ratio of probabilities of $P(ccf > x \mid KM) / P(ccf > x \mid KNM)$.}
-<<ccf-ratio, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
-x <- seq(0,1, by=0.001)
-library(sm)
-km <- sm.density(bstats$ccf[bstats$match], display="none", eval.points=x)
-knm <- sm.density(bstats$ccf[!bstats$match], display="none", eval.points=x)
-dframe <- data.frame(x = x, km=km$estimate, knm=knm$estimate)
-dframe$kmtail <- rev(cumsum(rev(dframe$km)))/sum(dframe$km)
-dframe$knmtail <- rev(cumsum(rev(dframe$knm)))/sum(dframe$knm)
+<<density-overview,echo=FALSE, warning=FALSE, fig.width=12, fig.height=7, out.width='\\textwidth'>>=
+features <- c("CMS", "CNMS",  "num.matches", "num.nonmatches", "D", "S", "ccf")
+densities <- plyr::ldply(features, function(x) {
+  xr <- range(bstats[,x])
+  xx <- seq(xr[1], xr[2], length.out=500)
+  
+  densKM <- sm.density(bstats[,x][bstats$match], display="none", 
+                       eval.points=xx, weights=NA, method="normal")
+  densKNM <- sm.density(bstats[,x][!bstats$match], display="none", 
+                       eval.points=xx, weights=NA, method="normal")
+  dframe <- data.frame(var=x, x = xx, KM=densKM$estimate, KNM = densKNM$estimate)
+  dframe <- rbind(data.frame(var=x, x = xr[1], KM=0, KNM=0),
+        dframe, data.frame(var=x, x = xr[2], KM=0, KNM=0))
+  dframe$order <- 1:nrow(dframe)
+  dframe
+}) 
+library(reshape2)
+dm <- melt(densities, measure.var=c("KM", "KNM"))
+dm$var <- factor(dm$var, levels=features)
+levels(dm$var)[3:4] <- c("#matches", "#non-matches")
 
-densities <- data.frame(
-  x = rep(c(0, x, 1), times = 2),
-  estimate = c(0, km$estimate, 0, 0, knm$estimate,0),
-  match = rep(c("KM", "KNM"), each=1003))
-
-ggplot() +
-  geom_polygon(aes(x=x, y=estimate, fill=match), colour="black",
-               data=densities, alpha=0.5) +
-  xlab("Cross-correlation between cross sections") +
-  scale_fill_brewer("", palette="Paired") +
-#  scale_colour_brewer("", palette="Paired", labels=c("KNM", "KM")) +
-  theme_bw() + 
-  ylab("Density estimate") +
-  theme(legend.position=c(.975,1), legend.justification=c(1,1),
-        legend.background = element_rect(fill=alpha('white', 0.4))) +
-  geom_line(aes(x, pmin(5, kmtail/knmtail)), data=dframe) 
+qplot(x, value, group=variable, geom="polygon", data=dm, fill=variable, 
+      alpha=I(0.6), colour=I("grey20")) + 
+  facet_wrap(~var, ncol=4, scales="free") +
+  theme_bw() + ylab("density") + xlab("") +
+  scale_fill_brewer("Matches", palette="Paired") +
+  theme(legend.position=c(1,0), legend.justification = c("right", "bottom"),
+        legend.background = element_rect(colour="grey60"),
+        plot.margin = unit(c(0,0,0,0), unit="cm"))
 @
-\end{subfigure}
-\caption{A large cross-correlation between cross sections is indicative of matches between lands.}
+\caption{\label{fig:densities}Overview of all the marginal densities for features extracted in section~\ref{sec:algorithm}.}
 \end{figure}
 
-Similarly, the Euclidean distance between two cross sections across the range of loess residuals is strongly correlated to known matches. Out of the 48 pairs of land-to-land cross sections with a distance of less than .25, 47 correspond to known matches (the single known mismatch consists of a pair of cross sections that both are very flat with peaks and valleys of less than 1.5$\mu m$). The average distance between known matches in the Hamby study is $\Sexpr{mean(bstats$D[bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[bstats$match])}\mu m$; while known mismatches have an average  distance of  $\Sexpr{mean(bstats$D[!bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[!bstats$match])}\mu m$.
-Both of these additional variables show large, if not significant, differences between matches and non-matches. Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of  a set of feature variables derived from the 3d topological surface measurements. There are quite large differences in these averages, indicating that we can successfully employ machine learning methods to distinguish matches from non-matches.
+%' \begin{figure}[hbtp]
+%'   \centering
+%' \begin{subfigure}[t]{\textwidth}\centering
+%' \caption{\label{fig:D}Relationship between maximal CMS and distances between cross sections.}
+%' <<D, echo=FALSE, fig.width=8, fig.height=4, out.width='.5\\textwidth'>>=
+%' ggplot(data=bstats) + 
+%'     geom_jitter(aes(x=factor(CMS), y=D, colour=match), alpha=0.5) +
+%'    facet_wrap(~match, labeller="label_both") + xlab("maximum CMS") + 
+%'   ylab("Distance between cross sections") +
+%'   scale_colour_brewer(palette="Paired") +
+%'   theme_bw() + 
+%'   theme(legend.position="none") +
+%'     xlab("maximum CMS")
+%' @
+%' \end{subfigure}
+%' \begin{subfigure}[t]{\textwidth}\centering
+%' \caption{Densities of distances between cross sections for Known Matches (KM) and Known Non Matches (KNM).}
+%' <<crosscut-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
+%' ggplot(data=bstats) + 
+%'     geom_density(aes(x=D, fill=match), alpha=0.5) +
+%'   xlab("Distances between cross sections") +
+%'   scale_fill_brewer("", palette="Paired") +
+%'   theme_bw() + 
+%'   theme(legend.position=c(1,1), legend.justification=c(1,1),
+%'         legend.background = element_rect(fill=alpha('white', 0.4))) 
+%' 
+%' 
+%' 
+%' x <- seq(0,20, by=0.02)
+%' km <- sm.density(bstats$D[bstats$match], display="none", eval.points=x)
+%' knm <- sm.density(bstats$D[!bstats$match], display="none", eval.points=x)
+%' dframe <- data.frame(x = x, km=km$estimate, knm=knm$estimate)
+%' dframe$kmtail <- rev(cumsum(rev(dframe$km)))/sum(dframe$km)
+%' dframe$knmtail <- rev(cumsum(rev(dframe$knm)))/sum(dframe$knm)
+%' 
+%' densities <- data.frame(
+%'   match = rep(c("KM", "KNM"), each=(length(x)+2)),
+%'   x = rep(c(0, x, 29), times = 2),
+%'   estimate = c(0, km$estimate, 0, 0, knm$estimate,0))
+%' 
+%' ggplot() +
+%'   geom_polygon(aes(x=x, y=estimate, fill=match, group=match), colour="black",
+%'                data=densities, alpha=0.5) +
+%'   xlab("Distances between cross sections") +
+%'   scale_fill_brewer("", palette="Paired") +
+%'   ylab("Density estimates") +
+%'   theme_bw() + 
+%'   theme(legend.position=c(1,1), legend.justification=c(1,1),
+%'         legend.background = element_rect(fill=alpha('white', 0.4))) +
+%'   geom_line(aes(x=x, y=pmin(0.2, kmtail/knmtail/10)), data=dframe) 
+%' 
+%' @
+%' \end{subfigure}
+%' \caption{Relationship between distances between cross sections. A small distance between cross sections is indicative of matches between lands.}
+%' \end{figure}
 
+%' \begin{figure}[hbtp]
+%'   \centering
+%' \begin{subfigure}[t]{\textwidth}\centering
+%' \caption{\label{fig:ccfs-match}Relationship between maximal CMS and cross-correlation between cross sections.}
+%' <<ccfs-match, echo=FALSE, fig.width=8, fig.height=4, out.width='.5\\textwidth'>>=
+%' ggplot(data=bstats) + theme_bw() + 
+%'   geom_jitter(aes(x=factor(CMS), y=ccf, colour=match), alpha=.5) + 
+%'   facet_wrap(~match, labeller="label_both") + 
+%'     scale_colour_brewer(palette="Paired") +
+%'   xlab("maximum CMS") + ylab("Cross-correlation") +
+%'   theme(legend.position="none")
+%' @
+%' \end{subfigure}
+%' \begin{subfigure}[t]{\textwidth}\centering
+%' \caption{Densities of distances between cross sections for Known Matches (KM) and Known Non Matches (KNM).}
+%' <<ccf-densities, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
+%' ggplot(data=bstats) + 
+%'     geom_density(aes(x=ccf, fill=match), alpha=0.5) +
+%'   xlab("Cross-correlation between cross sections") +
+%'   scale_fill_brewer("", palette="Paired") +
+%'   theme_bw() + 
+%'   theme(legend.position=c(1,1), legend.justification=c(1,1),
+%'         legend.background = element_rect(fill=alpha('white', 0.4))) 
+%' @
+%' \end{subfigure}
+%' \begin{subfigure}[t]{\textwidth}\centering
+%' \caption{Ratio of probabilities of $P(ccf > x \mid KM) / P(ccf > x \mid KNM)$.}
+%' <<ccf-ratio, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
+%' x <- seq(0,1, by=0.001)
+%' library(sm)
+%' km <- sm.density(bstats$ccf[bstats$match], display="none", eval.points=x)
+%' knm <- sm.density(bstats$ccf[!bstats$match], display="none", eval.points=x)
+%' dframe <- data.frame(x = x, km=km$estimate, knm=knm$estimate)
+%' dframe$kmtail <- rev(cumsum(rev(dframe$km)))/sum(dframe$km)
+%' dframe$knmtail <- rev(cumsum(rev(dframe$knm)))/sum(dframe$knm)
+%' 
+%' densities <- data.frame(
+%'   x = rep(c(0, x, 1), times = 2),
+%'   estimate = c(0, km$estimate, 0, 0, knm$estimate,0),
+%'   match = rep(c("KM", "KNM"), each=1003))
+%' 
+%' ggplot() +
+%'   geom_polygon(aes(x=x, y=estimate, fill=match), colour="black",
+%'                data=densities, alpha=0.5) +
+%'   xlab("Cross-correlation between cross sections") +
+%'   scale_fill_brewer("", palette="Paired") +
+%' #  scale_colour_brewer("", palette="Paired", labels=c("KNM", "KM")) +
+%'   theme_bw() + 
+%'   ylab("Density estimate") +
+%'   theme(legend.position=c(.975,1), legend.justification=c(1,1),
+%'         legend.background = element_rect(fill=alpha('white', 0.4))) +
+%'   geom_line(aes(x, pmin(5, kmtail/knmtail)), data=dframe) 
+%' @
+%' \end{subfigure}
+%' \caption{A large cross-correlation between cross sections is indicative of matches between lands.}
+%' \end{figure}
+
+Similarly, the Euclidean distance $D$ between two signatures is strongly correlated to known matches. Out of the 48 pairs of land-to-land signatures with a distance of less than .25, 47 correspond to known matches (the single known mismatch consists of a pair of cross sections that both are very flat with peaks and valleys of less than 1.5$\mu m$). The average distance between known matches in the Hamby study is $\Sexpr{mean(bstats$D[bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[bstats$match])}\mu m$; while known mismatches have an average  distance of  $\Sexpr{mean(bstats$D[!bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[!bstats$match])}\mu m$.
+All of the features in Figure~\ref{fig:densities} show large, if not significant, differences between matches and non-matches. Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of  a set of feature variables derived from the 3d topological surface measurements. There are quite large differences in these averages, indicating that we can successfully employ machine learning methods to distinguish matches from non-matches.
 
 Using recursive partitioning, we fit a decision tree~\citep{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
 Instead of CMS, cross-correlation (ccf) between the cross sections is very important in the matching process  by the decision tree. Aside from  cross correlation, the number of matches (num.matches) is involved in the decision. 
@@ -1066,8 +1121,8 @@ library(rpart)
 library(rpart.plot)
 library(RColorBrewer)
 vals = alpha(brewer.pal(3, name="Paired"), alpha=0.5)
-
-includesVar <- setdiff(names(bstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist", "flagged"))
+names(bstats)[9:10] <- c("#matches", "#non-matches")
+includesVar <- setdiff(names(bstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist", "flagged", "km"))
 cc <- read.csv("csvs/crosscuts-25-new.csv")
 # cc$bullet <- gsub(".*//","",cc$path)
 # cc$bullet <- gsub(".x3p", "", cc$bullet)
@@ -1094,7 +1149,7 @@ library(randomForest)
 library(reshape2)
 set.seed(20151215)
 names(bstats)[9:10] <- c("num.matches", "num.nonmatches")
-includesVar <- setdiff(names(bstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist", "flagged"))
+includesVar <- setdiff(names(bstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist", "flagged", "km"))
 
 rtrees <- randomForest(factor(match)~., data=subset(bstats, !flagged)[,includesVar], ntree=300)
 
