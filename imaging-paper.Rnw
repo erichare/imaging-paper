@@ -565,6 +565,7 @@ In the example of Figure~\ref{fig:match}, the number of consecutive matching str
 
 Determining a CMS threshold that needs to be exceeded for us to declare a match is beyond the scope of this work, even though it is critically important in practice. We provide some ideas in the next section, but first we assess the impact of the parameters chosen in the matching algorithm. 
 %In order to get a better understanding of  how  this matching works in known matches and non-matches, we next investigate the algorithm's performance in a test scenario.
+Aside of the features listed above, we also keep track of the value of the cross-correlation function found during the alignment, the  lag, at which signatures show the best alignment, and the cross section levels ($x_1$ and $x_2$).
 
 \begin{figure}[hbtp]
   \centering
@@ -766,7 +767,7 @@ ggplot() + theme_bw() +
 \section{Evaluation}
 \hh{In order to get a better understanding of  how  the matching algorithm works in known matches and non-matches, we investigate its performance in a test scenario based on the James Hamby study.
 }
-\hh{As a first step, we automatically assess the quality of each of the lands by  checking that we can identify a stable region on each land. For this, we use cross sections 25$\mu m$ apart and require a minimum of 0.9 for the cross correlation. Four lands from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these lands shows scratch marks across the surface.}
+\hh{As a first step, we automatically assess the quality of each of the lands by  checking that we can identify a stable region on each land. For this, we assess cross-correlation of signatures at cross sections 25$\mu m$ apart. For a stable region, we require a minimum of 0.9 for the cross correlation. Four lands from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these lands shows scratch marks across the surface, also known as `tank rash'.}
 %
 \begin{figure}
   \centering
@@ -795,13 +796,13 @@ ggplot() + theme_bw() +
 %
 \hh{We exclude these four lands from the further matching considerations and 
  run all remaining lands from the unknown bullets against all remaining lands from known bullets for matches, i.e. we are running $15 \times 6 -2 = 90 - 2 = 88$ lands from unkown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. Out of these comparisons, there are 172 known matches (KM), while the rest are known non-matches (KNM). }
- When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the number of maximum consecutive matching striae between land C-3 and all 120 known lands. Two lands show a high CMS. These correspond to the known matches, shown in Figures~\ref{fig:hamby-perfect}b and c. 
+ When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the distribution of the number of maximum consecutive matching striae between land C-3 and all 118 known lands. Two lands show a high CMS. These correspond to the known matches with C-3, shown in Figures~\ref{fig:hamby-perfect}b and c. 
  Unfortunately, not all results are as clear cut. 
-It is not reasonable to assume that we can match all lands, but we can try to maximize the number of matches to get an overview of what we can reasonably expect from an automated match. 
+It might not be reasonable to assume that we can match all lands, but the idea is to try to maximize the number of matches to get an overview of what we can reasonably expect from an automated match. 
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\textwidth}\centering
-\caption{Maximal number of CMS between unknown bullet C land 3 and all of the 120 other (known) lands. For two lands the number of maximum CMS is high. }
+\caption{Maximal number of CMS between unknown bullet C-3 and all of the other 118 considered (known) lands. For two lands the number of maximum CMS is high. }
 <<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
 load("data-25-25/unkn9.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
@@ -810,7 +811,7 @@ qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
 @
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}\centering
-\caption{Overlaid lines of C-3 and the land with the top matching CMS.}
+\caption{Overlaid signatures of C-3 and the land with the top matching CMS.}
 <<top, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\textwidth', warning = FALSE>>=
 res <- reslist[[which.max(cmsdist)]]  
 #res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
@@ -830,7 +831,7 @@ print(ggplot() +
 @
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}\centering
-\caption{Overlaid lines of C-3 and the land with the second top matching CMS.}
+\caption{Overlaid signatures of C-3 and the land with the second top matching CMS.}
 <<top2, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\textwidth', warning = FALSE>>=
 res <- reslist[[which(cmsdist==14)]]  # number 2
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
@@ -851,11 +852,11 @@ print(ggplot() +
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works very well. Unfortunately the matches are not always that convincing.}
 \end{figure}
 
-Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 36 pairs of lands with at least sixteen CMS in common are matches. There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$cms[!bstats$match])} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$cms[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$cms[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$cms[bstats$match])}. Secondly, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by \citet{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, between two lands that share twelve consecutively matched striae. Visually we can easily tell these two lands do not match well.
+Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 42 pairs of lands with at least thirteen CMS in common are matches. There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$cms[!bstats$match])} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$cms[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$cms[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$cms[bstats$match])}. Secondly, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by \citet{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, between two lands that share twelve consecutively matched striae. Visually we can easily tell these two lands do not match well.
 %
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{\textwidth}\centering
+\begin{subfigure}[b]{\textwidth}\centering
 \caption{Distribution of maximal CMS.}
 <<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
 ggplot(data=subset(bstats, !flagged)) + 
@@ -864,9 +865,9 @@ ggplot(data=subset(bstats, !flagged)) +
   xlab("maximum CMS")
 @
 \end{subfigure}
-\begin{subfigure}[t]{\textwidth}\centering
-\caption{All land-to-land comparisons with a maximum number of CMS of thirteen or higher are matches.}
-<<cms-spines, echo=FALSE,  fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
+\begin{subfigure}[b]{\textwidth}\centering
+\caption{Conditional barchart \citep{hummel}: heights show probability of match/non-match given a specific CMS. All land-to-land comparisons with at least 13 CMS are matches.}
+<<cms-spines, echo=FALSE,  fig.width=7, fig.height=4, out.width='.5\\textwidth'>>=
 ggplot(data=subset(bstats, !flagged)) + 
   geom_bar(aes(x=factor(CMS), fill=match), position="fill") +
   theme(legend.position="bottom") + 
