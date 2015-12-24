@@ -40,7 +40,8 @@
 \begin{frontmatter}
 
 % "Title of the paper"
-\title{Automatic Matching of Bullet Lands}
+\title{Automatic Matching of Bullet Lands}\thanksref{T1}
+\thankstext{T1}{Resources for this manuscript, including R code to reproduce any of the models, tables and figures, can be found at  \url{https://github.com/erichare/imaging-paper}.}
 \runtitle{Automatic Matching of Bullet Lands}
 
 % indicate corresponding author with \corref{}
@@ -50,7 +51,7 @@
 \and
 \author{\fnms{Alicia} \snm{Carriquiry}\ead[label=e3]{alicia@iastate.edu}\thanksref{m1}}
 
-\thankstext{t1}{Thanks to somebody \hh{XXX acknowledge the grant here? XXX}} 
+\thankstext{t1}{This research was partially funded by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.} 
 \affiliation{Iowa State University\thanksmark{m1}}
 
 \address{Address of the Authors\\
@@ -561,7 +562,7 @@ All of the other steps are done on pairs of bullet lands:
 \item Using a rolling average, {\bf identify peaks and valleys} for each of the signatures. We then define an interval around the location of the extrema on each side as one third of the distance to the location of the next extrema (see Figure~\ref{fig:smoothcutb}). 
 \item {\bf Match striations across signatures:} based on the intervals around the extrema as defined above, we identify joint intervals between two signatures as those areas, in which two or more of the individual intervals overlap: a joint interval is defined as the smallest interval that encompasses all of the overlapping intervals. A joint interval is then called a match(ing stria) between the signatures, if all of the intervals are of the same type of extrema, i.e.\ they are either all peaks or all valleys. In Figure~\ref{fig:match} all matches are shown as color-filled rectangles corresponding to their type of extrema (peaks are shown in orange, and valleys in green). Non-matching intervals are left grey.
 \item {\bf Extract features from the aligned signatures and the matches between them:} there is a slew of different features one could extract. Here, we describe a few of the ones that can be found in the literature and some that we found to be of practical relevance:
-\begin{enumerate}[label=\roman*]
+\begin{enumerate}[label=(\roman*)]
 \item maximal number of CMS (consecutive matching striae), and, similarly, the number of consecutively non-matching striae (CNMS), 
 \item number of matches and non-matches,
 \item average difference between signatures $D$, defined as the Euclidean vertical distance of surface measurements between aligned signatures. Let $f(t)$ and $g(t)$ be smoothed, aligned signatures:
@@ -1110,9 +1111,9 @@ Similarly, the Euclidean distance $D$ between two signatures is strongly correla
 All of the features in Figure~\ref{fig:densities} show large, if not significant, differences between matches and non-matches. Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of  a set of feature variables derived from the 3d topological surface measurements. There are quite large differences in these averages, indicating that we can successfully employ machine learning methods to distinguish matches from non-matches.
 
 Using recursive partitioning, we fit a decision tree~\citep{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
-Instead of CMS, cross-correlation (ccf) between the cross sections is very important in the matching process  by the decision tree. Aside from  cross correlation, the number of matches (num.matches) is involved in the decision. 
-Within matches and non-matches, the values of CMS and cross-correlation seem to be almost independent (see Figure~\ref{fig:ccfs-match}), but both are highly predictive in distinguishing matches from non-matches. Out of the two, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
-Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3d surface structure. 
+Instead of CMS, cross-correlation (ccf) between the cross sections is very important in the matching process  by the decision tree. Aside from  cross correlation, the number of matches is involved in the decision. 
+Between cross-correlation and CMS, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
+Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3d surface structure. \hh{The emphasis on cross-correlation is similar to the results of the study by \citet{ma:2004}. However, in this study authors did not consider the number of matches and non-matches.}
 
 \begin{figure}[hbtp]
   \centering
@@ -1147,7 +1148,8 @@ bstats$pred[bstats$flagged] <- NA
 <<rforest, echo=FALSE, message=FALSE>>=
 library(randomForest)
 library(reshape2)
-set.seed(20151215)
+
+set.seed(20151202)
 names(bstats)[9:10] <- c("num.matches", "num.nonmatches")
 includesVar <- setdiff(names(bstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist", "flagged", "km"))
 
@@ -1160,7 +1162,7 @@ bstats$forest[bstats$flagged] <- NA
 @
 
 
-Another benefit is that we can not only apply a single decision tree, but several hundreds of them to combine in a random forest~\citep{breiman:2001, randomForest}. In a random forest multiple trees are fitted. For each of these trees, only two thirds of the observations are used for fitting, while predictions for the remaining third  are used to evaluate the tree's predictive power and accuracy, or its reverse, the error rate. Because errors are determined from the one third of held-back observations, this error rate is called the out-of bag (OOB) error. 
+Another benefit of the digitized version of the images is that we can not only apply a single decision tree, but several hundreds of them to combine in a random forest~\citep{breiman:2001, randomForest}.  For each of the trees in a random forest, only two thirds of the observations are used for fitting, while  the remaining third  are used to evaluate the tree's predictive power and accuracy, or its reverse, the error rate. Because errors are determined from the one third of held-back observations, this error rate is called the out-of bag (OOB) error. 
 Figure~\ref{fig:oob} shows the cumulative out-of-bag error (OOB) rate for 300 trees. 
 %
 \begin{figure}[hbtp]
@@ -1171,34 +1173,34 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
 \end{figure}
 %
-After about 25 trees, the error rate of land-to-land comparisons stabilizes at 0.0040. This is a weighted average between a false positive error rate of $9.8 \times 10^{-5}$ and an error rate of false negatives of 0.22. \hh{This out-of-bag error rate is over-estimating the actual error in the Hamby study: here, the final random forest based on 300 trees is able to correctly predict all known matches and non-matches (see Figures~\ref{fig:treeresult} and ~\ref{fig:tree-forest}).}
-Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
-\begin{figure}[hbtp]
-  \centering
-<<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.5\\textwidth'>>=
-bstats$bullet <- gsub("-[0-9]$", "", bstats$b2)
-bullets <- bstats %>% filter(match, !flagged) %>% group_by(bullet) %>% summarize(
-  n = n(),
-  pred = sum(pred > 0.5),
-  forest = sum(forest > 0.5)
-)
-library(reshape2)
-bm <- melt(data=bullets, id.var=c("bullet", "n"))
-
-bm$prediction <- c("Tree", "Random Forest")[as.numeric(bm$variable)]
-qplot(data=bm, 100*value/n, reorder(bullet, value/n), size=I(2.5), 
-      shape=prediction, colour=prediction, alpha=I(0.6)) + 
-  theme_bw()  + ylab("") + 
-#  scale_shape_manual(values=c(1,2)) +
-  scale_x_continuous("Percent of correctly predicted land-to-land matches", 
-                     breaks = c(0,25,50,75,100), limits=c(0,100)) +
-  theme(legend.position = "bottom")
-@
-\caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree (maximum possible number is 12, except for Q and B, where the maximum is 11). Both results for the tree and the random forest are shown. In the tree, at least \hh{40\% of all possible} lands of a bullet are  matched correctly, while the random forest achieves perfect results. Unknown bullet B is the hardest for the tree to match.}
-\end{figure}
-%
+After about 100 trees, the error rate of land-to-land comparisons stabilizes at 0.0038. This is a weighted average between a zero false positive error rate and an error rate of false negatives of 0.23. \hh{This out-of-bag error rate is over-estimating the actual error in the Hamby study: here, the final random forest based on 300 trees is able to correctly predict all known matches and non-matches (see Figures~\ref{fig:treeresult} and ~\ref{fig:tree-forest}).}
+%Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, even for the single tree the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
+%' \begin{figure}[hbtp]
+%'   \centering
+%' <<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.5\\textwidth'>>=
+%' bstats$bullet <- gsub("-[0-9]$", "", bstats$b2)
+%' bullets <- bstats %>% filter(match, !flagged) %>% group_by(bullet) %>% summarize(
+%'   n = n(),
+%'   pred = sum(pred > 0.5),
+%'   forest = sum(forest > 0.5)
+%' )
+%' library(reshape2)
+%' bm <- melt(data=bullets, id.var=c("bullet", "n"))
+%' 
+%' bm$prediction <- c("Tree", "Random Forest")[as.numeric(bm$variable)]
+%' qplot(data=bm, 100*value/n, reorder(bullet, value/n), size=I(2.5), 
+%'       shape=prediction, colour=prediction, alpha=I(0.6)) + 
+%'   theme_bw()  + ylab("") + 
+%' #  scale_shape_manual(values=c(1,2)) +
+%'   scale_x_continuous("Percent of correctly predicted land-to-land matches", 
+%'                      breaks = c(0,25,50,75,100), limits=c(0,100)) +
+%'   theme(legend.position = "bottom")
+%' @
+%' \caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree (maximum possible number is 12, except for Q and B, where the maximum is 11). Both results for the tree and the random forest are shown. In the tree, at least \hh{40\% of all possible} lands of a bullet are  matched correctly, while the random forest achieves perfect results. Unknown bullet B is the hardest for the tree to match.}
+%' \end{figure}
+%' %
 However, this does not carry a lot of weight because of the few bullet comparisons in question: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
-Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we can therefore introduce an interval of `inconclusive' results in the middle of the spectrum. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree ($x$-axis) and the random forest ($y$-axis). \hh{The tree predicts 132 known matches correctly, with 40 false negatives and one false positive match. The random forest predicts all 172 known matches correctly as well as all 10,212 known non-matches.} 
+Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we could therefore introduce an interval of `inconclusive' results in the middle of the spectrum -- which turns out to be not necessary in the Hamby study, because, here, the results from the random forest are very clear cut. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree ($x$-axis) and the random forest ($y$-axis). %\hh{The tree predicts 132 known matches correctly, with 40 false negatives and one false positive match. The random forest predicts all 172 known matches correctly as well as all 10,212 known non-matches.} 
 %Overall, there is a lot of agreement; out of 10,800 land-to-land comparisons, only four cases result in a different decision. 
 
 \begin{figure}[hbtp]
@@ -1250,7 +1252,7 @@ print(xtable(imp, align="clrrcrc"), floating = FALSE)
 \caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Match and Non-Match show averages of each of the variables for matches and non-matches only. In parentheses behind the means, standard deviations are given}
 \end{table*}
 
-The rows in the table are ordered according to descending importance. The variable with the most predictive power by far is cross-correlation (ccf), followed by the number of matches (num.matches) and mismatches(num.mismatches), and the sum of the height of joint peaks (sumpeaks). The maximal consecutively matching striae (cms) is found only in sixth place.
+The rows in the table are ordered according to descending importance. The variable with the most predictive power by far is cross-correlation, followed by the number of matches and non-matches. CMS is found only in sixth place.
 
 \section{Conclusion}
 
@@ -1270,14 +1272,12 @@ For a fair assessment of the adequacy of an algorithm we need transparency. Our 
 
 Only a much larger database and transparent communication of results will give us  answers to whether automatic matching of ballistic evidence is really feasible. Whether there really is individualization of this evidence, as is often silently assumed. And in the case, that individualization is a reasonable assumption, whether  there is a way to be able to distinguish between individual and subclass characteristics. 
 
-An approach that might help in determining this difference comes from Biometrics, is suggested by \citet{jain:2015:tphil, jain:2015} and has been successfully applied in the Aadhar project (the effort by the Unique Identification Authority of India (UIDAI) to provide a unique 12-digit identification number to approximately 1.2 billion residents of India based on ten fingerprints and two irises).
+An approach that might help in determining this difference comes from Biometrics \citep{jain:2015:tphil, jain:2015}. It has been successfully applied in the Aadhar project (the effort by the Unique Identification Authority of India (UIDAI) to provide a unique 12-digit identification number to approximately 1.2 billion residents of India based on ten fingerprints and two irises).
 This approach uses dictionary learning based on small square patches  of 64x64 or 32x32 pixels. For matching bullets, a simpler, one-dimensional window approach might be sufficient to match striation marks because of the physical forces  leading to the existence of these marks.  
 
 \paragraph{Acknowledgment} Thanks to the men and women behind the software R~\citep{R}, and the authors of the R packages  knitr~\citep{knitr} and ggplot2~\citep{ggplot2}.
 
-This research was partially funded in part by the Center for Statistics and Applications in Forensic Evidence (CSAFE) through Cooperative Agreement \#70NANB15H176 between NIST and Iowa State University, which includes activities carried out at Carnegie Mellon University, University of California Irvine, and University of Virginia.
 
-Resources for this manuscript, including R code to reproduce any of the models, tables and figures, can be found at  \url{https://github.com/erichare/imaging-paper}.
 
 % AOS,AOAS: If there are supplements please fill:
 %\begin{supplement}[id=suppA]
