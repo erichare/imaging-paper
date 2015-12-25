@@ -126,42 +126,29 @@ library(sm)
 \hh{
 Todo list for journal shape-up: there is a lot of good material, we mainly need to focus on what story to tell and make that a solid argument.
 \begin{enumerate}
-\item take out a few things: no circular fit, no figures 9 and 10 
-\item do we need the web app?
-\item out: lots of the figures can go into a supplement, together with a discussion. In the paper we then have a summary of what can be seen, so that we can focus on the results. 
+%\item take out a few things: no circular fit, no figures 9 and 10 
+%\item do we need the web app?
+%\item out: lots of the figures can go into a supplement, together with a discussion. In the paper we then have a summary of what can be seen, so that we can focus on the results. 
 \item add: formula for loess fit and its s.e.
-\item add: comparison of error rates to those of FEs in Hamby study.
-\item change: emphasis in varying cross section. once a stable region is found, how little change is happening? 
+%\item add: comparison of error rates to those of FEs in Hamby study.
+%\item change: emphasis in varying cross section. once a stable region is found, how little change is happening? 
 \item add: Why do we take the lowest stable cross section?
+\item add: more discussion of the density plots: probability ratio for a match
+\item add: more discussion on additional bullet images. NIST database claims to have 70 bullets -- that would be two sets of the study, but only 35 bullets are currently available. Should we contact Alan Zheng to see whether we can get access to more bullet files?
+\item add: should we add a paragraph on the speed of the evaluation? - separate out into pre-processing (needs to be done once) and matching (pairwise comparison of lands). If we only do bullet matching, we could speed this process up by eliminating some land comparisons.
 \end{enumerate}
 }
-Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of the conviction  in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\citep{giannelli:2011}.
+Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of  convictions  in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\citep{giannelli:2011}.
 
 In 2009, the National Academy of Sciences published a report~\citep{NAS:2009} questioning the scientific validity of many forensic methods including firearm examination. The report states that ``[m]uch forensic evidence -- including, for example, bite marks and firearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
 
-
-Rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet during the firing process. These marks are assumed to be unique to the barrel, as described in a 1992 AFTE article~\citep{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows."
+Rifling, manufacturing defects, and impurities in a barrel create striation marks on the bullet during the firing process. These marks are assumed to be unique to the barrel, as described in a 1992 AFTE article~\citep{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows."
 
 The primary goal in this type of forensic analysis is to identify these striation markings in an attempt to match two bullets. Since gun barrels should produce similar markings on bullets fired consecutively, the careful analysis of these surface images can help us determine whether two bullets are a match. However, this process has traditionally required forensic experts to perform the analysis, and required physical examination of the bullets. We propose a framework which allows for the analysis of the surface topologies, and the transcription of the markings into a 2D plotting framework which we believe makes identification of matches easier and more rooted in science for both the expert and the lay person.
 
 \hh{XXX More detailed discussion of automatic approaches and database discussion XXX}
-\hh{XXX Alternative approach by \citet{roberge:2006}: using correlation to identify matches between pairs of bullets using a correlation measure, that `could be automated'. No algorithm implemented/available, no error rates of automated matching are given XXX}
-\hh{XXX Interesting paper by \citet{ma:2004} with  emphasis on ccf and acf. They are using a stylus instrument for measureing the big curvature XXX -- the advantage of our approach is that nobody needs to look at anything until after the matching is done.  }
-\hh{XXX Hamby study: 507 participants returned results. If a match was reported, these matches were correct. But eight (out of $15 \times 507 = 7,605$) bullets were not matched conclusively, resulting in a false negative rate of 0.0011.}
-\hh{XXX for Hamby study: automated systems were successfully used for matching:
- Intelligent Automation's SciClops - Dr. Ben Bachrach (Maryland, United States);
-Automated Land Identification System (ALIS) - Mr. Tsuneo Uchiyama (Tokyo, Japan);
-Integrated Ballistics Identification System (IBIS) – Mr. Robert Thompson (California, United States);
-BulletTRAX-3DTM - Forensic Technology Scientists (Montreal, Canada) (2 sets)
- }
 
-The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. %We then describe a web application for visualizing and working with bullet surfaces. 
-We then proceed to describing an automatic matching routine which we evaluate on a small database of reference bullets.
-
-
-\section{Bullet signatures}
 Throughout this paper, we work with images from the James Hamby Consecutively Rifled Ruger Barrel Study~\citep{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
-
 3D topographical images of each bullet were obtained using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). x3p is a container format conforming to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government firearm forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
 
 \begin{figure}[hbtp]
@@ -179,6 +166,22 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 \caption{An example of a scan of a bullet land from one groove to the next. }
 \end{figure}
 Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
+
+\hh{The purpose of our paper is to present an automatic matching routine that allows for a completely objective assessment of the quality of a match. }
+\hh{XXX The original paper on the complete Hamby study already reports the successful use of several computer-assisted methods; however, no false-negative error rates for bullets nor details on land-to-land matches were given. 
+% Hamby study: automated systems were successfully used for matching:
+%  Intelligent Automation's SciClops - Dr. Ben Bachrach (Maryland, United States);
+% Automated Land Identification System (ALIS) - Mr. Tsuneo Uchiyama (Tokyo, Japan);
+% Integrated Ballistics Identification System (IBIS) – Mr. Robert Thompson (California, United States);
+% BulletTRAX-3DTM - Forensic Technology Scientists (Montreal, Canada) (2 sets)
+ }
+\hh{XXX Matching of bullets using the BulletTrax3D system is described based on another set of ten consecutively rifled barrels in \citet{roberge:2006}. They describe a process using a bullet-to-bullet correlation score to identify matches. The authors state that this process `could be automated', but no implementation of the algorithm is available. XXX} 
+
+The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. %We then describe a web application for visualizing and working with bullet surfaces. 
+We then proceed to describing an automatic matching routine which we evaluate on the bullets made available through the Hamby study.
+
+
+\section{Bullet signatures}
 
 \hh{In an approach to analyze the striation pattern we extract a {\emph bullet profile} \cite{ma:2004} by taking a cross section across the surface measurements for a fixed value of $x$.}
 %An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the surface measurements across. 
@@ -237,7 +240,7 @@ The location of the valleys  mark the points at which we should trim the image. 
 \begin{figure}[hbtp]
   \centering
 \begin{subfigure}[t]{\textwidth}\centering
-\caption{\label{fig:loess_step1}Step 1 of the loess fit algorithm. For a fixed cross section ($x$ held constant at 243.75~$\mu m$)  surface measurements for bullet~1-5 are plotted across the range of $y$.}
+\caption{\label{fig:loess_step1}Step 1 of identifying groove locations: For a fixed cross section ($x$ held constant at 243.75~$\mu m$)  surface measurements for bullet~1-5 are plotted across the range of $y$.}
 <<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 br121_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
@@ -252,7 +255,7 @@ p1
 @
 \end{subfigure}
 \begin{subfigure}[t]{\textwidth}\centering
-\caption{\label{fig:loess_step3}Step 2 of the loess fit algorithm. The  surface measurements are smoothed twice with a smoothing factor of $s = 35$. The orange rectangle shows an example of the smoothing window. Valleys and peaks are detected, if they are not within the same window.}
+\caption{\label{fig:loess_step3}Step 2 of identifying groove locations: The  surface measurements are smoothed twice with a smoothing factor of $s = 35$. The orange rectangle shows an example of the smoothing window. Valleys and peaks are detected, if they are not within the same window.}
 <<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE,  message=FALSE>>=
 subdata <- br111_bullet
 smoothfactor <- 35
@@ -271,7 +274,7 @@ p3
 @
 \end{subfigure}
 \begin{subfigure}[t]{\textwidth}\centering
-\caption{\label{fig:loess_step47}Steps 3 -- 6 of the loess fitting algorithm. After smoothing the surface measurements extrema on the left and right are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside the blue boundaries are removed (shown in grey)}
+\caption{\label{fig:loess_step47}Steps 3 -- 6 of identifying groove locations: After smoothing the surface measurements extrema on the left and right are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside the blue boundaries are removed (shown in grey)}
 <<loess_step47, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE,  message=FALSE>>=
     lengthdiff <- length(subdata$value) - length(smoothed_truefalse)
     
@@ -308,14 +311,14 @@ The smoothing factor $s$ introduced in the algorithm represents the window size 
 We instead performed a second smoothing pass on the smoothed data, which has the effect of weighting observations near the center of the window the highest, while the weights linearly drop off as we reach either end of the smoothing window.
 
 \subsection{Removing curvature}
-Next, we fit a loess regression to the data. 
+Next, we fit a loess regression to the data. \hh{Loess regression \citep{cleveland:1979} is based on the assumption that the relationship between two random variables $X$ and $Y$ can be described in form of a smooth, continuous function $f$ with $y_i = f(x_i) + \varepsilon_i$ for all values $i = 1, ..., n$. The function $f$ is estimated in form of  locally weighted polynomial regressions. Parameters of the estimation are $\alpha$, the proportion of all points included in the fit (here, $\alpha = 0.75$), the weighting function (here, tricubic weighting $(1 - (\text{dist}/\text{maxdist})^3)^3$) and the degree of the polynomial fitted (here, degree is two). }
 
-\hh{XXX Introduce Loess formula with all of its details in here. we are using the default of {\tt loess}, which has a span of 0.75 and uses a polynomial of degree 2. XXX}
+\hh{XXX standard errors XXX}
 Figure~\ref{fig:loess_fit} provides a look at the loess fit, in blue, overlaid against the processed image of bullet~1-5. The fit seems to do a reasonable job of capturing the structure of the image. Figure~\ref{fig:loess_resid} shows the residuals from this fit. These residuals are called the \emph{signature} of bullet~1-5.
 %
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{.49\textwidth}\centering
+\begin{subfigure}[b]{.49\textwidth}\centering
 \caption{\label{fig:loess_fit} Loess fit for bullet~1-5.}
 <<loess_fit, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\textwidth', warning=FALSE,  message=FALSE>>=
 
@@ -326,10 +329,10 @@ my.loess <- fit_loess(br111_bullet, br111.groove)
 my.loess$fitted + ylab("Surface measurements")
 @
 \end{subfigure}
-\begin{subfigure}[t]{.49\textwidth}\centering
-\caption{\label{fig:loess_resid} Residuals of loess fit for bullet~1-5.}
+\begin{subfigure}[b]{.49\textwidth}\centering
+\caption{\label{fig:loess_resid} Residuals of loess fit for bullet~1-5. Blue areas show pointwise 95\% confidence intervals.}
 <<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
-my.loess$resid + ylab("Residuals of loess Fit")
+my.loess$resid + ylab("Residuals of loess Fit") 
 @
 \end{subfigure}
 \caption{Fit and residuals of a loess fit to bullet~1-5 (Barrel~1).}
@@ -632,8 +635,8 @@ A single cross section across the surface of the two lands in Figure~\ref{fig:ma
 <<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
 qplot(y, resid, group=bullet, colour=bullet, data=lof, 
       geom="line") + 
-  scale_colour_manual("Matches", values=cols) + theme_bw() +
-  theme(legend.position = c(.9, .2),
+  scale_colour_manual("", values=cols) + theme_bw() +
+  theme(legend.position = c(1, 1), legend.justification=c("right", "top"),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylab("Residuals of loess fit")
 @
@@ -645,7 +648,7 @@ qplot(y, resid, group=bullet, colour=bullet, data=lof,
 qplot(y+min(lof$y), resid, group=bullet, colour=bullet, data=lofY, 
       geom="line") + xlab("y") +
   scale_colour_manual("", values=cols) + theme_bw() +
-  theme(legend.position = c(.9, .2),
+  theme(legend.position = c(1, 1), legend.justification=c("right", "top"),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylab("Residuals of loess fit")
 @
@@ -1173,8 +1176,8 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
 \end{figure}
 %
-After about 100 trees, the error rate of land-to-land comparisons stabilizes at 0.0038. This is a weighted average between a zero false positive error rate and an error rate of false negatives of 0.23. \hh{This out-of-bag error rate is over-estimating the actual error in the Hamby study: here, the final random forest based on 300 trees is able to correctly predict all known matches and non-matches (see Figures~\ref{fig:treeresult} and ~\ref{fig:tree-forest}).}
-%Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, even for the single tree the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched (see Figure~\ref{fig:treeresult}). 
+After about 100 trees, the error rate of land-to-land comparisons stabilizes at 0.0038. This is a weighted average between a zero false positive error rate and an error rate of false negatives of 0.23. \hh{This out-of-bag error rate is over-estimating the actual error in the Hamby study: here, the final random forest based on 300 trees is able to correctly predict all known  matches and non-matches (see Figures~\ref{fig:treeresult} and ~\ref{fig:tree-forest}).}
+Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, even for the single tree the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched. % (see Figure~\ref{fig:treeresult}). 
 %' \begin{figure}[hbtp]
 %'   \centering
 %' <<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.5\\textwidth'>>=
@@ -1199,7 +1202,9 @@ After about 100 trees, the error rate of land-to-land comparisons stabilizes at 
 %' \caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree (maximum possible number is 12, except for Q and B, where the maximum is 11). Both results for the tree and the random forest are shown. In the tree, at least \hh{40\% of all possible} lands of a bullet are  matched correctly, while the random forest achieves perfect results. Unknown bullet B is the hardest for the tree to match.}
 %' \end{figure}
 %' %
-However, this does not carry a lot of weight because of the few bullet comparisons in question: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
+\hh{This makes the errors in the automated approach smaller than the human error in the Hamby study. Out of the 507 participants, who returned results, eight (out of $15 \times 507 = 7,605$) bullets were not matched conclusively, resulting in a false negative rate of 0.0011.}
+
+However, error rates based on bullet-to-bullet matches do not carry a lot of weight because of the small size of the study: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
 Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we could therefore introduce an interval of `inconclusive' results in the middle of the spectrum -- which turns out to be not necessary in the Hamby study, because, here, the results from the random forest are very clear cut. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree ($x$-axis) and the random forest ($y$-axis). %\hh{The tree predicts 132 known matches correctly, with 40 false negatives and one false positive match. The random forest predicts all 172 known matches correctly as well as all 10,212 known non-matches.} 
 %Overall, there is a lot of agreement; out of 10,800 land-to-land comparisons, only four cases result in a different decision. 
 
@@ -1220,7 +1225,8 @@ qplot(pred, forest, geom="jitter", data=bstats, colour=match,
 \end{figure}
 
 Besides a probabilistic quantification of matches, we get from a random forest an assessment of the importance of each of the features derived from the bullets' 3d topological surface measurements. Table~\ref{tab:importance} shows an overview of the importance of each variable measured as the mean decrease in the gini index when the variable in question is included in a tree.
-\begin{table*}[tbhp]
+\begin{table}[tbhp]
+\caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Match and Non-Match show averages of each of the variables for matches and non-matches only. In parentheses behind the means, standard deviations are given}
 \centering
 <<importance, echo=FALSE, results='asis'>>=
 imp <- data.frame(importance(rtrees))
@@ -1249,8 +1255,7 @@ imp$Variable[c(2,4)] <- c("#matches", "#non-matches")
 names(imp)[-(1:2)] <- c("Match", "(sd)", "Non-Match", "(sd)")
 print(xtable(imp, align="clrrcrc"), floating = FALSE)
 @
-\caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Match and Non-Match show averages of each of the variables for matches and non-matches only. In parentheses behind the means, standard deviations are given}
-\end{table*}
+\end{table}
 
 The rows in the table are ordered according to descending importance. The variable with the most predictive power by far is cross-correlation, followed by the number of matches and non-matches. CMS is found only in sixth place.
 
@@ -1275,7 +1280,8 @@ Only a much larger database and transparent communication of results will give u
 An approach that might help in determining this difference comes from Biometrics \citep{jain:2015:tphil, jain:2015}. It has been successfully applied in the Aadhar project (the effort by the Unique Identification Authority of India (UIDAI) to provide a unique 12-digit identification number to approximately 1.2 billion residents of India based on ten fingerprints and two irises).
 This approach uses dictionary learning based on small square patches  of 64x64 or 32x32 pixels. For matching bullets, a simpler, one-dimensional window approach might be sufficient to match striation marks because of the physical forces  leading to the existence of these marks.  
 
-\paragraph{Acknowledgment} Thanks to the men and women behind the software R~\citep{R}, and the authors of the R packages  knitr~\citep{knitr} and ggplot2~\citep{ggplot2}.
+\section*{Acknowledgment} 
+Thanks to the men and women behind the software R~\citep{R}, and the authors of the R packages  knitr~\citep{knitr} and ggplot2~\citep{ggplot2}.
 
 
 
