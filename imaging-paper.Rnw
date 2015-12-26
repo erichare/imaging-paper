@@ -311,9 +311,12 @@ The smoothing factor $s$ introduced in the algorithm represents the window size 
 We instead performed a second smoothing pass on the smoothed data, which has the effect of weighting observations near the center of the window the highest, while the weights linearly drop off as we reach either end of the smoothing window.
 
 \subsection{Removing curvature}
-Next, we fit a loess regression to the data. \hh{Loess regression \citep{cleveland:1979} is based on the assumption that the relationship between two random variables $X$ and $Y$ can be described in form of a smooth, continuous function $f$ with $y_i = f(x_i) + \varepsilon_i$ for all values $i = 1, ..., n$. The function $f$ is estimated in form of  locally weighted polynomial regressions. Parameters of the estimation are $\alpha$, the proportion of all points included in the fit (here, $\alpha = 0.75$), the weighting function (here, tricubic weighting $(1 - (\text{dist}/\text{maxdist})^3)^3$) and the degree of the polynomial fitted (here, degree is two). }
+Next, we fit a loess regression to the data. \hh{Loess regression \citep{cleveland:1979} is based on the assumption that the relationship between two random variables $X$ and $Y$ can be described in form of a smooth, continuous function $f$ with $y_i = f(x_i) + \varepsilon_i$ for all values $i = 1, ..., n$. The function $f$ is estimated in form of  locally weighted polynomial regressions. Parameters of the estimation are $\alpha$, the proportion of all points included in the fit (here, $\alpha = 0.75$), the weighting function and the degree of the polynomial (here, we fit a quadratic regression). }
 
-\hh{XXX standard errors XXX}
+\hh{The main idea of locally weighted regression is to use a weighting routine that  emphasizes the effect of points close by and de-emphasizes the effect of points as they are further away. The weighting function used here, is the tricubic function $w(d) = (1 - d^3)^3$, for $d \in [0,1]$ and $w(d) = 0$ otherwise.  $d$ is defined as the the distance between $x_i$ and the location of the fit $x_o$ and the maximum distance of the range of the $x$-values for span $\alpha$ in $x_o$. }
+
+\hh{XXX standard errors: are based on independence of errors (which we don't have because of the high autocorrelation) and the assumption that the amount of bias is neglible. Which we don't know. We can produce standard errors, but (a) the nominal confidence level will be violated, and (b) the errors only allow for pointwise errors. We need a different approach. XXX}
+
 Figure~\ref{fig:loess_fit} provides a look at the loess fit, in blue, overlaid against the processed image of bullet~1-5. The fit seems to do a reasonable job of capturing the structure of the image. Figure~\ref{fig:loess_resid} shows the residuals from this fit. These residuals are called the \emph{signature} of bullet~1-5.
 %
 \begin{figure}[hbtp]
@@ -330,7 +333,8 @@ my.loess$fitted + ylab("Surface measurements")
 @
 \end{subfigure}
 \begin{subfigure}[b]{.49\textwidth}\centering
-\caption{\label{fig:loess_resid} Residuals of loess fit for bullet~1-5. Blue areas show pointwise 95\% confidence intervals.}
+\caption{\label{fig:loess_resid} Residuals of loess fit for bullet~1-5. %Blue areas show pointwise 95\% confidence intervals.
+}
 <<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
 my.loess$resid + ylab("Residuals of loess Fit") 
 @
