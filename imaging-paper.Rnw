@@ -333,10 +333,18 @@ my.loess$fitted + ylab("Surface measurements")
 @
 \end{subfigure}
 \begin{subfigure}[b]{.49\textwidth}\centering
-\caption{\label{fig:loess_resid} Residuals of loess fit for bullet~1-5. %Blue areas show pointwise 95\% confidence intervals.
+\caption{\label{fig:loess_resid} Residuals of loess fit for bullet~1-5.
+This defines the {\it signature} of bullet~1-5. Blue areas show  95\% bootstrap confidence intervals (based on $B=500$ bootstrap samples).
 }
-<<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
-my.loess$resid + ylab("Residuals of loess Fit") 
+%<<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
+%my.loess$resid + ylab("Residuals of loess Fit") 
+%@
+<<boot_loess, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
+boot.loess <- boot_fit_loess(br111_bullet, br111.groove)
+poly <- with(boot.loess, data.frame(x = c(y,rev(y)), y=c(high, rev(low))))
+qplot(x=x, y=y, geom="polygon", fill=I("steelblue"), data=poly) +
+  geom_line(aes(x=y, y=resid), data=my.loess$data) +
+  ylab("Residuals of loess fit") + xlab("y") + theme_bw()
 @
 \end{subfigure}
 \caption{Fit and residuals of a loess fit to bullet~1-5 (Barrel~1).}
