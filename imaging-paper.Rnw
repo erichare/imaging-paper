@@ -13,6 +13,8 @@
 \usepackage{subcaption}
 \usepackage{lineno,hyperref}
 \modulolinenumbers[5]
+\usepackage{dcolumn}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
 
 \renewcommand{\topfraction}{0.99}	% max fraction of floats at top
 \renewcommand{\bottomfraction}{0.99}	% max fraction of floats at bottom
@@ -334,7 +336,7 @@ my.loess$fitted + ylab("Surface measurements")
 \end{subfigure}
 \begin{subfigure}[b]{.49\textwidth}\centering
 \caption{\label{fig:loess_resid} Residuals of loess fit for bullet~1-5.
-This defines the {\it signature} of bullet~1-5. Blue areas show  95\% bootstrap confidence intervals (based on $B=500$ bootstrap samples).
+This defines the {\it signature} of bullet~1-5. Blue areas show  95\% bootstrap confidence intervals (based on $B=1,000$ bootstrap samples).
 }
 %<<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
 %my.loess$resid + ylab("Residuals of loess Fit") 
@@ -1126,7 +1128,7 @@ Similarly, the Euclidean distance $D$ between two signatures is strongly correla
 All of the features in Figure~\ref{fig:densities} show large, if not significant, differences between matches and non-matches. Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of  a set of feature variables derived from the 3d topological surface measurements. There are quite large differences in these averages, indicating that we can successfully employ machine learning methods to distinguish matches from non-matches.
 
 Using recursive partitioning, we fit a decision tree~\citep{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
-Instead of CMS, cross-correlation (ccf) between the cross sections is very important in the matching process  by the decision tree. Aside from  cross correlation, the number of matches is involved in the decision. 
+Instead of CMS, cross-correlation (ccf) between the signatures is very important in the matching process  by the decision tree. Aside from  cross correlation, the number of matches is involved in the decision. 
 Between cross-correlation and CMS, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
 Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3d surface structure. \hh{The emphasis on cross-correlation is similar to the results of the study by \citet{ma:2004}. However, in this study authors did not consider the number of matches and non-matches.}
 
@@ -1188,7 +1190,7 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
 \end{figure}
 %
-After about 100 trees, the error rate of land-to-land comparisons stabilizes at 0.0038. This is a weighted average between a zero false positive error rate and an error rate of false negatives of 0.23. \hh{This out-of-bag error rate is over-estimating the actual error in the Hamby study: here, the final random forest based on 300 trees is able to correctly predict all known  matches and non-matches (see Figures~\ref{fig:treeresult} and ~\ref{fig:tree-forest}).}
+After about 100 trees, the error rate of land-to-land comparisons stabilizes at 0.0038. This is a weighted average between a zero false positive error rate and an error rate of false negatives of 0.23. \hh{This out-of-bag error rate is over-estimating the actual error in the Hamby study: here, the final random forest based on 300 trees is able to correctly predict all known  matches and non-matches (see Figure~\ref{fig:tree-forest}).}
 Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, even for the single tree the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched. % (see Figure~\ref{fig:treeresult}). 
 %' \begin{figure}[hbtp]
 %'   \centering
@@ -1238,9 +1240,9 @@ qplot(pred, forest, geom="jitter", data=bstats, colour=match,
 
 Besides a probabilistic quantification of matches, we get from a random forest an assessment of the importance of each of the features derived from the bullets' 3d topological surface measurements. Table~\ref{tab:importance} shows an overview of the importance of each variable measured as the mean decrease in the gini index when the variable in question is included in a tree.
 \begin{table}[tbhp]
-\caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Match and Non-Match show averages of each of the variables for matches and non-matches only. In parentheses behind the means, standard deviations are given}
+\caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Averages (and standard deviations) for known matches (KM) and known non-matches (KNM) are shown in the last four columns.}
 \centering
-<<importance, echo=FALSE, results='asis'>>=
+<<importance, echo=FALSE, results='asis', warning=FALSE>>=
 imp <- data.frame(importance(rtrees))
 imp$Variable <- row.names(imp)
 imp <- imp[order(-imp$MeanDecreaseGini),]
@@ -1264,8 +1266,9 @@ imp$meanNonMatch <- round(imp$meanNonMatch,1)
 imp$sdNonMatch <- sprintf("(%7.2f)", imp$sdNonMatch)
 row.names(imp) <- 1:nrow(imp)
 imp$Variable[c(2,4)] <- c("#matches", "#non-matches")
-names(imp)[-(1:2)] <- c("Match", "(sd)", "Non-Match", "(sd)")
-print(xtable(imp, align="clrrcrc"), floating = FALSE)
+names(imp)[-(1:2)] <- c("KM", "(sd)", "KNM", "(sd)")
+print(xtable(imp, align="clrrd{3.2}rd{3.2}", digits=c(0,0,1,1,2,1,2)), 
+      floating = FALSE)
 @
 \end{table}
 
