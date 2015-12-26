@@ -138,6 +138,8 @@ Todo list for journal shape-up: there is a lot of good material, we mainly need 
 \item add: more discussion of the density plots: probability ratio for a match
 \item add: more discussion on additional bullet images. NIST database claims to have 70 bullets -- that would be two sets of the study, but only 35 bullets are currently available. Should we contact Alan Zheng to see whether we can get access to more bullet files?
 \item add: should we add a paragraph on the speed of the evaluation? - separate out into pre-processing (needs to be done once) and matching (pairwise comparison of lands). If we only do bullet matching, we could speed this process up by eliminating some land comparisons.
+\item definitions: 
+A bullet's {\it signature} are the residual surface measurements after removing the big structure using the loess fit. The {\it cross section} defines the location along the $x$ axis  at which the signature is taken.
 \end{enumerate}
 }
 Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of  convictions  in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\citep{giannelli:2011}.
@@ -536,7 +538,7 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
     theme(legend.position="none") + 
     facet_grid(bullet~.) +
     geom_line(aes(x=y, y=l30, group=bullet), data=lofX) +
-  ylab(expression(paste("Cross section values (in ",mu,"m)", sep=""))) 
+  ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) 
 @
 }
 \end{subfigure}    
@@ -560,7 +562,7 @@ ggplot() +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey60", 0.5)) +
     theme(legend.position = c(1,1.1), legend.justification=c(1,1),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
-  ylab(expression(paste("Cross section values (in ",mu,"m)", sep=""))) +
+  ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) +
   xlab("y")
 @
     }
@@ -747,7 +749,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
              lop[[4]], lop[[5]], lop[[6]],
              ncol=2)
 @
-\caption{\label{fig:crosscuts2}Varying cross sections for barrel 3, bullet~1-1. Initially, the match between cross sections 25$\mu m$ apart is affected strongly by some break off at the bottom of the bullet. At a cross section level of $175\mu m$ the bullet pattern stabilizes. For this land, matches should not be attempted at lower cross sections. }
+\caption{\label{fig:crosscuts2}Varying cross sections for barrel 3, bullet~1-1. Initially, the match between signatures from cross sections 25$\mu m$ apart is affected strongly by some break off at the bottom of the bullet. At a  level of $175\mu m$ the bullet's signature stabilizes. For this land, matches should not be attempted at lower cross sections. }
 \end{figure}
 %An opportunity that arises from comparing multiple cross sections of a bullet's surface measurements is the following:
 by comparing signatures from cross sections that are not too far apart --  25~$\mu m$ to 50~$\mu m$ -- we get an indication whether the signatures come from a rapidly changing section of the surface, indicative of a break-off \hh{or some other damage}, or from a stable section, where we have a reasonable expectation of finding matches to other signatures. In the approach here, we keep increasing the cross section until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet~1-1 from barrel 3, where
@@ -971,14 +973,14 @@ print(ggplot() +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
 @
-\caption{\label{fig:mismatch}Known mismatch with a relatively large number of maximal consecutive matching striae (twelve) in the middle. The pattern in the middle does look surprisingly similar, however the outer ends of the cross sections easily reveals this as mismatch. }
+\caption{\label{fig:mismatch}Known mismatch with a relatively large number of maximal consecutive matching striae (twelve) in the middle. The pattern in the middle does look surprisingly similar, however the outer ends of the signatures easily reveals this as mismatch. }
 \end{figure}
 
 For smaller numbers of CMS, the percentage of false positives quickly increases. However, if we take other features of the image into account, we can increase the number of correct matches considerably: Figure~\ref{fig:densities} gives an overview of the densities of all of the features derived earlier, distinguishing between known matches (KM) and known non-matches (KNM). The densities of almost all of the features show strong differences between matches and non matches, e.g\ a high amount of cross-correlation between two signatures is indicative for a match --  in the Hamby study only known matches have a cross-correlation of 0.75 or higher. There are 97 land-to-land comparisons with a cross-correlation of above 0.75.   
 
 \begin{figure}[hbtp]
   \centering
-<<density-overview,echo=FALSE, warning=FALSE, fig.width=12, fig.height=7, out.width='\\textwidth'>>=
+<<density-overview,echo=FALSE, warning=FALSE, fig.width=12, fig.height=6, out.width='\\textwidth'>>=
 features <- c("CMS", "CNMS",  "num.matches", "num.nonmatches", "D", "S", "ccf")
 densities <- plyr::ldply(features, function(x) {
   xr <- range(bstats[,x])
@@ -998,6 +1000,7 @@ library(reshape2)
 dm <- melt(densities, measure.var=c("KM", "KNM"))
 dm$var <- factor(dm$var, levels=features)
 levels(dm$var)[3:4] <- c("#matches", "#non-matches")
+levels(dm$variable) <- c("Known matches (KM)", "Known non-matches (KNM)")
 
 qplot(x, value, group=variable, geom="polygon", data=dm, fill=variable, 
       alpha=I(0.6), colour=I("grey20")) + 
@@ -1005,10 +1008,10 @@ qplot(x, value, group=variable, geom="polygon", data=dm, fill=variable,
   theme_bw() + ylab("density") + xlab("") +
   scale_fill_brewer("Matches", palette="Paired") +
   theme(legend.position=c(1,0), legend.justification = c("right", "bottom"),
-        legend.background = element_rect(colour="grey60"),
+        legend.background = element_rect(colour="grey75"),
         plot.margin = unit(c(0,0,0,0), unit="cm"))
 @
-\caption{\label{fig:densities}Overview of all the marginal densities for features extracted in section~\ref{sec:algorithm}.}
+\caption{\label{fig:densities}Overview of all the marginal densities for features described in section~\ref{sec:algorithm}.}
 \end{figure}
 
 %' \begin{figure}[hbtp]
@@ -1124,7 +1127,7 @@ qplot(x, value, group=variable, geom="polygon", data=dm, fill=variable,
 %' \caption{A large cross-correlation between cross sections is indicative of matches between lands.}
 %' \end{figure}
 
-Similarly, the Euclidean distance $D$ between two signatures is strongly correlated to known matches. Out of the 48 pairs of land-to-land signatures with a distance of less than .25, 47 correspond to known matches (the single known mismatch consists of a pair of cross sections that both are very flat with peaks and valleys of less than 1.5$\mu m$). The average distance between known matches in the Hamby study is $\Sexpr{mean(bstats$D[bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[bstats$match])}\mu m$; while known mismatches have an average  distance of  $\Sexpr{mean(bstats$D[!bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[!bstats$match])}\mu m$.
+Similarly, the Euclidean distance $D$ between two signatures is strongly correlated to known matches. Out of the 48 pairs of land-to-land signatures with a distance of less than .25, 47 correspond to known matches (the single known mismatch consists of a pair of signatures that both are very flat with peaks and valleys of less than 1.5$\mu m$). The average distance between known matches in the Hamby study is $\Sexpr{mean(bstats$D[bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[bstats$match])}\mu m$; while known mismatches have an average  distance of  $\Sexpr{mean(bstats$D[!bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[!bstats$match])}\mu m$.
 All of the features in Figure~\ref{fig:densities} show large, if not significant, differences between matches and non-matches. Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of  a set of feature variables derived from the 3d topological surface measurements. There are quite large differences in these averages, indicating that we can successfully employ machine learning methods to distinguish matches from non-matches.
 
 Using recursive partitioning, we fit a decision tree~\citep{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
