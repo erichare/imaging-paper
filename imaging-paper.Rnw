@@ -45,6 +45,7 @@
 \title{Automatic Matching of Bullet Lands}\thanksref{T1}
 \thankstext{T1}{Resources for this manuscript, including R code to reproduce any of the models, tables and figures, can be found at  \url{https://github.com/erichare/imaging-paper}.}
 \runtitle{Automatic Matching of Bullet Lands}
+\runauthor{E. Hare et al.}
 
 % indicate corresponding author with \corref{}
 \begin{aug}
@@ -62,9 +63,8 @@ Ames Iowa 50011-1210\\
 \printead{e1}\\
 \phantom{E-mail:\ }\printead*{e2}\\
 \phantom{E-mail:\ }\printead*{e3}}
-
-\runauthor{E. Hare et al.}
 \end{aug}
+%
 \begin{abstract}
 In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is the primary goal. We propose a framework for the analysis of the 3D surface measurements which transcribes the markings into a 2D plotting framework. This makes identification of matches easier and more rooted in science for both the expert and the lay person. The automatic matching routine we propose \hh{manages to (a) correctly identify lands with too much damage to be suitable for matching, and (b) correctly identify all 10,384 land-to-land matches.}
 \end{abstract}
@@ -131,7 +131,7 @@ Todo list for journal shape-up: there is a lot of good material, we mainly need 
 %\item take out a few things: no circular fit, no figures 9 and 10 
 %\item do we need the web app?
 %\item out: lots of the figures can go into a supplement, together with a discussion. In the paper we then have a summary of what can be seen, so that we can focus on the results. 
-\item add: formula for loess fit and its s.e.
+%\item add: formula for loess fit and its s.e.
 %\item add: comparison of error rates to those of FEs in Hamby study.
 %\item change: emphasis in varying cross section. once a stable region is found, how little change is happening? 
 \item add: Why do we take the lowest stable cross section?
@@ -172,14 +172,14 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
 
 \hh{The purpose of our paper is to present an automatic matching routine that allows for a completely objective assessment of the quality of a match. }
-\hh{XXX The original paper on the complete Hamby study already reports the successful use of several computer-assisted methods; however, no false-negative error rates for bullets nor details on land-to-land matches were given. 
+\hh{The original paper on the complete Hamby study already reports the successful use of several computer-assisted methods; aside from a zero false positive rate no further details on a false-negative error rate for bullets are given nor are error rates for land-to-land matches mentioned. 
 % Hamby study: automated systems were successfully used for matching:
 %  Intelligent Automation's SciClops - Dr. Ben Bachrach (Maryland, United States);
 % Automated Land Identification System (ALIS) - Mr. Tsuneo Uchiyama (Tokyo, Japan);
 % Integrated Ballistics Identification System (IBIS) – Mr. Robert Thompson (California, United States);
 % BulletTRAX-3DTM - Forensic Technology Scientists (Montreal, Canada) (2 sets)
  }
-\hh{XXX Matching of bullets using the BulletTrax3D system is described based on another set of ten consecutively rifled barrels in \citet{roberge:2006}. They describe a process using a bullet-to-bullet correlation score to identify matches. The authors state that this process `could be automated', but no implementation of the algorithm is available. XXX} 
+\hh{A procedure for bullet matching using the BulletTrax3D system is described in \citet{roberge:2006}. This study is based on another set of ten consecutively rifled barrels; matches are identified based on a bullet-to-bullet correlation score. The authors state that this process `could be automated', but no implementation of the algorithm is available. } 
 
 The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. %We then describe a web application for visualizing and working with bullet surfaces. 
 We then proceed to describing an automatic matching routine which we evaluate on the bullets made available through the Hamby study.
@@ -835,7 +835,7 @@ ggplot() + theme_bw() +
 %
 \hh{We exclude these four lands from the further matching considerations and 
  run all remaining lands from the unknown bullets against all remaining lands from known bullets for matches, i.e. we are running $15 \times 6 -2 = 90 - 2 = 88$ lands from unkown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. Out of these comparisons, there are 172 known matches (KM), while the rest are known non-matches (KNM). }
- When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the distribution of the number of maximum consecutive matching striae between land C-3 and all 118 known lands. Two lands show a high CMS. These correspond to the known matches with C-3, shown in Figures~\ref{fig:hamby-perfect}b and c. 
+ When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the distribution of the number of maximum consecutive matching striae between land C-3 and all 118 known lands. Two lands show a high CMS. These correspond to the known matches with C-3, shown in Figures~\ref{fig:hamby-perfect}b and~\ref{fig:hamby-perfect}c. 
  Unfortunately, not all results are as clear cut. 
 It might not be reasonable to assume that we can match all lands, but the idea is to try to maximize the number of matches to get an overview of what we might be able to expect from an automated match. 
 
@@ -958,7 +958,7 @@ ggplot(data=subset(bstats, !flagged)) +
 \caption{\label{fig:cms}Distribution of maximal CMS (left). Conditional barchart \citep{hummel} on the right: heights show probability of match/non-match given a specific CMS. All land-to-land comparisons with at least 13 CMS are matches.}
 \end{figure}
 %
-There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$cms[!bstats$match])} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$cms[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$cms[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$cms[bstats$match])}. Secondly, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by \citet{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, between two lands that share twelve consecutively matched striae. Visually we can easily tell that these two lands do not match well.
+There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$CMS[!bstats$match], na.rm=T)} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$CMS[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$CMS[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$CMS[bstats$match])}. While the probability for a match increases with the number of maximal CMS, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by \citet{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, between two lands that share twelve consecutively matched striae. Visually we can easily tell that these two lands do not match well.
 
 \begin{figure}[hbtp]
   \centering
@@ -1018,6 +1018,22 @@ qplot(x, value, group=variable, geom="polygon", data=dm, fill=variable,
 @
 \caption{\label{fig:densities}Overview of all the marginal densities for features described in section~\ref{sec:algorithm}.}
 \end{figure}
+
+<<prob.ratios, echo=FALSE>>=
+library(reshape2)
+dens.stats <- dm %>% group_by(var, variable) %>% mutate(
+  sum = sum(value),
+  up = cumsum(value)/sum,
+  down = 1 - cumsum(value)/sum
+)
+ratios <- dens.stats %>% group_by(var, x) %>% summarise(
+  upper = sum(up[variable=="KM"])/sum(up[variable=="KNM"]),
+  lower = sum(down[variable=="KM"])/sum(down[variable=="KNM"])
+)
+rm <- melt(ratios, measure.var=c("upper", "lower"))
+levels(rm$variable) <- c("P(X < c | KM) / P(X < c | KNM)", "P(X > c | KM) / P(X > c | KNM)")
+qplot(x, value, colour=variable,  data=rm) + facet_wrap(~var, scales="free") + scale_y_log10() + theme_bw() + geom_hline(yintercept=1) + scale_colour_brewer(palette="Set2") + ylab("Probability Ratios")
+@
 
 %' \begin{figure}[hbtp]
 %'   \centering
