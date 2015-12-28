@@ -1022,15 +1022,16 @@ qplot(x, value, group=variable, geom="polygon", data=dm, fill=variable,
 <<prob.ratios, echo=FALSE>>=
 library(reshape2)
 dens.stats <- dm %>% group_by(var, variable) %>% mutate(
-  sum = sum(value),
+  sum = sum(value, na.rm=TRUE),
   up = cumsum(value)/sum,
   down = 1 - cumsum(value)/sum
 )
+levels(dens.stats$variable) <- c("KM", "KNM")
 ratios <- dens.stats %>% group_by(var, x) %>% summarise(
-  upper = sum(up[variable=="KM"])/sum(up[variable=="KNM"]),
-  lower = sum(down[variable=="KM"])/sum(down[variable=="KNM"])
+  lower = sum(up[variable=="KM"], na.rm=TRUE)/sum(up[variable=="KNM"], na.rm=TRUE),
+  upper = sum(down[variable=="KM"], na.rm=TRUE)/sum(down[variable=="KNM"], na.rm=TRUE)
 )
-rm <- melt(ratios, measure.var=c("upper", "lower"))
+rm <- melt(ratios, measure.var=c("lower", "upper"))
 levels(rm$variable) <- c("P(X < c | KM) / P(X < c | KNM)", "P(X > c | KM) / P(X > c | KNM)")
 qplot(x, value, colour=variable,  data=rm) + facet_wrap(~var, scales="free") + scale_y_log10() + theme_bw() + geom_hline(yintercept=1) + scale_colour_brewer(palette="Set2") + ylab("Probability Ratios")
 @
