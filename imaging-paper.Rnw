@@ -1107,11 +1107,20 @@ rocs <- merge(rocs, aucs, by=c("variable", "type"))
 labels <- unique(subset(rocs, auc > 0.5)[,c("variable", "auc")])
 labels$labels <- paste("AUC:", labels$auc)
 labels$type <- NA
+
+
+ggplot(roc.data, aes(x=fpr, ymin=0, ymax=tpr)) +
+    geom_ribbon(alpha=0.2) +
+    geom_line(aes(y=tpr)) +
+    ggtitle(paste0("ROC Curve w/ AUC=", auc))
   
 rocs$variable <- reorder(rocs$variable, -rocs$auc, min)
-qplot(`FALSE`, `TRUE`, data=subset(rocs, auc > 0.5),  geom="line", group=type) + theme_bw() + geom_abline(linetype=2) + xlab("False negative rate") + 
+ggplot(data=subset(rocs, auc > 0.5)) +
+  geom_ribbon(aes(x=`FALSE`, ymax=`TRUE`, ymin=0), alpha=0.2) +
+  geom_line(aes(x=`FALSE`,y=`TRUE`))+ theme_bw() + xlab("False negative rate") + 
   ylab("False positive rate") + facet_wrap(facets=~variable, ncol=4) + 
-  geom_label(x=1, y=0, aes(label=labels), data=labels, hjust=1, vjust=0)
+  geom_label(x=1, y=0, aes(label=labels), data=labels, hjust=1, vjust=0) + 
+  geom_abline(linetype=2)
 @
 \caption{\label{fig:rocs}ROC curves for all of the features described in section~\ref{sec:algorithm}. Variables are sorted according to their area under the curve (AUC). Except for the distance $D$ between signatures, all features are more predictive than the maximal CMS. }
 \end{figure}
