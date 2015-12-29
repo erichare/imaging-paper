@@ -1016,39 +1016,39 @@ qplot(x, value, group=variable, geom="polygon", data=dm, fill=variable,
         legend.background = element_rect(colour="grey75"),
         plot.margin = unit(c(0,0,0,0), unit="cm"))
 @
-\caption{\label{fig:densities}Overview of all the marginal densities for features described in section~\ref{sec:algorithm}. Shifts in the mode of the density functions between known matches and known non-matches indicate the variable's predictive power in distinguishing matches and non-matches. }
+\caption{\label{fig:densities}Overview of all the marginal densities for features described in section~\ref{sec:algorithm}. Shifts in the mode of the density functions between known matches and known non-matches indicate the variable's predictive power in distinguishing matches and non-matches. Predictive power is shown in more detail in Figure~\ref{fig:rocs}.}
 \end{figure}
 
-\begin{figure}[hbtp]
-  \centering
-<<ratios-overview,echo=FALSE, warning=FALSE, fig.width=12, fig.height=6, out.width='\\textwidth'>>=
-library(reshape2)
-dens.stats <- dm %>% group_by(var, variable) %>% mutate(
-  sum = sum(value, na.rm=TRUE),
-  up = cumsum(value)/sum,
-  down = 1 - cumsum(value)/sum
-)
-levels(dens.stats$variable) <- c("KM", "KNM")
-ratios <- dens.stats %>% group_by(var, x) %>% summarise(
-  lower = sum(up[variable=="KM"], na.rm=TRUE)/sum(up[variable=="KNM"], na.rm=TRUE),
-  upper = sum(down[variable=="KM"], na.rm=TRUE)/sum(down[variable=="KNM"], na.rm=TRUE)
-)
-rm <- melt(ratios, measure.var=c("lower", "upper"))
-rm$value <- pmin(pmax(rm$value, 0.1), 10)
-levels(rm$variable) <- c("P(X < c | KM) / P(X < c | KNM)", "P(X > c | KM) / P(X > c | KNM)")
-qplot(x, value, colour=variable,  data=rm, geom="line", group=variable, 
-      size=I(1)) + xlab("X") +
-  facet_wrap(~var, scales="free", ncol=4) + 
-  scale_y_log10(limits=c(1/10,10)) + theme_bw() + 
-  geom_hline(yintercept=1, size=0.5) + 
-  scale_colour_brewer("Estimated Ratios", palette="Set2") + 
-  ylab("(Logged) Probability Ratios") +
-  theme(legend.position=c(1,0), legend.justification = c("right", "bottom"),
-        legend.background = element_rect(colour="grey75"),
-        plot.margin = unit(c(0,0,0,0), unit="cm")) 
-@
-\caption{\label{fig:ratios}Estimated probability ratios for all of the features described in section~\ref{sec:algorithm}. Ratios are logged and and artificially constrained to an interval between (1/10 and 10). Large deviations from one, indicate a strong distinction between matches and known matches based on the variable. Both left tail and right tail probabilities are shown. }
-\end{figure}
+%' \begin{figure}[hbtp]
+%'   \centering
+%' <<ratios-overview,echo=FALSE, warning=FALSE, fig.width=12, fig.height=6, out.width='\\textwidth'>>=
+%' library(reshape2)
+%' dens.stats <- dm %>% group_by(var, variable) %>% mutate(
+%'   sum = sum(value, na.rm=TRUE),
+%'   up = cumsum(value)/sum,
+%'   down = 1 - cumsum(value)/sum
+%' )
+%' levels(dens.stats$variable) <- c("KM", "KNM")
+%' ratios <- dens.stats %>% group_by(var, x) %>% summarise(
+%'   lower = sum(up[variable=="KM"], na.rm=TRUE)/sum(up[variable=="KNM"], na.rm=TRUE),
+%'   upper = sum(down[variable=="KM"], na.rm=TRUE)/sum(down[variable=="KNM"], na.rm=TRUE)
+%' )
+%' rm <- melt(ratios, measure.var=c("lower", "upper"))
+%' rm$value <- pmin(pmax(rm$value, 0.1), 10)
+%' levels(rm$variable) <- c("P(X < c | KM) / P(X < c | KNM)", "P(X > c | KM) / P(X > c | KNM)")
+%' qplot(x, value, colour=variable,  data=rm, geom="line", group=variable, 
+%'       size=I(1)) + xlab("X") +
+%'   facet_wrap(~var, scales="free", ncol=4) + 
+%'   scale_y_log10(limits=c(1/10,10)) + theme_bw() + 
+%'   geom_hline(yintercept=1, size=0.5) + 
+%'   scale_colour_brewer("Estimated Ratios", palette="Set2") + 
+%'   ylab("(Logged) Probability Ratios") +
+%'   theme(legend.position=c(1,0), legend.justification = c("right", "bottom"),
+%'         legend.background = element_rect(colour="grey75"),
+%'         plot.margin = unit(c(0,0,0,0), unit="cm")) 
+%' @
+%' \caption{\label{fig:ratios}Estimated probability ratios for all of the features described in section~\ref{sec:algorithm}. Ratios are logged and and artificially constrained to an interval between (1/10 and 10). Large deviations from one, indicate a strong distinction between matches and known matches based on the variable. Both left tail and right tail probabilities are shown. }
+%' \end{figure}
 
 \begin{figure}[hbtp]
   \centering
@@ -1109,11 +1109,6 @@ labels$labels <- paste("AUC:", labels$auc)
 labels$type <- NA
 
 
-ggplot(roc.data, aes(x=fpr, ymin=0, ymax=tpr)) +
-    geom_ribbon(alpha=0.2) +
-    geom_line(aes(y=tpr)) +
-    ggtitle(paste0("ROC Curve w/ AUC=", auc))
-  
 rocs$variable <- reorder(rocs$variable, -rocs$auc, min)
 ggplot(data=subset(rocs, auc > 0.5)) +
   geom_ribbon(aes(x=`FALSE`, ymax=`TRUE`, ymin=0), alpha=0.2) +
@@ -1122,7 +1117,7 @@ ggplot(data=subset(rocs, auc > 0.5)) +
   geom_label(x=1, y=0, aes(label=labels), data=labels, hjust=1, vjust=0) + 
   geom_abline(linetype=2)
 @
-\caption{\label{fig:rocs}ROC curves for all of the features described in section~\ref{sec:algorithm}. Variables are sorted according to their area under the curve (AUC). Except for the distance $D$ between signatures, all features are more predictive than the maximal CMS. }
+\caption{\label{fig:rocs}ROC curves for all of the features described in section~\ref{sec:algorithm}. Variables are sorted according to their area under the curve (AUC). Except for the distance $D$ between signatures, all individual features derived from the surface measurements and the aligned striation marks are more predictive than the maximal CMS. }
 \end{figure}
 
 
