@@ -135,11 +135,15 @@ Todo list for journal shape-up: there is a lot of good material, we mainly need 
 %\item add: comparison of error rates to those of FEs in Hamby study.
 %\item change: emphasis in varying cross section. once a stable region is found, how little change is happening? 
 \item add: Why do we take the lowest stable cross section?
-\item add: more discussion of the density plots: probability ratio for a match
+%\item add: more discussion of the density plots: probability ratio for a match - exchanged probability ratios for ROC curves
 \item add: more discussion on additional bullet images. NIST database claims to have 70 bullets -- that would be two sets of the study, but only 35 bullets are currently available. Should we contact Alan Zheng to see whether we can get access to more bullet files?
 \item add: should we add a paragraph on the speed of the evaluation? - separate out into pre-processing (needs to be done once) and matching (pairwise comparison of lands). If we only do bullet matching, we could speed this process up by eliminating some land comparisons.
+\item add: we might need a proper definition of the joint striation marks (the result of striation-identify)
+\item change: we could make the table into a labelled dotplot of importance to save space. We don't need the mean and standard deviations anymore -- the density plots and the ROCs take care of that.
+\item change: the focus of the paper is initially quite strongly on the maximal consecutively matching striae (CMS). We need to emphasis the role of CMS in the introduction: max CMS is Biasotti's main criterium for matching.  max CMS is part of current practice (AFTE criteria citation). AFIS \cite{AFIS} is suggesting it for an automated system (was there ever a phase II of that project?). Problem is, that determining CMS is subjective; counting CMS in particular, has been found to be subjective to the examiner: `the concept of counting striations is subjective and based on experience'~\citep{miller:1998}.  For an automatic routine we are faced with the problem of having to determine what a stria is. XXX Should we include one of those microscopic images to bring that point home? We would need somebody qualified to tell us how many CMS there are, though.
+\item to consider: AOAS states that accepted papers rarely have more than 20 pages. We are currently at about 23--24 pages.
 \item definitions: 
-A bullet's {\it signature} are the residual surface measurements after removing the big structure using the loess fit. The {\it cross section} defines the location along the $x$ axis  at which the signature is taken.
+A bullet's {\it signature} is defined as the residual surface measurements after removing the big structure using the loess fit. The {\it cross section} defines the location along the $x$ axis  at which the signature is taken.
 \end{enumerate}
 }
 Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of  convictions  in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\citep{giannelli:2011}.
@@ -1104,12 +1108,13 @@ aucs <- plyr::ldply(features, function(x) {
 aucs <- melt(aucs, measure.var=c("lower", "upper"))
 names(aucs) <- c("variable", "type", "auc")
 rocs <- merge(rocs, aucs, by=c("variable", "type"))
+rocs$variable <- reorder(rocs$variable, -rocs$auc, min)
+
 labels <- unique(subset(rocs, auc > 0.5)[,c("variable", "auc")])
 labels$labels <- paste("AUC:", labels$auc)
 labels$type <- NA
 
 
-rocs$variable <- reorder(rocs$variable, -rocs$auc, min)
 ggplot(data=subset(rocs, auc > 0.5)) +
   geom_ribbon(aes(x=`FALSE`, ymax=`TRUE`, ymin=0), alpha=0.2) +
   geom_line(aes(x=`FALSE`,y=`TRUE`))+ theme_bw() + xlab("False negative rate") + 
