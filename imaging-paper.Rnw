@@ -1016,10 +1016,12 @@ qplot(x, value, group=variable, geom="polygon", data=dm, fill=variable,
         legend.background = element_rect(colour="grey75"),
         plot.margin = unit(c(0,0,0,0), unit="cm"))
 @
-\caption{\label{fig:densities}Overview of all the marginal densities for features described in section~\ref{sec:algorithm}.}
+\caption{\label{fig:densities}Overview of all the marginal densities for features described in section~\ref{sec:algorithm}. Shifts in the mode of the density functions between known matches and known non-matches indicate the variable's predictive power in distinguishing matches and non-matches. }
 \end{figure}
 
-<<prob.ratios, echo=FALSE>>=
+\begin{figure}[hbtp]
+  \centering
+<<ratios-overview,echo=FALSE, warning=FALSE, fig.width=12, fig.height=6, out.width='\\textwidth'>>=
 library(reshape2)
 dens.stats <- dm %>% group_by(var, variable) %>% mutate(
   sum = sum(value, na.rm=TRUE),
@@ -1032,9 +1034,74 @@ ratios <- dens.stats %>% group_by(var, x) %>% summarise(
   upper = sum(down[variable=="KM"], na.rm=TRUE)/sum(down[variable=="KNM"], na.rm=TRUE)
 )
 rm <- melt(ratios, measure.var=c("lower", "upper"))
+rm$value <- pmin(pmax(rm$value, 0.1), 10)
 levels(rm$variable) <- c("P(X < c | KM) / P(X < c | KNM)", "P(X > c | KM) / P(X > c | KNM)")
-qplot(x, value, colour=variable,  data=rm) + facet_wrap(~var, scales="free") + scale_y_log10() + theme_bw() + geom_hline(yintercept=1) + scale_colour_brewer(palette="Set2") + ylab("Probability Ratios")
+qplot(x, value, colour=variable,  data=rm, geom="line", group=variable, 
+      size=I(1)) + xlab("X") +
+  facet_wrap(~var, scales="free", ncol=4) + 
+  scale_y_log10(limits=c(1/10,10)) + theme_bw() + 
+  geom_hline(yintercept=1, size=0.5) + 
+  scale_colour_brewer("Estimated Ratios", palette="Set2") + 
+  ylab("(Logged) Probability Ratios") +
+  theme(legend.position=c(1,0), legend.justification = c("right", "bottom"),
+        legend.background = element_rect(colour="grey75"),
+        plot.margin = unit(c(0,0,0,0), unit="cm")) 
 @
+\caption{\label{fig:ratios}Estimated probability ratios for all of the features described in section~\ref{sec:algorithm}. Ratios are logged and and artificially constrained to an interval between (1/10 and 10). Large deviations from one, indicate a strong distinction between matches and known matches based on the variable. Both left tail and right tail probabilities are shown. }
+\end{figure}
+
+\begin{figure}[hbtp]
+  \centering
+<<rocs-overview,echo=FALSE, warning=FALSE, fig.width=12, fig.height=6, out.width='\\textwidth'>>=
+# plot false positive against false negative
+# prob of false positive: P(match | KNM)
+# prob of false negative: P(non-match | KM)
+
+# for  X < c: we get probability for P(X < c | KNM) and P(X < c | KM)
+
+
+features <- c("CMS", "CNMS",  "num.matches", "num.nonmatches", "D", "S", "ccf")
+errors <- plyr::ldply(features, function(x) {
+  xx <- unique(bstats[,x])
+  if (length(xx) > 500) {
+    xr <- range(bstats[,x])
+    xx <- seq(xr[1], xr[2], length.out=500)
+  }
+  # upper and lower rule:
+  # upper: match is defined as X > xx
+  # lower: match is defined as X < xx
+  subbstats <- subset(bstats, flagged == FALSE)
+  subbstats$match <- factor(subbstats$match)
+  
+  errors <- plyr::ldply(xx, function(cc) {
+    idx <- which(subbstats[,x] >= cc)
+    upper <- data.frame(xtabs(~match, data= subbstats[idx,,drop=FALSE])/
+                          xtabs(~match, data= subbstats))
+    idx <- which(subbstats[,x] <= cc)
+    lower <- data.frame(xtabs(~match, data= subbstats[idx,,drop=FALSE])/
+                          xtabs(~match, data= subbstats))
+    
+    data.frame(value = cc, match=lower[,1], lower=lower[,2], upper=upper[,2])
+  })
+  
+  errors$variable <- x
+  errors
+}) 
+
+rocs.lower <- dcast(errors, variable+value~match, value.var="lower")
+rocs.lower$type <- "lower"
+rocs.upper <- dcast(errors, variable+value~match, value.var="upper")
+rocs.upper$type <- "upper"
+rocs <- rbind(rocs.lower, rocs.upper)
+
+rocs$variable <- factor(rocs$variable, levels=features)
+qplot(`FALSE`, `TRUE`, data=rocs,  geom="line", group=type) + theme_bw() + geom_abline(linetype=2) + xlab("False negative rate") + 
+  ylab("False positive rate") + facet_wrap(facets=~variable, ncol=4)
+@
+\caption{\label{fig:rocs}ROC curves for all of the features described in section~\ref{sec:algorithm}. \hh{XXX compare ROC curve of CMS against the other individual features -- ccf should be a lot more predictive than CMS. XXX}
+\hh{XXX next steps: get rid of lower curve. find area under the curve, put value on bottom right of the chart, sort by ROC.}}
+\end{figure}
+
 
 %' \begin{figure}[hbtp]
 %'   \centering
