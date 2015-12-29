@@ -1094,12 +1094,26 @@ rocs.upper <- dcast(errors, variable+value~match, value.var="upper")
 rocs.upper$type <- "upper"
 rocs <- rbind(rocs.lower, rocs.upper)
 
-rocs$variable <- factor(rocs$variable, levels=features)
-qplot(`FALSE`, `TRUE`, data=rocs,  geom="line", group=type) + theme_bw() + geom_abline(linetype=2) + xlab("False negative rate") + 
-  ylab("False positive rate") + facet_wrap(facets=~variable, ncol=4)
+aucs <- plyr::ldply(features, function(x) {
+  subbstats <- subset(bstats, flagged == FALSE)
+  pos.scores <- sample(subbstats[which(subbstats$match),x], 5000, replace=TRUE)
+  neg.scores <- sample(subbstats[which(!subbstats$match),x], 5000, replace=TRUE)
+  data.frame(x, upper=mean(pos.scores > neg.scores), 
+             lower = mean(pos.scores < neg.scores))
+})
+aucs <- melt(aucs, measure.var=c("lower", "upper"))
+names(aucs) <- c("variable", "type", "auc")
+rocs <- merge(rocs, aucs, by=c("variable", "type"))
+labels <- unique(subset(rocs, auc > 0.5)[,c("variable", "auc")])
+labels$labels <- paste("AUC:", labels$auc)
+labels$type <- NA
+  
+rocs$variable <- reorder(rocs$variable, -rocs$auc, min)
+qplot(`FALSE`, `TRUE`, data=subset(rocs, auc > 0.5),  geom="line", group=type) + theme_bw() + geom_abline(linetype=2) + xlab("False negative rate") + 
+  ylab("False positive rate") + facet_wrap(facets=~variable, ncol=4) + 
+  geom_label(x=1, y=0, aes(label=labels), data=labels, hjust=1, vjust=0)
 @
-\caption{\label{fig:rocs}ROC curves for all of the features described in section~\ref{sec:algorithm}. \hh{XXX compare ROC curve of CMS against the other individual features -- ccf should be a lot more predictive than CMS. XXX}
-\hh{XXX next steps: get rid of lower curve. find area under the curve, put value on bottom right of the chart, sort by ROC.}}
+\caption{\label{fig:rocs}ROC curves for all of the features described in section~\ref{sec:algorithm}. Variables are sorted according to their area under the curve (AUC). Except for the distance $D$ between signatures, all features are more predictive than the maximal CMS. }
 \end{figure}
 
 
