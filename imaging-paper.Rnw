@@ -137,11 +137,12 @@ Todo list for journal shape-up: there is a lot of good material, we mainly need 
 %\item add: Why do we take the lowest stable cross section?
 %\item add: more discussion of the density plots: probability ratio for a match - exchanged probability ratios for ROC curves
 \item add: more discussion on additional bullet images. NIST database claims to have 70 bullets -- that would be two sets of the study, but only 35 bullets are currently available. Should we contact Alan Zheng to see whether we can get access to more bullet files?
+\item add: we could extend the results of the James Hamby study by trying to match every single land against all other lands. This would almost double the number of comparisons ($21,115 = (118+88)\cdot 205/2$). Something for the appendix? What would be fun, would be to show all of the aligned signatures for all ten barrels.
 \item add: should we add a paragraph on the speed of the evaluation? - separate out into pre-processing (needs to be done once) and matching (pairwise comparison of lands). If we only do bullet matching, we could speed this process up by eliminating some land comparisons.
 \item add: we might need a proper definition of the joint striation marks (the result of striation-identify)
 \item change: we could make the table into a labelled dotplot of importance to save space. We don't need the mean and standard deviations anymore -- the density plots and the ROCs take care of that.
-\item change: the focus of the paper is initially quite strongly on the maximal consecutively matching striae (CMS). We need to emphasis the role of CMS in the introduction: max CMS is Biasotti's main criterium for matching.  max CMS is part of current practice (AFTE criteria citation). AFIS \cite{AFIS} is suggesting it for an automated system (was there ever a phase II of that project?). Problem is, that determining CMS is subjective; counting CMS in particular, has been found to be subjective to the examiner: `the concept of counting striations is subjective and based on experience'~\citep{miller:1998}.  For an automatic routine we are faced with the problem of having to determine what a stria is. XXX Should we include one of those microscopic images to bring that point home? We would need somebody qualified to tell us how many CMS there are, though.
-\item to consider: AOAS states that accepted papers rarely have more than 20 pages. We are currently at about 23--24 pages.
+%\item change: the focus of the paper is initially quite strongly on the maximal consecutively matching striae (CMS). We need to emphasis the role of CMS in the introduction: max CMS is Biasotti's main criterium for matching.  max CMS is part of current practice (AFTE criteria citation). AFIS \cite{AFIS} is suggesting it for an automated system (was there ever a phase II of that project?). Problem is, that determining CMS is subjective; counting CMS in particular, has been found to be subjective to the examiner: `the concept of counting striations is subjective and based on experience'~\citep{miller:1998}.  For an automatic routine we are faced with the problem of having to determine what a stria is. XXX Should we include one of those microscopic images to bring that point home? We would need somebody qualified to tell us how many CMS there are, though.
+\item to consider: AOAS states that accepted papers rarely have more than 20 pages. We are currently over by a couple of pages.
 \item definitions: 
 A bullet's {\it signature} is defined as the residual surface measurements after removing the big structure using the loess fit. The {\it cross section} defines the location along the $x$ axis  at which the signature is taken.
 \end{enumerate}
@@ -152,9 +153,17 @@ In 2009, the National Academy of Sciences published a report~\citep{NAS:2009} qu
 
 Rifling, manufacturing defects, and impurities in a barrel create striation marks on the bullet during the firing process. These marks are assumed to be unique to the barrel, as described in a 1992 AFTE article~\citep{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows."
 
-The primary goal in this type of forensic analysis is to identify these striation markings in an attempt to match two bullets. Since gun barrels should produce similar markings on bullets fired consecutively, the careful analysis of these surface images can help us determine whether two bullets are a match. However, this process has traditionally required forensic experts to perform the analysis, and required physical examination of the bullets. We propose a framework which allows for the analysis of the surface topologies, and the transcription of the markings into a 2D plotting framework which we believe makes identification of matches easier and more rooted in science for both the expert and the lay person.
+The primary goal in this type of forensic analysis is to identify these striation markings in an attempt to match two bullets. Since gun barrels should produce similar markings on bullets fired consecutively, the careful analysis of these surface images can help in determining whether two bullets are a match. This process has traditionally required forensic experts to perform the analysis, and required physical examination of the bullets. 
 
-\hh{XXX More detailed discussion of automatic approaches and database discussion XXX}
+\hh{
+Current standard practice~\cite{afte:1992} relies in part on the assessment of the so-called maximal number of consecutively matching striae (CMS), first defined by \citet{biasotti:1959}.
+One of the problems is that a human inspection to determine CMS is subjective \citep{miller:1998}. 
+}
+
+In this paper, we propose a framework which allows for the automatic analysis of the surface topologies of bullets, and the transcription of the individual characteristics into a 2D plotting framework. 
+This allows for an objective and quantitative assessment of striae-based bullet matches.
+
+%\hh{XXX More detailed discussion of automatic approaches and database discussion XXX}
 
 Throughout this paper, we work with images from the James Hamby Consecutively Rifled Ruger Barrel Study~\citep{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce known test bullets and unknown bullets for comparison. 
 3D topographical images of each bullet were obtained using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). x3p is a container format conforming to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. x3p was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government firearm forensics researchers whose aim is to establish best practices for researchers using metrology in the forensic sciences.
@@ -1338,21 +1347,48 @@ Another thing to note about the  the random forest's error rates is that they ar
 
 \begin{figure}[hbtp]
   \centering
-<<tree:forest, echo=FALSE, fig.width=5, fig.height=5.25, out.width='.5\\textwidth', warning = FALSE>>=
-qplot(pred, forest, geom="jitter", data=bstats, colour=match, 
-      shape=match) + theme_bw() +
-  theme(legend.position="bottom") +
-  geom_vline(xintercept=0.5, colour="grey50") +
-  geom_hline(yintercept=0.5, colour="grey50") + 
-  xlab("Predictions from decision tree") +
-  ylab("Predictions from random forest")   +
-  scale_colour_brewer(palette="Paired", labels=c("KNM", "KM")) +
-  scale_shape_discrete(labels=c("KNM", "KM"))
+<<tree:forest, echo=FALSE, fig.width=5, fig.height=2.5, out.width='.6\\textwidth', warning = FALSE>>=
+predm <- melt(bstats, measure.var=c("pred", "forest"))
+levels(predm$variable) <- c("Tree", "Forest")
+predm$match <- c("KNM", "KM")[as.numeric(predm$match)+1]
+qplot(data=predm, value, variable, geom="jitter", colour=match, shape=match) + theme_bw() + facet_grid(match~., labeller="label_both") +
+    scale_colour_brewer(palette="Paired", labels=c("KNM", "KM")) +
+  scale_shape_discrete(labels=c("KNM", "KM")) + ylab("") + 
+  xlab("Predicted probability of a match") +
+  theme(legend.position="none")
+
+# qplot(pred, forest, geom="jitter", data=bstats, colour=match, 
+#       shape=match) + theme_bw() +
+#   theme(legend.position="bottom") +
+#   geom_vline(xintercept=0.5, colour="grey50") +
+#   geom_hline(yintercept=0.5, colour="grey50") + 
+#   xlab("Predictions from decision tree") +
+#   ylab("Predictions from random forest")   +
+#   scale_colour_brewer(palette="Paired", labels=c("KNM", "KM")) +
+#   scale_shape_discrete(labels=c("KNM", "KM"))
+# 
 @
-\caption{\label{fig:tree-forest}Scatterplot of prediction results from the tree (horizontal) and the forest (vertical). Each point corresponds to a land-to-land comparison. Known matches are indicated in blue. Matches predicted by the decision tree are on the right half of the plot, matches predicted by the random forest are in the upper half. }
+\caption{\label{fig:tree-forest}Prediction results from the tree and the forest. Using a cut-off probability of 0.5 the forest correctly predicts every single comparison. Compared to the tree, the forest's prediction probabilities are  shrunk towards either end of the prediction range. }
 \end{figure}
 
-Besides a probabilistic quantification of matches, we get from a random forest an assessment of the importance of each of the features derived from the bullets' 3d topological surface measurements. Table~\ref{tab:importance} shows an overview of the importance of each variable measured as the mean decrease in the gini index when the variable in question is included in a tree.
+Besides a probabilistic quantification of matches, we get from a random forest an assessment of the importance of each of the features derived from the bullets' 3d topological surface measurements. Figure~\ref{fig:importance} shows an overview of the importance of each variable measured as the mean decrease in the gini index when the variable in question is included in a tree.
+\begin{figure}
+<<echo=FALSE, fig.width=7, fig.height=1.5, out.width='.7\\textwidth'>>=
+imp <- data.frame(importance(rtrees))
+imp$Variable <- row.names(imp)
+imp$Variable[c(7,8)] <- c("#matches", "#non-matches")
+imp1 <- subset(imp, Variable != c("x1", "sd.D"))
+imp2 <- subset(imp, Variable %in% c("x1", "sd.D"))
+qplot(MeanDecreaseGini,1, data=imp, geom="point") + 
+  geom_text(aes(y=1.1, label=Variable), angle=45, hjust=0, data=imp1) + 
+  geom_text(aes(y=0.9, label=Variable), angle=-45, hjust=0, data=imp2) + 
+  ylim(c(0.5, 2.5)) + theme_bw() + ylab("") +
+  theme(axis.ticks.y=element_blank(), axis.text.y=element_blank(),
+        panel.grid.major.y=element_blank(), panel.grid.minor.y=element_blank()) +
+  xlab("Importance (mean decrease in Gini index)")
+@
+\caption{\label{fig:importance}Importance of features in the random forest. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree.}
+\end{figure}
 \begin{table}[tbhp]
 \caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Averages (and standard deviations) for known matches (KM) and known non-matches (KNM) are shown in the last four columns.}
 \centering
@@ -1386,7 +1422,8 @@ print(xtable(imp, align="clrrd{3.2}rd{3.2}", digits=c(0,0,1,1,2,1,2)),
 @
 \end{table}
 
-The rows in the table are ordered according to descending importance. The variable with the most predictive power by far is cross-correlation, followed by the number of matches and non-matches. CMS is found only in sixth place.
+%The rows in the table are ordered according to descending importance. 
+The variables with the most predictive power by far are cross-correlation and the overall number of matches, followed by the total depth of joint striations $S$ and non-matches. CMS is found only in sixth place.
 
 \section{Conclusion}
 
@@ -1400,11 +1437,11 @@ The feasibility of a database of ballistic images was evaluated in a 2008 report
 The findings of the NRC report on ballistic imaging are based on two-dimensional greyscale images, which the committee argued were not reliable enough for distinguishing extremely fine marks. This finding coincides with the assessment by \citet{dekinder:2004} based on the IBIS Heritage system. A further re-assessment by \citet{deceuster:2015} came to the same conclusions based on the EvoFinder system. 
 The NRC report also found, that results from 2d images are improved upon by matches based on 3d images. This is consistent with the importance of features found here: out of the top five features in Table~\ref{tab:importance}, only the number of matches and mismatches are available for a match based on 2d features.
 
-By suggesting an automated algorithm that first removes class characteristics, such as the grooves and the curvature of the bullet to reveal the region of the  land, then identifies peaks and valleys on this land, we reduce subjectivity and with it possible sources of bias. Counting CMS in particular, has been found to be subjective to the examiner: `the concept of counting striations is subjective and based on experience'~\citep{miller:1998}.
+By suggesting an automated algorithm that first removes class characteristics, such as the grooves and the curvature of the bullet to reveal the region of the  land, then identifies peaks and valleys on this land, we reduce subjectivity and with it possible sources of bias. In particular, `the concept of counting striations is subjective and based on experience'~\citep{miller:1998}.
 
 For a fair assessment of the adequacy of an algorithm we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package x3prplus~\citep{x3prplus}, and the code to produce this paper is available at \url{http://www.github.com/erichare/imaging-paper}. Obviously, this is only a first step, but in times of the Netflix prize~\citep{koren:2009, toescher:2009, piotte:2009} and the many Data Science challenges hosted by Kaggle\footnote{kaggle home: \url{https://www.kaggle.com/solutions/competitions}}, we should not let the quality of the matching algorithm be the problem that stands in the way.
 
-Only a much larger database and transparent communication of results will give us  answers to whether automatic matching of ballistic evidence is really feasible. Whether there really is individualization of this evidence, as is often silently assumed. And in the case, that individualization is a reasonable assumption, whether  there is a way to be able to distinguish between individual and subclass characteristics. 
+Only a much larger database and transparent communication of results will give us  answers to whether automatic matching of ballistic evidence is really feasible,  whether there really is individualization of this evidence, as is often silently assumed. And in the case, that individualization is a reasonable assumption, whether  there is a way to be able to distinguish between individual and subclass characteristics. 
 
 An approach that might help in determining this difference comes from Biometrics \citep{jain:2015:tphil, jain:2015}. It has been successfully applied in the Aadhar project (the effort by the Unique Identification Authority of India (UIDAI) to provide a unique 12-digit identification number to approximately 1.2 billion residents of India based on ten fingerprints and two irises).
 This approach uses dictionary learning based on small square patches  of 64x64 or 32x32 pixels. For matching bullets, a simpler, one-dimensional window approach might be sufficient to match striation marks because of the physical forces  leading to the existence of these marks.  
