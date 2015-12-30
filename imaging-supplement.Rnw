@@ -96,6 +96,10 @@ library(sm)
 
 @
 
+
+\section{Cylindrical Fit}\label{supp:cylindrical}
+Figure~\ref{fig:fixedX} shows the side profile of a crosscut through the surface measurements of bullet 1-5 at a fixed level. The smooth line on top is a circle, with estimated radius and center. The details of this fit are given below. We then remove the fit to investigate residuals.
+%
 \begin{figure}[hbtp]
   \centering
 <<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2, fig.width=6, out.width='0.5\\textwidth'>>=
@@ -123,11 +127,9 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
 \caption{\label{fig:fixedX}Side profile of the surface measurements (in $\mu m$) of a bullet land across a fixed $x$ value. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
-\section{Cylindrical Fit}\label{supp:cylindrical}
+%One reasonable approach is to fit a circle to the curve and compute the residuals from this fit.
 
-One reasonable approach is to fit a circle to the curve and compute the residuals from this fit.
-
-For this, assume that $n$ data points are given in the form of data tuples $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$ that are (approximately) located on a circle. We want to estimate the location of the center and radius of the best fitting circle using a least squares approach.
+Assume that $n$ data points are given in the form of data tuples $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$ that are (approximately) located on a circle. We want to estimate the location of the center and radius of the best fitting circle using a least squares approach.
 
 We minimize the following expression:
 \begin{equation}\label{eq:circle}
@@ -264,11 +266,11 @@ qplot(y, resid, data=subset(db2, x == 100), #colour=factor(x),
   ylab("Residuals from circular fit") +
   ggtitle("Bullet 1-5 in black")
 @
-\caption{Circle fit for each cross section of bullet 2, with bullet 1-5 overlaid.\label{fig:circlefits} Bullet 1-5 matches best with bullet 2-1.}
+\caption{Circular fit for each cross section of bullet 2, with bullet 1-5 overlaid.\label{fig:circlefits} Bullet 1-5 matches best with bullet 2-1.}
 \end{figure}
 
-
-\section{Assessing cross-correlation between signatures at multiple cross sections}
+\newpage
+\section{Assessing cross-correlation between signatures at multiple cross sections}\label{supp:ccf}
 
 Figure~\ref{fig:crosscuts} shows a sequence of cross sections for bullet 1-5 (barrel 1) that are taken 50$\mu m$ apart, between 150$\mu m$  and 400$\mu m$. These are compared to a cross section at 100$\mu m$. Initially this comparison constitutes an almost perfect match between the two cross sections. However, the match quickly deteriorates with increasing distance to non-matches at a cross section of $x = 300\mu m$ or higher.  Only if the cross section is within 150$\mu m$ do we get a good visual match even when we know that the same bullet surface is being used. 
 Given that we have to expect some variation in nominally the same cross section levels due to manual alignments in microscopes, we should take cross section levels into account in the automatic matching routine by evaluating matches at several cross sections. 
@@ -325,17 +327,93 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
 \caption{\label{fig:crosscuts}Overview of the variations in the surface along different cross sections. Cross section at $x = 100$ is compared to cross sections every 50$\mu m$. With every step away from the original cross section site, the number of differences between the cross sections increases, and the number of maximum CMS decreases from initially 14 to  3 or fewer at $x = 300\mu m$ and higher. }
 \end{figure}
 
-\section{Signature intensities}
+\newpage
+\section{Signature intensities}\label{supp:bulletbottom}
+<<setup-signatures, echo=FALSE>>=
+library(x3pr)
+library(x3prplus)
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+library(zoo)
 
-\hh{XXX Overview of the signatures across one bullet land. Maybe with color?}
+knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
+unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 
 
+###############
+# can we identify the barrels the unknown bullets came from?
 
-Standard deviation of signatures is one measure to quantify the extent to which they are expressed. Figure~\ref{fig:crosscuts} shows the amount of the standard deviation across crosscuts for all bullet lands shown as lines. Standard deviation decreases as the crosscut increases, i.e.\ bullets' signatures are most expressed close to the bottom of the bullet. \hh{XXX can we find an AFTE citation to back this up?}
+new_get_bullet <- function(path, x = 243.75, bullet = NULL) {
+  if (is.null(bullet)) bullet <- read.x3p(path)
+  dbr111 <- fortify_x3p(bullet)
+  
+  pickx <- dbr111$x[which.min(abs(x - unique(dbr111$x)))]
+  
+  dbr111.fixx <- dbr111[dbr111$x == pickx,]
+  
+  return(dbr111.fixx)
+}
 
-\begin{figure}[hbtp]
-\centering
-<<crosscuts-sd, echo=FALSE, fig.height=5, fig.width=8, out.width='.7\\textwidth'>>=
+new_processBullets <- function(bullet, x = 100) {
+  crosscuts <- unique(fortify_x3p(bullet)$x)
+  crosscuts <- crosscuts[crosscuts >= min(x)]
+  crosscuts <- crosscuts[crosscuts <= max(x)]
+  if (length(x) > 2) crosscuts <- crosscuts[crosscuts %in% x]
+  
+  list_of_fits <- lapply(crosscuts, function(x) {
+    br111 <- new_get_bullet(path = NULL, x = x, bullet = bullet)
+    br111.groove <- get_grooves(br111)
+    fit_loess(br111, br111.groove)$resid$data
+  })
+  lof <- list_of_fits %>% bind_rows
+  
+  cbind(lof, bullet = bullet$path)
+}
+
+new_bulletGetMaxCMSXXX <- function(lof1, lof2, span=35) {
+  lof <- rbind(lof1, lof2)
+  bAlign = bulletAlign(lof)
+  lofX <- bAlign$bullet  
+  
+  b12 <- unique(lof$bullet)
+  peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = span)
+  peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = span)
+  
+  #qplot(x=y, y=resid, geom="line", colour=bullet, data=lofX, group=bullet) +
+  #    theme_bw() +
+  #    geom_rect(data=peaks1$lines, aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-5, ymax=5, inherit.aes = FALSE, alpha=I(0.25)) +
+  #    geom_rect(data=peaks2$lines, aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-5, ymax=5, inherit.aes = FALSE, alpha=I(0.25))
+  
+  peaks1$lines$bullet <- b12[1]
+  peaks2$lines$bullet <- b12[2]
+  
+  lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
+  
+  #   p <- qplot(x=y, y=resid, geom="line", colour=bullet, data=lofX, group=bullet) +
+  #     theme_bw() +
+  #     geom_rect(data=lines, aes(xmin=xmin, xmax=xmax, fill = factor(type)),  ymin=-6, ymax=6, inherit.aes = FALSE, alpha=I(0.25)) +
+  #     ylim(c(-6,6)) +
+  #     geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(lines, !match), inherit.aes = FALSE) +
+  #     geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(lines, match), inherit.aes = FALSE) 
+  
+  maxCMS <- maxCMS(lines$match==TRUE)
+  list(maxCMS = maxCMS, ccf = bAlign$ccf, lag=bAlign$lag, lines=lines, bullets=lofX)
+}  
+
+# match unknown land using crosscuts
+ccs <- read.csv("csvs/crosscuts-25.csv")
+all_bullets <- lapply(as.character(ccs$path), function(x) {
+  result <- read.x3p(x)
+  result[[3]] <- x
+  names(result)[3] <- "path"
+  
+  return(result)
+})
+
+knowns <- all_bullets[1:120]
+unknowns <- all_bullets[121:210]
+
 if (!file.exists("csvs/crosscut-sd.csv")) {
   bullets_processed <- lapply(all_bullets, function(bul) {
     cat("Computing processed bullet", basename(bul$path), "\n")
@@ -358,14 +436,49 @@ if (!file.exists("csvs/crosscut-sd.csv")) {
   write.csv(stats, "csvs/crosscut-sd.csv", row.names=FALSE)
 } else {
   stats <- read.csv("csvs/crosscut-sd.csv")
-}
-  
+}  
+@
+%
+Figure~\ref{fig:overview} shows an overview of the signatures across different crossucts on a single bullet. 
+\begin{figure}[hbtp]
+<<one-bulletland-sd, echo=FALSE, dependson='setup-signatures', fig.height=5, fig.width=8, out.width='0.7\\textwidth', warning=FALSE>>=
+k <- 1
+x <- as.character(ccs$path)[k]
+land <- read.x3p(x)
+land[[3]] <- x
+names(land)[3] <- "path"
+
+crosscuts <- 25*(1:20)
+dframe <- new_processBullets(bullet = land, x = crosscuts)
+dframe$bullet <- with(dframe, paste(bullet, x))
+
+bullet <- dframe %>% bind_rows %>% bulletSmooth 
+subbullet <- subset(bullet, x >= ccs$cc[k])
+qplot(x=y, geom="line", y=l30, colour=x, group=x, data=subbullet) + theme_bw() +
+  scale_colour_gradient("Crosscuts") +
+  theme(legend.position="bottom") +
+  ylab("Residuals from loess fit")
+@
+\caption{\label{fig:overview}Signatures of the same bullet at different crosscuts. With increasing crosscut level, peaks and valleys are less pronounced, resulting in a smaller standard deviation.}
+\end{figure}
+As crosscut levels increase individual characteristics become less distinctive, making true matches to other bullets harder. The pattern of decreasing peaks and valleys is generally true for  bullet lands, as can be seen in Figure~\ref{fig:sds}. 
+%
+\begin{figure}[hbtp]
+\centering
+<<crosscuts-sd, echo=FALSE, fig.height=5, fig.width=8, out.width='.7\\textwidth', dependson='setup-signatures'>>=
 qplot(x, sd, data=stats, geom="line", group=bullet, alpha=I(0.5)) + theme_bw() +
   geom_smooth(group=1) + 
   xlab("Crosscut location") +
   ylab("Standard deviation")
 @
-\caption{\label{fig:crosscuts}Standard deviation reduces as crosscut levels increase.}
+\caption{\label{fig:sds}Standard deviation reduces as crosscut levels increase.}
 \end{figure}
+Figure~\ref{fig:sds} shows that the amount of standard deviation of a signature decreases on average for all bullet lands as crosscut levels increase.
+This makes standard deviation of a signature one measure to quantify the extent to which a signature is expressed. This implies that for identifying matches we should use the lowest crosscut level to extract a bullet's signature once a stable surface region is detected. This is in accordance with current standard practice \citep{afte:1992}.
+
+\bibliographystyle{imsart-nameyear.bst}
+%\biboptions{authoryear}
+\bibliography{references}
+
 
 \end{document}
