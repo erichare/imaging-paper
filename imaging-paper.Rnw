@@ -1377,50 +1377,50 @@ Besides a probabilistic quantification of matches, we get from a random forest a
 imp <- data.frame(importance(rtrees))
 imp$Variable <- row.names(imp)
 imp$Variable[c(7,8)] <- c("#matches", "#non-matches")
-imp1 <- subset(imp, Variable != c("x1", "sd.D"))
+imp1 <- subset(imp, !(Variable %in% c("x1", "sd.D")))
 imp2 <- subset(imp, Variable %in% c("x1", "sd.D"))
 qplot(MeanDecreaseGini,1, data=imp, geom="point") + 
   geom_text(aes(y=1.1, label=Variable), angle=45, hjust=0, data=imp1) + 
   geom_text(aes(y=0.9, label=Variable), angle=-45, hjust=0, data=imp2) + 
-  ylim(c(0.5, 2.5)) + theme_bw() + ylab("") +
+  ylim(c(0, 2.75)) + theme_bw() + ylab("") +
   theme(axis.ticks.y=element_blank(), axis.text.y=element_blank(),
         panel.grid.major.y=element_blank(), panel.grid.minor.y=element_blank()) +
   xlab("Importance (mean decrease in Gini index)")
 @
 \caption{\label{fig:importance}Importance of features in the random forest. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree.}
 \end{figure}
-\begin{table}[tbhp]
-\caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Averages (and standard deviations) for known matches (KM) and known non-matches (KNM) are shown in the last four columns.}
-\centering
-<<importance, echo=FALSE, results='asis', warning=FALSE>>=
-imp <- data.frame(importance(rtrees))
-imp$Variable <- row.names(imp)
-imp <- imp[order(-imp$MeanDecreaseGini),]
-names(imp)[1] <- "Importance"
-imp <- imp[,2:1]
-imp$meanMatch <- sapply(imp$Variable, function(var) {
-  mean(subset(bstats, match)[,var])
-})
-imp$sdMatch <- sapply(imp$Variable, function(var) {
-  sd(subset(bstats, match)[,var])
-})
-imp$meanNonMatch <- sapply(imp$Variable, function(var) {
-  mean(subset(bstats, !match)[,var])
-})
-imp$sdNonMatch <- sapply(imp$Variable, function(var) {
-  sd(subset(bstats, !match)[,var])
-})
-imp$meanMatch <- round(imp$meanMatch,1)
-imp$sdMatch <- sprintf("(%5.2f)", imp$sdMatch)
-imp$meanNonMatch <- round(imp$meanNonMatch,1)
-imp$sdNonMatch <- sprintf("(%7.2f)", imp$sdNonMatch)
-row.names(imp) <- 1:nrow(imp)
-imp$Variable[c(2,4)] <- c("#matches", "#non-matches")
-names(imp)[-(1:2)] <- c("KM", "(sd)", "KNM", "(sd)")
-print(xtable(imp, align="clrrd{3.2}rd{3.2}", digits=c(0,0,1,1,2,1,2)), 
-      floating = FALSE)
-@
-\end{table}
+%' \begin{table}[tbhp]
+%' \caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Averages (and standard deviations) for known matches (KM) and known non-matches (KNM) are shown in the last four columns.}
+%' \centering
+%' <<importance, echo=FALSE, results='asis', warning=FALSE>>=
+%' imp <- data.frame(importance(rtrees))
+%' imp$Variable <- row.names(imp)
+%' imp <- imp[order(-imp$MeanDecreaseGini),]
+%' names(imp)[1] <- "Importance"
+%' imp <- imp[,2:1]
+%' imp$meanMatch <- sapply(imp$Variable, function(var) {
+%'   mean(subset(bstats, match)[,var])
+%' })
+%' imp$sdMatch <- sapply(imp$Variable, function(var) {
+%'   sd(subset(bstats, match)[,var])
+%' })
+%' imp$meanNonMatch <- sapply(imp$Variable, function(var) {
+%'   mean(subset(bstats, !match)[,var])
+%' })
+%' imp$sdNonMatch <- sapply(imp$Variable, function(var) {
+%'   sd(subset(bstats, !match)[,var])
+%' })
+%' imp$meanMatch <- round(imp$meanMatch,1)
+%' imp$sdMatch <- sprintf("(%5.2f)", imp$sdMatch)
+%' imp$meanNonMatch <- round(imp$meanNonMatch,1)
+%' imp$sdNonMatch <- sprintf("(%7.2f)", imp$sdNonMatch)
+%' row.names(imp) <- 1:nrow(imp)
+%' imp$Variable[c(2,4)] <- c("#matches", "#non-matches")
+%' names(imp)[-(1:2)] <- c("KM", "(sd)", "KNM", "(sd)")
+%' print(xtable(imp, align="clrrd{3.2}rd{3.2}", digits=c(0,0,1,1,2,1,2)), 
+%'       floating = FALSE)
+%' @
+%' \end{table}
 
 %The rows in the table are ordered according to descending importance. 
 The variables with the most predictive power by far are cross-correlation and the overall number of matches, followed by the total depth of joint striations $S$ and non-matches. CMS is found only in sixth place.
