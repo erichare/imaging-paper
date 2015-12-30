@@ -134,7 +134,7 @@ Todo list for journal shape-up: there is a lot of good material, we mainly need 
 %\item add: formula for loess fit and its s.e.
 %\item add: comparison of error rates to those of FEs in Hamby study.
 %\item change: emphasis in varying cross section. once a stable region is found, how little change is happening? 
-\item add: Why do we take the lowest stable cross section?
+%\item add: Why do we take the lowest stable cross section?
 %\item add: more discussion of the density plots: probability ratio for a match - exchanged probability ratios for ROC curves
 \item add: more discussion on additional bullet images. NIST database claims to have 70 bullets -- that would be two sets of the study, but only 35 bullets are currently available. Should we contact Alan Zheng to see whether we can get access to more bullet files?
 \item add: should we add a paragraph on the speed of the evaluation? - separate out into pre-processing (needs to be done once) and matching (pairwise comparison of lands). If we only do bullet matching, we could speed this process up by eliminating some land comparisons.
@@ -222,7 +222,7 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
 \caption{\label{fig:fixedX}Side profile of the surface measurements (in~$\mu m$) of a bullet land across a fixed $x$ value. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
-The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. \hh{While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in the supplement.} \hh{XXX Reference to the supplement? XXX}
+The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. \hh{While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in supplement~\ref{supp:cylindrical}.} 
 %It is clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
 
 %\subsection{Loess Fit}
@@ -580,8 +580,7 @@ ggplot() +
 \end{figure}
 %\afterpage{\clearpage}
 Figure~\ref{fig:match} gives an overview of the automated matching routine: 
-We first identify a stable region for each bullet and pick the signature at the lowest cross section level in this region, because typically, individual characteristics are best expressed at the lower end of the bullet. 
-\hh{(assumption here: lower cross section levels show better expression of individual marks XXX checked XXX crosscuts-and-sd.R)}
+We first identify a stable region for each bullet and pick the signature at the lowest cross section level in this region, because typically, individual characteristics are best expressed at the lower end of the bullet \hh{(see supplement~\ref{supp:bulletbottom} for a more detailed discussion)}. 
 
 All of the other steps are done on pairs of bullet lands:
 \begin{enumerate}
@@ -705,7 +704,7 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 
 \subsection{Impact of cross sections}
 The cross section on which a comparison between signatures is based matters -- signatures from cross sections that are further apart, show more pronounced differences between the signatures. 
-This poses both a caveat to matching attempts as well as an opportunity \hh{for quality control}: we have to be aware of which cross section level was used in a matching. An assessment of this situation shows that, visually, matches degrade if the signatures upon which the match is based are from cross sections further than 200$\mu m$ apart  (see supplement \hh{XXX section XXX} for a more thorough discussion).
+This poses both a caveat to matching attempts as well as an opportunity \hh{for quality control}: we have to be aware of which cross section level was used in a matching. An assessment of this situation shows that, visually, matches degrade if the signatures upon which the match is based are from cross sections further than 200$\mu m$ apart  (see supplement~\ref{supp:ccf} for a more thorough discussion).
 However, we can extract signatures from multiple cross sections of the same bullet land for an initial assessment of its quality. 
 This situation is assessed and discussed in more detail below: 
 
@@ -763,8 +762,6 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
 %An opportunity that arises from comparing multiple cross sections of a bullet's surface measurements is the following:
 by comparing signatures from cross sections that are not too far apart --  25~$\mu m$ to 50~$\mu m$ -- we get an indication whether the signatures come from a rapidly changing section of the surface, indicative of a break-off \hh{or some other damage}, or from a stable section, where we have a reasonable expectation of finding matches to other signatures. In the approach here, we keep increasing the cross section until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet~1-1 from barrel 3, where
 `stability' is  defined as two aligned signatures from cross sections chosen 25$\mu m$ apart having a cross-correlation of at least 0.9. 
-
-\hh{XXX Why do we use the lowest possible cross section? XXX}
 
 \subsection{Varying smoothing factor}\label{sec:smoothing}
 As mentioned earlier, the algorithm for detecting peaks and valleys depend on the selection of a smoothing window, called the smoothing factor. For detecting and removing the grooves prior to fitting a loess regression we selected a smoothing factor of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 25 seems more appropriate. %We can investigate the performance of peak/valley detection across different smoothing factors. 
@@ -1109,6 +1106,7 @@ aucs <- melt(aucs, measure.var=c("lower", "upper"))
 names(aucs) <- c("variable", "type", "auc")
 rocs <- merge(rocs, aucs, by=c("variable", "type"))
 rocs$variable <- reorder(rocs$variable, -rocs$auc, min)
+levels(rocs$variable)[3:4] <- c("#non-matches", "#matches")
 
 labels <- unique(subset(rocs, auc > 0.5)[,c("variable", "auc")])
 labels$labels <- paste("AUC:", labels$auc)
@@ -1240,7 +1238,7 @@ ggplot(data=subset(rocs, auc > 0.5)) +
 %' \end{figure}
 
 Similarly, the Euclidean distance $D$ between two signatures is strongly correlated to known matches. Out of the 48 pairs of land-to-land signatures with a distance of less than .25, 47 correspond to known matches (the single known mismatch consists of a pair of signatures that both are very flat with peaks and valleys of less than 1.5$\mu m$). %The average distance between known matches in the Hamby study is $\Sexpr{mean(bstats$D[bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[bstats$match])}\mu m$; while known mismatches have an average  distance of  $\Sexpr{mean(bstats$D[!bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[!bstats$match])}\mu m$.
-All of the features in Figure~\ref{fig:densities} show large, if not significant, differences between matches and non-matches. The predictive power of each one of these features is shown in form of ROC curves in Figure~\ref{fig:rocs}. The features are ordered according to the area under the curve (AUC). The feature with the highest individual predictive power is $S$, the sum of two signatures' heights of joint peaks and valleys. The maximal number of CMS is only in the seventh position here. The overall high AUC values indicate, that we can successfully employ machine learning methods to distinguish matches from non-matches.
+All of the features in Figure~\ref{fig:densities} show large, if not significant, differences between matches and non-matches. The predictive power of each one of these features is shown in form of the Receiving Operating Characteristic (ROC) curves in Figure~\ref{fig:rocs}. The features are ordered according to the area under the curve (AUC). The feature with the highest individual predictive power is $S$, the sum of two signatures' heights of joint peaks and valleys. The maximal number of CMS is only in the seventh position here. The overall high AUC values indicate, that we can successfully employ machine learning methods to distinguish matches from non-matches.
 %Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of the set of feature variables derived in section~\ref{sec:algorithm} from the 3d topological surface measurements. There are quite large differences in these averages, indicating 
 
 Using recursive partitioning, we fit a decision tree~\citep{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
