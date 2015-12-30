@@ -123,7 +123,7 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
 \caption{\label{fig:fixedX}Side profile of the surface measurements (in $\mu m$) of a bullet land across a fixed $x$ value. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
-\section{Cylindrical Fit}
+\section{Cylindrical Fit}\label{supp:cylindrical}
 
 One reasonable approach is to fit a circle to the curve and compute the residuals from this fit.
 
@@ -324,4 +324,48 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
 @
 \caption{\label{fig:crosscuts}Overview of the variations in the surface along different cross sections. Cross section at $x = 100$ is compared to cross sections every 50$\mu m$. With every step away from the original cross section site, the number of differences between the cross sections increases, and the number of maximum CMS decreases from initially 14 to  3 or fewer at $x = 300\mu m$ and higher. }
 \end{figure}
+
+\section{Signature intensities}
+
+\hh{XXX Overview of the signatures across one bullet land. Maybe with color?}
+
+
+
+Standard deviation of signatures is one measure to quantify the extent to which they are expressed. Figure~\ref{fig:crosscuts} shows the amount of the standard deviation across crosscuts for all bullet lands shown as lines. Standard deviation decreases as the crosscut increases, i.e.\ bullets' signatures are most expressed close to the bottom of the bullet. \hh{XXX can we find an AFTE citation to back this up?}
+
+\begin{figure}[hbtp]
+\centering
+<<crosscuts-sd, echo=FALSE, fig.height=5, fig.width=8, out.width='.7\\textwidth'>>=
+if (!file.exists("csvs/crosscut-sd.csv")) {
+  bullets_processed <- lapply(all_bullets, function(bul) {
+    cat("Computing processed bullet", basename(bul$path), "\n")
+    crosscuts <- 25*(1:20)
+    dframe <- new_processBullets(bullet = bul, x = crosscuts)
+    dframe$bullet <- with(dframe, paste(bullet, x))
+    dframe
+  })
+  names(bullets_processed) <- as.character(ccs$path)
+  
+  bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth
+  
+  stats <- bullets_smoothed %>% group_by(bullet, x) %>% summarize(
+    sd = sd(l30, na.rm=T)
+  )
+  splits <- strsplit(stats$bullet, split=".", fixed=TRUE)
+  bnames <- sapply(splits, function(x) paste(x[1],".x3p", sep=""))
+  stats$bullet <- bnames
+  
+  write.csv(stats, "csvs/crosscut-sd.csv", row.names=FALSE)
+} else {
+  stats <- read.csv("csvs/crosscut-sd.csv")
+}
+  
+qplot(x, sd, data=stats, geom="line", group=bullet, alpha=I(0.5)) + theme_bw() +
+  geom_smooth(group=1) + 
+  xlab("Crosscut location") +
+  ylab("Standard deviation")
+@
+\caption{\label{fig:crosscuts}Standard deviation reduces as crosscut levels increase.}
+\end{figure}
+
 \end{document}
