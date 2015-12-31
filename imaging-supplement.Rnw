@@ -471,16 +471,33 @@ This makes standard deviation of a signature one measure to quantify the extent 
 add: we could extend the results of the James Hamby study by trying to match every single land against all other lands. This would almost double the number of comparisons ($21,115 = (118+88)\cdot 205/2$).  
 }
 \hh{Show aligned signatures for all ten barrels. }
-<<aligned, echo=FALSE>>=
+<<aligned, echo=FALSE, warning=FALSE, fig.width=8, fig.height=10, out.width='\\textwidth', cache=TRUE>>=
 matches <- read.csv("csvs/matches.csv", header = FALSE)
 matches$barrel <- rep(1:10, each=6)
 matches$id <- 1:nrow(matches)
 library(reshape2)
 mm <- melt(matches, id.var=c("barrel", "id"), na.rm=TRUE)
 mm <- subset(mm, value != "")
-mm$value <- gsub("Br. Bullet ", "", mm$value)
+mm$value <- gsub("Br.* Bullet ", "", mm$value)
+mm$prefix <- sprintf("Br%d Bullet ", mm$barrel)
+unkns <- grep("[A-Z]",mm$value)
+mm$prefix[unkns] <- "Ukn Bullet "
+mm$path <- "~/papers/2015-imaging-paper/app/images/Hamby252_3DX3P1of2//"
+mm$path[unkns] <- "~/papers/2015-imaging-paper/app/images/Hamby252_3DX3P2of2//"
+mm$path <-   with(mm, paste0(path, prefix, value, ".x3p"))
+  
+ccs <- read.csv("csvs/crosscuts-25-new.csv")
+mm <- merge(mm, ccs, by="path", all=TRUE)
+mm <- subset(mm, !is.na(mm$cc))
 
-
+crosscuts <- plyr::ldply(
+  1:nrow(mm), 
+  function(i) {
+    dframe <- get_crosscut(mm$path[i], mm$cc[i])
+    groove <- get_grooves(dframe)
+    data.frame(mm[i,], fit_loess(dframe, groove)$resid$data)
+  })
+qplot(x=y, y=resid, data=crosscuts, geom="line", group=path) + ylim(c(-7,7)) + facet_wrap(facets=~id, ncol=6) + theme_bw() 
 @
 \bibliographystyle{imsart-nameyear.bst}
 %\biboptions{authoryear}
