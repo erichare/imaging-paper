@@ -27,7 +27,7 @@
 \startlocaldefs
 \usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
 \usepackage{subcaption}
-\usepackage{lineno,hyperref}
+\usepackage{lineno}
 \modulolinenumbers[5]
 
 \newcommand{\hh}[1]{{\color{magenta} #1}}
@@ -476,6 +476,11 @@ qplot(x, sd, data=stats, geom="line", group=bullet, alpha=I(0.5)) + theme_bw() +
 Figure~\ref{fig:sds} shows that the amount of standard deviation of a signature decreases on average for all bullet lands as crosscut levels increase.
 This makes standard deviation of a signature one measure to quantify the extent to which a signature is expressed. This implies that for identifying matches we should use the lowest crosscut level to extract a bullet's signature once a stable surface region is detected. This is in accordance with current standard practice \citep{afte:1992}.
 
+\newpage
+\section{One-on-one comparison of Hamby study}\label{supp:extended}
+\hh{
+add: we could extend the results of the James Hamby study by trying to match every single land against all other lands. This would almost double the number of comparisons ($21,115 = (118+88)\cdot 205/2$).  What would be fun, would be to show all of the aligned signatures for all ten barrels. (moved to supplement)
+}
 \bibliographystyle{imsart-nameyear.bst}
 %\biboptions{authoryear}
 \bibliography{references}

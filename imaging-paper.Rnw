@@ -11,8 +11,12 @@
 \usepackage{enumitem}
 \usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
 \usepackage{subcaption}
-\usepackage{lineno,hyperref}
+\usepackage{lineno}
 \modulolinenumbers[5]
+
+\usepackage{xr}
+\externaldocument{imaging-supplement}
+
 \usepackage{dcolumn}
 \newcolumntype{d}[1]{D{.}{.}{#1}}
 
@@ -26,9 +30,9 @@
 \renewcommand{\dbltopfraction}{0.9}	% fit big float above 2-col. text
 \renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
 %   Parameters for FLOAT pages (not text pages):
-\renewcommand{\floatpagefraction}{0.7}	% require fuller float pages
+\renewcommand{\floatpagefraction}{0.98}	% require fuller float pages
 % N.B.: floatpagefraction MUST be less than topfraction !!
-\renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
+\renewcommand{\dblfloatpagefraction}{0.98}	% require fuller float pages
 
 
 \newcommand{\hh}[1]{{\color{magenta} #1}}
@@ -43,7 +47,7 @@
 
 % "Title of the paper"
 \title{Automatic Matching of Bullet Lands}\thanksref{T1}
-\thankstext{T1}{Resources for this manuscript, including R code to reproduce any of the models, tables and figures, can be found at  \url{https://github.com/erichare/imaging-paper}.}
+\thankstext{T1}{Resources for this manuscript, including R code to reproduce all of the models, tables and figures, can be found at  \url{https://github.com/erichare/imaging-paper}.}
 \runtitle{Automatic Matching of Bullet Lands}
 \runauthor{E. Hare et al.}
 
@@ -86,8 +90,8 @@ In 2009, the National Academy of Sciences published a report questioning the sci
 \end{frontmatter}
 
 \linenumbers
-\tableofcontents
-\newpage
+%\tableofcontents
+%\newpage
 <<setup, fig.keep='all', cache=FALSE, echo=FALSE, eval=TRUE, message=F, warning=F>>=
 #rm(list=ls())
 #wd <- getwd()
@@ -136,15 +140,15 @@ Todo list for journal shape-up: there is a lot of good material, we mainly need 
 %\item change: emphasis in varying cross section. once a stable region is found, how little change is happening? 
 %\item add: Why do we take the lowest stable cross section?
 %\item add: more discussion of the density plots: probability ratio for a match - exchanged probability ratios for ROC curves
-\item add: more discussion on additional bullet images. NIST database claims to have 70 bullets -- that would be two sets of the study, but only 35 bullets are currently available. Should we contact Alan Zheng to see whether we can get access to more bullet files?
-\item add: we could extend the results of the James Hamby study by trying to match every single land against all other lands. This would almost double the number of comparisons ($21,115 = (118+88)\cdot 205/2$). Something for the appendix? What would be fun, would be to show all of the aligned signatures for all ten barrels.
+%\item add: more discussion on additional bullet images. NIST database claims to have 70 bullets -- that would be two sets of the study, but only 35 bullets are currently available. Should we contact Alan Zheng to see whether we can get access to more bullet files? Not enough space for this one.
+%\item add: we could extend the results of the James Hamby study by trying to match every single land against all other lands. This would almost double the number of comparisons ($21,115 = (118+88)\cdot 205/2$). Something for the appendix? What would be fun, would be to show all of the aligned signatures for all ten barrels. (moved to supplement)
 \item add: should we add a paragraph on the speed of the evaluation? - separate out into pre-processing (needs to be done once) and matching (pairwise comparison of lands). If we only do bullet matching, we could speed this process up by eliminating some land comparisons.
-\item add: we might need a proper definition of the joint striation marks (the result of striation-identify)
-\item change: we could make the table into a labelled dotplot of importance to save space. We don't need the mean and standard deviations anymore -- the density plots and the ROCs take care of that.
+%\item add: we might need a proper definition of the joint striation marks (the result of striation-identify)
+%\item change: we could make the table into a labelled dotplot of importance to save space. We don't need the mean and standard deviations anymore -- the density plots and the ROCs take care of that.
 %\item change: the focus of the paper is initially quite strongly on the maximal consecutively matching striae (CMS). We need to emphasis the role of CMS in the introduction: max CMS is Biasotti's main criterium for matching.  max CMS is part of current practice (AFTE criteria citation). AFIS \cite{AFIS} is suggesting it for an automated system (was there ever a phase II of that project?). Problem is, that determining CMS is subjective; counting CMS in particular, has been found to be subjective to the examiner: `the concept of counting striations is subjective and based on experience'~\citep{miller:1998}.  For an automatic routine we are faced with the problem of having to determine what a stria is. XXX Should we include one of those microscopic images to bring that point home? We would need somebody qualified to tell us how many CMS there are, though.
 \item to consider: AOAS states that accepted papers rarely have more than 20 pages. We are currently over by a couple of pages.
-\item definitions: 
-A bullet's {\it signature} is defined as the residual surface measurements after removing the big structure using the loess fit. The {\it cross section} defines the location along the $x$ axis  at which the signature is taken.
+%\item definitions: 
+%A bullet's {\it signature} is defined as the residual surface measurements after removing the big structure using the loess fit. The {\it cross section} defines the location along the $x$ axis  at which the signature is taken.
 \end{enumerate}
 }
 Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of  convictions  in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\citep{giannelli:2011}.
@@ -200,7 +204,7 @@ We then proceed to describing an automatic matching routine which we evaluate on
 
 \section{Bullet signatures}
 
-\hh{In an approach to analyze the striation pattern we extract a {\emph bullet profile} \cite{ma:2004} by taking a cross section across the surface measurements for a fixed value of $x$.}
+\hh{In an approach to analyze the striation pattern we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section across the surface measurements for a fixed value of $x$.}
 %An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the surface measurements across. 
 Figure \ref{fig:fixedX} shows a plot of the side profile of a bullet land. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
@@ -231,7 +235,7 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
 \caption{\label{fig:fixedX}Side profile of the surface measurements (in~$\mu m$) of a bullet land across a fixed $x$ value. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
-The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. \hh{While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in supplement~\ref{supp:cylindrical}.} 
+The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. \hh{While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in supplement~\ref{supp:circular}.} 
 %It is clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
 
 %\subsection{Loess Fit}
@@ -352,7 +356,6 @@ my.loess$fitted + ylab("Surface measurements")
 \end{subfigure}
 \begin{subfigure}[b]{.49\textwidth}\centering
 \caption{\label{fig:loess_resid} Residuals of loess fit for bullet~1-5.
-This defines the {\it signature} of bullet~1-5. Blue areas show  95\% bootstrap confidence intervals (based on $B=1,000$ bootstrap samples).
 }
 %<<loess_resid, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
 %my.loess$resid + ylab("Residuals of loess Fit") 
@@ -365,7 +368,8 @@ qplot(x=x, y=y, geom="polygon", fill=I("steelblue"), data=poly) +
   ylab("Residuals of loess fit") + xlab("y") + theme_bw()
 @
 \end{subfigure}
-\caption{Fit and residuals of a loess fit to bullet~1-5 (Barrel~1).}
+\caption{Fit and residuals of a loess fit to bullet~1-5 (Barrel~1). The residuals define the {\it signature} of bullet~1-5. Blue areas around the residuals show  95\% bootstrap confidence intervals (based on $B=1,000$ bootstrap samples).
+}
 \end{figure}
 %
 
@@ -595,7 +599,7 @@ All of the other steps are done on pairs of bullet lands:
 \begin{enumerate}
 \item {\bf Smooth the two signatures} by a loess with a very small span (see Figure~\ref{fig:smooth}). 
 \item Use cross-correlation to {\bf find the best alignment} of the two signatures: shift one of the signatures by the lag indicated by the cross-correlation function (see Figure~\ref{fig:ccf} for the cross-correlation function and Figure~\ref{fig:crosscutX} for the resulting shift).
-\item Using a rolling average, {\bf identify peaks and valleys} for each of the signatures. We then define an interval around the location of the extrema on each side as one third of the distance to the location of the next extrema (see Figure~\ref{fig:smoothcutb}). 
+\item Using a rolling average, {\bf identify peaks and valleys} for each of the signatures. We then define an interval around the location of the extrema on each side as one third of the distance to the location of the next extrema (see Figure~\ref{fig:smoothcutb}). Peaks and valleys constitute the \emph{striation marks} of the bullet.
 \item {\bf Match striations across signatures:} based on the intervals around the extrema as defined above, we identify joint intervals between two signatures as those areas, in which two or more of the individual intervals overlap: a joint interval is defined as the smallest interval that encompasses all of the overlapping intervals. A joint interval is then called a match(ing stria) between the signatures, if all of the intervals are of the same type of extrema, i.e.\ they are either all peaks or all valleys. In Figure~\ref{fig:match} all matches are shown as color-filled rectangles corresponding to their type of extrema (peaks are shown in orange, and valleys in green). Non-matching intervals are left grey.
 \item {\bf Extract features from the aligned signatures and the matches between them:} there is a slew of different features one could extract. Here, we describe a few of the ones that can be found in the literature and some that we found to be of practical relevance:
 \begin{enumerate}[label=(\roman*)]
@@ -1342,7 +1346,7 @@ Note that this error rate is based on land-to-land comparisons and is much lower
 \hh{This makes the errors in the automated approach smaller than the human error in the Hamby study. Out of the 507 participants, who returned results, eight (out of $15 \times 507 = 7,605$) bullets were not matched conclusively, resulting in a false negative rate of 0.0011.}
 
 However, error rates based on bullet-to-bullet matches do not carry a lot of weight because of the small size of the study: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
-Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we could therefore introduce an interval of `inconclusive' results in the middle of the spectrum -- which turns out to be not necessary in the Hamby study, because, here, the results from the random forest are very clear cut. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree ($x$-axis) and the random forest ($y$-axis). %\hh{The tree predicts 132 known matches correctly, with 40 false negatives and one false positive match. The random forest predicts all 172 known matches correctly as well as all 10,212 known non-matches.} 
+Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we could therefore introduce an interval of `inconclusive' results in the middle of the spectrum -- which turns out to be not necessary in the Hamby study, because, here, the results from the random forest are very clear cut. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree and the random forest. %\hh{The tree predicts 132 known matches correctly, with 40 false negatives and one false positive match. The random forest predicts all 172 known matches correctly as well as all 10,212 known non-matches.} 
 %Overall, there is a lot of agreement; out of 10,800 land-to-land comparisons, only four cases result in a different decision. 
 
 \begin{figure}[hbtp]
@@ -1373,15 +1377,15 @@ qplot(data=predm, value, variable, geom="jitter", colour=match, shape=match) + t
 
 Besides a probabilistic quantification of matches, we get from a random forest an assessment of the importance of each of the features derived from the bullets' 3d topological surface measurements. Figure~\ref{fig:importance} shows an overview of the importance of each variable measured as the mean decrease in the gini index when the variable in question is included in a tree.
 \begin{figure}
-<<echo=FALSE, fig.width=7, fig.height=1.5, out.width='.7\\textwidth'>>=
+<<echo=FALSE, fig.width=7, fig.height=2, out.width='.7\\textwidth'>>=
 imp <- data.frame(importance(rtrees))
 imp$Variable <- row.names(imp)
 imp$Variable[c(7,8)] <- c("#matches", "#non-matches")
 imp1 <- subset(imp, !(Variable %in% c("x1", "sd.D")))
 imp2 <- subset(imp, Variable %in% c("x1", "sd.D"))
 qplot(MeanDecreaseGini,1, data=imp, geom="point") + 
-  geom_text(aes(y=1.1, label=Variable), angle=45, hjust=0, data=imp1) + 
-  geom_text(aes(y=0.9, label=Variable), angle=-45, hjust=0, data=imp2) + 
+  geom_text(aes(y=1.2, label=Variable), angle=45, hjust=0, data=imp1) + 
+  geom_text(aes(y=0.8, label=Variable), angle=-45, hjust=0, data=imp2) + 
   ylim(c(0, 2.75)) + theme_bw() + ylab("") +
   theme(axis.ticks.y=element_blank(), axis.text.y=element_blank(),
         panel.grid.major.y=element_blank(), panel.grid.minor.y=element_blank()) +
@@ -1427,7 +1431,7 @@ The variables with the most predictive power by far are cross-correlation and th
 
 \section{Conclusion}
 
-We have presented an algorithm which detects the most prominent but least relevant structure of a bullet from a ballistics identification perspective, removes these features, and produces residuals which allows for the easy identification of markings. We have generalized this algorithm to align the residuals from two bullets to automatically determine whether they are matches. We created a random forest model using many of the features to provide a probabilistic assessment of the quality of a match, along with the most relevant features. Finally, we have provided an easy-to-use open-source backend, and web frontend to many of these features.
+We have presented an algorithm which detects the most prominent but least relevant structure of a bullet from a ballistics identification perspective, removes these features, and produces residuals which allows for the easy identification of markings. We have generalized this algorithm to align the residuals from two bullets to automatically determine whether they are matches. We created a random forest model using many of the features to provide a probabilistic assessment of the quality of a match, along with the most relevant features. %Finally, we have provided an easy-to-use open-source backend, and web frontend to many of these features.
 
 The matching algorithm is sensitive to the parameter choices made. The distance between cross sections (currently 25$\mu m$) to evaluate stability, as well as the cross-correlation factor (currently 0.9) we set as a minimum are affecting the final outcome. Another parameter is the amount of smoothing in identifying peaks and grooves (currently a window of 23.4375$\mu m$ is used, corresponding to a window of 7 values to the left and the right of an observation). While we tried to lay out in the paper the impact each of the parameter choices has on the matching, we are still far from an optimized scenario. 
 
