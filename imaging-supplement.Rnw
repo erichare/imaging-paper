@@ -344,17 +344,6 @@ unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 ###############
 # can we identify the barrels the unknown bullets came from?
 
-new_get_bullet <- function(path, x = 243.75, bullet = NULL) {
-  if (is.null(bullet)) bullet <- read.x3p(path)
-  dbr111 <- fortify_x3p(bullet)
-  
-  pickx <- dbr111$x[which.min(abs(x - unique(dbr111$x)))]
-  
-  dbr111.fixx <- dbr111[dbr111$x == pickx,]
-  
-  return(dbr111.fixx)
-}
-
 new_processBullets <- function(bullet, x = 100) {
   crosscuts <- unique(fortify_x3p(bullet)$x)
   crosscuts <- crosscuts[crosscuts >= min(x)]
@@ -362,7 +351,7 @@ new_processBullets <- function(bullet, x = 100) {
   if (length(x) > 2) crosscuts <- crosscuts[crosscuts %in% x]
   
   list_of_fits <- lapply(crosscuts, function(x) {
-    br111 <- new_get_bullet(path = NULL, x = x, bullet = bullet)
+    br111 <- get_crosscut(path = NULL, x = x, bullet = bullet)
     br111.groove <- get_grooves(br111)
     fit_loess(br111, br111.groove)$resid$data
   })
@@ -479,8 +468,20 @@ This makes standard deviation of a signature one measure to quantify the extent 
 \newpage
 \section{One-on-one comparison of Hamby study}\label{supp:extended}
 \hh{
-add: we could extend the results of the James Hamby study by trying to match every single land against all other lands. This would almost double the number of comparisons ($21,115 = (118+88)\cdot 205/2$).  What would be fun, would be to show all of the aligned signatures for all ten barrels. (moved to supplement)
+add: we could extend the results of the James Hamby study by trying to match every single land against all other lands. This would almost double the number of comparisons ($21,115 = (118+88)\cdot 205/2$).  
 }
+\hh{Show aligned signatures for all ten barrels. }
+<<aligned, echo=FALSE>>=
+matches <- read.csv("csvs/matches.csv", header = FALSE)
+matches$barrel <- rep(1:10, each=6)
+matches$id <- 1:nrow(matches)
+library(reshape2)
+mm <- melt(matches, id.var=c("barrel", "id"), na.rm=TRUE)
+mm <- subset(mm, value != "")
+mm$value <- gsub("Br. Bullet ", "", mm$value)
+
+
+@
 \bibliographystyle{imsart-nameyear.bst}
 %\biboptions{authoryear}
 \bibliography{references}

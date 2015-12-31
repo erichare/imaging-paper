@@ -12,16 +12,16 @@ unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 ###############
 # can we identify the barrels the unknown bullets came from?
 
-new_get_bullet <- function(path, x = 243.75, bullet = NULL) {
-    if (is.null(bullet)) bullet <- read.x3p(path)
-    dbr111 <- fortify_x3p(bullet)
-    
-    pickx <- dbr111$x[which.min(abs(x - unique(dbr111$x)))]
-    
-    dbr111.fixx <- dbr111[dbr111$x == pickx,]
-    
-    return(dbr111.fixx)
-}
+# new_get_bullet <- function(path, x = 243.75, bullet = NULL) {
+#     if (is.null(bullet)) bullet <- read.x3p(path)
+#     dbr111 <- fortify_x3p(bullet)
+#     
+#     pickx <- dbr111$x[which.min(abs(x - unique(dbr111$x)))]
+#     
+#     dbr111.fixx <- dbr111[dbr111$x == pickx,]
+#     
+#     return(dbr111.fixx)
+# }
 
 new_processBullets <- function(bullet, x = 100) {
     crosscuts <- unique(fortify_x3p(bullet)$x)
@@ -30,7 +30,7 @@ new_processBullets <- function(bullet, x = 100) {
     if (length(x) > 2) crosscuts <- crosscuts[crosscuts %in% x]
     
     list_of_fits <- lapply(crosscuts, function(x) {
-        br111 <- new_get_bullet(path = NULL, x = x, bullet = bullet)
+        br111 <- get_crosscut(path = NULL, x = x, bullet = bullet)
         br111.groove <- get_grooves(br111)
         fit_loess(br111, br111.groove)$resid$data
     })
