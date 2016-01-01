@@ -70,7 +70,7 @@ Ames Iowa 50011-1210\\
 \end{aug}
 %
 \begin{abstract}
-In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is the primary goal. We propose a framework for the analysis of the 3D surface measurements which transcribes the markings into a 2D plotting framework. This makes identification of matches easier and more rooted in science for both the expert and the lay person. The automatic matching routine we propose \hh{manages to (a) correctly identify lands with too much damage to be suitable for matching, and (b) correctly identify all 10,384 land-to-land matches.}
+In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is the primary goal. We propose an automated framework for the analysis of the 3D surface measurements, that first transcribes the markings into a 2D plotting framework. This makes identification of matches easier and allows for a quantification of both matches and matchability of barrels. The automatic matching routine we propose manages to (a) correctly identify lands with too much damage to be suitable for matching, and (b) correctly identify all 10,384 land-to-land matches of the James Hamby study \citep{hamby:2009}.
 \end{abstract}
 
 %\begin{keyword}[class=MSC]
@@ -158,10 +158,8 @@ Rifling, manufacturing defects, and impurities in a barrel create striation mark
 
 The primary goal in this type of forensic analysis is to identify these striation markings in an attempt to match two bullets. Since gun barrels should produce similar markings on bullets fired consecutively, the careful analysis of these surface images can help in determining whether two bullets are a match. This process has traditionally required forensic experts to perform the analysis, and required physical examination of the bullets. 
 
-\hh{
 Current standard practice~\cite{afte:1992} relies in part on the assessment of the so-called maximal number of consecutively matching striae (CMS), first defined by \citet{biasotti:1959}.
 One of the problems is that a human inspection to determine CMS is subjective \citep{miller:1998}. 
-}
 
 In this paper, we propose a framework which allows for the automatic analysis of the surface topologies of bullets, and the transcription of the individual characteristics into a 2D plotting framework. 
 This allows for an objective and quantitative assessment of striae-based bullet matches.
@@ -187,15 +185,15 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 \end{figure}
 Each fired bullet is provided in form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
 
-\hh{The purpose of our paper is to present an automatic matching routine that allows for a completely objective assessment of the quality of a match. }
-\hh{The original paper on the complete Hamby study already reports the successful use of several computer-assisted methods; aside from a zero false positive rate no further details on a false-negative error rate for bullets are given nor are error rates for land-to-land matches mentioned. 
+The purpose of our paper is to present an automatic matching routine that allows for a completely objective assessment of the quality of a match. 
+The original paper on the complete Hamby study already reports the successful use of several computer-assisted methods; aside from a zero false positive rate no further details on a false-negative error rate for bullets are given nor are error rates for land-to-land matches mentioned. 
 % Hamby study: automated systems were successfully used for matching:
 %  Intelligent Automation's SciClops - Dr. Ben Bachrach (Maryland, United States);
 % Automated Land Identification System (ALIS) - Mr. Tsuneo Uchiyama (Tokyo, Japan);
 % Integrated Ballistics Identification System (IBIS) – Mr. Robert Thompson (California, United States);
 % BulletTRAX-3DTM - Forensic Technology Scientists (Montreal, Canada) (2 sets)
- }
-\hh{A procedure for bullet matching using the BulletTrax3D system is described in \citet{roberge:2006}. This study is based on another set of ten consecutively rifled barrels; matches are identified based on a bullet-to-bullet correlation score. The authors state that this process `could be automated', but no implementation of the algorithm is available. } 
+ 
+A procedure for bullet matching using the BulletTrax3D system is described in \citet{roberge:2006}. This study is based on another set of ten consecutively rifled barrels; matches are identified based on a bullet-to-bullet correlation score. The authors state that this process `could be automated', but no implementation of the algorithm is available. 
 
 The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. %We then describe a web application for visualizing and working with bullet surfaces. 
 We then proceed to describing an automatic matching routine which we evaluate on the bullets made available through the Hamby study.
@@ -203,7 +201,7 @@ We then proceed to describing an automatic matching routine which we evaluate on
 
 \section{Bullet signatures}
 
-\hh{In an approach to analyze the striation pattern we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section across the surface measurements for a fixed value of $x$.}
+In an approach to analyze the striation pattern we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section across the surface measurements for a fixed value of $x$.
 %An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the surface measurements across. 
 Figure \ref{fig:fixedX} shows a plot of the side profile of a bullet land. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
@@ -234,21 +232,21 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
 \caption{\label{fig:fixedX}Side profile of the surface measurements (in~$\mu m$) of a bullet land across a fixed $x$ value. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
-The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. \hh{While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in supplement~\ref{supp:circular}.} 
+The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in supplement~\ref{supp:circular}.
 %It is clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
 
 %\subsection{Loess Fit}
-\hh{Instead of a circular fit, we use multiple loess fits to model the overall structure in order to identify the bullet markings. }
+Instead of a circular fit, we use multiple loess fits to model the overall structure in order to identify the bullet markings. 
 
 \subsection{Identifying groove locations}
 %In an attempt to improve upon the previous algorithm, w
-We first have to \hh{identify} the \hh{locations of the left and right}  groove in the image. \hh{The grooves are not assumed to contain information relevant for determining matches, they also dominate the structure, and therefore need  to be removed.}  
+We first have to identify the locations of the left and right  groove in the image. The grooves are not assumed to contain information relevant for determining matches, they also dominate the structure, and therefore need  to be removed.  
 Fortunately, the location and appearance of the grooves in the surface profiles is quite consistent.
 Surface measurements reach local maxima around the peak of the groove at either end of the range of $y$, we can then follow the descent of the surface measurements inwards to the valley of the groove. 
 The location of the valleys  mark the points at which we should trim the image. The procedure can be described as follows:
 
 \begin{enumerate}
-    \item Fix an $x$ value \hh{to extract a bullet profile} (Figure~\ref{fig:loess_step1}, with $x$ set to 243.75$\mu m$).
+    \item Fix an $x$ value to extract a bullet profile (Figure~\ref{fig:loess_step1}, with $x$ set to 243.75$\mu m$).
     \item For each $y$ value, smooth out any deviations occurring near the minima by twice applying a rolling average with a pre-set \emph{smoothing factor} $s$. (Figure~\ref{fig:loess_step3}, smoothing factor $s = 35$ corresponding to 55$\mu m$).
 %    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor as above. (Figure~\ref{fig:loess_step3}).
     \item Determine the location of the peak of the left groove by finding the first double-smoothed value $y_i$ that is the maximum within its smoothing window (e.g.\ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$, where $i$ is between 1  and $\lfloor s/2 \rfloor$). We call the location of this peak $p_{\ell}$ (see Figure~\ref{fig:loess_step47}). 
@@ -331,13 +329,13 @@ The smoothing factor $s$ introduced in the algorithm represents the window size 
 We instead performed a second smoothing pass on the smoothed data, which has the effect of weighting observations near the center of the window the highest, while the weights linearly drop off as we reach either end of the smoothing window.
 
 \subsection{Removing curvature}
-Next, we fit a loess regression to the data. \hh{Loess regression \citep{cleveland:1979} is based on the assumption that the relationship between two random variables $X$ and $Y$ can be described in form of a smooth, continuous function $f$ with $y_i = f(x_i) + \varepsilon_i$ for all values $i = 1, ..., n$. The function $f$ is estimated in form of  locally weighted polynomial regressions. Parameters of the estimation are $\alpha$, the proportion of all points included in the fit (here, $\alpha = 0.75$), the weighting function and the degree of the polynomial (here, we fit a quadratic regression). }
+Next, we fit a loess regression to the data. Loess regression \citep{cleveland:1979} is based on the assumption that the relationship between two random variables $X$ and $Y$ can be described in form of a smooth, continuous function $f$ with $y_i = f(x_i) + \varepsilon_i$ for all values $i = 1, ..., n$. The function $f$ is estimated in form of  locally weighted polynomial regressions. Parameters of the estimation are $\alpha$, the proportion of all points included in the fit (here, $\alpha = 0.75$), the weighting function and the degree of the polynomial (here, we fit a quadratic regression). 
 
-\hh{The main idea of locally weighted regression is to use a weighting routine that  emphasizes the effect of points close by and de-emphasizes the effect of points as they are further away. The weighting function used here, is the tricubic function $w(d) = \left(1 - d^3\right)^3$, for $d \in [0,1]$ and $w(d) = 0$ otherwise.  $d$ is defined as the distance between $x_i$ and the location of the fit $x_o$ and the maximum distance of the range of the $x$-values for span $\alpha$ in $x_o$. }
+The main idea of locally weighted regression is to use a weighting routine that  emphasizes the effect of points close by and de-emphasizes the effect of points as they are further away. The weighting function used here, is the tricubic function $w(d) = \left(1 - d^3\right)^3$, for $d \in [0,1]$ and $w(d) = 0$ otherwise.  $d$ is defined as the distance between $x_i$ and the location of the fit $x_o$ and the maximum distance of the range of the $x$-values for span $\alpha$ in $x_o$. 
 
 %\hh{XXX standard errors: are based on independence of errors (which we don't have because of the high autocorrelation) and the assumption that the amount of bias is neglible. Which we don't know. We can produce standard errors, but (a) the nominal confidence level will be violated, and (b) the errors only allow for pointwise errors. We need a different approach. XXX}
 
-Figure~\ref{fig:loess_fit} provides a look at the loess fit, in blue, overlaid against the processed image of bullet~1-5. The fit seems to do a reasonable job of capturing the structure of the image. \hh{The blue area around the signature are  95\% bootstrapped confidence intervals based on 1,000 bootstrap samples. }
+Figure~\ref{fig:loess_fit} provides a look at the loess fit, in blue, overlaid against the processed image of bullet~1-5. The fit seems to do a reasonable job of capturing the structure of the image. The blue area around the signature are  95\% bootstrapped confidence intervals based on 1,000 bootstrap samples. 
 Figure~\ref{fig:loess_resid} shows the residuals from this fit. These residuals are called the \emph{signature} of bullet~1-5.
 %
 \begin{figure}[hbtp]
@@ -429,7 +427,7 @@ qplot(x=x, y=y, geom="polygon", fill=I("steelblue"), data=poly) +
 %' 
 
 \section{Automatic matching}
-Applying the loess fit to a range of different surface cross sections (see Figure~\ref{fig:manualmatch-rgl} for cross sections from 50$\mu m$ to 150~$\mu m$) shows the 3d striation marks from two bullets. Signatures of bullet~1 are shown on the left (all cross sections with values below 100$\mu m$) and cross sections of bullets 2 are shown on the right (cross sections with values above 100$\mu m$). \hh{Signatures are manually aligned, resulting in many of the striation marks to continuously pass from one side to the other. Visually, this allows for an easy assessment of these two bullet lands as a match. However, this match relies on visual inspection and can therefore not be completely objective.  The goal of this section is to eliminate the need for a visual inspection during the matching process and replace it by an automatic algorithm. This also allows for a quantification of the quality of the match.}
+Applying the loess fit to a range of different surface cross sections (see Figure~\ref{fig:manualmatch-rgl} for cross sections from 50$\mu m$ to 150~$\mu m$) shows the 3d striation marks from two bullets. Signatures of bullet~1 are shown on the left (all cross sections with values below 100$\mu m$) and cross sections of bullets 2 are shown on the right (cross sections with values above 100$\mu m$). Signatures are manually aligned, resulting in many of the striation marks to continuously pass from one side to the other. Visually, this allows for an easy assessment of these two bullet lands as a match. However, this match relies on visual inspection and can therefore not be completely objective.  The goal of this section is to eliminate the need for a visual inspection during the matching process and replace it by an automatic algorithm. This also allows for a quantification of the quality of the match.
 
 \begin{figure}[hbtp]
 \centering
@@ -437,7 +435,7 @@ Applying the loess fit to a range of different surface cross sections (see Figur
 \caption{\label{fig:manualmatch-rgl}3d view of the manually adjusted side-by-side comparison of bullet~1-5 and bullet 2-1 after removing the curvature.}
 \end{figure}
 
-\hh{In this section, we are going to describe the algorithm for matching signatures first, and discuss the impact of paramater choices in the subsections thereafter.} 
+In this section, we are going to describe the algorithm for matching signatures first, and discuss the impact of paramater choices in the subsections thereafter.
 
 
 \subsection{Algorithm}\label{sec:algorithm}
@@ -592,7 +590,7 @@ ggplot() +
 \end{figure}
 %\afterpage{\clearpage}
 Figure~\ref{fig:match} gives an overview of the automated matching routine: 
-We first identify a stable region for each bullet and pick the signature at the lowest cross section level in this region, because typically, individual characteristics are best expressed at the lower end of the bullet \hh{(see supplement~\ref{supp:bulletbottom} for a more detailed discussion)}. 
+We first identify a stable region for each bullet and pick the signature at the lowest cross section level in this region, because typically, individual characteristics are best expressed at the lower end of the bullet (see supplement~\ref{supp:bulletbottom} for a more detailed discussion). 
 
 All of the other steps are done on pairs of bullet lands:
 \begin{enumerate}
@@ -716,7 +714,7 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 
 \subsection{Impact of cross sections}
 The cross section on which a comparison between signatures is based matters -- signatures from cross sections that are further apart, show more pronounced differences between the signatures. 
-This poses both a caveat to matching attempts as well as an opportunity \hh{for quality control}: we have to be aware of which cross section level was used in a matching. An assessment of this situation shows that, visually, matches degrade if the signatures upon which the match is based are from cross sections further than 200$\mu m$ apart  (see supplement~\ref{supp:ccf} for a more thorough discussion).
+This poses both a caveat to matching attempts as well as an opportunity for quality control: we have to be aware of which cross section level was used in a matching. An assessment of this situation shows that, visually, matches degrade if the signatures upon which the match is based are from cross sections further than 200$\mu m$ apart  (see supplement~\ref{supp:ccf} for a more thorough discussion).
 However, we can extract signatures from multiple cross sections of the same bullet land for an initial assessment of its quality. 
 This situation is assessed and discussed in more detail below: 
 
@@ -772,12 +770,13 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
 \caption{\label{fig:crosscuts2}Varying cross sections for barrel 3, bullet~1-1. Initially, the match between signatures from cross sections 25$\mu m$ apart is affected strongly by some break off at the bottom of the bullet. At a  level of $175\mu m$ the bullet's signature stabilizes. For this land, matches should not be attempted at lower cross sections. }
 \end{figure}
 %An opportunity that arises from comparing multiple cross sections of a bullet's surface measurements is the following:
-by comparing signatures from cross sections that are not too far apart --  25~$\mu m$ to 50~$\mu m$ -- we get an indication whether the signatures come from a rapidly changing section of the surface, indicative of a break-off \hh{or some other damage}, or from a stable section, where we have a reasonable expectation of finding matches to other signatures. In the approach here, we keep increasing the cross section until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet~1-1 from barrel 3, where
+by comparing signatures from cross sections that are not too far apart --  25~$\mu m$ to 50~$\mu m$ -- we get an indication whether the signatures come from a rapidly changing section of the surface, indicative of a break-off or some other damage, or from a stable section, where we have a reasonable expectation of finding matches to other signatures. In the approach here, we keep increasing the cross section until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet~1-1 from barrel 3, where
 `stability' is  defined as two aligned signatures from cross sections chosen 25$\mu m$ apart having a cross-correlation of at least 0.9. 
 
 \subsection{Varying smoothing factor}\label{sec:smoothing}
-As mentioned earlier, the algorithm for detecting peaks and valleys depend on the selection of a smoothing window, called the smoothing factor. For detecting and removing the grooves prior to fitting a loess regression we selected a smoothing factor of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 25 seems more appropriate. %We can investigate the performance of peak/valley detection across different smoothing factors. 
-Figure~\ref{fig:varysmooth} displays the  peaks and valleys detected in the same signature at smoothing factors of 5, 25, and 45, respectively. The dark line corresponds to the smoothed values, while the grey line in the back shows the raw signature. The choice of smoothing factor is a classical decision of a bias/variance trade-off. It is immediately clear that a small smoothing factor like 5 is a poor choice. It results in a significant amount of noise in the data such that even just a point or two can skew the rolling average enough for a peak or valley to be detected. Given that the striation patterns are typically much larger, we are in effect muddying the waters by performing such minimal smoothing. \hh{XXX shouldn't we also make this dependent on the resolution of the equipment? XXX}
+As mentioned earlier, the algorithm for detecting peaks and valleys depend on the selection of a smoothing window, called the smoothing factor. For detecting and removing the grooves prior to fitting a loess regression we selected a smoothing factor of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 25 seems more appropriate. %We can investigate the performance of peak/valley detection across different smoothing factors.
+\hh{XXX the smoothing factor needs a few more details: a smoothing factor of 5 means that we consider the two measurements on the left and the right of the observations under consideration XXX}
+Figure~\ref{fig:varysmooth} displays the  peaks and valleys detected in the same signature at smoothing factors of 5, 25, and 45, respectively. The dark line corresponds to the smoothed values, while the grey line in the back shows the raw signature. The choice of smoothing factor is a classical decision of a bias/variance trade-off. It is immediately clear that a small smoothing factor like 5 is a poor choice. It results in a significant amount of noise in the data such that even just a point or two can skew the rolling average enough for a peak or valley to be detected. Given that the striation patterns are typically much larger, we are in effect muddying the waters by performing such minimal smoothing. Another consideration is that the smoothing should not fall below the  resolution of the equipment at which the surface measurements are taken -- in order to not introduce artefacts in the analysis. 
 
 A larger smoothing factor on the other hand, like 45, seems to be a more plausible option. Most of the peaks/valleys present which are detected by a smoothing factor of 25 are also detected at 45. However, some notable issues arise. Notice that the valley on the right hand side of the image is smoothed out, and thus not detected. On the left hand side, a double peak is detected - that might be a questionable decision - but there are several peaks in the middle, that are being smoothed out, for example the peak at around $y = 750$. That is, in many cases, large windows are smoothing out some of the structure that we wish to see. Furthermore, it can be seen that the peaks/valleys are often shifted relative to their position in the original loess residuals, or in the smoothed data with smaller smoothing factors.
 
@@ -817,9 +816,8 @@ ggplot() + theme_bw() +
 
 
 \section{Evaluation}
-\hh{In order to get a better understanding of  how  the matching algorithm works in known matches and non-matches, we investigate its performance in a test scenario based on the James Hamby study.
-}
-\hh{As a first step, we automatically assess the quality of each of the lands by  checking that we can identify a stable region on each land. For this, we assess cross-correlation of signatures at cross sections 25$\mu m$ apart. For a stable region, we require a minimum of 0.9 for the cross correlation. Four lands from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these lands shows scratch marks across the surface, also known as `tank rash'.}
+In order to get a better understanding of  how  the matching algorithm works in known matches and non-matches, we investigate its performance in a test scenario based on the James Hamby study.
+As a first step, we automatically assess the quality of each of the lands by  checking that we can identify a stable region on each land. For this, we assess cross-correlation of signatures at cross sections 25$\mu m$ apart. For a stable region, we require a minimum of 0.9 for the cross correlation. Four lands from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these lands shows scratch marks across the surface, also known as `tank rash'.
 %
 \begin{figure}
   \centering
@@ -843,11 +841,11 @@ ggplot() + theme_bw() +
 \caption{Unkn Bullet Q-4}
 \includegraphics[width=\textwidth]{images/q-4-grey.png}
 \end{subfigure}
-\caption{\label{fig:fourflags}\hh{Images of the four lands that got flagged during the quality assessment. All of them show scratch marks across the striation marks from the barrel. They will be excluded from the remainder of the analysis.}}
+\caption{\label{fig:fourflags}Images of the four lands that got flagged during the quality assessment. All of them show scratch marks across the striation marks from the barrel. They will be excluded from the remainder of the analysis.}
 \end{figure}
 %
-\hh{We exclude these four lands from the further matching considerations and 
- run all remaining lands from the unknown bullets against all remaining lands from known bullets for matches, i.e. we are running $15 \times 6 -2 = 90 - 2 = 88$ lands from unkown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. Out of these comparisons, there are 172 known matches (KM), while the rest are known non-matches (KNM). }
+We exclude these four lands from the further matching considerations and 
+ run all remaining lands from the unknown bullets against all remaining lands from known bullets for matches, i.e. we are running $15 \times 6 -2 = 90 - 2 = 88$ lands from unkown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. Out of these comparisons, there are 172 known matches (KM), while the rest are known non-matches (KNM). 
  When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the distribution of the number of maximum consecutive matching striae between land C-3 and all 118 known lands. Two lands show a high CMS. These correspond to the known matches with C-3, shown in Figures~\ref{fig:hamby-perfect}b and~\ref{fig:hamby-perfect}c. 
  Unfortunately, not all results are as clear cut. 
 It might not be reasonable to assume that we can match all lands, but the idea is to try to maximize the number of matches to get an overview of what we might be able to expect from an automated match. 
@@ -1256,7 +1254,7 @@ All of the features in Figure~\ref{fig:densities} show large, if not significant
 Using recursive partitioning, we fit a decision tree~\citep{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
 Instead of CMS, cross-correlation (ccf) between the signatures is very important in the matching process  by the decision tree. Aside from  cross correlation, the number of matches is involved in the decision. 
 Between cross-correlation and CMS, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
-Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3d surface structure. \hh{The emphasis on cross-correlation is similar to the results of the study by \citet{ma:2004}. However, in this study authors did not consider the number of matches and non-matches.}
+Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3d surface structure. The emphasis on cross-correlation is similar to the results of the study by \citet{ma:2004}. However, in this study authors did not consider the number of matches and non-matches.
 
 \begin{figure}[hbtp]
   \centering
@@ -1316,7 +1314,7 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
 \end{figure}
 %
-After about 100 trees, the error rate of land-to-land comparisons stabilizes at 0.0038. This is a weighted average between a zero false positive error rate and an error rate of false negatives of 0.23. \hh{This out-of-bag error rate is over-estimating the actual error in the Hamby study: here, the final random forest based on 300 trees is able to correctly predict all known  matches and non-matches (see Figure~\ref{fig:tree-forest}).}
+After about 100 trees, the error rate of land-to-land comparisons stabilizes at 0.0038. This is a weighted average between a zero false positive error rate and an error rate of false negatives of 0.23. This out-of-bag error rate is over-estimating the actual error in the Hamby study: here, the final random forest based on 300 trees is able to correctly predict all known  matches and non-matches (see Figure~\ref{fig:tree-forest}).
 Note that this error rate is based on land-to-land comparisons and is much lower for bullet-to-bullet matches. In the case of the Hamby study, even for the single tree the overall error rate is zero, if we require for a bullet match that at least two of a bullet's lands are matched. % (see Figure~\ref{fig:treeresult}). 
 %' \begin{figure}[hbtp]
 %'   \centering
@@ -1342,7 +1340,7 @@ Note that this error rate is based on land-to-land comparisons and is much lower
 %' \caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree (maximum possible number is 12, except for Q and B, where the maximum is 11). Both results for the tree and the random forest are shown. In the tree, at least \hh{40\% of all possible} lands of a bullet are  matched correctly, while the random forest achieves perfect results. Unknown bullet B is the hardest for the tree to match.}
 %' \end{figure}
 %' %
-\hh{This makes the errors in the automated approach smaller than the human error in the Hamby study. Out of the 507 participants, who returned results, eight (out of $15 \times 507 = 7,605$) bullets were not matched conclusively, resulting in a false negative rate of 0.0011.}
+This makes the errors in the automated approach smaller than the human error in the Hamby study. Out of the 507 participants, who returned results, eight (out of $15 \times 507 = 7,605$) bullets were not matched conclusively, resulting in a false negative rate of 0.0011.
 
 However, error rates based on bullet-to-bullet matches do not carry a lot of weight because of the small size of the study: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger test case. 
 Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we could therefore introduce an interval of `inconclusive' results in the middle of the spectrum -- which turns out to be not necessary in the Hamby study, because, here, the results from the random forest are very clear cut. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree and the random forest. %\hh{The tree predicts 132 known matches correctly, with 40 false negatives and one false positive match. The random forest predicts all 172 known matches correctly as well as all 10,212 known non-matches.} 

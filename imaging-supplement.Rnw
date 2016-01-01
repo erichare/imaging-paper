@@ -523,7 +523,8 @@ aligned <- crossSmooth %>% group_by(id) %>% do(
 aligned$land <- (aligned$id %% 6)
 aligned$land[aligned$land==0] <- 6
 qplot(x=y, y=l30, data=aligned, geom="line", group=bullet) + ylim(c(-7,7)) + facet_grid(facets=barrel~land, labeller="label_both") + theme_bw() +
-  xlab("") + ylab("Signature")
+  xlab("") + ylab("Signature") + 
+  theme(plot.margin=unit(c(0,0,0,0), unit="cm"))
 @
 \caption{\label{fig:aligned}Overview of aligned signatures for all bullet lands for the ten barrels of the Hamby study. }
 \end{figure}
