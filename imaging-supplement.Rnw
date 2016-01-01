@@ -468,10 +468,13 @@ This makes standard deviation of a signature one measure to quantify the extent 
 \newpage
 \section{One-on-one comparison of Hamby study}\label{supp:extended}
 \hh{
-add: we could extend the results of the James Hamby study by trying to match every single land against all other lands. This would almost double the number of comparisons ($21,115 = (118+88)\cdot 205/2$).  
+add: we could extend the results of the James Hamby study by trying to match every single land against all other lands. This  almost doubles the number of comparisons ($21,115 = (118+88)\cdot 205/2$).  
 }
 \hh{Show aligned signatures for all ten barrels. }
-<<aligned, echo=FALSE, warning=FALSE, fig.width=8, fig.height=10, out.width='\\textwidth', cache=TRUE>>=
+
+Figure~\ref{fig:aligned} gives an overview of all the signatures from bullet lands in the Hamby study aligned by barrel. Three to five bullets were fired from each barrel. The figure gives us both some insight into how well signatures match and how consistent individual characteristics are impregnated on bullets fired from each of the barrels. Signatures for some lands match remarkably well - such as land 5 from barrel 1, whereas all lands from barrel 5 show some variability both in the location and depths of peaks and valleys.
+\begin{figure}[hbtp]
+<<aligned, echo=FALSE, warning=FALSE, fig.width=12, fig.height=15, out.width='\\textwidth', cache=TRUE>>=
 matches <- read.csv("csvs/matches.csv", header = FALSE)
 matches$barrel <- rep(1:10, each=6)
 matches$id <- 1:nrow(matches)
@@ -497,8 +500,33 @@ crosscuts <- plyr::ldply(
     groove <- get_grooves(dframe)
     data.frame(mm[i,], fit_loess(dframe, groove)$resid$data)
   })
-qplot(x=y, y=resid, data=crosscuts, geom="line", group=path) + ylim(c(-7,7)) + facet_wrap(facets=~id, ncol=6) + theme_bw() 
+
+crossSmooth <- bulletSmooth(crosscuts)
+
+alignme <- function(data) {
+#  browser()
+  data$bullet <- as.character(data$bullet)
+  bullets <- unique(data$bullet)
+  b1 <- bullets[1]
+  lofs <- NULL
+  for (i in bullets[-1]) {
+    lof <- subset(data, bullet %in% c(b1, i))
+    lofs <- rbind(lofs, bulletAlign(lof)$bullet)
+  }
+  lofs <- unique(lofs)
+  lofs
+}
+
+aligned <- crossSmooth %>% group_by(id) %>% do(
+  data.frame(alignme(.))
+)
+aligned$land <- (aligned$id %% 6)
+aligned$land[aligned$land==0] <- 6
+qplot(x=y, y=l30, data=aligned, geom="line", group=bullet) + ylim(c(-7,7)) + facet_grid(facets=barrel~land, labeller="label_both") + theme_bw() +
+  xlab("") + ylab("Signature")
 @
+\caption{\label{fig:aligned}Overview of aligned signatures for all bullet lands for the ten barrels of the Hamby study. }
+\end{figure}
 \bibliographystyle{imsart-nameyear.bst}
 %\biboptions{authoryear}
 \bibliography{references}
