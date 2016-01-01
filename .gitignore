@@ -1,27 +1,28 @@
 cache
 
-imaging-paper.log
+*.log
 
 imaging-paper.pdf
 
-imaging-paper.synctex.gz
+*.synctex.gz
 
-imaging-paper-concordance.tex
-
+*.tex
+imaging-supplement.pdf
 imaging-paper.tex
 .Rproj.user
+*.Rproj
 
-imaging-paper.brf
+*.brf
 
-imaging-paper.bbl
+*.bbl
 
-imaging-paper.blg
+*.blg
 
-imaging-paper.toc
+*.toc
 
 Figure
 
-imaging-paper.aux
+*.aux
 
 app/rsconnect/shinyapps.io/erichare/x3prproto.dcf
 app/images
@@ -49,3 +50,5 @@ imaging-paper-blinded.synctex.gz
 imaging-paper-blinded.tex
 
 imaging-paper.spl
+
+*.RData
