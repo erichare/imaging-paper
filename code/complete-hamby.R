@@ -23,21 +23,21 @@ unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 #     return(dbr111.fixx)
 # }
 
-new_processBullets <- function(bullet, x = 100) {
-    crosscuts <- unique(fortify_x3p(bullet)$x)
-    crosscuts <- crosscuts[crosscuts >= min(x)]
-    crosscuts <- crosscuts[crosscuts <= max(x)]
-    if (length(x) > 2) crosscuts <- crosscuts[crosscuts %in% x]
-    
-    list_of_fits <- lapply(crosscuts, function(x) {
-        br111 <- get_crosscut(path = NULL, x = x, bullet = bullet)
-        br111.groove <- get_grooves(br111)
-        fit_loess(br111, br111.groove)$resid$data
-    })
-    lof <- list_of_fits %>% bind_rows
-    
-    cbind(lof, bullet = bullet$path)
-}
+# new_processBullets <- function(bullet, x = 100) {
+#     crosscuts <- unique(fortify_x3p(bullet)$x)
+#     crosscuts <- crosscuts[crosscuts >= min(x)]
+#     crosscuts <- crosscuts[crosscuts <= max(x)]
+#     if (length(x) > 2) crosscuts <- crosscuts[crosscuts %in% x]
+#     
+#     list_of_fits <- lapply(crosscuts, function(x) {
+#         br111 <- get_crosscut(path = NULL, x = x, bullet = bullet)
+#         br111.groove <- get_grooves(br111)
+#         fit_loess(br111, br111.groove)$resid$data
+#     })
+#     lof <- list_of_fits %>% bind_rows
+#     
+#     data.frame(lof, bullet = bullet$path, stringsAsFactors = FALSE)
+# }
 
 new_bulletGetMaxCMSXXX <- function(lof1, lof2, span=35) {
     lof <- rbind(lof1, lof2)
@@ -83,7 +83,7 @@ knowns <- all_bullets[1:120]
 unknowns <- all_bullets[121:210]
 bullets_processed <- lapply(all_bullets, function(bul) {
     cat("Computing processed bullet", basename(bul$path), "\n")
-    new_processBullets(bullet = bul, x = ccs$cc[which(ccs$path == bul$path)])
+    processBullets(bullet = bul, x = ccs$cc[which(ccs$path == bul$path)])
 })
 names(bullets_processed) <- as.character(ccs$path)
 
