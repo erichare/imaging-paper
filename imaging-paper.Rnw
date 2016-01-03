@@ -442,10 +442,11 @@ In this section, we are going to describe the algorithm for matching signatures 
 <<twolands100, cache=TRUE,  echo=FALSE>>=
 images <- file.path(datadir, dir(datadir))
 
-lof <- processBullets(paths = images[c(5,7)], x = 100)
-
-subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
-subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
+#lof <- processBullets(paths = images[c(5,7)], x = 100)
+subLOFx1 <- processBullets(read.x3p(images[5]), name = images[5], x = 100)
+subLOFx2 <- processBullets(read.x3p(images[7]), name = images[7], x = 100)
+#subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
+#subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
 subLOFx1$y <- subLOFx1$y + 23*1.5625 # working now!!!
 lofX <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
 
@@ -464,10 +465,11 @@ levels(lofX$type) <- c("groove", NA, "peak")
 <<twolands100adjust, echo=FALSE>>=
 images <- file.path(datadir, dir(datadir))
 
-lof <- processBullets(paths = images[c(5,7)], x = 100)
-
-subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
-subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
+#lof <- processBullets(paths = images[c(5,7)], x = 100)
+subLOFx1 <- processBullets(read.x3p(images[5]), name = images[5], x = 100)
+subLOFx2 <- processBullets(read.x3p(images[7]), name = images[7], x = 100)
+#subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
+#subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
 subLOFx1$y <- subLOFx1$y - min(subLOFx1$y)
 subLOFx2$y <- subLOFx2$y - min(subLOFx2$y)
 ccf <- ccf(subLOFx1$resid, subLOFx2$resid, lag.max=100, plot=FALSE)
@@ -534,7 +536,12 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
 \caption{Using a rolling median peaks and valleys are identified for each signature. Peaks and valleys on the signature correspond to striation marks on the bullet's surface. \label{fig:smoothcutb}}{%
 <<smoothcut, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.65\\textwidth', warning=FALSE>>=
 #images <- file.path(datadir, dir(datadir))
-  lof <- processBullets(paths = images[c(5,7)], x = 100)
+  #lof <- processBullets(paths = images[c(5,7)], x = 100)
+
+  subLOFx1 <- processBullets(read.x3p(images[5]), name = images[5], x = 100)
+  subLOFx2 <- processBullets(read.x3p(images[7]), name = images[7], x = 100)
+  lof <- rbind(subLOFx1, subLOFx2)
+
   lof <- bulletSmooth(lof)
   bAlign = bulletAlign(lof)
   lofX <- bAlign$bullet  
@@ -723,7 +730,7 @@ This situation is assessed and discussed in more detail below:
 <<crosscuts-vary-b31, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\textwidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
 crosscuts <- seq(100,250, by=25)
-lof <- processBullets(paths[37], x = crosscuts)
+lof <- processBullets(read.x3p(paths[37]), name = paths[37], x = crosscuts)
 lof$bullet <- paste(lof$bullet, lof$x)
 
 reslist <- lapply(1:length(crosscuts[-1]), function(i) {
