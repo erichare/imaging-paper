@@ -39,35 +39,35 @@ unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 #     data.frame(lof, bullet = bullet$path, stringsAsFactors = FALSE)
 # }
 
-new_bulletGetMaxCMSXXX <- function(lof1, lof2, span=35) {
-    lof <- rbind(lof1, lof2)
-    bAlign = bulletAlign(lof)
-    lofX <- bAlign$bullet  
-    
-    b12 <- unique(lof$bullet)
-    peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = span)
-    peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = span)
-    
-    #qplot(x=y, y=resid, geom="line", colour=bullet, data=lofX, group=bullet) +
-    #    theme_bw() +
-    #    geom_rect(data=peaks1$lines, aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-5, ymax=5, inherit.aes = FALSE, alpha=I(0.25)) +
-    #    geom_rect(data=peaks2$lines, aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-5, ymax=5, inherit.aes = FALSE, alpha=I(0.25))
-    
-    peaks1$lines$bullet <- b12[1]
-    peaks2$lines$bullet <- b12[2]
-    
-    lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
-    
-    #   p <- qplot(x=y, y=resid, geom="line", colour=bullet, data=lofX, group=bullet) +
-    #     theme_bw() +
-    #     geom_rect(data=lines, aes(xmin=xmin, xmax=xmax, fill = factor(type)),  ymin=-6, ymax=6, inherit.aes = FALSE, alpha=I(0.25)) +
-    #     ylim(c(-6,6)) +
-    #     geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(lines, !match), inherit.aes = FALSE) +
-    #     geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(lines, match), inherit.aes = FALSE) 
-    
-    maxCMS <- maxCMS(lines$match==TRUE)
-    list(maxCMS = maxCMS, ccf = bAlign$ccf, lag=bAlign$lag, lines=lines, bullets=lofX)
-}  
+# new_bulletGetMaxCMSXXX <- function(lof1, lof2, span=35) {
+#     lof <- rbind(lof1, lof2)
+#     bAlign = bulletAlign(lof)
+#     lofX <- bAlign$bullet  
+#     
+#     b12 <- unique(lof$bullet)
+#     peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = span)
+#     peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = span)
+#     
+#     #qplot(x=y, y=resid, geom="line", colour=bullet, data=lofX, group=bullet) +
+#     #    theme_bw() +
+#     #    geom_rect(data=peaks1$lines, aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-5, ymax=5, inherit.aes = FALSE, alpha=I(0.25)) +
+#     #    geom_rect(data=peaks2$lines, aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-5, ymax=5, inherit.aes = FALSE, alpha=I(0.25))
+#     
+#     peaks1$lines$bullet <- b12[1]
+#     peaks2$lines$bullet <- b12[2]
+#     
+#     lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
+#     
+#     #   p <- qplot(x=y, y=resid, geom="line", colour=bullet, data=lofX, group=bullet) +
+#     #     theme_bw() +
+#     #     geom_rect(data=lines, aes(xmin=xmin, xmax=xmax, fill = factor(type)),  ymin=-6, ymax=6, inherit.aes = FALSE, alpha=I(0.25)) +
+#     #     ylim(c(-6,6)) +
+#     #     geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(lines, !match), inherit.aes = FALSE) +
+#     #     geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(lines, match), inherit.aes = FALSE) 
+#     
+#     maxCMS <- maxCMS(lines$match==TRUE)
+#     list(maxCMS = maxCMS, ccf = bAlign$ccf, lag=bAlign$lag, lines=lines, bullets=lofX)
+# }  
 
 # match unknown land using crosscuts
 ccs <- read.csv("csvs/crosscuts-25.csv")
@@ -100,7 +100,7 @@ for (span in c(10, 20, 25, 30, 40)) {
             br1 <- filter(bullets_smoothed, bullet == x$path)
             br2 <- filter(bullets_smoothed, bullet == unknowns[[j]]$path)
             
-            new_bulletGetMaxCMSXXX(br1, br2, span=span)
+            bulletGetMaxCMSXXX(br1, br2, span=span)
         })
         save(reslist, file=file.path(dataStr, sprintf("unkn%d.RData", j)))
     }
