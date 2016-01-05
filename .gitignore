@@ -25,7 +25,7 @@ Figure
 *.aux
 
 app/rsconnect/shinyapps.io/erichare/x3prproto.dcf
-app/images
+app/images/*
 
 imaging-paper-abstract-concordance.tex
 
