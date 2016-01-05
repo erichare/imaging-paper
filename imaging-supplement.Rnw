@@ -517,8 +517,8 @@ ballstats$forestsmall <- predict(rtrees2, newdata=ballstats, type="prob")[,2]
 set.seed(20151201+i); i+1
 rtrees3 <- randomForest(factor(match)~., data=subset(ballstats, !flagged)[,includesVar], ntree=300); rtrees3
 ballstats$forest <- predict(rtrees3, newdata=ballstats, type="prob")[,2]
-xtabs(~(forest>0.5)+match+insmall, data=ballstats[!ballstats$flagged,])
-qplot(forest, data=subset(ballstats, !flagged), geom="jitter", y=match)
+#xtabs(~(forest>0.5)+match+insmall, data=ballstats[!ballstats$flagged,])
+#qplot(forest, data=subset(ballstats, !flagged), geom="jitter", y=match)
 @
 % 9/(10628+9)
 % 18/(76+18)
