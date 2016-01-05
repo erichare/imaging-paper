@@ -521,11 +521,12 @@ lines <- subset(lines, lineid != 0)
 \begin{figure}[hbtp]
 \centering
     \begin{subfigure}[t]{\textwidth}\centering
-\caption{Loess smooth of signatures  at $x = 100$ (span is 0.03).\label{fig:smooth}}{%
+\caption{Loess smooth of signatures  at cross section $x = 100$ (span is 0.03).\label{fig:smooth}}{%
 <<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.65\\textwidth', warning=FALSE>>=
-qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=bullet) +
+lofX$bulletname <- scrubPath(lofX$bullet)
+qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=bulletname) +
   geom_line(aes(y=l30), colour="grey70", size=0.5) +
-  facet_grid(bullet~.) +
+  facet_grid(bulletname~.) +
 #  scale_colour_manual("", values=cols) +
   theme_bw() + ylab("") + 
   theme(legend.position="none")
@@ -553,7 +554,8 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
   peaks2$lines$bullet <- b12[2]
   peaks <- rbind(peaks1$lines, peaks2$lines)
   
-  
+  peaks$bulletname <- scrubPath(peaks$bullet)
+  lofX$bulletname <- scrubPath(lofX$bullet)
   ggplot() + theme_bw() +
     geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, 
               data=peaks,  alpha=0.2) +
@@ -562,8 +564,8 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
     scale_colour_brewer(palette="Set2") + 
     scale_fill_brewer(palette="Set2") +
     theme(legend.position="none") + 
-    facet_grid(bullet~.) +
-    geom_line(aes(x=y, y=l30, group=bullet), data=lofX) +
+    facet_grid(bulletname~.) +
+    geom_line(aes(x=y, y=l30, group=bulletname), data=lofX) +
   ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) 
 @
 }
@@ -582,7 +584,7 @@ ggplot() +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(lines, !match)) +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(lines, match)) +
   ylim(c(-6,6.5)) + theme_bw() +
-  geom_line(data=lofX, aes(x=y, y=l30, group=bullet, linetype=bullet)) +
+  geom_line(data=lofX, aes(x=y, y=l30, group=bulletname, linetype=bulletname)) +
   scale_linetype_discrete("") +
   scale_colour_manual("", values=cols) +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey60", 0.5)) +
@@ -674,7 +676,8 @@ A single cross section across the surface of the two lands in Figure~\ref{fig:ma
 \begin{subfigure}[b]{.49\textwidth}\centering
 \caption{Raw bullet land signatures.\label{fig:crosscut}}{%
 <<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
-qplot(y, resid, group=bullet, colour=bullet, data=lof, 
+lof$bulletname <- scrubPath(lof$bullet)
+qplot(y, resid, group=bulletname, colour=bulletname, data=lof, 
       geom="line") + 
   scale_colour_manual("", values=cols) + theme_bw() +
   theme(legend.position = c(1, 1), legend.justification=c("right", "top"),
@@ -686,7 +689,8 @@ qplot(y, resid, group=bullet, colour=bullet, data=lof,
 \begin{subfigure}[b]{.49\textwidth}\centering
     \caption{Aligned signatures.\label{fig:crosscutX}}{%
 <<crosscutsX, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
-qplot(y+min(lof$y), resid, group=bullet, colour=bullet, data=lofY, 
+lofY$bulletname <- scrubPath(lofY$bullet)
+qplot(y+min(lof$y), resid, group=bulletname, colour=bulletname, data=lofY, 
       geom="line") + xlab("y") +
   scale_colour_manual("", values=cols) + theme_bw() +
   theme(legend.position = c(1, 1), legend.justification=c("right", "top"),
@@ -731,7 +735,7 @@ This situation is assessed and discussed in more detail below:
 paths <- file.path(datadir, dir(datadir))
 crosscuts <- seq(100,250, by=25)
 lof <- processBullets(read.x3p(paths[37]), name = paths[37], x = crosscuts)
-lof$bullet <- paste(lof$bullet, lof$x)
+lof$bullet <- paste(scrubPath(lof$bullet), lof$x)
 
 reslist <- lapply(1:length(crosscuts[-1]), function(i) {
   b2 <- subset(lof, x %in% crosscuts[i:(i+1)])
