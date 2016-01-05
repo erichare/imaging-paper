@@ -107,3 +107,4 @@ for (span in c(25)) {
         save(reslist, file=file.path(dataStr, sprintf("bullet%d.RData", j)))
     }
 }
+

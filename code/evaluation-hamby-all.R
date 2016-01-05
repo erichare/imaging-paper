@@ -81,18 +81,45 @@ CCFs$span <- span
 flagged <- c("Br6 Bullet 2-1", "Br9 Bullet 2-4", "Ukn Bullet B-2", "Ukn Bullet Q-4")
 CCFs$flagged <- CCFs$b1 %in% flagged
 
+CCFs$b1 <- as.character(CCFs$b1)
+CCFs$b2 <- as.character(CCFs$b2)
+CCFs$id <- with(CCFs, paste(pmin(b1,b2), pmax(b1,b2), sep="|"))
+# just checking - should all be 0
+stats <- CCFs %>% group_by(id) %>% summarize(
+#  tree = diff(pred),
+#  forest = diff(forest),
+  flagged = mean(flagged),
+  sumpeaks = diff(sumpeaks),
+  cms = diff(cms),
+  cnms = diff(non_cms),
+  matches=diff(num.matches),
+  mismatches=diff(num.mismatches),
+  D=diff(D)
+)
+summary(stats)
+as.data.frame(stats)[which(stats$sumpeaks != 0),] # and of course, it's not zero. darn
+# it doesn't seem to make a practical difference, though.
+# XXX we should check closer into where these differences come from.
+
+dpls <- duplicated(CCFs$id)
+CCFs <- CCFs[!dpls,]
+
 library(rpart)
 library(rpart.plot)
+
 includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "span", "forest"))
-rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
+rp1 <- rpart(match~., data=subset(CCFs, !flagged)[,includes])  # doesn't include cms at all !!!!
 prp(rp1, extra = 101)
-CCFs$pred <- predict(rp1)
+CCFs$pred <- predict(rp1, newdata=CCFs)
+xtabs(~(pred>0.5)+match, data=CCFs[!CCFs$flagged,])
+
 
 library(randomForest)
-rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=300)
-CCFs$forest <- predict(rtrees, type="prob")[,2]
+set.seed(20151202)
+rtrees <- randomForest(factor(match)~., data=subset(CCFs, !flagged)[,includes], ntree=300)
+CCFs$forest <- predict(rtrees, newdata=CCFs, type="prob")[,2]
 
-write.csv(CCFs, file=file.path(dataStr, "bullet-stats.csv"), row.names=FALSE)
+write.csv(CCFs, file=file.path(dataStr, "bullet-stats-single.csv"), row.names=FALSE)
 
 
 ##################################################
