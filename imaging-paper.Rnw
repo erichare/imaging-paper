@@ -1359,7 +1359,7 @@ Another thing to note about the  the random forest's error rates is that they ar
 predm <- melt(bstats, measure.var=c("pred", "forest"))
 levels(predm$variable) <- c("Tree", "Forest")
 predm$match <- c("KNM", "KM")[as.numeric(predm$match)+1]
-qplot(data=predm, value, variable, geom="jitter", colour=match, shape=match) + theme_bw() + facet_grid(match~., labeller="label_both") +
+qplot(data=predm, value, match, geom="jitter", colour=match, shape=match) + theme_bw() + facet_grid(variable~.) +
     scale_colour_brewer(palette="Paired", labels=c("KNM", "KM")) +
   scale_shape_discrete(labels=c("KNM", "KM")) + ylab("") + 
   xlab("Predicted probability of a match") +
