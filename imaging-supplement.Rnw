@@ -30,6 +30,9 @@
 \usepackage{lineno}
 \modulolinenumbers[5]
 
+\usepackage{dcolumn}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+
 \newcommand{\hh}[1]{{\color{magenta} #1}}
 \newcommand{\eh}[1]{{\color{blue} #1}}
 \newcommand{\ac}[1]{{\color{darkgreen} #1}}
@@ -528,6 +531,53 @@ qplot(x=y, y=l30, data=aligned, geom="line", group=bullet) + ylim(c(-7,7)) + fac
 @
 \caption{\label{fig:aligned}Overview of aligned signatures for all bullet lands for the ten barrels of the Hamby study. }
 \end{figure}
+
+\newpage
+\section{Results from Random Forest}\label{supp:randomforest}
+
+<<setup-rtrees, echo=FALSE, message=FALSE>>=
+bstats <- read.csv("data-25-25/bullet-stats.csv", stringsAsFactors = FALSE)
+
+library(randomForest)
+set.seed(20151202)
+includesVar <- setdiff(names(bstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist", "flagged", "km"))
+
+rtrees <- randomForest(factor(match)~., data=subset(bstats, !flagged)[,includesVar], ntree=300)
+@
+
+\begin{table}[tbhp]
+\caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Averages (and standard deviations) for known matches (KM) and known non-matches (KNM) are shown in the last four columns.}
+\centering
+<<importance, echo=FALSE, results='asis', warning=FALSE>>=
+imp <- data.frame(importance(rtrees))
+imp$Variable <- row.names(imp)
+imp <- imp[order(-imp$MeanDecreaseGini),]
+names(imp)[1] <- "Importance"
+imp <- imp[,2:1]
+imp$meanMatch <- sapply(imp$Variable, function(var) {
+  mean(subset(bstats, match)[,var])
+})
+imp$sdMatch <- sapply(imp$Variable, function(var) {
+  sd(subset(bstats, match)[,var])
+})
+imp$meanNonMatch <- sapply(imp$Variable, function(var) {
+  mean(subset(bstats, !match)[,var])
+})
+imp$sdNonMatch <- sapply(imp$Variable, function(var) {
+  sd(subset(bstats, !match)[,var])
+})
+imp$meanMatch <- round(imp$meanMatch,1)
+imp$sdMatch <- sprintf("(%5.2f)", imp$sdMatch)
+imp$meanNonMatch <- round(imp$meanNonMatch,1)
+imp$sdNonMatch <- sprintf("(%7.2f)", imp$sdNonMatch)
+row.names(imp) <- 1:nrow(imp)
+imp$Variable[c(2,4)] <- c("#matches", "#non-matches")
+names(imp)[-(1:2)] <- c("KM", "(sd)", "KNM", "(sd)")
+print(xtable(imp, align="clrrd{3.2}rd{3.2}", digits=c(0,0,1,1,2,1,2)), 
+      floating = FALSE)
+@
+\end{table}
+
 \bibliographystyle{imsart-nameyear.bst}
 %\biboptions{authoryear}
 \bibliography{references}

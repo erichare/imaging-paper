@@ -107,7 +107,7 @@ CCFs <- CCFs[!dpls,]
 library(rpart)
 library(rpart.plot)
 
-includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "span", "forest"))
+includes <- setdiff(names(CCFs), c("id","b1", "b2", "data", "resID", "id.x", "id.y", "pred", "span", "forest"))
 rp1 <- rpart(match~., data=subset(CCFs, !flagged)[,includes])  # doesn't include cms at all !!!!
 prp(rp1, extra = 101)
 CCFs$pred <- predict(rp1, newdata=CCFs)
@@ -118,6 +118,7 @@ library(randomForest)
 set.seed(20151202)
 rtrees <- randomForest(factor(match)~., data=subset(CCFs, !flagged)[,includes], ntree=300)
 CCFs$forest <- predict(rtrees, newdata=CCFs, type="prob")[,2]
+xtabs(~(forest>0.5)+match, data=CCFs[!CCFs$flagged,])
 
 write.csv(CCFs, file=file.path(dataStr, "bullet-stats-single.csv"), row.names=FALSE)
 
