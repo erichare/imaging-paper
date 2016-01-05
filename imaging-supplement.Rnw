@@ -469,10 +469,62 @@ Figure~\ref{fig:sds} shows that the amount of standard deviation of a signature 
 This makes standard deviation of a signature one measure to quantify the extent to which a signature is expressed. This implies that for identifying matches we should use the lowest crosscut level to extract a bullet's signature once a stable surface region is detected. This is in accordance with current standard practice \citep{afte:1992}.
 
 \newpage
-\section{One-on-one comparison of Hamby study}\label{supp:extended}
-\hh{
-add: we could extend the results of the James Hamby study by trying to match every single land against all other lands. This  almost doubles the number of comparisons ($21,115 = (118+88)\cdot 205/2$).  
-}
+\section{Complete evaluation of the Hamby study}\label{supp:extended}
+\hh{One way to expand the use of the James Hamby study is to not only match all of the unknown bullet lands against the known bullet lands, but to compare every land against every other land. This effectively doubles the number of comparisons from 10,384 pairwise comparisons of useable bullet lands to 21,115 ($= (118+88)\cdot 205/2$) comparisons by adding another 10,731 bullet land comparisons made up of known-to-known and unknown-to-unkown comparisons. }
+
+\hh{When we predict the new 10,731 comparisons using the random forest based on the previously considered 10,384 known-unknown comparisons, we encounter 18 false negatives and 9 false positives, corresponding to an actual false error rate of 0.19 and a false positive rate of 0.00085, which is close to the estimated error rates of 0.2267 and 0.0002. }
+
+\hh{However, if we use all of the available comparisons to fit another random forest of 300 trees, the de-facto error rates for false positives and false negatives are again at 0. The estimated OOB error rates are 0.00024 for the false positive rate and 0.22180 for the false negative rate.}
+<<allhamby, echo=FALSE, message=FALSE, warning=FALSE>>=
+knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
+knowns <- dir(path=knowndatadir)
+knowns <- gsub(".x3p", "", knowns)
+
+unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
+unknowns <- dir(path=unknowndatadir)
+unknowns <- gsub(".x3p", "", unknowns)
+
+#bstats <- read.csv("data-25-25/bullet-stats.csv")
+#flagged <- c("Br6 Bullet 2-1", "Br9 Bullet 2-4", "Ukn Bullet B-2", "Ukn Bullet Q-4")
+includesVar <- setdiff(names(ballstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "id", "pred", "forest", "bullet", "span", "crosscutdist", "flagged", "km", "forestsmall",
+                                        "left_cms", "right_cms", "left_noncms", "right_noncms"))
+
+library(randomForest)
+#set.seed(20151202)
+#rtrees <- randomForest(factor(match)~., data=subset(bstats, !flagged)[,includesVar], ntree=100)
+
+
+ballstats <- read.csv("data-new-all-25-25/bullet-stats-single.csv")
+# names(ballstats)[10] <- "num.nonmatches"
+# names(ballstats)[11] <- "CNMS"
+# names(ballstats)[16] <- "S"
+# names(ballstats)[17] <- "CMS"
+#ballstats$forestsmall <- predict(rtrees, newdata=ballstats, type="prob")[,2]
+###########
+
+ballstats$insmall <- with(ballstats, ((b1 %in% knowns) & (b2 %in% unknowns)) | ((b2 %in% knowns) & (b1 %in% unknowns)))
+
+
+set.seed(20160512)
+rtrees2 <- randomForest(factor(match)~., data=subset(ballstats, !flagged & insmall)[,includesVar], ntree=300)
+
+
+ballstats$forestsmall <- predict(rtrees2, newdata=ballstats, type="prob")[,2]
+
+# xtabs(~(forestsmall>0.5)+match+insmall, data=ballstats[!ballstats$flagged,])
+
+
+set.seed(20151201+i); i+1
+rtrees3 <- randomForest(factor(match)~., data=subset(ballstats, !flagged)[,includesVar], ntree=300); rtrees3
+ballstats$forest <- predict(rtrees3, newdata=ballstats, type="prob")[,2]
+xtabs(~(forest>0.5)+match+insmall, data=ballstats[!ballstats$flagged,])
+qplot(forest, data=subset(ballstats, !flagged), geom="jitter", y=match)
+@
+% 9/(10628+9)
+% 18/(76+18)
+
+
+
 \hh{Show aligned signatures for all ten barrels. }
 
 Figure~\ref{fig:aligned} gives an overview of all the signatures from bullet lands in the Hamby study aligned by barrel. Three to five bullets were fired from each barrel. The figure gives us both some insight into how well signatures match and how consistent individual characteristics are impregnated on bullets fired from each of the barrels. Signatures for some lands match remarkably well - such as land 5 from barrel 1, whereas all lands from barrel 5 show some variability both in the location and depths of peaks and valleys.
@@ -533,7 +585,7 @@ qplot(x=y, y=l30, data=aligned, geom="line", group=bullet) + ylim(c(-7,7)) + fac
 \end{figure}
 
 \newpage
-\section{Results from Random Forest}\label{supp:randomforest}
+\section{Table of feature importance}\label{supp:randomforest}
 
 <<setup-rtrees, echo=FALSE, message=FALSE>>=
 bstats <- read.csv("data-25-25/bullet-stats.csv", stringsAsFactors = FALSE)
