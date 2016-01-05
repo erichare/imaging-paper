@@ -83,7 +83,7 @@ knowns <- all_bullets[1:120]
 unknowns <- all_bullets[121:210]
 bullets_processed <- lapply(all_bullets, function(bul) {
     cat("Computing processed bullet", basename(bul$path), "\n")
-    processBullets(bullet = bul, x = ccs$cc[which(ccs$path == bul$path)])
+    processBullets(bullet = bul, name = bul$path, x = ccs$cc[which(ccs$path == bul$path)])
 })
 names(bullets_processed) <- as.character(ccs$path)
 

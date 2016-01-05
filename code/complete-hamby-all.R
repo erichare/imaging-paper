@@ -83,13 +83,13 @@ knowns <- all_bullets[1:120]
 unknowns <- all_bullets[121:210]
 bullets_processed <- lapply(all_bullets, function(bul) {
     cat("Computing processed bullet", basename(bul$path), "\n")
-    processBullets(bullet = bul, x = ccs$cc[which(ccs$path == bul$path)])
+    processBullets(bullet = bul, name = bul$path, x = ccs$cc[which(ccs$path == bul$path)])
 })
 names(bullets_processed) <- as.character(ccs$path)
 
 bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth
 
-for (span in c(10, 20, 25, 30, 40)) {
+for (span in c(25)) {
     dataStr <- sprintf("data-new-all-%d-25", span) # using crosscuts-25.csv
     
     if (!file.exists(dataStr)) dir.create(dataStr)
@@ -99,6 +99,8 @@ for (span in c(10, 20, 25, 30, 40)) {
             
             br1 <- filter(bullets_smoothed, bullet == x$path)
             br2 <- filter(bullets_smoothed, bullet == all_bullets[[j]]$path)
+            
+            if (all_bullets[[j]]$path == x$path) br2$bullet <- paste0(br2$bullet, "_2")
             
             bulletGetMaxCMSXXX(br1, br2, span=span)
         })
