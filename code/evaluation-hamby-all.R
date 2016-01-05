@@ -78,6 +78,8 @@ CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
 CCFs$match <- CCFs$id.x == CCFs$id.y
 CCFs$span <- span
 
+flagged <- c("Br6 Bullet 2-1", "Br9 Bullet 2-4", "Ukn Bullet B-2", "Ukn Bullet Q-4")
+CCFs$flagged <- CCFs$b1 %in% flagged
 
 library(rpart)
 library(rpart.plot)
