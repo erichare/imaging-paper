@@ -280,9 +280,16 @@ Given that we have to expect some variation in nominally the same cross section 
 \begin{figure}[hbtp]
   \centering
 <<crosscuts-vary, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\textwidth', cache=TRUE, warning = FALSE>>=
+
+scrubPath <- function(x) {
+  splits <- strsplit(as.character(x), split="/")
+  last <- sapply(splits, function(x) x[length(x)])
+  gsub(".x3p","", last)
+}
+
 paths <- file.path(datadir, dir(datadir))
 crosscuts <- seq(100, 400, by = 50)
-lof <- processBullets(paths[5], x = crosscuts)
+lof <- processBullets(read.x3p(paths[5]), name = scrubPath(paths[5]), x = crosscuts)
 lof$bullet <- paste(lof$bullet, lof$x)
 
 reslist <- lapply(crosscuts[-1], function(cc) {
@@ -327,7 +334,7 @@ ggplot() +
 grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
              ncol = 2)
 @
-\caption{\label{fig:crosscuts}Overview of the variations in the surface along different cross sections. Cross section at $x = 100$ is compared to cross sections every 50$\mu m$. With every step away from the original cross section site, the number of differences between the cross sections increases, and the number of maximum CMS decreases from initially 14 to  3 or fewer at $x = 300\mu m$ and higher. }
+\caption{\label{fig:crosscuts}Overview of the variations in the surface along different cross sections. The signature extracted at $x = 100$ is compared to signatures at every 50$\mu m$. With every step away from the original cross section site, the number of differences between the signatures increases; the number of maximum CMS decreases from initially 14 to  3 or fewer at $x = 300\mu m$ and higher. }
 \end{figure}
 
 \newpage
@@ -526,7 +533,7 @@ ballstats$forest <- predict(rtrees3, newdata=ballstats, type="prob")[,2]
 
 
 
-\hh{Show aligned signatures for all ten barrels. }
+%\hh{Show aligned signatures for all ten barrels. }
 
 Figure~\ref{fig:aligned} gives an overview of all the signatures from bullet lands in the Hamby study aligned by barrel. Three to five bullets were fired from each barrel. The figure gives us both some insight into how well signatures match and how consistent individual characteristics are impregnated on bullets fired from each of the barrels. Signatures for some lands match remarkably well - such as land 5 from barrel 1, whereas all lands from barrel 5 show some variability both in the location and depths of peaks and valleys.
 \begin{figure}[hbtp]
