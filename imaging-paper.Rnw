@@ -677,7 +677,7 @@ lof$bulletname <- scrubPath(lof$bullet)
 qplot(y, resid, group=bulletname, colour=bulletname, data=lof, 
       geom="line") + 
   scale_colour_manual("", values=cols) + theme_bw() +
-  theme(legend.position = c(1, 1), legend.justification=c("right", "top"),
+  theme(legend.position = c(1, 1.1), legend.justification=c("right", "top"),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylab("Residuals of loess fit")
 @
@@ -690,7 +690,7 @@ lofY$bulletname <- scrubPath(lofY$bullet)
 qplot(y+min(lof$y), resid, group=bulletname, colour=bulletname, data=lofY, 
       geom="line") + xlab("y") +
   scale_colour_manual("", values=cols) + theme_bw() +
-  theme(legend.position = c(1, 1), legend.justification=c("right", "top"),
+  theme(legend.position = c(1, 1.1), legend.justification=c("right", "top"),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylab("Residuals of loess fit")
 @
@@ -759,14 +759,14 @@ ccfs <- sapply(reslist, function(res) res$ccf)
 lop <- lapply(reslist, function(res) {
 ggplot() +
   theme_bw() + 
-  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
+  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5.5, data=res$lines, alpha=0.2) +
   geom_line(aes(x = y, y = l30, linetype = bullet),   data = res$bullets) +
   scale_linetype_discrete("") +
 #  scale_colour_brewer("", palette="Set1", na.value=alpha("grey50", alpha=0.5)) +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1.2), legend.justification=c(1,1),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
-  ylim(c(-6,6)) + ylab("") + xlab("") + 
+  ylim(c(-6,6.5)) + ylab("") + xlab("") + 
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match))
 })
@@ -830,7 +830,7 @@ As a first step, we automatically assess the quality of each of the lands by  ch
 \begin{figure}
   \centering
 \begin{subfigure}[t]{.49\textwidth}\centering
-\caption{Br6 Bullet 2-1}
+\caption{Barrel 6 Bullet 2-1}
 %' <<echo=FALSE>>=
 %' b1 <- read.x3p(file.path(datadir, "Br6 Bullet 2-1.x3p"))
 %' image(b1$surface.matrix)
@@ -838,18 +838,18 @@ As a first step, we automatically assess the quality of each of the lands by  ch
 \includegraphics[width=\textwidth]{images/br6-2-1-grey.png}
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}\centering
-\caption{Br9 Bullet 2-4}
+\caption{Barrel 9 Bullet 2-4}
 \includegraphics[width=\textwidth]{images/br9-2-4-grey.png}
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}\centering
-\caption{Unkn Bullet B-2}
+\caption{Unknown Bullet B-2}
 \includegraphics[width=\textwidth]{images/b-2-grey.png}
 \end{subfigure}
 \begin{subfigure}[t]{.49\textwidth}\centering
-\caption{Unkn Bullet Q-4}
+\caption{Unknown Bullet Q-4}
 \includegraphics[width=\textwidth]{images/q-4-grey.png}
 \end{subfigure}
-\caption{\label{fig:fourflags}Images of the four lands that got flagged during the quality assessment. All of them show scratch marks across the striation marks from the barrel. They will be excluded from the remainder of the analysis.}
+\caption{\label{fig:fourflags}Images of the four lands that got flagged during the quality assessment. All of them show scratch marks (tank rash) across the striation marks from the barrel. They are excluded from the remainder of the analysis.}
 \end{figure}
 %
 We exclude these four lands from the further matching considerations and 
@@ -1266,7 +1266,7 @@ Neither one of these methods allows for an assessment of cross-correlations. Thi
 
 \begin{figure}[hbtp]
   \centering
-<<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.5\\textwidth'>>=
+<<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.65\\textwidth'>>=
 library(rpart)
 library(rpart.plot)
 library(RColorBrewer)
@@ -1316,7 +1316,7 @@ Figure~\ref{fig:oob} shows the cumulative out-of-bag error (OOB) rate for 300 tr
 %
 \begin{figure}[hbtp]
   \centering
-<<oob, echo=FALSE, fig.width=7, fig.height=3, out.width='.5\\textwidth'>>=
+<<oob, echo=FALSE, fig.width=6, fig.height=3, out.width='.6\\textwidth'>>=
 qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Number of trees") + ylab("Out of Bag Error (OOB)")
 @
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
