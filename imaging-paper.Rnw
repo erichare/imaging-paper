@@ -125,9 +125,9 @@ library(sm)
 
 
 \section{Introduction}
-\hh{
-Todo list for journal shape-up: there is a lot of good material, we mainly need to focus on what story to tell and make that a solid argument.
-\begin{enumerate}
+%\hh{
+%Todo list for journal shape-up: there is a lot of good material, we mainly need to focus on what story to tell and make that a solid argument.
+%\begin{enumerate}
 %\item take out a few things: no circular fit, no figures 9 and 10 
 %\item do we need the web app?
 %\item out: lots of the figures can go into a supplement, together with a discussion. In the paper we then have a summary of what can be seen, so that we can focus on the results. 
@@ -138,15 +138,15 @@ Todo list for journal shape-up: there is a lot of good material, we mainly need 
 %\item add: more discussion of the density plots: probability ratio for a match - exchanged probability ratios for ROC curves
 %\item add: more discussion on additional bullet images. NIST database claims to have 70 bullets -- that would be two sets of the study, but only 35 bullets are currently available. Should we contact Alan Zheng to see whether we can get access to more bullet files? Not enough space for this one.
 %\item add: we could extend the results of the James Hamby study by trying to match every single land against all other lands. This would almost double the number of comparisons ($21,115 = (118+88)\cdot 205/2$). Something for the appendix? What would be fun, would be to show all of the aligned signatures for all ten barrels. (moved to supplement)
-\item add: should we add a paragraph on the speed of the evaluation? - separate out into pre-processing (needs to be done once) and matching (pairwise comparison of lands). If we only do bullet matching, we could speed this process up by eliminating some land comparisons. - Thinking about this more, I'm against it. The speed massively depends on the kind of computer used - the important thing is, that on a server all of these calculations are very fast -- even my machine can do 11 comparisons per second, if the files are pre-processed. Pre-processing might take a couple of seconds - at most 20-30 seconds for each bullet land. That is an initial cost one has to pay.
+%\item add: should we add a paragraph on the speed of the evaluation? - separate out into pre-processing (needs to be done once) and matching (pairwise comparison of lands). If we only do bullet matching, we could speed this process up by eliminating some land comparisons. - Thinking about this more, I'm against it. The speed massively depends on the kind of computer used - the important thing is, that on a server all of these calculations are very fast -- even my machine can do 11 comparisons per second, if the files are pre-processed. Pre-processing might take a couple of seconds - at most 20-30 seconds for each bullet land. That is an initial cost one has to pay.
 %\item add: we might need a proper definition of the joint striation marks (the result of striation-identify)
 %\item change: we could make the table into a labelled dotplot of importance to save space. We don't need the mean and standard deviations anymore -- the density plots and the ROCs take care of that.
 %\item change: the focus of the paper is initially quite strongly on the maximal consecutively matching striae (CMS). We need to emphasis the role of CMS in the introduction: max CMS is Biasotti's main criterium for matching.  max CMS is part of current practice (AFTE criteria citation). AFIS \cite{AFIS} is suggesting it for an automated system (was there ever a phase II of that project?). Problem is, that determining CMS is subjective; counting CMS in particular, has been found to be subjective to the examiner: `the concept of counting striations is subjective and based on experience'~\citep{miller:1998}.  For an automatic routine we are faced with the problem of having to determine what a stria is. XXX Should we include one of those microscopic images to bring that point home? We would need somebody qualified to tell us how many CMS there are, though.
-\item to consider: AOAS states that accepted papers rarely have more than 20 pages. We are currently over by a couple of pages.
+%\item to consider: AOAS states that accepted papers rarely have more than 20 pages. We are currently over by a couple of pages.
 %\item definitions: 
 %A bullet's {\it signature} is defined as the residual surface measurements after removing the big structure using the loess fit. The {\it cross section} defines the location along the $x$ axis  at which the signature is taken.
-\end{enumerate}
-}
+%\end{enumerate}
+%}
 Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of  convictions  in the United States criminal justice system. Ballistics identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of ballistics identification evidence~\citep{giannelli:2011}.
 
 In 2009, the National Academy of Sciences published a report~\citep{NAS:2009} questioning the scientific validity of many forensic methods including firearm examination. The report states that ``[m]uch forensic evidence -- including, for example, bite marks and firearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
@@ -1422,6 +1422,8 @@ By suggesting an automated algorithm that first removes class characteristics, s
 For a fair assessment of the adequacy of an algorithm we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package x3prplus~\citep{x3prplus}, and the code to produce this paper is available at \url{http://www.github.com/erichare/imaging-paper}. Obviously, this is only a first step, but in times of the Netflix prize~\citep{koren:2009, toescher:2009, piotte:2009} and the many Data Science challenges hosted by Kaggle\footnote{kaggle home: \url{https://www.kaggle.com/solutions/competitions}}, we should not let the quality of the matching algorithm be the problem that stands in the way.
 
 Only a much larger database and transparent communication of results will give us  answers to whether automatic matching of ballistic evidence is really feasible,  whether there really is individualization of this evidence, as is often silently assumed. And in the case, that individualization is a reasonable assumption, whether  there is a way to be able to distinguish between individual and subclass characteristics. 
+
+\hh{XXX speed? XXX}
 
 An approach that might help in determining this difference comes from Biometrics \citep{jain:2015:tphil, jain:2015}. It has been successfully applied in the Aadhar project (the effort by the Unique Identification Authority of India (UIDAI) to provide a unique 12-digit identification number to approximately 1.2 billion residents of India based on ten fingerprints and two irises).
 This approach uses dictionary learning based on small square patches  of 64x64 or 32x32 pixels. For matching bullets, a simpler, one-dimensional window approach might be sufficient to match striation marks because of the physical forces  leading to the existence of these marks.  
