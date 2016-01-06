@@ -1403,6 +1403,8 @@ qplot(MeanDecreaseGini,1, data=imp, geom="point") +
 %The rows in the table are ordered according to descending importance. 
 The variables with the most predictive power by far are cross-correlation and the overall number of matches, followed by the total depth of joint striations $S$ and non-matches. CMS is found only in sixth place.
 
+\hh{Besides including results from known matches againts known non-matches, we can increase the number of comparisons in the Hamby study to include all possible land-to-land comparisons. This effectively doubles the number of data points available. Comparisons not previously included in fitting the random forest can also be used as an additional source for assessing error rates.  Results for this and a more detailed discussion can be found in supplement section~\ref{supp:extended}.}
+
 \section{Conclusion}
 
 We have presented an algorithm which detects the most prominent but least relevant structure of a bullet from a ballistics identification perspective, removes these features, and produces residuals which allows for the easy identification of markings. We have generalized this algorithm to align the residuals from two bullets to automatically determine whether they are matches. We created a random forest model using many of the features to provide a probabilistic assessment of the quality of a match, along with the most relevant features. %Finally, we have provided an easy-to-use open-source backend, and web frontend to many of these features.
