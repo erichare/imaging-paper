@@ -853,7 +853,7 @@ As a first step, we automatically assess the quality of each of the lands by  ch
 \end{figure}
 %
 We exclude these four lands from the further matching considerations and 
- run all remaining lands from the unknown bullets against all remaining lands from known bullets for matches, i.e. we are running $15 \times 6 -2 = 90 - 2 = 88$ lands from unkown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. Out of these comparisons, there are 172 known matches (KM), while the rest are known non-matches (KNM). 
+ run all remaining lands from the unknown bullets against all remaining lands from known bullets for matches, i.e. we are running $15 \times 6 -2 = 90 - 2 = 88$ lands from unknown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. Out of these comparisons, there are 172 known matches (KM), while the rest are known non-matches (KNM). 
  When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the distribution of the number of maximum consecutive matching striae between land C-3 and all 118 known lands. Two lands show a high CMS. These correspond to the known matches with C-3, shown in Figures~\ref{fig:hamby-perfect}b and~\ref{fig:hamby-perfect}c. 
  Unfortunately, not all results are as clear cut. 
 It might not be reasonable to assume that we can match all lands, but the idea is to try to maximize the number of matches to get an overview of what we might be able to expect from an automated match. 
@@ -1262,7 +1262,7 @@ All of the features in Figure~\ref{fig:densities} show large, if not significant
 Using recursive partitioning, we fit a decision tree~\citep{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
 Instead of CMS, cross-correlation (ccf) between the signatures is very important in the matching process  by the decision tree. Aside from  cross correlation, the number of matches is involved in the decision. 
 Between cross-correlation and CMS, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2d microscopic images of bullets.
-Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitalized version of the images that preserves the 3d surface structure. The emphasis on cross-correlation is similar to the results of the study by \citet{ma:2004}. However, in this study authors did not consider the number of matches and non-matches.
+Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitized version of the images that preserves the 3d surface structure. The emphasis on cross-correlation is similar to the results of the study by \citet{ma:2004}. However, in this study authors did not consider the number of matches and non-matches.
 
 \begin{figure}[hbtp]
   \centering
