@@ -229,7 +229,7 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
 \caption{\label{fig:fixedX}Side profile of the surface measurements (in~$\mu m$) of a bullet land across a fixed $x$ value. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
-The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in supplement~\ref{supp:circular}.
+The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in supplement section~\ref{supp:circular}.
 %It is clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
 
 %\subsection{Loess Fit}
@@ -596,7 +596,7 @@ ggplot() +
 \end{figure}
 %\afterpage{\clearpage}
 Figure~\ref{fig:match} gives an overview of the automated matching routine: 
-We first identify a stable region for each bullet and pick the signature at the lowest cross section level in this region, because typically, individual characteristics are best expressed at the lower end of the bullet (see supplement~\ref{supp:bulletbottom} for a more detailed discussion). 
+We first identify a stable region for each bullet and pick the signature at the lowest cross section level in this region, because typically, individual characteristics are best expressed at the lower end of the bullet (see supplement section~\ref{supp:bulletbottom} for a more detailed discussion). 
 
 All of the other steps are done on pairs of bullet lands:
 \begin{enumerate}
@@ -722,7 +722,7 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 
 \subsection{Impact of cross sections}
 The cross section on which a comparison between signatures is based matters -- signatures from cross sections that are further apart, show more pronounced differences between the signatures. 
-This poses both a caveat to matching attempts as well as an opportunity for quality control: we have to be aware of which cross section level was used in a matching. An assessment of this situation shows that, visually, matches degrade if the signatures upon which the match is based are from cross sections further than 200$\mu m$ apart  (see supplement~\ref{supp:ccf} for a more thorough discussion).
+This poses both a caveat to matching attempts as well as an opportunity for quality control: we have to be aware of which cross section level was used in a matching. An assessment of this situation shows that, visually, matches degrade if the signatures upon which the match is based are from cross sections further than 200$\mu m$ apart  (see supplement section~\ref{supp:ccf} for a more thorough discussion).
 However, we can extract signatures from multiple cross sections of the same bullet land for an initial assessment of its quality. 
 This situation is assessed and discussed in more detail below: 
 
@@ -1380,7 +1380,7 @@ qplot(data=predm, value, match, geom="jitter", colour=match, shape=match) + them
 \caption{\label{fig:tree-forest}Prediction results from the tree and the forest. Using a cut-off probability of 0.5 the forest correctly predicts every single comparison. Compared to the tree, the forest's prediction probabilities are  shrunk towards either end of the prediction range. }
 \end{figure}
 
-Besides a probabilistic quantification of matches, we get from a random forest an assessment of the importance of each of the features derived from the bullets' 3d topological surface measurements. Figure~\ref{fig:importance} shows an overview of the importance of each variable measured as the mean decrease in the gini index when the variable in question is included in a tree.
+Besides a probabilistic quantification of matches, we get from a random forest an assessment of the importance of each of the features derived from the bullets' 3d topological surface measurements. Figure~\ref{fig:importance} shows an overview of the importance of each variable measured as the mean decrease in the gini index when the variable in question is included in a tree (for the exact values please refer to supplement section~\ref{supp:randomforest}). 
 \begin{figure}
 <<echo=FALSE, fig.width=7, fig.height=2, out.width='.7\\textwidth'>>=
 imp <- data.frame(importance(rtrees))
