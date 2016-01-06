@@ -486,6 +486,8 @@ unknowns <- gsub(".x3p", "", unknowns)
 
 #bstats <- read.csv("data-25-25/bullet-stats.csv")
 #flagged <- c("Br6 Bullet 2-1", "Br9 Bullet 2-4", "Ukn Bullet B-2", "Ukn Bullet Q-4")
+ballstats <- read.csv("data-new-all-25-25/bullet-stats-single.csv")
+
 includesVar <- setdiff(names(ballstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "id", "pred", "forest", "bullet", "span", "crosscutdist", "flagged", "km", "forestsmall",
                                         "left_cms", "right_cms", "left_noncms", "right_noncms"))
 
@@ -494,7 +496,6 @@ library(randomForest)
 #rtrees <- randomForest(factor(match)~., data=subset(bstats, !flagged)[,includesVar], ntree=100)
 
 
-ballstats <- read.csv("data-new-all-25-25/bullet-stats-single.csv")
 # names(ballstats)[10] <- "num.nonmatches"
 # names(ballstats)[11] <- "CNMS"
 # names(ballstats)[16] <- "S"
