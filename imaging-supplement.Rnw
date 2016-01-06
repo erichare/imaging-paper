@@ -479,7 +479,7 @@ This makes standard deviation of a signature one measure to quantify the extent 
 
 \newpage
 \section{Complete evaluation of the Hamby study}\label{supp:extended}
-\hh{One way to expand the use of the James Hamby study is to not only match all of the unknown bullet lands against the known bullet lands, but to compare every land against every other land. This effectively doubles the number of comparisons from 10,384 pairwise comparisons of useable bullet lands to 21,115 ($= (118+88)\cdot 205/2$) comparisons by adding another 10,731 bullet land comparisons made up of known-to-known and unknown-to-unkown comparisons. }
+\hh{One way to expand the use of the James Hamby study is to not only match all of the unknown bullet lands against the known bullet lands, but to compare every land against every other land. This effectively doubles the number of comparisons from 10,384 pairwise comparisons of usable bullet lands to 21,115 $\left[= (118+88)\cdot 205/2\right]$ comparisons by adding another 10,731 bullet land comparisons made up of known-to-known and unknown-to-unkown comparisons. }
 
 \hh{When we predict the new 10,731 comparisons using the random forest based on the previously considered 10,384 known-unknown comparisons, we encounter 18 false negatives and 9 false positives, corresponding to an actual false error rate of 0.19 and a false positive rate of 0.00085, which is close to the estimated error rates of 0.2267 and 0.0002. }
 
@@ -537,7 +537,7 @@ ballstats$forest <- predict(rtrees3, newdata=ballstats, type="prob")[,2]
 
 %\hh{Show aligned signatures for all ten barrels. }
 
-Figure~\ref{fig:aligned} gives an overview of all the signatures from bullet lands in the Hamby study aligned by barrel. Three to five bullets were fired from each barrel. The figure gives us both some insight into how well signatures match and how consistent individual characteristics are impregnated on bullets fired from each of the barrels. Signatures for some lands match remarkably well - such as land 5 from barrel 1, whereas all lands from barrel 5 show some variability both in the location and depths of peaks and valleys.
+Figures~\ref{fig:aligned} and~\ref{fig:aligned-second} give an overview of all the signatures from bullet lands in the Hamby study aligned by barrel. Three to five bullets were fired from each barrel. The figures give us both some insight into how well signatures match and how consistent individual characteristics are impregnated on bullets fired from each of the barrels. Signatures for some lands match remarkably well -- such as land 5 from barrel 1, whereas all lands from barrel 5 show some variability both in the location and depths of peaks and valleys.
 
 <<aligned, echo=FALSE, warning=FALSE,  cache=TRUE>>=
 matches <- read.csv("csvs/matches.csv", header = FALSE)
@@ -636,7 +636,8 @@ qplot(x=y, y=l30, data=subset(aligned, barrel > 5),
 \end{landscape}
 \newpage
 \section{Table of feature importance}\label{supp:randomforest}
-
+Two random forests were calculated for the Hamby study. For the first random forest only comparisons of bullet lands from known bullets and unknown bullets were used. The second random forest is based on a full comparison of every land with every other land, increasing the number of comparisons from originally 10,384 (10,212 known non-matches and 172 known matches) by another 10,931 comparisons (10,637 known non-matches and 94 known matches). Random forests allow an assessment of variable importance (also called feature importance) as the mean decrease in Gini index when including each variable. 
+Table~\ref{tab:importance} shows the results for feature importance for both of these random forests. Importance~1 refers to the smaller subset, Importance~2 is the feature importance derived from the random forest based on all pairwise comparisons. 
 <<setup-rtrees, echo=FALSE, message=FALSE>>=
 bstats <- read.csv("data-25-25/bullet-stats.csv", stringsAsFactors = FALSE)
 
