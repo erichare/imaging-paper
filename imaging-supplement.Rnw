@@ -103,7 +103,7 @@ library(sm)
 
 
 \section{Cylindrical Fit}\label{supp:cylindrical}
-Figure~\ref{fig:fixedX} shows the side profile of a crosscut through the surface measurements of bullet 1-5 at a fixed level. The smooth line on top is a circle, with estimated radius and center. The details of this fit are given below. We then remove the fit to investigate residuals.
+Figure~\ref{fig:fixedX} shows the side profile of a crosscut through the surface measurements of bullet 1-5 at a fixed level. The smooth line on top is a circle, with estimated radius and center. The details of this fit are given below:
 %
 \begin{figure}[hbtp]
   \centering
@@ -134,7 +134,7 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
 
 %One reasonable approach is to fit a circle to the curve and compute the residuals from this fit.
 
-Assume that $n$ data points are given in the form of data tuples $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$ that are (approximately) located on a circle. We want to estimate the location of the center and radius of the best fitting circle using a least squares approach.
+Assume that $n$ data points are given in the form of data tuples $(x_1, y_1)$, $(x_2, y_2)$, $...$, $(x_n, y_n)$ that are (approximately) located on a circle. We want to estimate the location of the center and radius of the best fitting circle using a least squares approach.
 
 We minimize the following expression:
 \begin{equation}\label{eq:circle}
@@ -339,7 +339,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
 \caption{\label{fig:crosscuts}Overview of the variations in the surface along different cross sections. The signature extracted at $x = 100$ is compared to signatures at every 50$\mu m$. With every step away from the original cross section site, the number of differences between the signatures increases; the number of maximum CMS decreases from initially 22 to  four or fewer at $x = 300\mu m$ and higher. }
 \end{figure}
 
-
+\newpage
 \section{Signature intensities}\label{supp:bulletbottom}
 <<setup-signatures, echo=FALSE>>=
 library(x3pr)
@@ -477,13 +477,13 @@ qplot(x, sd, data=stats, geom="line", group=bullet, alpha=I(0.5)) + theme_bw() +
 Figure~\ref{fig:sds} shows that the amount of standard deviation of a signature decreases on average for all bullet lands as crosscut levels increase.
 This makes standard deviation of a signature one measure to quantify the extent to which a signature is expressed. This implies that for identifying matches we should use the lowest crosscut level to extract a bullet's signature once a stable surface region is detected. This is in accordance with current standard practice \citep{afte:1992}.
 
-\newpage
+%\newpage
 \section{Complete evaluation of the Hamby study}\label{supp:extended}
 \hh{One way to expand the use of the James Hamby study is to not only match all of the unknown bullet lands against the known bullet lands, but to compare every land against every other land. This effectively doubles the number of comparisons from 10,384 pairwise comparisons of usable bullet lands to 21,115 $\left[= (118+88)\cdot 205/2\right]$ comparisons by adding another 10,731 bullet land comparisons made up of known-to-known and unknown-to-unkown comparisons. }
 
-\hh{When we predict the new 10,731 comparisons using the random forest based on the previously considered 10,384 known-unknown comparisons, we encounter 18 false negatives and 9 false positives, corresponding to an actual false error rate of 0.19 and a false positive rate of 0.00085, which is close to the estimated error rates of 0.2267 and 0.0002. }
+\hh{When we predict the new 10,731 comparisons using the random forest based on the previously considered 10,384 known-unknown comparisons, we encounter 18 false negatives and 9 false positives, corresponding to an actual false error rate of 0.19 and a false positive rate of 0.00085, which is close to the random forest's estimated OOB error rates of 0.226744 and 0.000098. }
 
-\hh{However, if we use all of the available comparisons to fit another random forest of 300 trees, the de-facto error rates for false positives and false negatives are again at 0. The estimated OOB error rates are 0.00024 for the false positive rate and 0.22180 for the false negative rate.}
+\hh{However, if we use all of the available comparisons to fit another random forest of 300 trees, the de-facto error rates for false positives and false negatives are again at 0. The estimated OOB error rates are 0.00024 for the false positive rate and 0.22180 for the false negative rate. The false positive rate is therefore virtually unchanged, while we see a slight improvement in the false negative rate for an overall OOB error rate of 0.3\%.}
 <<allhamby, echo=FALSE, message=FALSE, warning=FALSE>>=
 knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
 knowns <- dir(path=knowndatadir)
