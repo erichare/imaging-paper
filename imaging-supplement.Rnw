@@ -483,7 +483,7 @@ This makes standard deviation of a signature one measure to quantify the extent 
 
 \hh{When we predict the new 10,731 comparisons using the random forest based on the previously considered 10,384 known-unknown comparisons, we encounter 18 false negatives and 9 false positives, corresponding to an actual false error rate of 0.19 and a false positive rate of 0.00085, which is close to the random forest's estimated OOB error rates of 0.226744 and 0.000098. }
 
-\hh{However, if we use all of the available comparisons to fit another random forest of 300 trees, the de-facto error rates for false positives and false negatives are again at 0. The estimated OOB error rates are 0.00024 for the false positive rate and 0.22180 for the false negative rate. The false positive rate is therefore virtually unchanged, while we see a slight improvement in the false negative rate for an overall OOB error rate of 0.3\%.}
+\hh{However, if we use all of the available comparisons to fit another random forest of 300 trees, the de-facto error rates for false positives and false negatives are again at 0. The estimated OOB error rates are 0.00024 for the false positive rate and 0.22180 for the false negative rate. The false positive rate is therefore virtually unchanged, while we see a slight improvement in the false negative rate for an overall OOB error rate of 0.3\%, i.e.\ an increase to twice the number of comparisons leads to a decrease of 25\% of the estimated error rate. This is yet another argument in favor of a larger database for training algorithms.}
 <<allhamby, echo=FALSE, message=FALSE, warning=FALSE>>=
 knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
 knowns <- dir(path=knowndatadir)
