@@ -613,7 +613,8 @@ qplot(x=y, y=l30, data=subset(aligned, barrel <=5),
   theme(plot.margin=unit(c(0,0,-1,-1), unit="line"), legend.position="none") + 
   geom_label(aes(y=2.5*(id-3), label=label, colour=bullet), 
              x = 3000, data=subset(labels, barrel <= 5), 
-             inherit.aes = FALSE, hjust="right", size=3) +
+             inherit.aes = FALSE, hjust="right", size=3, 
+             fill=alpha("white", .5)) +
   scale_colour_manual(values=cols)
 @
 \caption{\label{fig:aligned}Overview of aligned signatures for all bullet lands for  barrels 1 to 5 of the Hamby study. }
