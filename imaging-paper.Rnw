@@ -237,7 +237,7 @@ Instead of a circular fit, we use multiple loess fits to model the overall struc
 
 \subsection{Identifying groove locations}
 %In an attempt to improve upon the previous algorithm, w
-We first have to identify the locations of the left and right  groove in the image. The grooves are not assumed to contain information relevant for determining matches, they also dominate the structure, and therefore need  to be removed.  
+We first have to identify the locations of the left and right  groove in the image. The grooves are not assumed to contain information relevant for determining matches. They also dominate the structure, and therefore need  to be removed.  
 Fortunately, the location and appearance of the grooves in the surface profiles is quite consistent.
 Surface measurements reach local maxima around the peak of the groove at either end of the range of $y$, we can then follow the descent of the surface measurements inwards to the valley of the groove. 
 The location of the valleys  mark the points at which we should trim the image. The procedure can be described as follows:
