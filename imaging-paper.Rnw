@@ -1430,6 +1430,7 @@ An approach that might help in determining this difference comes from Biometrics
 This approach uses dictionary learning based on small square patches  of 64x64 or 32x32 pixels. For matching bullets, a simpler, one-dimensional window approach might be sufficient to match striation marks because of the physical forces  leading to the existence of these marks.  
 
 \section*{Acknowledgment} 
+%Thanks to David Baldwin for pointing us to the NIST database and introducing us to the basic terms.
 Thanks to the men and women behind the software R~\citep{R}, and the authors of the R packages  knitr~\citep{knitr} and ggplot2~\citep{ggplot2}.
 
 
