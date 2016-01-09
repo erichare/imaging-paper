@@ -29,12 +29,16 @@ shinyUI(fluidPage(theme = shinytheme("cerulean"),
             h4("Residuals"),
             sliderInput("xcoord", "X Coordinate", min = 1, max = 1000, value = 136, step = 1),
             
-            actionButton("compute", "Compute Residuals")
+            actionButton("compute", "Compute Match Probability")
         ),
         
         mainPanel(width = 9,
             plotlyOutput("trendPlot", height = "700px"),
-            plotOutput("residuals")
+            plotOutput("residuals"),
+            hr(),
+            h3(textOutput("rfpred")),
+            hr(),
+            dataTableOutput("features")
         )
     )
 ))

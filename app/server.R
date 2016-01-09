@@ -1,25 +1,44 @@
 library(shiny)
+library(dplyr)
 library(XML)
 library(x3prplus)
 library(plotly)
 library(gridExtra)
 library(zoo)
+library(reshape2)
+library(randomForest)
 
 source(system.file("gui/view", "helpers.R", package = "x3pr"))
 
 Sys.setenv("plotly_username" = "erichare")
 Sys.setenv("plotly_api_key" = "xd0oxpeept")
 
+matches <- read.csv("matches.csv", header=FALSE, stringsAsFactors = FALSE)
+matches$V3 <- paste("Ukn Bullet",matches$V3)
+matches$V4 <- paste("Ukn Bullet",matches$V4)
+matches$V5 <- paste("Ukn Bullet",matches$V5)
+matches$id <- 1:nrow(matches)
+
+mm <- melt(matches, id.var="id")
+mm <- subset(mm, value != "Ukn Bullet ")
+
 shinyServer(function(input, output, session) {
     
+    values <- reactiveValues(path1 = "images/Hamby252_3DX3P1of2/Br1 Bullet 2-5.x3p", 
+                             path2 = "images/Hamby252_3DX3P1of2/Br1 Bullet 1-3.x3p",
+                             fort1_fixed = NULL, 
+                             fort2_fixed = NULL)
+    
     bullet1 <- reactive({
-        if (is.null(input$file1)) return(x3pr::read.x3p("images/Hamby252_3DX3P1of2/Br1 Bullet 2-5.x3p"))
-        else return(x3pr::read.x3p(input$file1$datapath))
+        if (!is.null(input$file1)) values$path1 <- input$file1$datapath
+        
+        return(x3pr::read.x3p(values$path1))
     })
     
     bullet2 <- reactive({
-        if (is.null(input$file2)) return(x3pr::read.x3p("images/Hamby252_3DX3P1of2/Br1 Bullet 1-3.x3p"))
-        else return(x3pr::read.x3p(input$file2$datapath))
+        if (!is.null(input$file2)) values$path2 <- input$file2$datapath
+        
+        return(x3pr::read.x3p(values$path2))
     })
     
     theSurface <- reactive({
@@ -42,7 +61,7 @@ shinyServer(function(input, output, session) {
     })
     
     observe({
-        updateSliderInput(session, "xcoord", max = ncol(theSurface()) / 2 * input$subsample)
+         updateSliderInput(session, "xcoord", max = ncol(theSurface()) / 2 * input$subsample)
     })
     
     output$trendPlot <- renderPlotly({
@@ -55,9 +74,6 @@ shinyServer(function(input, output, session) {
                                                                                              fresnel = input$fresnel_lighting))
         p
     })
-    
-    values <- reactiveValues(fort1_fixed = NULL,
-                             fort2_fixed = NULL)
     
     observeEvent(input$compute, {
         fort1 <- fortify_x3p(bullet1())
@@ -89,6 +105,119 @@ shinyServer(function(input, output, session) {
         qplot(y, resid, data = my.dat, geom = "line", colour = bullet, group = bullet, size = I(1.3), alpha = I(0.8)) +
             theme_bw() +
             theme(legend.position = "bottom")
+    })
+    
+    processed1 <- reactive({
+        if (is.null(values$fort1_fixed)) return(NULL)
+        
+        bul <- bullet1()
+        bul[[3]] <- values$path1
+        names(bul)[3] <- "path"
+        
+        myx <- unique(fortify_x3p(bul)$x)
+        xval <- myx[which.min(abs(myx - input$xcoord))]
+        
+        processBullets(bullet = bul, name = bul$path, x = xval)
+    })
+    
+    processed2 <- reactive({
+        if (is.null(values$fort2_fixed)) return(NULL)
+        
+        bul <- bullet2()
+        bul[[3]] <- values$path2
+        names(bul)[3] <- "path"
+        
+        myx <- unique(fortify_x3p(bul)$x)
+        xval <- myx[which.min(abs(myx - input$xcoord))]
+        
+        processBullets(bullet = bul, name = bul$path, x = xval)
+    })
+    
+    smoothed <- reactive({
+        if (is.null(processed1()) || is.null(processed2())) return(NULL)
+
+        bulletSmooth(rbind(processed1(), processed2()))
+    })
+    
+    CMS <- reactive({
+        if (is.null(smoothed())) return(NULL)
+        
+        br1 <- filter(smoothed(), bullet == values$path1)
+        br2 <- filter(smoothed(), bullet == values$path2)
+        
+        bulletGetMaxCMSXXX(br1, br2, span = 25)
+    })
+    
+    features <- reactive({
+        if (is.null(CMS())) return(NULL)
+        
+        res <- CMS()
+        
+        lofX <- res$bullets
+        b12 <- unique(lofX$bullet)
+        
+        subLOFx1 <- subset(lofX, bullet==b12[1])
+        subLOFx2 <- subset(lofX, bullet==b12[2]) 
+        
+        subLOFx1$y <- subLOFx1$y - min(subLOFx1$y)
+        subLOFx2$y <- subLOFx2$y - min(subLOFx2$y)
+        
+        ccf <- ccf(subLOFx1$val, subLOFx2$val, plot = FALSE, lag.max=200, na.action = na.omit)
+        lag <- ccf$lag[which.max(ccf$acf)]
+        incr <- min(diff(sort(unique(subLOFx1$y))))
+        
+        subLOFx1$y <- subLOFx1$y -  lag * incr # amount of shifting should just be lag * y.inc
+        ys <- intersect(subLOFx1$y, subLOFx2$y)
+        idx1 <- which(subLOFx1$y %in% ys)
+        idx2 <- which(subLOFx2$y %in% ys)
+        distr.dist <- mean((subLOFx1$val[idx1] - subLOFx2$val[idx2])^2, na.rm=TRUE)
+        distr.sd <- sd(subLOFx1$val, na.rm=TRUE) + sd(subLOFx2$val, na.rm=TRUE)
+        km <- which(res$lines$match)
+        knm <- which(!res$lines$match)
+        if (length(km) == 0) km <- c(length(knm)+1,0)
+        if (length(knm) == 0) knm <- c(length(km)+1,0)
+        # browser()    
+        # feature extraction
+        data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), 
+                   D=distr.dist, 
+                   sd.D = distr.sd,
+                   b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
+                   num.matches = sum(res$lines$match), 
+                   num.mismatches = sum(!res$lines$match), 
+                   non_cms = x3prplus::maxCMS(!res$lines$match),
+                   left_cms = max(knm[1] - km[1], 0),
+                   right_cms = max(km[length(km)] - knm[length(knm)],0),
+                   left_noncms = max(km[1] - knm[1], 0),
+                   right_noncms = max(knm[length(knm)]-km[length(km)],0),
+                   sumpeaks = sum(abs(res$lines$heights[res$lines$match]))
+        )
+    })
+    
+    output$features <- renderDataTable({
+        if (is.null(features())) return(NULL)
+        
+        result <- as.data.frame(t(features()))
+        result <- cbind(feature = rownames(result), result)
+        names(result)[2] <- "value"
+        
+        return(result)
+    })
+    
+    output$rfpred <- renderText({
+        if (is.null(features())) return(NULL)
+        
+        features <- features()
+        features$b1 <- gsub(".x3p", "", basename(as.character(features$b1)))
+        features$b2 <- gsub(".x3p", "", basename(as.character(features$b2)))
+        features$span <- span
+        
+        includes <- setdiff(names(features), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "span", "forest"))
+        
+       # CCFs <- read.csv("bullet-stats.csv")
+        load("rf.RData")
+        
+        #rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=300)
+        return(paste0("The probability of a match is ", predict(rtrees, newdata = features[,includes], type = "prob")[,2]))
     })
     
 })
