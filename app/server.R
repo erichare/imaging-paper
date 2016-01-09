@@ -27,7 +27,8 @@ shinyServer(function(input, output, session) {
     values <- reactiveValues(path1 = "images/Hamby252_3DX3P1of2/Br1 Bullet 2-5.x3p", 
                              path2 = "images/Hamby252_3DX3P1of2/Br1 Bullet 1-3.x3p",
                              fort1_fixed = NULL, 
-                             fort2_fixed = NULL)
+                             fort2_fixed = NULL,
+                             xcoord = NULL)
     
     bullet1 <- reactive({
         if (!is.null(input$file1)) values$path1 <- input$file1$datapath
@@ -76,11 +77,15 @@ shinyServer(function(input, output, session) {
     })
     
     observeEvent(input$compute, {
+        values$xcoord <- input$xcoord
+    })
+    
+    observe({
         fort1 <- fortify_x3p(bullet1())
         fort2 <- fortify_x3p(bullet2())
         
-        fixedcoord1 <- input$xcoord %% (length(unique(fort1$x)) / input$subsample)
-        fixedcoord2 <- input$xcoord %% (length(unique(fort2$x)) / input$subsample)
+        fixedcoord1 <- values$xcoord %% (length(unique(fort1$x)) / input$subsample)
+        fixedcoord2 <- values$xcoord %% (length(unique(fort2$x)) / input$subsample)
         
         ind1 <- which.min(abs(fort1$x - fixedcoord1))
         ind2 <- which.min(abs(fort2$x - fixedcoord2))
@@ -90,7 +95,7 @@ shinyServer(function(input, output, session) {
     })
     
     output$residuals <- renderPlot({
-        if (is.null(values$fort1_fixed) || is.null(values$fort2_fixed)) return(NULL)
+        if (is.null(values$fort1_fixed) || is.null(values$fort2_fixed) || is.null(values$xcoord)) return(NULL)
         
         b1.groove <- get_grooves(values$fort1_fixed)
         b2.groove <- get_grooves(values$fort2_fixed)
@@ -108,27 +113,27 @@ shinyServer(function(input, output, session) {
     })
     
     processed1 <- reactive({
-        if (is.null(values$fort1_fixed)) return(NULL)
+        if (is.null(values$fort1_fixed) || is.null(values$xcoord)) return(NULL)
         
         bul <- bullet1()
         bul[[3]] <- values$path1
         names(bul)[3] <- "path"
         
         myx <- unique(fortify_x3p(bul)$x)
-        xval <- myx[which.min(abs(myx - input$xcoord))]
+        xval <- myx[which.min(abs(myx - values$xcoord))]
         
         processBullets(bullet = bul, name = bul$path, x = xval)
     })
     
     processed2 <- reactive({
-        if (is.null(values$fort2_fixed)) return(NULL)
+        if (is.null(values$fort2_fixed) || is.null(values$xcoord)) return(NULL)
         
         bul <- bullet2()
         bul[[3]] <- values$path2
         names(bul)[3] <- "path"
         
         myx <- unique(fortify_x3p(bul)$x)
-        xval <- myx[which.min(abs(myx - input$xcoord))]
+        xval <- myx[which.min(abs(myx - values$xcoord))]
         
         processBullets(bullet = bul, name = bul$path, x = xval)
     })
@@ -217,7 +222,7 @@ shinyServer(function(input, output, session) {
         load("rf.RData")
         
         #rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=300)
-        return(paste0("The probability of a match is ", predict(rtrees, newdata = features[,includes], type = "prob")[,2]))
+        return(paste0("The probability of a match is ", round(predict(rtrees, newdata = features[,includes], type = "prob")[,2], digits = 4)))
     })
     
 })
