@@ -933,8 +933,7 @@ ggplot(data=subset(bstats, !flagged)) +
   geom_bar(aes(x=factor(CMS), fill=km), position="fill") +
   theme(legend.position="bottom") + 
   scale_fill_brewer("", palette="Paired") +
-  xlab("maximum CMS")
-
+  xlab("maximum CMS") + ylab("Proportion")
 @
 \end{minipage}
 %' \end{subfigure}
