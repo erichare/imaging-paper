@@ -101,7 +101,6 @@ library(sm)
 
 @
 
-
 \section{Cylindrical Fit}\label{supp:cylindrical}
 Figure~\ref{fig:fixedX} shows the side profile of a crosscut through the surface measurements of bullet 1-5 at a fixed level. The smooth line on top is a circle, with estimated radius and center. The details of this fit are given below:
 %
