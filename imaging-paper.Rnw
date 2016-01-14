@@ -153,12 +153,12 @@ In 2009, the National Academy of Sciences published a report~\citep{NAS:2009} qu
 
 Rifling, manufacturing defects, and impurities in a barrel create striation marks on the bullet during the firing process. These marks are assumed to be unique to the barrel, as described in a 1992 AFTE article~\citep{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement" The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows."
 
-The primary goal in this type of forensic analysis is to identify these striation markings in an attempt to match two bullets. Since gun barrels should produce similar markings on bullets fired consecutively, the careful analysis of these surface images can help in determining whether two bullets are a match. This process has traditionally required forensic experts to perform the analysis, and required physical examination of the bullets. 
+From a statistical standpoint, identification of the gun that fired the bullet(s) requires that we compare the probabilities of observing matching striae under the competing hypotheses that the gun fired, or did not fire, the crime scene bullet. If indeed the uniqueness assumption is plausible, the latter probability approaches zero.
 
 Current standard practice~\cite{afte:1992} relies in part on the assessment of the so-called maximal number of consecutively matching striae (CMS), first defined by \citet{biasotti:1959}.
 One of the problems is that a human inspection to determine CMS is subjective \citep{miller:1998}. 
 
-In this paper, we propose a framework which allows for the automatic analysis of the surface topologies of bullets, and the transcription of the individual characteristics into a 2D plotting framework. 
+Here, we focus on the question of defining what constitutes a match, since there is no agreement in the forensics community. We propose a framework which allows for the automatic analysis of the surface topologies of bullets, and the transcription of the individual characteristics into a 2D plotting framework. 
 This allows for an objective and quantitative assessment of striae-based bullet matches.
 
 %\hh{XXX More detailed discussion of automatic approaches and database discussion XXX}
