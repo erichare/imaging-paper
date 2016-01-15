@@ -5,7 +5,7 @@ datas <- datas[grep(paste0(dataStr,"/u.*"), datas)]
 
 CCFs <- plyr::ldply(datas, function(x) {
   load(x)
-  cmsdist <- sapply(reslist, function(x) x$maxCMS)
+#  cmsdist <- sapply(reslist, function(x) x$maxCMS)
   ccf <- plyr::ldply(reslist, function(res) {
     lofX <- res$bullets
     b12 <- unique(lofX$bullet)
@@ -30,7 +30,7 @@ CCFs <- plyr::ldply(datas, function(x) {
     knm <- which(!res$lines$match)
     if (length(km) == 0) km <- c(length(knm)+1,0)
     if (length(knm) == 0) knm <- c(length(km)+1,0)
-# browser()    
+ #browser()    
     # feature extraction
     data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), 
                D=distr.dist, 
@@ -38,6 +38,8 @@ CCFs <- plyr::ldply(datas, function(x) {
                b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
                num.matches = sum(res$lines$match), 
                num.mismatches = sum(!res$lines$match), 
+               cms = res$maxCMS,
+               cms2 = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match),
                non_cms = x3prplus::maxCMS(!res$lines$match),
                left_cms = max(knm[1] - km[1], 0),
                right_cms = max(km[length(km)] - knm[length(knm)],0),
@@ -46,7 +48,7 @@ CCFs <- plyr::ldply(datas, function(x) {
                sumpeaks = sum(abs(res$lines$heights[res$lines$match]))
                )
   })
-  ccf$cms <- cmsdist
+#  ccf$cms <- cmsdist
   ccf$data <- x
   ccf  
 })
@@ -87,9 +89,19 @@ rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 prp(rp1, extra = 101)
 CCFs$pred <- predict(rp1)
 
+includes2 <- setdiff(includes, c("left_cms", "right_cms", "left_noncms", "right_noncms", "cms2"))
 library(randomForest)
-rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=300)
+set.seed(20160105)
+rtrees <- randomForest(factor(match)~., data=CCFs[,includes2], ntree=300)
 CCFs$forest <- predict(rtrees, type="prob")[,2]
+imp <- data.frame(importance(rtrees))
+
+includes3 <- c(setdiff(includes2, "cms"), "cms2")
+set.seed(20160105)
+rtrees1b <- randomForest(factor(match)~., data=CCFs[,includes3], ntree=300)
+imp1b <- data.frame(importance(rtrees1b))
+
+
 
 write.csv(CCFs, file=file.path(dataStr, "bullet-stats.csv"), row.names=FALSE)
 
