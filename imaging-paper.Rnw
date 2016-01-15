@@ -610,7 +610,7 @@ All of the other steps are done on pairs of bullet lands:
 \item Number of matches and non-matches,
 \item Average difference $D$ between signatures, defined as the Euclidean vertical distance between surface measurements of aligned signatures. Let $f(t)$ and $g(t)$ be smoothed, aligned signatures:
 \[
-D^2 = \frac{1}{\text{\#}t}\sum_t \left(f(t) - g(t)\right)^2,
+D^2 = \frac{1}{\text{\#}t}\sum_t \left[f(t) - g(t)\right]^2,
 \]
 \item The sum $S$ of average absolute heights of matched extrema: for each of the two matched stria, compute the average of the absolute heights of the peaks or valleys. $S$ is then defined as the sum of all these averages. 
 \end{enumerate}
