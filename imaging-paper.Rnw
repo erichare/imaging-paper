@@ -1383,7 +1383,7 @@ qplot(data=predm, value, match, geom="jitter", colour=match, shape=match) + them
 \caption{\label{fig:tree-forest}Prediction results from the tree and the forest. Using a cut-off probability of 0.5 the forest correctly predicts every single comparison. Compared to the tree, the forest's prediction probabilities are  shrunk towards either end of the prediction range. }
 \end{figure}
 
-Besides resulting in a probabilistic quantification of matches, random forests also provide an assessment of the importance of each of the features derived from the bullets' 3D topological surface measurements. Figure~\ref{fig:importance} shows an overview of the importance of each variable measured as the mean decrease in the Gini index when the variable in question is included in a tree (for the exact values please refer to supplement section~\ref{supp:randomforest}). 
+Besides resulting in a probabilistic quantification of matches, random forests also provide an assessment of the importance of each of the features derived from the bullets' 3D topological surface measurements. Figure~\ref{fig:importance} shows an overview of the importance of each variable measured as the mean decrease in the Gini index when the variable in question is included in a tree (for the exact values please refer to Supplement section~\ref{supp:randomforest}). 
 \begin{figure}
 <<echo=FALSE, fig.width=7, fig.height=2, out.width='.7\\textwidth'>>=
 imp <- data.frame(importance(rtrees))
@@ -1406,7 +1406,7 @@ qplot(MeanDecreaseGini,1, data=imp, geom="point") +
 %The rows in the table are ordered according to descending importance. 
 The variables with the most predictive power are cross-correlation and the overall number of matches, followed by the total depth of joint striations $S$ and total number of non-matches. CMS is found only in sixth place.
 
-\hh{Besides including results from known matches against known non-matches, we can increase the number of comparisons in the Hamby study to include all possible land-to-land comparisons. This effectively doubles the number of data points available. Comparisons not previously included in fitting the random forest can also be used as an additional source for assessing error rates.  Results for this and a more detailed discussion can be found in supplement section~\ref{supp:extended}.}
+\hh{Besides including results from known matches against known non-matches, we can increase the number of comparisons in the Hamby study to include all possible land-to-land comparisons. This effectively doubles the number of data points available. Comparisons not previously included in fitting the random forest can also be used as an additional source for assessing error rates.  Results for this and a more detailed discussion can be found in Supplement section~\ref{supp:extended}.}
 
 \section{Conclusion}
 
