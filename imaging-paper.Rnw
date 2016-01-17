@@ -620,7 +620,7 @@ The difference $D$ between signatures is here defined as the Euclidean distance 
 
 Counting the maximal number of CMS is part of current practice to identify bullet matches~\citep{nichols:1997, nichols:2003, nichols:2003b}. 
 In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a  high number indicative of a match between the bullets. 
-\hh{XXX Note that the definition given in this paper does not coincide with the one given in \citet{thompson:2013}. There, CMS is defined only in terms of matching peaks. Additionally, \citet{thompson:2013} peaks are only used if they can be identified and matched `within a tolerable range' between lands. The definition given here is computationally less complex, but should yield similar values, because of the requirement to only consider signatures from a stable region in the land. In the Hamby study, the definition of CMS by \citet{thompson:2013} leads to approximately half of the values of CMS defined in this paper (with a correlation coefficient between the values of the two definitions of about 0.92). XXX}
+\hh{XXX Note that the definition of CMS given in this paper does not match the one given in \citet{thompson:2013}. There, CMS is defined only in terms of matching peaks. Additionally, peaks in  \citet{thompson:2013} are only used if they can be identified and matched `within a tolerable range' between lands. The definition given here is computationally less complex, but should yield similar values, because of the requirement to only consider signatures from a stable region in the land (see Section~\ref{sec:heights} for further details on stability of regions). In the Hamby study, the definition of CMS by \citet{thompson:2013} leads to approximately half of the values of CMS defined in this paper (with a correlation coefficient between the values of the two definitions of about 0.92). XXX}
 For lead bullets, such as this, \citet{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match. \hh{XXX Biasotti's four or more consecutive lines is closer to eight or more with our definition. Should we just multiply our CMS by 0.5, to account for the fact that between every two peaks has to be a valley? XXX} We will assess this claim in the next section. 
 
 Determining a threshold such that CMS values above the threshold indicate a match with high reliability is beyond the scope of this work, even though it is critically important in practice. We provide some ideas in the next section, but first we assess the robustness of the matching algorithm to different choices of the parameter values. 
@@ -722,7 +722,7 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 \end{figure}
 
 
-\subsection{Impact of cross sections}
+\subsection{Impact of cross sections}\label{sec:heights}
 The cross section on which a comparison between signatures is based matters -- signatures from cross sections that are further apart, show more pronounced differences between the signatures. 
 This poses both a caveat to matching attempts as well as an opportunity for quality control: we have to be aware of which cross section level was used in a matching. Visually, matches degrade if the signatures upon which the match is based are from cross sections further than 200$\mu m$ apart  (see Supplement section~\ref{supp:ccf} for a more thorough discussion).
 However, we can extract signatures from multiple cross sections of the same bullet land for an initial assessment of its quality. 
@@ -781,7 +781,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
 \end{figure}
 %An opportunity that arises from comparing multiple cross sections of a bullet's surface measurements is the following:
 by comparing signatures from cross sections that are not too far apart --  25~$\mu m$ to 50~$\mu m$ -- we get an indication whether the signatures come from a rapidly changing section of the surface, indicative of a break-off or some other damage, or from a stable section, where we have a reasonable expectation of finding matches to other signatures. In the approach here, we keep increasing the height $x$ of the cross section until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet~1-1 from barrel 3, where
-`stability' is  defined as two aligned signatures from cross sections chosen 25$\mu m$ apart having a cross-correlation of at least 0.9. 
+`stability' is  defined as two aligned signatures from cross sections chosen 25$\mu m$ apart having a cross-correlation of at least 0.95. 
 
 \subsection{Varying smoothing factor}\label{sec:smoothing}
 As mentioned earlier, the algorithm for detecting peaks and valleys depends on the selection of a smoothing window, called the smoothing factor or span. A smoothing factor of $k$ means that the  $k$ closest observations to $x_o$ are considered for a fit for $x_o$. Because surface measurements are recorded at an equidistant resolution (here, of 1.5625$\mu m$), we decided to only consider odd smoothing factors $2k + 1$, which means that the  $k$ observations to the left and right of $x_o$ are considered for a local fit of $x_o$. For detecting and removing the grooves prior to fitting a loess regression we selected a smoothing factor  of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 25 seems more appropriate. %We can investigate the performance of peak/valley detection across different smoothing factors.
@@ -1114,7 +1114,7 @@ rocs.upper <- dcast(errors, variable+value~match, value.var="upper")
 rocs.upper$type <- "upper"
 rocs <- rbind(rocs.lower, rocs.upper)
 
-set.seed(20140501)
+set.seed(20140105)
 aucs <- plyr::ldply(features, function(x) {
   subbstats <- subset(bstats, flagged == FALSE)
   pos.scores <- sample(subbstats[which(subbstats$match),x], 10000, replace=TRUE)
