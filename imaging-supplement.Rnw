@@ -340,7 +340,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
 
 \newpage
 \section{Signature intensities}\label{supp:bulletbottom}
-<<setup-signatures, echo=FALSE>>=
+<<setup-signatures, echo=FALSE, message=FALSE>>=
 library(x3pr)
 library(x3prplus)
 library(dplyr)
