@@ -620,8 +620,8 @@ The difference $D$ between signatures is here defined as the Euclidean distance 
 
 Counting the maximal number of CMS is part of current practice to identify bullet matches~\citep{nichols:1997, nichols:2003, nichols:2003b}. 
 In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a  high number indicative of a match between the bullets. 
-\hh{XXX Note that the definition of CMS given in this paper does not match the one given in \citet{thompson:2013}. There, CMS is defined only in terms of matching peaks. Additionally, peaks in  \citet{thompson:2013} are only used if they can be identified and matched `within a tolerable range' between lands. The definition given here is computationally less complex, but should yield similar values, because of the requirement to only consider signatures from a stable region in the land (see Section~\ref{sec:heights} for further details on stability of regions). In the Hamby study, the definition of CMS by \citet{thompson:2013} leads to approximately half of the values of CMS defined in this paper (with a correlation coefficient between the values of the two definitions of about 0.92). XXX}
-For lead bullets, such as this, \citet{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match. \hh{XXX Biasotti's four or more consecutive lines is closer to eight or more with our definition. Should we just multiply our CMS by 0.5, to account for the fact that between every two peaks has to be a valley? XXX} We will assess this claim in the next section. 
+\hh{ Note that the definition of CMS given in this paper does not match the one given in \citet{thompson:2013}. There, CMS is defined only in terms of matching peaks without regarding valleys. Additionally, peaks in  \citet{thompson:2013} are  used only if they can be identified and matched `within a tolerable range' between lands. The definition given here is computationally less complex, but should yield highly correlated values, because of the requirement to only consider signatures from a stable region in the land (see Section~\ref{sec:heights} for further details on stability of regions). In the Hamby study, the definition of CMS by \citet{thompson:2013} leads to approximately half of the values of CMS defined in this paper (with a correlation coefficient between the values of the two definitions of about 0.92). }
+For lead bullets, such as used in the Hamby study, \citet{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match. \hh{Biasotti's four or more consecutive lines translates to eight or more with our definition. } %We will assess the claim that eight or more consecutive lines are sufficient for a match in the next section. 
 
 Determining a threshold such that CMS values above the threshold indicate a match with high reliability is beyond the scope of this work, even though it is critically important in practice. We provide some ideas in the next section, but first we assess the robustness of the matching algorithm to different choices of the parameter values. 
 %In order to get a better understanding of  how  this matching works in known matches and non-matches, we next investigate the algorithm's performance in a test scenario.
@@ -1117,8 +1117,8 @@ rocs <- rbind(rocs.lower, rocs.upper)
 set.seed(20140105)
 aucs <- plyr::ldply(features, function(x) {
   subbstats <- subset(bstats, flagged == FALSE)
-  pos.scores <- sample(subbstats[which(subbstats$match),x], 10000, replace=TRUE)
-  neg.scores <- sample(subbstats[which(!subbstats$match),x], 10000, replace=TRUE)
+  pos.scores <- sample(subbstats[which(subbstats$match),x], 50000, replace=TRUE)
+  neg.scores <- sample(subbstats[which(!subbstats$match),x], 50000, replace=TRUE)
   data.frame(x, upper=mean(pos.scores > neg.scores), 
              lower = mean(pos.scores < neg.scores))
 })
@@ -1389,8 +1389,8 @@ Besides resulting in a probabilistic quantification of matches, random forests a
 imp <- data.frame(importance(rtrees))
 imp$Variable <- row.names(imp)
 imp$Variable[c(7,8)] <- c("#matches", "#non-matches")
-imp1 <- subset(imp, !(Variable %in% c("x1", "sd.D")))
-imp2 <- subset(imp, Variable %in% c("x1", "sd.D"))
+imp1 <- subset(imp, !(Variable %in% c("x1", "sd.D", "S")))
+imp2 <- subset(imp, Variable %in% c("x1", "sd.D", "S"))
 qplot(MeanDecreaseGini,1, data=imp, geom="point") + 
   geom_text(aes(y=1.2, label=Variable), angle=45, hjust=0, data=imp1) + 
   geom_text(aes(y=0.8, label=Variable), angle=-45, hjust=0, data=imp2) + 
@@ -1406,7 +1406,7 @@ qplot(MeanDecreaseGini,1, data=imp, geom="point") +
 %The rows in the table are ordered according to descending importance. 
 The variables with the most predictive power are cross-correlation and the overall number of matches, followed by the total depth of joint striations $S$ and total number of non-matches. CMS is found only in sixth place.
 
-\hh{Besides including results from known matches againts known non-matches, we can increase the number of comparisons in the Hamby study to include all possible land-to-land comparisons. This effectively doubles the number of data points available. Comparisons not previously included in fitting the random forest can also be used as an additional source for assessing error rates.  Results for this and a more detailed discussion can be found in supplement section~\ref{supp:extended}.}
+\hh{Besides including results from known matches against known non-matches, we can increase the number of comparisons in the Hamby study to include all possible land-to-land comparisons. This effectively doubles the number of data points available. Comparisons not previously included in fitting the random forest can also be used as an additional source for assessing error rates.  Results for this and a more detailed discussion can be found in supplement section~\ref{supp:extended}.}
 
 \section{Conclusion}
 
