@@ -221,8 +221,11 @@ shinyServer(function(input, output, session) {
        # CCFs <- read.csv("bullet-stats.csv")
         load("rf.RData")
         
+        matchprob <- round(predict(rtrees, newdata = features[,includes], type = "prob")[,2], digits = 4)
+        if (matchprob == 0) matchprob <- "< .0001" else if (matchprob == 1) matchprob <- "> .9999"
+        
         #rtrees <- randomForest(factor(match)~., data=CCFs[,includes], ntree=300)
-        return(paste0("The probability of a match is ", round(predict(rtrees, newdata = features[,includes], type = "prob")[,2], digits = 4)))
+        return(paste0("The probability of a match is ", matchprob))
     })
     
 })
