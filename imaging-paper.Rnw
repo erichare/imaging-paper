@@ -168,12 +168,12 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{.54\textwidth}\centering
+\begin{subfigure}[t]{.65\textwidth}\centering
 \caption{View from the side.\label{fig:sidex3p}}{%
       \includegraphics[width=\textwidth]{images/sidex3p.png}
     }
 \end{subfigure}    
-\begin{subfigure}[t]{.45\textwidth}\centering
+\begin{subfigure}[t]{.65\textwidth}\centering
     \caption{View from the top.\label{fig:topx3p}}{%
     \includegraphics[width=\textwidth]{images/topx3p.png}
     }
@@ -204,7 +204,7 @@ Figure \ref{fig:fixedX} shows a plot of the side profile of a bullet land. It ca
 
 \begin{figure}[hbtp]
   \centering
-<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2, fig.width=6, out.width='0.5\\textwidth'>>=
+<<fixedX, dependson='data', echo=FALSE, warning=FALSE, message=FALSE, fig.height=2, fig.width=6, out.width='0.65\\textwidth'>>=
 
 cols = c(alpha("grey60", alpha=0.6), alpha("black", 0.5))
 
