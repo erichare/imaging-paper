@@ -168,14 +168,17 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 
 \begin{figure}[hbtp]
   \centering
-\begin{subfigure}[t]{.65\textwidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
 \caption{View from the side. \hh{XXX it's ambigious to talk about side and top. because it's not the side of the bullet(land), but the `side' of the data. I'm not sure, how to phrase it, though. How about: View of the data along the circumference of the bullet (circular segment of about 30 degrees). }\label{fig:sidex3p}}{%
-      \includegraphics[width=\textwidth]{images/sidex3p.png}
+      \includegraphics[width=.65\textwidth]{images/sidex3p.png}
+      \hspace{1cm}
+      \includegraphics[width=.25\textwidth]{images/side-sketch.png}
     }
 \end{subfigure}    
-\begin{subfigure}[t]{.65\textwidth}\centering
+\begin{subfigure}[t]{\textwidth}\centering
     \caption{View from the top. \hh{XXX same problem as above. XXX How about: View of a bullet land (lower end of the view is the bottom of the bullet). }\label{fig:topx3p}}{%
-    \includegraphics[width=\textwidth]{images/topx3p.png}
+    \includegraphics[width=.65\textwidth]{images/topx3p.png} \hspace{1cm}
+    \includegraphics[width=.15\textwidth]{images/top-sketch.png}
     }
 \end{subfigure}
 \caption{An example of a scan of a bullet land from one groove to the next. }
