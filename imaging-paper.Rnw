@@ -77,7 +77,7 @@ In 2009, the National Academy of Sciences published a report questioning the sci
 %\end{keyword}
 
 \begin{keyword}
-\kwd{3d Topological Surface Measurement}
+\kwd{3D Topological Surface Measurement}
 \kwd{Data visualization}
 \kwd{Machine Learning}
 \kwd{Feature importance}
@@ -169,19 +169,19 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 \begin{figure}[hbtp]
   \centering
 \begin{subfigure}[t]{\textwidth}\centering
-\caption{View from the side. \hh{XXX it's ambigious to talk about side and top. because it's not the side of the bullet(land), but the `side' of the data. I'm not sure, how to phrase it, though. How about: View of the data along the circumference of the bullet (circular segment of about 30 degrees). }\label{fig:sidex3p}}{%
+\caption{View of the data along the circumference of the bullet (circular segment of about 30 degrees).\label{fig:sidex3p}}{%
       \includegraphics[width=.65\textwidth]{images/sidex3p.png}
       \hspace{1cm}
       \includegraphics[width=.25\textwidth]{images/side-sketch.png}
     }
 \end{subfigure}    
 \begin{subfigure}[t]{\textwidth}\centering
-    \caption{View from the top. \hh{XXX same problem as above. XXX How about: View of a bullet land (lower end of the view is the bottom of the bullet). }\label{fig:topx3p}}{%
+    \caption{Frontal view of a bullet land (lower end of the view is the bottom of the bullet). \label{fig:topx3p}}{%
     \includegraphics[width=.65\textwidth]{images/topx3p.png} \hspace{1cm}
     \includegraphics[width=.15\textwidth]{images/top-sketch.png}
     }
 \end{subfigure}
-\caption{An example of a scan of a bullet land from one groove to the next. }
+\caption{Example of a groove-to-groove scan of a bullet land. The red-dotted rectangle on the right shows the location and orientation of the segment. }
 \end{figure}
 Each fired bullet is provided in the form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
 
@@ -201,7 +201,7 @@ We then proceed to describing an automatic matching routine which we evaluate on
 
 \section{Bullet signatures}
 
-In an approach to analyze the striation pattern we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section across the surface measurements at a fixed value of the bullet's height, denoted by $x$.
+In an approach to analyze the striation pattern we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section across the surface measurements at a fixed height $x$ of the bullet.
 %An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the surface measurements across. 
 Figure \ref{fig:fixedX} shows a plot of the side profile of a bullet land. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
@@ -229,14 +229,14 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
   theme_bw() + 
   theme(legend.position="bottom") #+ coord_equal()
 @
-\caption{\label{fig:fixedX}Side profile of the surface measurements (in~$\mu m$) of a bullet land across a fixed $x$ value. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
+\caption{\label{fig:fixedX}Side profile of the surface measurements (in~$\mu m$) of a bullet land at height $x$. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
 The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in Supplement section~\ref{supp:cylindrical}.
 %It is clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
 
 %\subsection{Loess Fit}
-Instead of a circular fit, we use multiple loess fits to model the overall structure in order to identify the bullet markings. 
+Instead of a circular fit, we use multiple loess fits to model the overall structure and extract the bullet markings. 
 
 \subsection{Identifying groove locations}
 %In an attempt to improve upon the previous algorithm, w
@@ -246,7 +246,7 @@ Surface measurements reach local maxima around the peak of the groove at either 
 The location of the valleys  mark the points at which we should trim the image. The procedure can be described as follows:
 
 \begin{enumerate}
-    \item Fix an $x$ value to extract a bullet profile (Figure~\ref{fig:loess_step1}, with $x$ set to 243.75$\mu m$).
+    \item At a fixed height $x$ extract a bullet's profile (Figure~\ref{fig:loess_step1}, with $x$ set to 243.75$\mu m$).
     \item For each $y$ value, smooth out any deviations occurring near the minima by twice applying a rolling average with a pre-set \emph{smoothing factor} $s$. (Figure~\ref{fig:loess_step3}, smoothing factor $s = 35$ corresponding to 55$\mu m$).
 %    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor as above. (Figure~\ref{fig:loess_step3}).
     \item Determine the location of the peak of the left groove by finding the first doubly-smoothed value $y_i$ that is the maximum within its smoothing window (e.g.\ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$, where $i$ is between 1  and $\lfloor s/2 \rfloor$). We call the location of this peak $p_{\ell}$ (see Figure~\ref{fig:loess_step47}). 
@@ -258,7 +258,7 @@ The location of the valleys  mark the points at which we should trim the image. 
 \begin{figure}[hbtp]
   \centering
 \begin{subfigure}[t]{\textwidth}\centering
-\caption{\label{fig:loess_step1}Step 1 of identifying groove locations: For a fixed cross section ($x$ held constant at 243.75~$\mu m$)  surface measurements for bullet~1-5 are plotted across the range of $y$.}
+\caption{\label{fig:loess_step1}Step 1 of identifying groove locations: For a fixed height ($x = 243.75\mu m$)  surface measurements for bullet~1-5 are plotted across the range of $y$.}
 <<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 br121_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
@@ -427,12 +427,12 @@ qplot(x=x, y=y, geom="polygon", fill=I("steelblue"), data=poly) +
 %' 
 
 \section{Automatic matching}
-Applying the loess fit to a range of different surface cross sections (see Figure~\ref{fig:manualmatch-rgl} for cross sections from 50$\mu m$ to 150~$\mu m$) shows the 3d striation marks from two bullets. Signatures of bullet~1 are shown on the left (all cross sections with values below 100$\mu m$) and cross sections of bullets 2 are shown on the right (cross sections with values above 100$\mu m$). Signatures are manually aligned, resulting in many of the striation marks to continuously pass from one side to the other. Visually, this allows for an easy assessment of these two bullet lands as a match. However, this match relies on visual inspection and can therefore not be completely objective.  The goal of this section is to eliminate the need for a visual inspection during the matching process and replace it by an automatic algorithm. This also allows for a quantification of the quality of the match.
+Applying the loess fit to a range of different signatures (see Figure~\ref{fig:manualmatch-rgl} for signatures extracted at heights from 50$\mu m$ to 150~$\mu m$) shows the 3D striation marks from two bullets. Signatures of bullet~1 are shown on the left (all extracted from heights below 100$\mu m$) and signatures of bullets 2 are shown on the right (extracted at heights above 100$\mu m$). Signatures are manually aligned, resulting in many of the striation marks to continuously pass from one side to the other. Visually, this allows for an easy assessment of these two bullet lands as a match. However, this match relies on visual inspection and can therefore not be completely objective.  The goal of this section is to eliminate the need for a visual inspection during the matching process and replace it by an automatic algorithm. This also allows for a quantification of the quality of the match.
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=.65\columnwidth]{images/matchup-rgl.png}
-\caption{\label{fig:manualmatch-rgl}3d view of the manually adjusted side-by-side comparison of bullet~1-5 and bullet 2-1 after removing the curvature.}
+\caption{\label{fig:manualmatch-rgl}3D view of the manually adjusted side-by-side comparison of bullet~1-5 and bullet 2-1 after removing the curvature.}
 \end{figure}
 
 In this section, we describe the algorithm for matching signatures first, and the impact of parameter choices in the subsections thereafter.
@@ -1262,7 +1262,7 @@ ggplot(data=subset(rocs, auc > 0.5)) +
 
 Similarly, the Euclidean distance $D$ between two signatures is strongly correlated to known matches. Out of the 48 pairs of land-to-land signatures with a distance of less than .25, 47 correspond to known matches (the single known mismatch consists of a pair of signatures that both are very flat with peaks and valleys of less than 1.5$\mu m$). %The average distance between known matches in the Hamby study is $\Sexpr{mean(bstats$D[bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[bstats$match])}\mu m$; while known mismatches have an average  distance of  $\Sexpr{mean(bstats$D[!bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[!bstats$match])}\mu m$.
 All of the features in Figure~\ref{fig:densities} show large, if not significant, differences between matches and non-matches. The predictive power of each one of these features is shown in the form of the Receiving Operating Characteristic (ROC) curves in Figure~\ref{fig:rocs}. The features are arranged in descending order according to the area under the curve (AUC). The feature with the highest individual predictive power is $S$, the sum of the average heights of two signatures at peaks and valleys. The maximal number of CMS is only in the seventh position here. The overall high AUC values indicate, that we can successfully employ machine learning methods to distinguish matches from non-matches.
-%Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of the set of feature variables derived in section~\ref{sec:algorithm} from the 3d topological surface measurements. There are quite large differences in these averages, indicating 
+%Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of the set of feature variables derived in section~\ref{sec:algorithm} from the 3D topological surface measurements. There are quite large differences in these averages, indicating 
 
 Using recursive partitioning, we fit a decision tree~\citep{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
 Instead of CMS, cross-correlation (ccf) between the signatures is very important in the matching process  by the decision tree. Aside from  cross correlation, the total number of matches is also included in the decision rule. 
