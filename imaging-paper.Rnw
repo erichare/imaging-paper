@@ -201,7 +201,7 @@ We then proceed to describing an automatic matching routine which we evaluate on
 
 \section{Bullet signatures}
 
-In an approach to analyze the striation pattern we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section across the surface measurements at a fixed height $x$ of the bullet.
+In an approach to analyze the striation pattern we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section of the surface measurements at a fixed height $x$ along the bullet land.
 %An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the surface measurements across. 
 Figure \ref{fig:fixedX} shows a plot of the side profile of a bullet land. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
@@ -229,7 +229,7 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
   theme_bw() + 
   theme(legend.position="bottom") #+ coord_equal()
 @
-\caption{\label{fig:fixedX}Side profile of the surface measurements (in~$\mu m$) of a bullet land at height $x$. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
+\caption{\label{fig:fixedX}Side profile of the surface measurements (in~$\mu m$) of a bullet land at a fixed height $x$. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
 The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in Supplement section~\ref{supp:cylindrical}.
@@ -246,7 +246,7 @@ Surface measurements reach local maxima around the peak of the groove at either 
 The location of the valleys  mark the points at which we should trim the image. The procedure can be described as follows:
 
 \begin{enumerate}
-    \item At a fixed height $x$ extract a bullet's profile (Figure~\ref{fig:loess_step1}, with $x$ set to 243.75$\mu m$).
+    \item At a fixed height $x$ extract a bullet's profile (Figure~\ref{fig:loess_step1}, with $x = 243.75$\mu m$).
     \item For each $y$ value, smooth out any deviations occurring near the minima by twice applying a rolling average with a pre-set \emph{smoothing factor} $s$. (Figure~\ref{fig:loess_step3}, smoothing factor $s = 35$ corresponding to 55$\mu m$).
 %    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor as above. (Figure~\ref{fig:loess_step3}).
     \item Determine the location of the peak of the left groove by finding the first doubly-smoothed value $y_i$ that is the maximum within its smoothing window (e.g.\ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$, where $i$ is between 1  and $\lfloor s/2 \rfloor$). We call the location of this peak $p_{\ell}$ (see Figure~\ref{fig:loess_step47}). 
@@ -427,7 +427,7 @@ qplot(x=x, y=y, geom="polygon", fill=I("steelblue"), data=poly) +
 %' 
 
 \section{Automatic matching}
-Applying the loess fit to a range of different signatures (see Figure~\ref{fig:manualmatch-rgl} for signatures extracted at heights from 50$\mu m$ to 150~$\mu m$) shows the 3D striation marks from two bullets. Signatures of bullet~1 are shown on the left (all extracted from heights below 100$\mu m$) and signatures of bullets 2 are shown on the right (extracted at heights above 100$\mu m$). Signatures are manually aligned, resulting in many of the striation marks to continuously pass from one side to the other. Visually, this allows for an easy assessment of these two bullet lands as a match. However, this match relies on visual inspection and can therefore not be completely objective.  The goal of this section is to eliminate the need for a visual inspection during the matching process and replace it by an automatic algorithm. This also allows for a quantification of the quality of the match.
+Applying the loess fit to a range of different signatures (see Figure~\ref{fig:manualmatch-rgl} for signatures extracted at heights between 50$\mu m$ and 150~$\mu m$) shows the 3D striation marks from two bullets. Signatures of bullet~1 are shown on the left (all extracted from heights below 100$\mu m$) and signatures of bullets 2 are shown on the right (extracted at heights above 100$\mu m$). Signatures are manually aligned, resulting in many of the striation marks to continuously pass from one side to the other. Visually, this allows for an easy assessment of these two bullet lands as a match. However, this match relies on visual inspection and can therefore not be completely objective.  The goal of this section is to eliminate the need for a visual inspection during the matching process and replace it by an automatic algorithm. This also allows for a quantification of the quality of the match.
 
 \begin{figure}[hbtp]
 \centering
@@ -521,7 +521,7 @@ lines <- subset(lines, lineid != 0)
 \begin{figure}[hbtp]
 \centering
     \begin{subfigure}[t]{\textwidth}\centering
-\caption{Loess smooth of signatures  at cross section $x = 100$ (span is 0.03).\label{fig:smooth}}{%
+\caption{Loess smooth of signatures  at a height of $x = 100\mu m$ (span is 0.03).\label{fig:smooth}}{%
 <<smooth, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3.5, out.width='.65\\textwidth', warning=FALSE>>=
 lofX$bulletname <- scrubPath(lofX$bullet)
 qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=bulletname) +
@@ -599,7 +599,7 @@ ggplot() +
 \end{figure}
 %\afterpage{\clearpage}
 Figure~\ref{fig:match} gives an overview of the automated matching routine: 
-We first identify a stable region for each bullet and pick the signature at the lowest cross section level in this region, because typically, individual characteristics are best expressed at the lower end of the bullet (see Supplement section~\ref{supp:bulletbottom} for a more detailed discussion). 
+We first identify a stable region for each bullet land and extract the signature at the lowest height in this region, because typically, individual characteristics are best expressed at the lower end of the bullet (see Supplement section~\ref{supp:bulletbottom} for a more detailed discussion). 
 
 All of the other steps are done on pairs of bullet lands:
 \begin{enumerate}
@@ -628,7 +628,7 @@ For lead bullets, such as used in the Hamby study, \citet{biasotti:1959} conside
 
 Determining a threshold such that CMS values above the threshold indicate a match with high reliability is beyond the scope of this work, even though it is critically important in practice. We provide some ideas in the next section, but first we assess the robustness of the matching algorithm to different choices of the parameter values. 
 %In order to get a better understanding of  how  this matching works in known matches and non-matches, we next investigate the algorithm's performance in a test scenario.
-In addition to the features listed above, we also keep track of the value of the cross-correlation function found during the alignment, the lag at which signatures show the best alignment, and the cross section levels ($x_1$ and $x_2$).
+In addition to the features listed above, we also keep track of the value of the cross-correlation function found during the alignment, the lag at which signatures show the best alignment, and the height at which signatures are extracted ($x_1$ and $x_2$).
 
 %' \begin{figure}[hbtp]
 %'   \centering
@@ -671,7 +671,7 @@ In addition to the features listed above, we also keep track of the value of the
 %' \end{figure}
 
 \subsection{Horizontal alignment}
-A single cross section across the surface of the two lands in Figure~\ref{fig:manualmatch-rgl} is shown in Figure~\ref{fig:cross100}.  This figure gives the signatures of bullets 1-5 and 2-1 at a surface cross section of $x = 100$. Striation marks show up in this representations as peaks and valleys.  The individual characteristics are quite prominent and, again, suggest a match between the lands. A horizontal shift of one of the signatures (result shown in (b)) emphasizes the strong similarities. 
+Signatures of each of the two lands, 1-5 and 2-1,  in Figure~\ref{fig:manualmatch-rgl} are shown in Figure~\ref{fig:cross100} extracted at a height of $x = 100\mu m$. Striation marks show up in this representations as peaks and valleys.  The individual characteristics are quite prominent and, again, suggest a match between the lands. A horizontal shift of one of the signatures (result shown in Fig~\ref{fig:crosscutX}) emphasizes the strong similarities. 
 %
 \begin{figure}[hbtp]
 \centering
@@ -701,7 +701,7 @@ qplot(y+min(lof$y), resid, group=bulletname, colour=bulletname, data=lofY,
 @
     }
 \end{subfigure}
-\caption{\label{fig:cross100}Signatures of bullets 1-5 and 2-1 at cross sections of $x = 100\mu m$. A horizontal shift of the values of bullet~1-5 to the right shows the similarity of the striation marks.}
+\caption{\label{fig:cross100}Signatures of bullets 1-5 and 2-1 taken at  heights of $x = 100\mu m$. A horizontal shift of the values of bullet~1-5 to the right shows the similarity of the striation marks.}
 \end{figure}
 %
 This horizontal shift is based on the cross-correlation between the two signatures: let $f(t)$ and $g(t)$ define the signature values  at $t$, where $t$ are locations between 0~$\mu m$ and about 2500~$\mu m$, 1.5625~$\mu m$ apart.
@@ -725,10 +725,10 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
 \end{figure}
 
 
-\subsection{Impact of cross sections}\label{sec:heights}
-The cross section on which a comparison between signatures is based matters -- signatures from cross sections that are further apart, show more pronounced differences between the signatures. 
-This poses both a caveat to matching attempts as well as an opportunity for quality control: we have to be aware of which cross section level was used in a matching. Visually, matches degrade if the signatures upon which the match is based are from cross sections further than 200$\mu m$ apart  (see Supplement section~\ref{supp:ccf} for a more thorough discussion).
-However, we can extract signatures from multiple cross sections of the same bullet land for an initial assessment of its quality. 
+\subsection{Impact of bullet height}\label{sec:heights}
+The height at which signatures are extracted for a comparison between bullet lands matters -- signatures taken from heights that are further apart, show more pronounced differences between the signatures. 
+This poses both a caveat to matching attempts as well as an opportunity for quality control: we have to be aware of the height that was used in a matching. Visually, matches degrade if the signatures upon which the match is based are from heights further than 200$\mu m$ apart  (see Supplement section~\ref{supp:ccf} for a more thorough discussion).
+However, we can extract signatures from multiple heights of the same bullet land for an initial assessment of its quality. 
 This situation is assessed and discussed in more detail below: 
 
 \begin{figure}[hbtp]
@@ -780,11 +780,11 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
              lop[[4]], lop[[5]], lop[[6]],
              ncol=2)
 @
-\caption{\label{fig:crosscuts2}Varying cross sections for barrel 3, bullet~1-1. Initially, the match between signatures from cross sections 25$\mu m$ apart is affected strongly by some break off at the bottom of the bullet. At a  level of $175\mu m$ the bullet's signature stabilizes. For this land, matches should not be attempted at lower cross sections. }
+\caption{\label{fig:crosscuts2}Signatures  for barrel 3, bullet~1-1 extracted from varying heights. Initially, the match between signatures taken at heights 25$\mu m$ apart is affected strongly by some break off at the bottom of the bullet. At a  level of $175\mu m$ the bullet's signature stabilizes. For this land, matches should not be attempted at lower heights. }
 \end{figure}
 %An opportunity that arises from comparing multiple cross sections of a bullet's surface measurements is the following:
-by comparing signatures from cross sections that are not too far apart --  25~$\mu m$ to 50~$\mu m$ -- we get an indication whether the signatures come from a rapidly changing section of the surface, indicative of a break-off or some other damage, or from a stable section, where we have a reasonable expectation of finding matches to other signatures. In the approach here, we keep increasing the height $x$ of the cross section until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet~1-1 from barrel 3, where
-`stability' is  defined as two aligned signatures from cross sections chosen 25$\mu m$ apart having a cross-correlation of at least 0.95. 
+by comparing signatures from heights that are not too far apart --  25~$\mu m$ to 50~$\mu m$ -- we get an indication whether the signatures come from a rapidly changing section of the surface, indicative of a break-off or some other damage, or from a stable section, where we have a reasonable expectation of finding matches to other signatures. In the approach here, we keep increasing the height $x$ at which the signature is taken until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet~1-1 from barrel 3, where
+`stability' is  defined as two aligned signatures from heights chosen 25$\mu m$ apart having a cross-correlation of at least 0.95. 
 
 \subsection{Varying smoothing factor}\label{sec:smoothing}
 As mentioned earlier, the algorithm for detecting peaks and valleys depends on the selection of a smoothing window, called the smoothing factor or span. A smoothing factor of $k$ means that the  $k$ closest observations to $x_o$ are considered for a fit for $x_o$. Because surface measurements are recorded at an equidistant resolution (here, of 1.5625$\mu m$), we decided to only consider odd smoothing factors $2k + 1$, which means that the  $k$ observations to the left and right of $x_o$ are considered for a local fit of $x_o$. For detecting and removing the grooves prior to fitting a loess regression we selected a smoothing factor  of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 25 seems more appropriate. %We can investigate the performance of peak/valley detection across different smoothing factors.
