@@ -623,8 +623,8 @@ The difference $D$ between signatures is here defined as the Euclidean distance 
 
 Counting the maximal number of CMS is part of current practice to identify bullet matches~\citep{nichols:1997, nichols:2003, nichols:2003b}. 
 In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a  high number indicative of a match between the bullets. 
-\hh{ Note that the definition of CMS given in this paper does not match the one given in \citet{thompson:2013}. There, CMS is defined only in terms of matching peaks without regarding valleys. Additionally, peaks in  \citet{thompson:2013} are  used only if they can be identified and matched `within a tolerable range' between lands. The definition given here is computationally less complex, but should yield highly correlated values, because of the requirement to only consider signatures from a stable region in the land (see Section~\ref{sec:heights} for further details on stability of regions). In the Hamby study, the definition of CMS by \citet{thompson:2013} leads to approximately half of the values of CMS defined in this paper (with a correlation coefficient between the values of the two definitions of about 0.92). }
-For lead bullets, such as used in the Hamby study, \citet{biasotti:1959} considered four or more consecutive lines to be sufficient evidence of a match. \hh{Biasotti's four or more consecutive lines translates to eight or more with our definition. } %We will assess the claim that eight or more consecutive lines are sufficient for a match in the next section. 
+ Note that the definition of CMS given in this paper does not match the one given in \citet{thompson:2013}. There, CMS is defined only in terms of matching peaks without regarding valleys. Additionally, peaks in  \citet{thompson:2013} are  used only if they can be identified and matched `within a tolerable range' between lands. The definition given here is computationally less complex, but should yield highly correlated values, because of the requirement to only consider signatures from a stable region in the land (see Section~\ref{sec:heights} for further details on stability of regions). In the Hamby study, the definition of CMS by \citet{thompson:2013} leads to approximately half of the values of CMS defined in this paper (with a correlation coefficient between the values of the two definitions of about 0.92). 
+For lead bullets, such as used in the Hamby study, \citet{biasotti:1959} considered four or more consecutive peaks (corresponding to eight or more consecutive lines in our definition) to be sufficient evidence of a match.  %We will assess the claim that eight or more consecutive lines are sufficient for a match in the next section. 
 
 Determining a threshold such that CMS values above the threshold indicate a match with high reliability is beyond the scope of this work, even though it is critically important in practice. We provide some ideas in the next section, but first we assess the robustness of the matching algorithm to different choices of the parameter values. 
 %In order to get a better understanding of  how  this matching works in known matches and non-matches, we next investigate the algorithm's performance in a test scenario.
@@ -1271,7 +1271,7 @@ Neither one of these methods allows for an assessment of cross-correlations. Thi
 
 \begin{figure}[hbtp]
   \centering
-<<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.65\\textwidth'>>=
+<<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.7\\textwidth'>>=
 library(rpart)
 library(rpart.plot)
 library(RColorBrewer)
@@ -1434,7 +1434,7 @@ An approach that might be helpful comes from Biometrics \citep{jain:2015:tphil, 
 This approach uses dictionary learning based on small square patches  of 64x64 or 32x32 pixels. For matching bullets, a simpler, one-dimensional window approach might be sufficient to match striation marks because of the physical forces  leading to the existence of these marks.  
 
 \section*{Acknowledgment} 
-%Thanks to David Baldwin for pointing us to the NIST database and introducing us to the basic terms.
+Thanks to David Baldwin for pointing us to the NIST database and doing a Ballistics 101 for us.
 Thanks to the men and women behind the software R~\citep{R}, and the authors of the R packages  knitr~\citep{knitr} and ggplot2~\citep{ggplot2}.
 
 
