@@ -246,7 +246,7 @@ Surface measurements reach local maxima around the peak of the groove at either 
 The location of the valleys  mark the points at which we should trim the image. The procedure can be described as follows:
 
 \begin{enumerate}
-    \item At a fixed height $x$ extract a bullet's profile (Figure~\ref{fig:loess_step1}, with $x = 243.75$\mu m$).
+    \item At a fixed height $x$ extract a bullet's profile (Figure~\ref{fig:loess_step1}, with $x = 243.75\mu m$).
     \item For each $y$ value, smooth out any deviations occurring near the minima by twice applying a rolling average with a pre-set \emph{smoothing factor} $s$. (Figure~\ref{fig:loess_step3}, smoothing factor $s = 35$ corresponding to 55$\mu m$).
 %    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor as above. (Figure~\ref{fig:loess_step3}).
     \item Determine the location of the peak of the left groove by finding the first doubly-smoothed value $y_i$ that is the maximum within its smoothing window (e.g.\ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$, where $i$ is between 1  and $\lfloor s/2 \rfloor$). We call the location of this peak $p_{\ell}$ (see Figure~\ref{fig:loess_step47}). 
@@ -830,7 +830,7 @@ ggplot() + theme_bw() +
 
 \section{Evaluation}
 In order to get a better understanding of  how  the matching algorithm works in known matches and non-matches, we investigate its performance in a test scenario based on the James Hamby study.
-As a first step, we automatically assess the quality of each of the lands by  checking that we can identify a stable region on each land. For this, we compute the cross-correlation of signatures at cross sections 25$\mu m$ apart. For a stable region, we require a minimum of 0.9 for the cross correlation. Four lands from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these lands has scratch marks across the surface, also known as `tank rash'.
+As a first step, we automatically assess the quality of each of the lands by  checking that we can identify a stable region on each land. For this, we compute the cross-correlation of signatures extracted from heights 25$\mu m$ apart. For a stable region, we require a minimum of 0.95 for the cross correlation. Four lands from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these lands has scratch marks across the surface, also known as `tank rash'.
 %
 \begin{figure}
   \centering
@@ -857,9 +857,9 @@ As a first step, we automatically assess the quality of each of the lands by  ch
 \caption{\label{fig:fourflags}Images of the four lands that got flagged during the quality assessment. All of them show scratch marks (tank rash) across the striation marks from the barrel. They are excluded from the remainder of the analysis.}
 \end{figure}
 %
-We exclude these four lands from further matching considerations and 
- run all remaining lands from the unknown bullets against all remaining lands from known bullets for matches, i.e. we are running $15 \times 6 -2 = 90 - 2 = 88$ lands from unknown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. Out of these comparisons, there are 172 known matches (KM), while the rest are known non-matches (KNM). 
- When things go perfectly, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the distribution of the number of maximum consecutive matching striae between land C-3 and all 118 lands from known bullets. Two lands show a high CMS. These correspond to the known matches with C-3, shown in Figures~\ref{fig:hamby-perfect}b and~\ref{fig:hamby-perfect}c. 
+We exclude these four lands from further matching considerations and
+ run all remaining lands from the unknown bullets against all remaining lands from known bullets for matches, i.e. we are comparing $15 \times 6 -2 = 90 - 2 = 88$ lands from unknown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. Out of these comparisons, there are 172 known matches (KM), while the rest are known non-matches (KNM). 
+ When things go well, they look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the distribution of the number of maximum consecutive matching striae between land C-3 and all 118 lands from known bullets. Two lands show a high CMS. These correspond to the known matches with C-3, shown in Figures~\ref{fig:hamby-perfect}b and~\ref{fig:hamby-perfect}c. 
  Unfortunately, not all results are as clear cut. 
 It might not be reasonable to assume that we can match all lands, but the idea is to try to maximize the number of matches to get an overview of what we might be able to expect from an automated match. 
 
@@ -981,7 +981,7 @@ ggplot(data=subset(bstats, !flagged)) +
 \caption{\label{fig:cms}Distribution of maximal CMS (left). Conditional barchart \citep{hummel} on the right: heights show probability of match/non-match given a specific CMS. All land-to-land comparisons with at least 13 CMS are matches.}
 \end{figure}
 %
-There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$CMS[!bstats$match], na.rm=T)} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$CMS[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$CMS[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$CMS[bstats$match])}. While the probability for a match increases with the number of maximal CMS, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by \citet{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch, between two lands that share twelve consecutively matched striae. Visually we can easily tell that these two lands do not match well.
+There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$CMS[!bstats$match], na.rm=T)} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$CMS[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$CMS[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$CMS[bstats$match])}. While the probability for a match increases with the number of maximal CMS, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by \citet{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch between two lands that share twelve consecutively matched striae. Visually we can easily tell that these two lands do not match well.
 
 \begin{figure}[hbtp]
   \centering
@@ -1001,7 +1001,7 @@ print(ggplot() +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
 @
-\caption{\label{fig:mismatch}Known mismatch with a relatively large number of maximal consecutive matching striae (twelve) in the middle. The pattern in the middle does look surprisingly similar, however the outer ends of the signatures easily reveals this as mismatch. }
+\caption{\label{fig:mismatch}Known mismatch with a relatively large number of maximal consecutive matching striae (twelve) in the middle. The pattern in the middle does look surprisingly similar, however the outer ends of the signatures easily reveals this comparison as mismatch. }
 \end{figure}
 
 For smaller numbers of CMS, the percentage of false positives quickly increases. However, if we take other features of the image into account, we can increase the number of correct matches considerably: Figure~\ref{fig:densities} gives an overview of the densities of all of the features derived earlier, distinguishing between known matches (KM) and known non-matches (KNM). The densities of almost all of the features show strong differences between matches and non matches. For example, a high amount of cross-correlation between two signatures is indicative of a match --  in the Hamby study, only known matches have a cross-correlation of 0.75 or higher. There are 97 land-to-land comparisons with a cross-correlation that high.
@@ -1322,7 +1322,7 @@ Figure~\ref{fig:oob} shows the cumulative out-of-bag error (OOB) rate for 300 tr
 %
 \begin{figure}[hbtp]
   \centering
-<<oob, echo=FALSE, fig.width=6, fig.height=3, out.width='.6\\textwidth'>>=
+<<oob, echo=FALSE, fig.width=6, fig.height=3, out.width='.7\\textwidth'>>=
 qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Number of trees") + ylab("Out of Bag Error (OOB)")
 @
 \caption{\label{fig:oob}Cumulative out-of-bag error rate of a random forest fit to predict land-to-land matches from image features.}
@@ -1354,10 +1354,11 @@ Note that this error rate is based on land-to-land comparisons and is much lower
 %' \caption{\label{fig:treeresult}Overall predictions for each bullet based on the decision tree (maximum possible number is 12, except for Q and B, where the maximum is 11). Both results for the tree and the random forest are shown. In the tree, at least \hh{40\% of all possible} lands of a bullet are  matched correctly, while the random forest achieves perfect results. Unknown bullet B is the hardest for the tree to match.}
 %' \end{figure}
 %' %
-This makes the errors in the automated approach smaller than the human error in the Hamby study. Out of the 507 participants, who returned results, eight (out of $15 \times 507 = 7,605$) bullets were not matched conclusively, resulting in a false negative rate of 0.0011.
+This makes the errors in the automated approach smaller than the human error in the Hamby study. Out of the 507 participants, who returned results, eight (out of $15 \times 507 = 7,605$) bullets were not matched conclusively, corresponding to a rate of 0.0011. 
+%\hh{XXX calling this a false negative rate is problematic. FEs will be up in arms, because inconclusive doesn't necessarily mean something was missed, it could also mean that there was something wrong with the bullets. XXX }
 
 However, error rates based on bullet-to-bullet matches do not carry a lot of weight because of the small size of the study: fifteen unknown bullets are successfully matched to two pairs of ten bullets. Matching bullets can only be tested realistically in a much bigger experiment. 
-Another thing to note about the  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we could therefore introduce an interval of `inconclusive' results in the middle of the spectrum -- which turns out to be not necessary in the Hamby study, because, here, the results from the random forest are very clear cut. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree and the random forest. %\hh{The tree predicts 132 known matches correctly, with 40 false negatives and one false positive match. The random forest predicts all 172 known matches correctly as well as all 10,212 known non-matches.} 
+Another thing to note about  the random forest's error rates is that they are based on probability cutoffs of 0.5, i.e.\ whenever the predicted probability of a match exceeds 0.5, a match is declared. Basing this decision on 0.5 is not necessary. In practice, examiners are allowed a third option of `inconclusive'. On a probability spectrum of outcomes we could therefore introduce an interval of `inconclusive' results in the middle of the spectrum -- which turns out to be not necessary in the Hamby study, because, here, the results from the random forest are very clear cut. Figure~\ref{fig:tree-forest} shows a comparison of the predicted probabilities of a match by the tree and the random forest. %\hh{The tree predicts 132 known matches correctly, with 40 false negatives and one false positive match. The random forest predicts all 172 known matches correctly as well as all 10,212 known non-matches.} 
 %Overall, there is a lot of agreement; out of 10,800 land-to-land comparisons, only four cases result in a different decision. 
 
 \begin{figure}[hbtp]
@@ -1409,13 +1410,13 @@ qplot(MeanDecreaseGini,1, data=imp, geom="point") +
 %The rows in the table are ordered according to descending importance. 
 The variables with the most predictive power are cross-correlation and the overall number of matches, followed by the total depth of joint striations $S$ and total number of non-matches. CMS is found only in sixth place.
 
-\hh{Besides including results from known matches against known non-matches, we can increase the number of comparisons in the Hamby study to include all possible land-to-land comparisons. This effectively doubles the number of data points available. Comparisons not previously included in fitting the random forest can also be used as an additional source for assessing error rates.  Results for this and a more detailed discussion can be found in Supplement section~\ref{supp:extended}.}
+Besides including results from known matches against known non-matches, we can increase the number of comparisons in the Hamby study to include all possible land-to-land comparisons. This effectively doubles the number of data points available. Comparisons not previously included in fitting the random forest can also be used as an additional source for assessing error rates.  Results for this and a more detailed discussion can be found in Supplement section~\ref{supp:extended}.
 
 \section{Conclusion}
 
 We have presented an algorithm which detects the most prominent but least relevant structure of a bullet from a ballistics identification perspective, removes these features, and produces residuals which allow for the easy identification of markings. We have generalized this algorithm to align the residuals from two bullets to automatically determine whether they are matches. We created a random forest model using many of the features to provide a probabilistic assessment of the quality of a match, along with the most relevant features. %Finally, we have provided an easy-to-use open-source backend, and web frontend to many of these features.
 
-The matching algorithm is sensitive to the parameter choices made. The distance between cross sections (currently 25$\mu m$) to evaluate stability, as well as the cross-correlation factor (currently 0.9) we set as a minimum threshold do affect the final outcome. Another parameter that must be selected is the amount of smoothing when identifying peaks and grooves (currently, a window of 23.4375$\mu m$ is used, corresponding to a window of 7 values to the left and the right of an observation). While we tried to lay out in the paper the impact that each of the parameter choices has on the matching performance, we are still far from an optimized scenario. 
+The matching algorithm is sensitive to the parameter choices made. The heights at which signatures are extracted (currently 25$\mu m$ apart) to evaluate stability, as well as the cross-correlation factor (currently 0.95) we set as a minimum threshold do affect the final outcome. Another parameter that must be selected is the amount of smoothing when identifying peaks and grooves (currently, a window of 23.4375$\mu m$ is used, corresponding to a window of 7 values to the left and the right of an observation). While we tried to lay out in the paper the impact that each of the parameter choices has on the matching performance, we are still far from an optimized scenario. 
 
 The Hamby study serves as our evaluation `database'. It consists of only  35 bullets -- this is obviously not a particularly realistic scenario for an automatic matching procedure, but for now we are unaware of other databases containing bullets in the x3p format.
  
@@ -1427,7 +1428,7 @@ By suggesting an automated algorithm that first removes class characteristics, s
 
 For a fair assessment of the performance of an algorithm, we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package x3prplus~\citep{x3prplus}, and the code to produce this paper is available at \url{http://www.github.com/erichare/imaging-paper}. To understand whether an automated approach along the lines of the one we propose can accurately identify sets of bullets with undistinguishable markings, it will be necessary to assemble a much larger database that includes a wide range of ammunition types, degrees of damage, gun makes, etc. We are unaware of the existence of any such database. In addition to serving as a realistic testbed for the performance of the automated matching algorithm, such a database would also permit testing the underlying, as of yet untested, assumptions of uniqueness and reproducibility of the markings left by a gun on bullets.
 
-\hh{XXX speed? XXX}
+%\hh{XXX speed? XXX}
 
 An approach that might be helpful comes from Biometrics \citep{jain:2015:tphil, jain:2015}. It has been successfully applied in the Aadhar project (the effort by the Unique Identification Authority of India (UIDAI) to provide a unique 12-digit identification number to approximately 1.2 billion residents of India based on ten fingerprints and two irises).
 This approach uses dictionary learning based on small square patches  of 64x64 or 32x32 pixels. For matching bullets, a simpler, one-dimensional window approach might be sufficient to match striation marks because of the physical forces  leading to the existence of these marks.  
