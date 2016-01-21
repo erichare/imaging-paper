@@ -6,15 +6,11 @@ imaging-paper.pdf
 
 *.synctex.gz
 
-*.tex
 imaging-supplement.pdf
-imaging-paper.tex
 .Rproj.user
 *.Rproj
 
 *.brf
-
-*.bbl
 
 *.blg
 
@@ -52,3 +48,7 @@ imaging-paper-blinded.tex
 imaging-paper.spl
 
 *.RData
+
+imaging-supplement-concordance.tex
+
+imaging-paper-concordance.tex
