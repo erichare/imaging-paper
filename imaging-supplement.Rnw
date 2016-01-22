@@ -21,7 +21,7 @@
 \RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
 
 % provide arXiv number if available:
-\arxiv{arXiv:0000.0000}
+\arxiv{arXiv:1601.05788}
 
 % put your definitions there:
 \startlocaldefs
@@ -416,7 +416,7 @@ unknowns <- all_bullets[121:210]
 
 if (!file.exists("csvs/crosscut-sd.csv")) {
   bullets_processed <- lapply(all_bullets, function(bul) {
-    cat("Computing processed bullet", basename(bul$path), "\n")
+    #cat("Computing processed bullet", basename(bul$path), "\n")
     crosscuts <- 25*(1:20)
     dframe <- new_processBullets(bullet = bul, x = crosscuts)
     dframe$bullet <- with(dframe, paste(bullet, x))
