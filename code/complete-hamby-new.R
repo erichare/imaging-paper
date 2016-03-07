@@ -70,9 +70,9 @@ unknowndatadir <- "~/Downloads/Hamby Set 44"
 # }  
 
 # match unknown land using crosscuts
-ccs <- read.csv("csvs/crosscuts-25.csv")
+ccs <- read.csv("csvs/crosscuts-25-new.csv")
 all_bullets <- lapply(as.character(ccs$path), function(x) {
-    result <- read.x3p(x)
+    result <- read.x3pplus(x, transpose = TRUE)
     result[[3]] <- x
     names(result)[3] <- "path"
         
@@ -96,11 +96,12 @@ for (span in c(10, 20, 25, 30, 40)) {
     for (j in 1:90) {
         reslist <- lapply(knowns, function(x) {
             cat("Processing", j, "vs", basename(x$path), "with span", span, "\n")
+            sigh <- unknowns[[j]]
             
             br1 <- filter(bullets_smoothed, bullet == x$path)
-            br2 <- filter(bullets_smoothed, bullet == unknowns[[j]]$path)
+            br2 <- filter(bullets_smoothed, bullet == sigh$path)
             
-            bulletGetMaxCMSXXX(br1, br2, span=span)
+            bulletGetMaxCMS(br1, br2, span=span)
         })
         save(reslist, file=file.path(dataStr, sprintf("unkn%d.RData", j)))
     }
