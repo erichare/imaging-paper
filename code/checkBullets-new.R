@@ -13,7 +13,7 @@ unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 if (!file.exists("csvs/crosscuts.csv")) {
 crosscuts_known <- sapply(knowns, function(x) {
   cat(x)
-  crosscut <- bulletCheckCrossCut(x, x = seq(100, 750, by=25), transpose = TRUE, span = 0.15)
+  crosscut <- bulletCheckCrossCut(x, x = seq(100, 750, by=25), transpose = TRUE)
   cat(crosscut)
   cat("\n")
   crosscut
