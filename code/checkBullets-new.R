@@ -4,21 +4,28 @@ library(dplyr)
 library(ggplot2)
 library(zoo)
 
-knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
+knowndatadir <- "~/Downloads/Hamby Set 44/known/"
 knowns <- file.path(knowndatadir, dir(knowndatadir, pattern="x3p"))
 
-unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
+unknowndatadir <- "~/Downloads/Hamby Set 44/unknown/"
 unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 
 if (!file.exists("csvs/crosscuts.csv")) {
-crosscuts <- sapply(c(knowns, unknowns), function(x) {
+crosscuts_known <- sapply(knowns, function(x) {
   cat(x)
-  crosscut <- bulletCheckCrossCut(x, x = seq(100, 750, by=25))
+  crosscut <- bulletCheckCrossCut(x, x = seq(100, 750, by=25), transpose = TRUE, span = 0.15)
   cat(crosscut)
   cat("\n")
   crosscut
 })
-
+crosscuts_unknown <- sapply(unknowns, function(x) {
+    cat(x)
+    crosscut <- bulletCheckCrossCut(x, x = seq(100, 750, by=25), transpose = TRUE)
+    cat(crosscut)
+    cat("\n")
+    crosscut
+})
+crosscuts <- c(crosscuts_known, crosscuts_unknown)
 
 dframe <- data.frame(
   path = c(knowns, unknowns),
