@@ -89,8 +89,8 @@ names(bullets_processed) <- as.character(ccs$path)
 
 bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth
 
-for (span in c(10, 20, 25, 30, 40)) {
-    dataStr <- sprintf("data-new-%d-25", span) # using crosscuts-25.csv
+for (span in c(25)) {
+    dataStr <- sprintf("data-%d-25", span) # using crosscuts-25.csv
     
     if (!file.exists(dataStr)) dir.create(dataStr)
     for (j in 1:90) {
@@ -100,7 +100,7 @@ for (span in c(10, 20, 25, 30, 40)) {
             br1 <- filter(bullets_smoothed, bullet == x$path)
             br2 <- filter(bullets_smoothed, bullet == unknowns[[j]]$path)
             
-            bulletGetMaxCMSXXX(br1, br2, span=span)
+            bulletGetMaxCMS(br1, br2, span=span)
         })
         save(reslist, file=file.path(dataStr, sprintf("unkn%d.RData", j)))
     }

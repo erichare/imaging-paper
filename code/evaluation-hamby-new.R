@@ -1,5 +1,5 @@
 span <- 25
-dataStr <- sprintf("data-new-%d-25", span)
+dataStr <- sprintf("data-%d-25", span)
 datas <- file.path(dataStr, dir(dataStr, pattern="RData"))
 datas <- datas[grep(paste0(dataStr,"/u.*"), datas)]
 
@@ -87,10 +87,10 @@ library(reshape2)
 mm <- melt(matches, id.var="id")
 mm <- subset(mm, value != "Ukn Bullet ")
 
-CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
-CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
-CCFs$match <- CCFs$id.x == CCFs$id.y
-CCFs$span <- span
+# CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
+# CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
+# CCFs$match <- CCFs$id.x == CCFs$id.y
+# CCFs$span <- span
 
 
 library(rpart)
