@@ -20,7 +20,7 @@ crosscuts_known <- sapply(knowns, function(x) {
 })
 crosscuts_unknown <- sapply(unknowns, function(x) {
     cat(x)
-    crosscut <- bulletCheckCrossCut(x, xlimits = seq(50, 450, by=25), span = 0.15)
+    crosscut <- bulletCheckCrossCut(x, xlimits = seq(100, 750, by=25), span = 0.15)
     cat(crosscut)
     cat("\n")
     crosscut

@@ -32,12 +32,15 @@ CCFs <- plyr::ldply(datas, function(x) {
     if (length(knm) == 0) knm <- c(length(km)+1,0)
  #browser()    
     # feature extraction
+    signature.length <- min(nrow(subLOFx1), nrow(subLOFx2))
+    
     data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), 
                D=distr.dist, 
                sd.D = distr.sd,
                b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
-               #num.matches = sum(res$lines$match), 
-               matches.per.y = sum(res$lines$match) / nrow(res$bullets),
+               num.matches = sum(res$lines$match), 
+               signature.length = signature.length,
+               matches.per.y = sum(res$lines$match) / signature.length,
                #num.mismatches = sum(!res$lines$match), 
                mismatches.per.y = sum(!res$lines$match) / nrow(res$bullets),
                #cms = res$maxCMS,
@@ -55,8 +58,7 @@ CCFs <- plyr::ldply(datas, function(x) {
                #right_noncms = max(knm[length(knm)]-km[length(km)],0),
                right_noncms.per.y = max(knm[length(knm)]-km[length(km)],0) / nrow(res$bullets),
                #sumpeaks = sum(abs(res$lines$heights[res$lines$match]))
-               sumpeaks.per.y = sum(abs(res$lines$heights[res$lines$match])) / nrow(res$bullets),
-               signature_length = nrow(res$bullets)
+               sumpeaks.per.y = sum(abs(res$lines$heights[res$lines$match])) / nrow(res$bullets)
                )
   })
 #  ccf$cms <- cmsdist
@@ -83,14 +85,17 @@ matches$V4 <- paste("Ukn Bullet",matches$V4)
 matches$V5 <- paste("Ukn Bullet",matches$V5)
 matches$id <- 1:nrow(matches)
 
+CCFs$b1 <- gsub("_", " ", CCFs$b1)
+CCFs$b2 <- gsub("_", " ", CCFs$b2)
+
 library(reshape2)
 mm <- melt(matches, id.var="id")
 mm <- subset(mm, value != "Ukn Bullet ")
 
-# CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
-# CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
-# CCFs$match <- CCFs$id.x == CCFs$id.y
-# CCFs$span <- span
+CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
+CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
+CCFs$match <- CCFs$id.x == CCFs$id.y
+CCFs$span <- span
 
 
 library(rpart)
