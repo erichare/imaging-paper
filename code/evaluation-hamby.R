@@ -1,5 +1,5 @@
 span <- 25
-dataStr <- sprintf("data-new-%d-25", span)
+dataStr <- sprintf("data-%d-25", span)
 datas <- file.path(dataStr, dir(dataStr, pattern="RData"))
 datas <- datas[grep(paste0(dataStr,"/u.*"), datas)]
 

@@ -6,7 +6,7 @@ library(gridExtra)
 library(zoo)
 
 knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
-unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
+unknowndatadir <- "app/degraded_images/Hamby252_3DX3P1of2/"
 
 
 ###############
@@ -70,9 +70,9 @@ unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 # }  
 
 # match unknown land using crosscuts
-ccs <- read.csv("csvs/crosscuts-25.csv")
+ccs <- read.csv("csvs/crosscuts-25-degraded.csv")
 all_bullets <- lapply(as.character(ccs$path), function(x) {
-    result <- read.x3p(x)
+    result <- read.x3pplus(x)
     result[[3]] <- x
     names(result)[3] <- "path"
         
@@ -87,24 +87,22 @@ bullets_processed <- lapply(all_bullets, function(bul) {
 })
 names(bullets_processed) <- as.character(ccs$path)
 
-bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth
+bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth(span = 0.15)
 
 for (span in c(25)) {
-    dataStr <- sprintf("data-new-all-%d-25", span) # using crosscuts-25.csv
+    dataStr <- sprintf("data-degraded-%d-25", span) # using crosscuts-25.csv
     
     if (!file.exists(dataStr)) dir.create(dataStr)
-    for (j in 1:length(all_bullets)) {
-        reslist <- lapply(all_bullets, function(x) {
-            cat("Processing", basename(all_bullets[[j]]$path), "vs", basename(x$path), "with span", span, "\n")
+    for (j in 1:90) {
+        reslist <- lapply(knowns, function(x) {
+            cat("Processing", j, "vs", basename(x$path), "with span", span, "\n")
+            sigh <- unknowns[[j]]
             
             br1 <- filter(bullets_smoothed, bullet == x$path)
-            br2 <- filter(bullets_smoothed, bullet == all_bullets[[j]]$path)
+            br2 <- filter(bullets_smoothed, bullet == sigh$path)
             
-            if (all_bullets[[j]]$path == x$path) br2$bullet <- paste0(br2$bullet, "_2")
-            
-            bulletGetMaxCMSXXX(br1, br2, span=span)
+            bulletGetMaxCMS(br1, br2, span=span)
         })
-        save(reslist, file=file.path(dataStr, sprintf("bullet%d.RData", j)))
+        save(reslist, file=file.path(dataStr, sprintf("unkn%d.RData", j)))
     }
 }
-

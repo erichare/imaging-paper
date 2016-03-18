@@ -100,14 +100,14 @@ rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 prp(rp1, extra = 101)
 CCFs$pred <- predict(rp1)
 
-includes2 <- setdiff(includes, c("left_cms", "right_cms", "left_noncms", "right_noncms", "cms2"))
+includes2 <- setdiff(includes, c("left_cms.per.y", "right_cms.per.y", "left_noncms.per.y", "right_noncms.per.y", "cms2.per.y"))
 library(randomForest)
 set.seed(20160105)
 rtrees <- randomForest(factor(match)~., data=CCFs[,includes2], ntree=300)
 CCFs$forest <- predict(rtrees, type="prob")[,2]
 imp <- data.frame(importance(rtrees))
 
-includes3 <- c(setdiff(includes2, "cms"), "cms2")
+includes3 <- c(setdiff(includes2, "cms.per.y"), "cms2.per.y")
 set.seed(20160105)
 rtrees1b <- randomForest(factor(match)~., data=CCFs[,includes3], ntree=300)
 imp1b <- data.frame(importance(rtrees1b))
@@ -120,104 +120,25 @@ write.csv(CCFs, file=file.path(dataStr, "bullet-stats-cms.csv"), row.names=FALSE
 ##################################################
 
 
-
-# diagnostics
-
-
-idx <- which(CCFs$match & CCFs$cms <= 6)
-idx <- which(!CCFs$match & CCFs$ccf > .7)
-idx <- which(!CCFs$match & CCFs$cms == 12)
-idx <- which(CCFs$cms == 11)
-
-for ( i in idx) {
-  
-  load( CCFs$data[i])
-  res <- reslist[[CCFs$resID[i]]]  
-  
-  ch <- scan()
-  print(ggplot() +
-          theme_bw() + 
-          geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), show.legend=FALSE, ymin=-6, ymax=5, data=res$lines, alpha=0.2) +
-          geom_line(aes(x = y, y = l30, colour = bullet),  data = res$bullets) +
-    #      geom_hline(yintercept = res$threshold) +
-    #      geom_hline(yintercept = - res$threshold) +
-          scale_colour_brewer(palette="Set1", na.value=alpha("grey50", .5)) +
-          theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
-          ylim(c(-6,6)) +
-          geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
-          geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
-  
-}
-
-
 library(ggplot2)
-CCFs <- read.csv(file.path(dataStr, "bullet-stats.csv"))
-
-qplot(factor(cms), data=CCFs)
-ggplot(data=CCFs) + geom_bar(aes(x=factor(cms), fill=match), position="fill")
-sum(CCFs$cms >= 13)
-ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=D, colour=match))
-ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=ccf, colour=match)) + facet_wrap(~match)
-ggplot(data=CCFs) + geom_bar(aes(x=factor(non_cms), fill=match), position="fill")
-qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=I(0.5)) + facet_wrap(~match)
-qplot(cms, sumpeaks, geom="jitter", data=CCFs, colour=match, alpha=I(0.5)) + facet_wrap(~match)
-qplot(cms, distr.sd, geom="jitter", data=CCFs, colour=match, alpha=I(0.5)) 
-
-qplot(factor(cms), fill=match, data=CCFs) + facet_wrap(~b2)
-
-
-qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=0.1) + facet_wrap(~match)
-
-
-# the ccf/num.matches distribution of non-matches looks like a normal distribution - 
-# let's find a mean and compute (a standardized) distance from that
+CCFs <- read.csv(file.path(dataStr, "bullet-stats-cms.csv"))
 
 means <- CCFs %>% group_by(match) %>% summarize(
   meanx = mean(ccf), 
   sdx = sd(ccf),
-  meany = mean(num.matches),
-  sdy = sd(num.matches))
-
-CCFs$dist <- sqrt(with(CCFs, (num.matches-means$meany[1])^2/means$sdy[1]^2 + (ccf-means$meanx[1])^2/means$sdx[1]^2 ))
-subCCFs <- subset(CCFs, match==FALSE)
-qplot(ccf, num.matches, geom="jitter", data=subCCFs, colour=dist) 
-
-includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred35"))
-rp2 <- rpart(match~., CCFs[,includes])  
-prp(rp2)
-CCFs$pred352 <- predict(rp2)
-xtabs(~pred352+match, data=CCFs)
-
-# not actually an improvement - now there's two false positives in the mix
-
-# different idea: look at number of matches and percentage correct/incorrect ones
-CCFs$total <- with(CCFs, num.matches+num.mismatches)
-CCFs$percMatch <- CCFs$num.matches/CCFs$total
-
-includes <- setdiff(names(CCFs), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred35", "bullet"))
-rp3 <- rpart(match~., CCFs[,includes])
-library(rpart.plot)
-prp(rp3)
-
-CCFs$pred353 <- predict(rp3)
-xtabs(~pred353+match, data=CCFs)
-
-CCFs$bullet <- gsub("-[0-9]$", "", CCFs$b2)
-qplot(bullet, data=CCFs, fill=match) + coord_flip()
-qplot(bullet, data=CCFs, fill=pred35 > 0.5) + coord_flip()
-
-prp(rp1, extra = 101, fallen.leaves=TRUE)
+  meany = mean(matches.per.y),
+  sdy = sd(matches.per.y))
 
 #####################
 # throw in all three evaluations into the mix:
 
 bstats <- NULL
-for (i in c(5, 10, 15, 20, 25, 30, 35, 40)) {
+for (i in c(25)) {
   dataStr <- sprintf("data-%d-25", i)
-  temp <- read.csv(file.path(dataStr, "bullet-stats.csv"))
+  temp <- read.csv(file.path(dataStr, "bullet-stats-cms.csv"))
   includes <- setdiff(names(temp), c("b1", "b2", "data", "resID", "id.x", "id.y"))
   temp$diffx <- with(temp, abs(x1-x2))
-  temp$perc_matches <- with(temp, num.matches/(num.matches+num.mismatches))
+  temp$perc_matches <- with(temp, matches.per.y/(matches.per.y+mismatches.per.y))
   rp <- rpart(match~., data=temp[,includes])
   
   prp(rp, extra = 101)

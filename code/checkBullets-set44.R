@@ -10,7 +10,7 @@ knowns <- file.path(knowndatadir, dir(knowndatadir, pattern="x3p"))
 unknowndatadir <- "~/Downloads/Hamby Set 44/unknown/"
 unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 
-if (!file.exists("csvs/crosscuts.csv")) {
+if (!file.exists("csvs/crosscuts-25-set44.csv")) {
 crosscuts_known <- sapply(knowns, function(x) {
   cat(x)
   crosscut <- bulletCheckCrossCut(x, x = seq(100, 750, by=25), transpose = TRUE)
@@ -33,17 +33,5 @@ dframe <- data.frame(
 )
 
 
-write.csv(dframe, file="csvs/crosscuts-25-new.csv", row.names=FALSE)
-} 
-
-
-
-ccs <- read.csv("data/crosscuts.csv")
-
-
-bullets <- lapply(c(knowns, unknowns), function(path) {
-  lof <- processBullets(paths = path, x = ccs$cc[which(ccs$path==path)], check=FALSE)
-  peaks <- get_peaks(lof)
-
-  list(path=path, bullet=lof, peaks=peaks, lines=peaks$lines)
-})
+write.csv(dframe, file="csvs/crosscuts-25-set44.csv", row.names=FALSE)
+}
