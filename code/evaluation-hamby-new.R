@@ -36,16 +36,27 @@ CCFs <- plyr::ldply(datas, function(x) {
                D=distr.dist, 
                sd.D = distr.sd,
                b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
-               num.matches = sum(res$lines$match), 
-               num.mismatches = sum(!res$lines$match), 
-               cms = res$maxCMS,
-               cms2 = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match),
-               non_cms = x3prplus::maxCMS(!res$lines$match),
-               left_cms = max(knm[1] - km[1], 0),
-               right_cms = max(km[length(km)] - knm[length(knm)],0),
-               left_noncms = max(km[1] - knm[1], 0),
-               right_noncms = max(knm[length(knm)]-km[length(km)],0),
-               sumpeaks = sum(abs(res$lines$heights[res$lines$match]))
+               #num.matches = sum(res$lines$match), 
+               matches.per.y = sum(res$lines$match) / nrow(res$bullets),
+               #num.mismatches = sum(!res$lines$match), 
+               mismatches.per.y = sum(!res$lines$match) / nrow(res$bullets),
+               #cms = res$maxCMS,
+               cms.per.y = res$maxCMS / nrow(res$bullets),
+               #cms2 = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match),
+               cms2.per.y = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match) / nrow(res$bullets),
+               #non_cms = x3prplus::maxCMS(!res$lines$match),
+               non_cms.per.y = x3prplus::maxCMS(!res$lines$match) / nrow(res$bullets),
+               #left_cms = max(knm[1] - km[1], 0),
+               left_cms.per.y = max(knm[1] - km[1], 0) / nrow(res$bullets),
+               #right_cms = max(km[length(km)] - knm[length(knm)],0),
+               right_cms.per.y = max(km[length(km)] - knm[length(knm)],0) / nrow(res$bullets),
+               #left_noncms = max(km[1] - knm[1], 0),
+               left_noncms.per.y = max(km[1] - knm[1], 0) / nrow(res$bullets),
+               #right_noncms = max(knm[length(knm)]-km[length(km)],0),
+               right_noncms.per.y = max(knm[length(knm)]-km[length(km)],0) / nrow(res$bullets),
+               #sumpeaks = sum(abs(res$lines$heights[res$lines$match]))
+               sumpeaks.per.y = sum(abs(res$lines$heights[res$lines$match])) / nrow(res$bullets),
+               signature_length = nrow(res$bullets)
                )
   })
 #  ccf$cms <- cmsdist
