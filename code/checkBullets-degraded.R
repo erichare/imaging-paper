@@ -11,21 +11,13 @@ unknowndatadir <- "app/degraded_images/Hamby252_3DX3P1of2/"
 unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 
 if (!file.exists("csvs/crosscuts-25-degraded.csv")) {
-crosscuts_known <- sapply(knowns, function(x) {
-  cat(x)
-  crosscut <- bulletCheckCrossCut(x, x = seq(100, 750, by=25))
-  cat(crosscut)
-  cat("\n")
-  crosscut
-})
-crosscuts_unknown <- sapply(unknowns, function(x) {
+crosscuts <- sapply(c(knowns, unknowns), function(x) {
     cat(x)
-    crosscut <- bulletCheckCrossCut(x, xlimits = seq(100, 750, by=25), span = 0.15)
+    crosscut <- bulletCheckCrossCut(x, x = seq(100, 750, by=25), span = 0.15, minccf = .99)
     cat(crosscut)
     cat("\n")
     crosscut
 })
-crosscuts <- c(crosscuts_known, crosscuts_unknown)
 
 dframe <- data.frame(
   path = c(knowns, unknowns),

@@ -32,21 +32,33 @@ CCFs <- plyr::ldply(datas, function(x) {
     if (length(knm) == 0) knm <- c(length(km)+1,0)
  #browser()    
     # feature extraction
+    signature.length <- min(nrow(subLOFx1), nrow(subLOFx2))
+    
     data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), 
                D=distr.dist, 
                sd.D = distr.sd,
                b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
-               num.matches = sum(res$lines$match), 
-               num.mismatches = sum(!res$lines$match), 
-               cms = res$maxCMS,
-               cms2 = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match),
-               non_cms = x3prplus::maxCMS(!res$lines$match),
-               left_cms = max(knm[1] - km[1], 0),
-               right_cms = max(km[length(km)] - knm[length(knm)],0),
-               left_noncms = max(km[1] - knm[1], 0),
-               right_noncms = max(knm[length(knm)]-km[length(km)],0),
-               sumpeaks = sum(abs(res$lines$heights[res$lines$match]))
-               )
+               signature.length = signature.length,
+               matches.per.y = sum(res$lines$match) / signature.length,
+               #num.mismatches = sum(!res$lines$match), 
+               mismatches.per.y = sum(!res$lines$match) / nrow(res$bullets),
+               #cms = res$maxCMS,
+               cms.per.y = res$maxCMS / nrow(res$bullets),
+               #cms2 = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match),
+               cms2.per.y = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match) / nrow(res$bullets),
+               #non_cms = x3prplus::maxCMS(!res$lines$match),
+               non_cms.per.y = x3prplus::maxCMS(!res$lines$match) / nrow(res$bullets),
+               #left_cms = max(knm[1] - km[1], 0),
+               left_cms.per.y = max(knm[1] - km[1], 0) / nrow(res$bullets),
+               #right_cms = max(km[length(km)] - knm[length(knm)],0),
+               right_cms.per.y = max(km[length(km)] - knm[length(knm)],0) / nrow(res$bullets),
+               #left_noncms = max(km[1] - knm[1], 0),
+               left_noncms.per.y = max(km[1] - knm[1], 0) / nrow(res$bullets),
+               #right_noncms = max(knm[length(knm)]-km[length(km)],0),
+               right_noncms.per.y = max(knm[length(knm)]-km[length(km)],0) / nrow(res$bullets),
+               #sumpeaks = sum(abs(res$lines$heights[res$lines$match]))
+               sumpeaks.per.y = sum(abs(res$lines$heights[res$lines$match])) / nrow(res$bullets)
+    )
   })
 #  ccf$cms <- cmsdist
   ccf$data <- x
@@ -89,21 +101,21 @@ rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 prp(rp1, extra = 101)
 CCFs$pred <- predict(rp1)
 
-includes2 <- setdiff(includes, c("left_cms", "right_cms", "left_noncms", "right_noncms", "cms2"))
+includes2 <- setdiff(includes, c("left_cms.per.y", "right_cms.per.y", "left_noncms.per.y", "right_noncms.per.y", "cms2.per.y"))
 library(randomForest)
 set.seed(20160105)
 rtrees <- randomForest(factor(match)~., data=CCFs[,includes2], ntree=300)
 CCFs$forest <- predict(rtrees, type="prob")[,2]
 imp <- data.frame(importance(rtrees))
 
-includes3 <- c(setdiff(includes2, "cms"), "cms2")
+includes3 <- c(setdiff(includes2, "cms.per.y"), "cms2.per.y")
 set.seed(20160105)
 rtrees1b <- randomForest(factor(match)~., data=CCFs[,includes3], ntree=300)
 imp1b <- data.frame(importance(rtrees1b))
 
 
 
-write.csv(CCFs, file=file.path(dataStr, "bullet-stats-cms.csv"), row.names=FALSE)
+write.csv(CCFs, file=file.path(dataStr, "bullet-stats.csv"), row.names=FALSE)
 
 
 ##################################################
@@ -143,7 +155,7 @@ library(ggplot2)
 CCFs <- read.csv(file.path(dataStr, "bullet-stats.csv"))
 
 qplot(factor(cms), data=CCFs)
-ggplot(data=CCFs) + geom_bar(aes(x=factor(cms), fill=match), position="fill")
+ggplot(data=CCFs) + geom_density(aes(x=cms.per.y, fill=match))
 sum(CCFs$cms >= 13)
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=D, colour=match))
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=ccf, colour=match)) + facet_wrap(~match)
@@ -164,8 +176,8 @@ qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=0.1) + fac
 means <- CCFs %>% group_by(match) %>% summarize(
   meanx = mean(ccf), 
   sdx = sd(ccf),
-  meany = mean(num.matches),
-  sdy = sd(num.matches))
+  meany = mean(matches.per.y),
+  sdy = sd(matches.per.y))
 
 CCFs$dist <- sqrt(with(CCFs, (num.matches-means$meany[1])^2/means$sdy[1]^2 + (ccf-means$meanx[1])^2/means$sdx[1]^2 ))
 subCCFs <- subset(CCFs, match==FALSE)
@@ -201,15 +213,15 @@ prp(rp1, extra = 101, fallen.leaves=TRUE)
 # throw in all three evaluations into the mix:
 
 bstats <- NULL
-for (i in c(5, 10, 15, 20, 25, 30, 35, 40)) {
+for (i in c(25)) {
   dataStr <- sprintf("data-%d-25", i)
   temp <- read.csv(file.path(dataStr, "bullet-stats.csv"))
   includes <- setdiff(names(temp), c("b1", "b2", "data", "resID", "id.x", "id.y"))
   temp$diffx <- with(temp, abs(x1-x2))
-  temp$perc_matches <- with(temp, num.matches/(num.matches+num.mismatches))
-  rp <- rpart(match~., data=temp[,includes])
+  #temp$perc_matches <- with(temp, num.matches/(num.matches+num.mismatches))
+  rp <- randomForest(factor(match)~., data=temp[,includes], ntree = 300)
   
-  prp(rp, extra = 101)
+ # prp(rp, extra = 101)
   #ch <- scan()
   temp$pred <- predict(rp)
   temp$span <- i
@@ -220,7 +232,7 @@ for (i in c(5, 10, 15, 20, 25, 30, 35, 40)) {
 
 
 
-xtabs(~(pred>0.5)+match+span, data=bstats)
+xtabs(~(forest>0.5)+match+span, data=bstats)
 
 bstats$bullet <- gsub("-[0-9]$", "", bstats$b2)
 bullets <- bstats %>% group_by(bullet, span) %>% summarize(
