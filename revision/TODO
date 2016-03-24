@@ -1,0 +1,12 @@
+AE:
+
+1. The paper should better explain the role of the new methods for forensic science. The authors should consider referencing some of the previous work the reviewers mention.
+2. Methodologically, the crux of the data analysis seems to be a generic application of decision trees. It would be good to clarify that aspect, and to more formally explain how the ensemble of the steps took by the authors to complete this work can be applied to other forensic science questions.
+
+Reviewer A:
+
+4. Random forests, as used and described on pages 18-21 of the paper comes out looking like a winner, but other than that success---worth reporting *somewhere*---, there is no new information on that method. No new insights. And certainly no comparisons with the tens of other things that could have been tried.
+
+5. The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the “twicing” for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.
+
+6. page 7- figure 4- What exactly are you bootstrapping? It is unclear in the paper whether you are bootstrapping residual or bullets or something else entirely. Please clarify.
