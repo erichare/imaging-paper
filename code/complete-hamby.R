@@ -87,7 +87,7 @@ bullets_processed <- lapply(all_bullets, function(bul) {
 })
 names(bullets_processed) <- as.character(ccs$path)
 
-bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth(span = 0.15)
+bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth
 
 for (span in c(25)) {
     dataStr <- sprintf("data-%d-25", span) # using crosscuts-25.csv
