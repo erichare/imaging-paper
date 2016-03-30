@@ -13,12 +13,12 @@ unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 if (!file.exists("csvs/crosscuts-25.csv")) {
 crosscuts <- sapply(c(knowns, unknowns), function(x) {
   cat(x)
-  crosscut <- bulletCheckCrossCut(x, xlimits = seq(150, 500, by = 25), minccf = .99)
+  crosscut <- bulletCheckCrossCut(x, xlimits = seq(100, 500, by = 25))
   cat(crosscut)
   cat("\n")
   crosscut
 })
-
+crosscuts[is.na(crosscuts)] <- 150
 
 dframe <- data.frame(
   path = c(knowns, unknowns),

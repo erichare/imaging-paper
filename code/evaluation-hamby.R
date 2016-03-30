@@ -39,7 +39,7 @@ CCFs <- plyr::ldply(datas, function(x) {
                sd.D = distr.sd,
                b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
                signature.length = signature.length,
-               num.matches = sum(res$lines$match),
+               #num.matches = sum(res$lines$match),
                matches.per.y = sum(res$lines$match) / signature.length,
                #num.mismatches = sum(!res$lines$match), 
                mismatches.per.y = sum(!res$lines$match) / signature.length,
