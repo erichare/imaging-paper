@@ -1,5 +1,5 @@
 span <- 25
-dataStr <- sprintf("data-%d-25", span)
+dataStr <- sprintf("data-set44-%d-25", span)
 datas <- file.path(dataStr, dir(dataStr, pattern="RData"))
 datas <- datas[grep(paste0(dataStr,"/u.*"), datas)]
 
@@ -7,6 +7,7 @@ CCFs <- plyr::ldply(datas, function(x) {
   load(x)
 #  cmsdist <- sapply(reslist, function(x) x$maxCMS)
   ccf <- plyr::ldply(reslist, function(res) {
+     if (is.null(res)) return(NULL)
     lofX <- res$bullets
     b12 <- unique(lofX$bullet)
     
@@ -32,31 +33,33 @@ CCFs <- plyr::ldply(datas, function(x) {
     if (length(knm) == 0) knm <- c(length(km)+1,0)
  #browser()    
     # feature extraction
+    signature.length <- min(nrow(subLOFx1), nrow(subLOFx2))
+    
     data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), 
                D=distr.dist, 
                sd.D = distr.sd,
                b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
-               #num.matches = sum(res$lines$match), 
-               matches.per.y = sum(res$lines$match) / nrow(res$bullets),
+               signature.length = signature.length,
+               #num.matches = sum(res$lines$match),
+               matches.per.y = sum(res$lines$match) / signature.length,
                #num.mismatches = sum(!res$lines$match), 
-               mismatches.per.y = sum(!res$lines$match) / nrow(res$bullets),
+               mismatches.per.y = sum(!res$lines$match) / signature.length,
                #cms = res$maxCMS,
-               cms.per.y = res$maxCMS / nrow(res$bullets),
+               cms.per.y = res$maxCMS / signature.length,
                #cms2 = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match),
-               cms2.per.y = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match) / nrow(res$bullets),
+               cms2.per.y = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match) / signature.length,
                #non_cms = x3prplus::maxCMS(!res$lines$match),
-               non_cms.per.y = x3prplus::maxCMS(!res$lines$match) / nrow(res$bullets),
+               non_cms.per.y = x3prplus::maxCMS(!res$lines$match) / signature.length,
                #left_cms = max(knm[1] - km[1], 0),
-               left_cms.per.y = max(knm[1] - km[1], 0) / nrow(res$bullets),
+               left_cms.per.y = max(knm[1] - km[1], 0) / signature.length,
                #right_cms = max(km[length(km)] - knm[length(knm)],0),
-               right_cms.per.y = max(km[length(km)] - knm[length(knm)],0) / nrow(res$bullets),
+               right_cms.per.y = max(km[length(km)] - knm[length(knm)],0) / signature.length,
                #left_noncms = max(km[1] - knm[1], 0),
-               left_noncms.per.y = max(km[1] - knm[1], 0) / nrow(res$bullets),
+               left_noncms.per.y = max(km[1] - knm[1], 0) / signature.length,
                #right_noncms = max(knm[length(knm)]-km[length(km)],0),
-               right_noncms.per.y = max(knm[length(knm)]-km[length(km)],0) / nrow(res$bullets),
+               right_noncms.per.y = max(knm[length(knm)]-km[length(km)],0) / signature.length,
                #sumpeaks = sum(abs(res$lines$heights[res$lines$match]))
-               sumpeaks.per.y = sum(abs(res$lines$heights[res$lines$match])) / nrow(res$bullets),
-               signature_length = nrow(res$bullets)
+               sumpeaks.per.y = sum(abs(res$lines$heights[res$lines$match])) / signature.length
                )
   })
 #  ccf$cms <- cmsdist
@@ -64,7 +67,7 @@ CCFs <- plyr::ldply(datas, function(x) {
   ccf  
 })
 
-CCFs$resID <- rep(1:120, length=nrow(CCFs))
+CCFs$resID <- rep(1:219, length=nrow(CCFs))
 CCFs <- CCFs[order(as.character(CCFs$b2)),]
 CCFs$b2 <- factor(as.character(CCFs$b2))
 
