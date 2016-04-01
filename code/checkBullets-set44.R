@@ -11,21 +11,14 @@ unknowndatadir <- "~/Downloads/Hamby Set 44/unknown/"
 unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 
 if (!file.exists("csvs/crosscuts-25-set44.csv")) {
-crosscuts_known <- sapply(knowns, function(x) {
-  cat(x)
-  crosscut <- bulletCheckCrossCut(x, x = seq(100, 750, by=25), transpose = TRUE)
-  cat(crosscut)
-  cat("\n")
-  crosscut
-})
-crosscuts_unknown <- sapply(unknowns, function(x) {
+crosscuts <- sapply(c(knowns, unknowns), function(x) {
     cat(x)
-    crosscut <- bulletCheckCrossCut(x, x = seq(100, 750, by=25), transpose = TRUE)
+    crosscut <- bulletCheckCrossCut(x, xlimits = seq(100, 500, by = 25), transpose = TRUE)
     cat(crosscut)
     cat("\n")
     crosscut
 })
-crosscuts <- c(crosscuts_known, crosscuts_unknown)
+crosscuts[is.na(crosscuts)] <- 150
 
 dframe <- data.frame(
   path = c(knowns, unknowns),

@@ -5,8 +5,8 @@ library(ggplot2)
 library(gridExtra)
 library(zoo)
 
-knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
-unknowndatadir <- "~/Downloads/Hamby Set 44"
+knowndatadir <- "~/Downloads/Hamby Set 44/known/"
+unknowndatadir <- "~/Downloads/Hamby Set 44/unknown/"
 
 
 ###############
@@ -70,7 +70,7 @@ unknowndatadir <- "~/Downloads/Hamby Set 44"
 # }  
 
 # match unknown land using crosscuts
-ccs <- read.csv("csvs/crosscuts-25-new.csv")
+ccs <- read.csv("csvs/crosscuts-25-set44.csv")
 all_bullets <- lapply(as.character(ccs$path), function(x) {
     result <- read.x3pplus(x, transpose = TRUE)
     result[[3]] <- x
@@ -93,14 +93,15 @@ for (span in c(25)) {
     dataStr <- sprintf("data-new-%d-25", span) # using crosscuts-25.csv
     
     if (!file.exists(dataStr)) dir.create(dataStr)
-    for (j in 1:90) {
-        reslist <- lapply(knowns, function(x) {
+    for (j in 1:210) {
+        reslist <- lapply(c(knowns, unknowns), function(x) {
             cat("Processing", j, "vs", basename(x$path), "with span", span, "\n")
-            sigh <- unknowns[[j]]
+            sigh <- c(knowns, unknowns)[[j]]
             
             br1 <- filter(bullets_smoothed, bullet == x$path)
             br2 <- filter(bullets_smoothed, bullet == sigh$path)
             
+            if (br1$bullet[1] == br2$bullet[2]) return(NULL)
             bulletGetMaxCMS(br1, br2, span=span)
         })
         save(reslist, file=file.path(dataStr, sprintf("unkn%d.RData", j)))
