@@ -11,7 +11,7 @@ Reviewer A:
 
 Reviewer B:
 
-5. The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the “twicing” for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.
+5. The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the ``twicing" for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.
 
 6. page 7- figure 4- What exactly are you bootstrapping? It is unclear in the paper whether you are bootstrapping residual or bullets or something else entirely. Please clarify.
 
@@ -25,7 +25,7 @@ Reviewer B:
 
 11. What is the standard error of the error rates presented for the matching algorithms? The number of cross comparisons gives false impression the standard errors the when presenting the results.
 
-12. In the conclusions section the authors mention an assumption of “uniqueness”. In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.
+12. In the conclusions section the authors mention an assumption of ``uniqueness". In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.
 
 13. A discussion on how the authors view the use of their matching algorithm would be useful to the forensic community. For example are they intending to use this to build a closed set identification system similar to IAFIS or are them intending this to work in a manner similar to a biometric verification system? etc.
 
@@ -89,22 +89,22 @@ Reviewer 1:
 
 40. Supplement, p. 8, l. 18:  Change "de-facto" to "de facto".
 
-41. So, my suggestion here is to change the sentence in the abstract to something like “Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel.” Or “...help the trier of fact determine...”.
+41. So, my suggestion here is to change the sentence in the abstract to something like ``Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel." Or ``...help the trier of fact determine...".
 
-42. the concept of “match”: The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).
+42. the concept of ``match": The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).
 
-43. I strongly encourage the authors to not follow this trend and use the term “ballistics” only when you are actually talking about ballistics.
+43. I strongly encourage the authors to not follow this trend and use the term ``ballistics" only when you are actually talking about ballistics.
 
-44. 2nd to last line in the abstract: In point (a) “correctly identify lands with too much damage to be suitable for matching” I suggest replacing the word “matching” with “comparison” to use the same terminology as the other pattern evidence disciplines.
+44. 2nd to last line in the abstract: In point (a) ``correctly identify lands with too much damage to be suitable for matching" I suggest replacing the word ``matching" with ``comparison" to use the same terminology as the other pattern evidence disciplines.
 
-45. Line 55: Replace “in the forensic sciences” with “in forensic science”. (See Margot P, Commentary on The Need for a Research Culture in the Forensic Sciences, UCLA Law Review (2011) 58: 795-801.)
+45. Line 55: Replace ``in the forensic sciences" with ``in forensic science". (See Margot P, Commentary on The Need for a Research Culture in the Forensic Sciences, UCLA Law Review (2011) 58: 795-801.)
 
-46. Lines 156-158: The sentence “The blue area around the signature are 95% bootstrapped confidence intervals based on 1,000 bootstrap samples.” is confusing. The term “signature” is defined two sentences further. Is the sentence referring to Figure 4b? If yes, it should probably come at the end of this paragraph.
+46. Lines 156-158: The sentence ``The blue area around the signature are 95% bootstrapped confidence intervals based on 1,000 bootstrap samples." is confusing. The term ``signature" is defined two sentences further. Is the sentence referring to Figure 4b? If yes, it should probably come at the end of this paragraph.
 
 47. Figure 5: In this figure, where is the limit between bullet 1-5 and bullet 2-1?
 
-48. Line 246: Replace “this representations” with “this representation” or “these representations”
+48. Line 246: Replace ``this representations" with ``this representation" or ``these representations"
 
-49. Caption of Figure 8: “At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures.” is not a complete sentence.
+49. Caption of Figure 8: ``At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures." is not a complete sentence.
 
-50. Line 266: Capitalize the “b” in “by”.
+50. Line 266: Capitalize the ``b" in ``by".
