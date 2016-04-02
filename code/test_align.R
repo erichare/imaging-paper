@@ -23,7 +23,7 @@ get_alignment <- function(b1, b2) {
     
     alignment <- dtw(regular_nona, degraded_nona)
     
-    result <- which.max(table(alignment$index2)[names(table(alignment$index2)) != max(alignment$index2)])
+    result <- which.max(table(alignment$index2)[!(names(table(alignment$index2)) %in% tail(sort(unique(alignment$index2))))])
     index.val <- min.ind <- as.numeric(names(result))
     min.ind <- tail(which(alignment$index2 == index.val), n = 1)
     #min.ind <- 478
