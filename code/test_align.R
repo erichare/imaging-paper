@@ -11,8 +11,8 @@ get_alignment <- function(b1, b2) {
     b1sub <- subset(bb1, x == 100)
     b2sub <- subset(bb2, x == 100)
     
-    regular <- b1sub$value
-    degraded <- b2sub$value
+    regular <- list(b1sub$value, b2sub$value)[[which.max(sapply(list(b1sub$value, b2sub$value), length))]]
+    degraded <- list(b1sub$value, b2sub$value)[[which.min(sapply(list(b1sub$value, b2sub$value), length))]]
     
     regular_nona <- regular
     regular_nona[is.na(regular_nona)] <- 0
@@ -41,11 +41,13 @@ get_alignment <- function(b1, b2) {
     #min.ind <- min(result$index1)
     min.ind <- as.numeric(names(table(mydiffs))[which.max(table(mydiffs))])
     incr <- diff(b1sub$y[1:2])
-    b2new <- b2sub
-    b2new$y <- b2sub$y + (incr * min.ind)
     
-    qplot(y, value, data = b1sub, colour = I("red"), geom = "line") + theme_bw() +
-        geom_line(data = b2new, aes(x = y, y = value), colour = I("blue"))
+    olddat <- list(b1sub, b2sub)[[which.max(sapply(list(b1sub$value, b2sub$value), length))]]
+    newdat <- list(b1sub, b2sub)[[which.min(sapply(list(b1sub$value, b2sub$value), length))]]
+    newdat$y <- newdat$y + (incr * min.ind)
+    
+    qplot(y, value, data = olddat, colour = I("red"), geom = "line") + theme_bw() +
+        geom_line(data = newdat, aes(x = y, y = value), colour = I("blue"))
 }
 
 b1s <- paste0("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2/", dir("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2"))
@@ -74,3 +76,4 @@ lapply(b3s, function(b3) {
     result <- readline("Press Enter to Continue")
     if (result == "q") break;
 })
+
