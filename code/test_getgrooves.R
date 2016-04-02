@@ -2,8 +2,8 @@ library(x3pr)
 library(x3prplus)
 library(ggplot2)
 
-for (file in dir("app/images/Hamby252_3DX3P1of2")) {
-    mybullet <- get_bullet(file.path("app/images/Hamby252_3DX3P1of2", file), x = 100)
+for (file in dir("~/Downloads/Hamby Set 44/known/")) {
+    mybullet <- get_crosscut(file.path("~/Downloads/Hamby Set 44/known/", file), x = 100, transpose = TRUE)
     x <- get_grooves(mybullet)
     cat(file, "\n")
     print(x$plot)
