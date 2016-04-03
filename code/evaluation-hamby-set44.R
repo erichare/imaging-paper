@@ -80,20 +80,20 @@ CCFs$b2 <- sapply(splits, function(x) x[length(x)])
 CCFs$b2 <- gsub(".x3p","", CCFs$b2)
 
 
-matches <- read.csv("csvs/matches.csv", header=FALSE, stringsAsFactors = FALSE)
-matches$V3 <- paste("Ukn Bullet",matches$V3)
-matches$V4 <- paste("Ukn Bullet",matches$V4)
-matches$V5 <- paste("Ukn Bullet",matches$V5)
+matches <- read.csv("csvs/matches-set44.csv", header=FALSE, stringsAsFactors = FALSE)
+#matches$V3 <- paste("Ukn Bullet",matches$V3)
+#matches$V4 <- paste("Ukn Bullet",matches$V4)
+#matches$V5 <- paste("Ukn Bullet",matches$V5)
 matches$id <- 1:nrow(matches)
 
 library(reshape2)
 mm <- melt(matches, id.var="id")
 mm <- subset(mm, value != "Ukn Bullet ")
 
-# CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
-# CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
-# CCFs$match <- CCFs$id.x == CCFs$id.y
-# CCFs$span <- span
+CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
+CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
+CCFs$match <- CCFs$id.x == CCFs$id.y
+CCFs$span <- span
 
 
 library(rpart)
