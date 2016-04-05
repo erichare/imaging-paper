@@ -65,31 +65,31 @@ DONE 27. p. 7, l. 9:  Remove the comma after "here" in "... function used here, 
 
 DONE 28. p. 7, l. -6:  I'm confused.  The text says "bullets 2 are shown" but the caption refers to bullet 2- which I think should be a specific land on a single bullet.
 
-29. p. 12, l. -11:  The use of a colon to transition to a new paragraph seems odd.  I recommend just rewording so is a single paragraph and does not use a colon at all.  It is almost as if you are trying to quote rather than state.
+DONE 29. p. 12, l. -11:  The use of a colon to transition to a new paragraph seems odd.  I recommend just rewording so is a single paragraph and does not use a colon at all.  It is almost as if you are trying to quote rather than state.
 
-30. p. 13, l. -3:  You write "Given that striation patterns are typically much larger, ..." and I think it would be more clear to write "Given that striation widths are typically much larger, ...".
+DONE 30. p. 13, l. -3:  You write "Given that striation patterns are typically much larger, ..." and I think it would be more clear to write "Given that striation widths are typically much larger, ...".
 
 31. p. 16, l. -1/-2:  Could you elaborate on why a "large number of maximal CMS by itself is not indicative of a match"?  I think the reason is that there could be other marks that are completely incompatible and preclude a match, based on the next sentence, but I am not sure and a few words would be helpful.  
 
-32. p. 17, l. -13:  I'd prefer another term than "correlation" here.  In fact, the entire sentence could be improved.
+DONE (MAYBE) 32. p. 17, l. -13:  I'd prefer another term than "correlation" here.  In fact, the entire sentence could be improved.
 
-33. p. 17, l. -2:  Remove the comma after "indicates".
+DONE 33. p. 17, l. -2:  Remove the comma after "indicates".
 
-34. p. 18, l. -4:  Change "this study" to "that study", so the reader is certain you mean Ma et al. (2001) and not your own.
+DONE 34. p. 18, l. -4:  Change "this study" to "that study", so the reader is certain you mean Ma et al. (2001) and not your own.
 
 35. p. 20,  l. -3:  I really like the idea of including an inconclusive zone.
 
 36. p. 21, Fig. 20:  Most of the features plotted have been defined, but I don't recall x1 and x2.  You may want to remind the reader about all the definitions, or have a table of features appear early in the random forests discussion.
 
-37. p. 22, l. -9:  Change "bottomline" to "bottom line".
+DONE 37. p. 22, l. -9:  Change "bottomline" to "bottom line".
 
-38. p. 23, l. 4:  Remove the comma after "found".
+DONE 38. p. 23, l. 4:  Remove the comma after "found".
 
 39. p. 23, l. -13/-5:  I don't think this mention of the Aadhar project adds much, and it distracts from the points you want to highlight about the work in this paper.
 
-40. Supplement, p. 8, l. 18:  Change "de-facto" to "de facto".
+DONE 40. Supplement, p. 8, l. 18:  Change "de-facto" to "de facto".
 
-41. So, my suggestion here is to change the sentence in the abstract to something like ``Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel." Or ``...help the trier of fact determine...".
+DONE 41. So, my suggestion here is to change the sentence in the abstract to something like ``Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel." Or ``...help the trier of fact determine...".
 
 42. the concept of ``match": The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).
 

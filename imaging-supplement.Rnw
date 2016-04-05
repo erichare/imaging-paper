@@ -76,7 +76,7 @@ codedir <- "code"
 datadir <- "app/images/Hamby252_3DX3P1of2/"
 
 options(replace.assign=TRUE,scipen=3, digits=2)
-bstats <- read.csv("data-25-25/bullet-stats.csv")
+bstats <- read.csv("data-25-25/bullet-stats-old.csv")
 
 scrubPath <- function(x) {
   splits <- strsplit(as.character(x), split="/")
@@ -307,7 +307,7 @@ reslist <- lapply(crosscuts[-1], function(cc) {
 #  lines <- striation_identify(lofX, threshold = threshold)
   peaks1$lines$bullet <- b12[1]
   peaks2$lines$bullet <- b12[2]
-  lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
+  lines <- striation_identify(peaks1$lines, peaks2$lines)
 
   maxCMS <- maxCMS(lines$match==TRUE)
   list(maxCMS = maxCMS, ccf = bAlign$ccf, lines=lines, bullets=lofX)
@@ -351,55 +351,8 @@ library(zoo)
 knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
 unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 
-
 ###############
 # can we identify the barrels the unknown bullets came from?
-
-new_processBullets <- function(bullet, x = 100) {
-  crosscuts <- unique(fortify_x3p(bullet)$x)
-  crosscuts <- crosscuts[crosscuts >= min(x)]
-  crosscuts <- crosscuts[crosscuts <= max(x)]
-  if (length(x) > 2) crosscuts <- crosscuts[crosscuts %in% x]
-  
-  list_of_fits <- lapply(crosscuts, function(x) {
-    br111 <- get_crosscut(path = NULL, x = x, bullet = bullet)
-    br111.groove <- get_grooves(br111)
-    fit_loess(br111, br111.groove)$resid$data
-  })
-  lof <- list_of_fits %>% bind_rows
-  
-  cbind(lof, bullet = bullet$path)
-}
-
-new_bulletGetMaxCMSXXX <- function(lof1, lof2, span=35) {
-  lof <- rbind(lof1, lof2)
-  bAlign = bulletAlign(lof)
-  lofX <- bAlign$bullet  
-  
-  b12 <- unique(lof$bullet)
-  peaks1 <- get_peaks(subset(lofX, bullet==b12[1]), smoothfactor = span)
-  peaks2 <- get_peaks(subset(lofX, bullet == b12[2]), smoothfactor = span)
-  
-  #qplot(x=y, y=resid, geom="line", colour=bullet, data=lofX, group=bullet) +
-  #    theme_bw() +
-  #    geom_rect(data=peaks1$lines, aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-5, ymax=5, inherit.aes = FALSE, alpha=I(0.25)) +
-  #    geom_rect(data=peaks2$lines, aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-5, ymax=5, inherit.aes = FALSE, alpha=I(0.25))
-  
-  peaks1$lines$bullet <- b12[1]
-  peaks2$lines$bullet <- b12[2]
-  
-  lines <- striation_identifyXXX(peaks1$lines, peaks2$lines)
-  
-  #   p <- qplot(x=y, y=resid, geom="line", colour=bullet, data=lofX, group=bullet) +
-  #     theme_bw() +
-  #     geom_rect(data=lines, aes(xmin=xmin, xmax=xmax, fill = factor(type)),  ymin=-6, ymax=6, inherit.aes = FALSE, alpha=I(0.25)) +
-  #     ylim(c(-6,6)) +
-  #     geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(lines, !match), inherit.aes = FALSE) +
-  #     geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(lines, match), inherit.aes = FALSE) 
-  
-  maxCMS <- maxCMS(lines$match==TRUE)
-  list(maxCMS = maxCMS, ccf = bAlign$ccf, lag=bAlign$lag, lines=lines, bullets=lofX)
-}  
 
 # match unknown land using crosscuts
 ccs <- read.csv("csvs/crosscuts-25.csv")
@@ -414,11 +367,11 @@ all_bullets <- lapply(as.character(ccs$path), function(x) {
 knowns <- all_bullets[1:120]
 unknowns <- all_bullets[121:210]
 
-if (!file.exists("csvs/crosscut-sd.csv")) {
+if (!file.exists("csvs/crosscuts-sd.csv")) {
   bullets_processed <- lapply(all_bullets, function(bul) {
     #cat("Computing processed bullet", basename(bul$path), "\n")
     crosscuts <- 25*(1:20)
-    dframe <- new_processBullets(bullet = bul, x = crosscuts)
+    dframe <- processBullets(bullet = bul, x = crosscuts)
     dframe$bullet <- with(dframe, paste(bullet, x))
     dframe
   })
@@ -433,10 +386,10 @@ if (!file.exists("csvs/crosscut-sd.csv")) {
   bnames <- sapply(splits, function(x) paste(x[1],".x3p", sep=""))
   stats$bullet <- bnames
   
-  write.csv(stats, "csvs/crosscut-sd.csv", row.names=FALSE)
+  write.csv(stats, "csvs/crosscuts-sd.csv", row.names=FALSE)
 } else {
-  stats <- read.csv("csvs/crosscut-sd.csv")
-}  
+  stats <- read.csv("csvs/crosscuts-sd.csv")
+}
 @
 %
 Figure~\ref{fig:overview} shows an overview of the signatures at different heights on a single bullet. 
@@ -449,7 +402,7 @@ land[[3]] <- x
 names(land)[3] <- "path"
 
 crosscuts <- 25*(1:20)
-dframe <- new_processBullets(bullet = land, x = crosscuts)
+dframe <- processBullets(bullet = land, x = crosscuts)
 dframe$bullet <- with(dframe, paste(bullet, x))
 
 bullet <- dframe %>% bind_rows %>% bulletSmooth 
@@ -482,7 +435,7 @@ One way to expand the use of the James Hamby study is to not only match all of t
 
 When we predict the new 10,731 comparisons using the random forest based on the previously considered 10,384 known-unknown comparisons, we encounter 18 false negatives and 9 false positives, corresponding to an actual false error rate of 0.19 and a false positive rate of 0.00085, which is close to the random forest's estimated OOB error rates of 0.226744 and 0.000098. 
 
-However, if we use all of the available comparisons to fit another random forest of 300 trees, the de-facto error rates for false positives and false negatives are again at 0. The estimated OOB error rates are 0.00024 for the false positive rate and 0.22180 for the false negative rate. The false positive rate is therefore virtually unchanged, while we see a slight improvement in the false negative rate for an overall OOB error rate of 0.3\%, i.e.\ an increase to twice the number of comparisons leads to a decrease of 25\% of the estimated error rate. This is yet another argument in favor of a larger database for training algorithms.
+However, if we use all of the available comparisons to fit another random forest of 300 trees, the defacto error rates for false positives and false negatives are again at 0. The estimated OOB error rates are 0.00024 for the false positive rate and 0.22180 for the false negative rate. The false positive rate is therefore virtually unchanged, while we see a slight improvement in the false negative rate for an overall OOB error rate of 0.3\%, i.e.\ an increase to twice the number of comparisons leads to a decrease of 25\% of the estimated error rate. This is yet another argument in favor of a larger database for training algorithms.
 
 %\hh{XXX maybe use log of D to remove the left boundary XXX}
 <<allhamby, echo=FALSE, message=FALSE, warning=FALSE>>=
@@ -551,11 +504,11 @@ mm$value <- gsub("Br.* Bullet ", "", mm$value)
 mm$prefix <- sprintf("Br%d Bullet ", mm$barrel)
 unkns <- grep("[A-Z]",mm$value)
 mm$prefix[unkns] <- "Ukn Bullet "
-mm$path <- "~/papers/2015-imaging-paper/app/images/Hamby252_3DX3P1of2//"
-mm$path[unkns] <- "~/papers/2015-imaging-paper/app/images/Hamby252_3DX3P2of2//"
+mm$path <- "app/images/Hamby252_3DX3P1of2//"
+mm$path[unkns] <- "app/images/Hamby252_3DX3P2of2//"
 mm$path <-   with(mm, paste0(path, prefix, value, ".x3p"))
   
-ccs <- read.csv("csvs/crosscuts-25-new.csv")
+ccs <- read.csv("csvs/crosscuts-25.csv")
 mm <- merge(mm, ccs, by="path", all=TRUE)
 mm <- subset(mm, !is.na(mm$cc))
 
@@ -567,6 +520,7 @@ crosscuts <- plyr::ldply(
     data.frame(mm[i,], fit_loess(dframe, groove)$resid$data)
   })
 
+crosscuts$bullet <- crosscuts$path
 crossSmooth <- bulletSmooth(crosscuts)
 
 alignme <- function(data) {
@@ -641,7 +595,7 @@ qplot(x=y, y=l30, data=subset(aligned, barrel > 5),
 Two random forests were calculated for the Hamby study. For the first random forest only comparisons of bullet lands from known bullets and unknown bullets were used. The second random forest is based on a full comparison of every land with every other land, increasing the number of comparisons from originally 10,384 (10,212 known non-matches and 172 known matches) by another 10,931 comparisons (10,637 known non-matches and 94 known matches). Random forests allow an assessment of variable importance (also called feature importance) as the mean decrease in Gini index when including each variable. 
 Table~\ref{tab:importance} shows the results for feature importance for both of these random forests. Importance~1 refers to the smaller subset, Importance~2 is the feature importance derived from the random forest based on all pairwise comparisons. 
 <<setup-rtrees, echo=FALSE, message=FALSE>>=
-bstats <- read.csv("data-25-25/bullet-stats.csv", stringsAsFactors = FALSE)
+bstats <- read.csv("data-25-25/bullet-stats-old.csv", stringsAsFactors = FALSE)
 
 library(randomForest)
 set.seed(20151202)
