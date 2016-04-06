@@ -28,6 +28,9 @@ groove_locations <- lapply(c(knowns, unknowns), function(bul) {
     return(result)
 })
 
+groove.locs <- do.call(rbind, groove_locations)
+write.csv(groove.locs, file = "grooves.csv", row.names = FALSE)
+
 groove_locations_means <- lapply(c(knowns, unknowns), function(bul) {
     cat(bul, "\n")
     bullet <- read.x3pplus(bul)
