@@ -1,0 +1,86 @@
+---
+title: "extracting mean profiles"
+author: "Heike Hofmann"
+date: "April 6, 2016"
+output: html_document
+---
+
+Extracting the mean profile is based on the really nice paper by Chu et al (2010).
+
+```{r, echo=FALSE, warning=FALSE}
+
+library(x3pr)
+library(x3prplus)
+library(ggplot2)
+library(dplyr)
+
+br115 <- "~/CSAFE/Bullets/Hamby252_3DX3P1of2/Br1 Bullet 2-1.x3p"
+im115 <- fortify_x3p(read.x3pplus(br115))
+qplot(y, x, fill=value, data=im115, geom="tile")
+ggsave(file="im115.pdf")
+
+gg115 <- processBullets(read.x3pplus(br115), x=unique(im115$x))
+qplot(y, x, fill=resid, data=gg115, geom="tile") + scale_fill_gradient2(limits=c(-7,7))
+ggsave(file="im115-resid.pdf")
+
+
+# get the 'twist'
+xs <- unique(gg115$x)
+twist <- NULL
+ccf <- NULL
+aligned <- list()
+
+for (i in seq_along(xs)[-1]) {
+  profiles <- subset(gg115, x %in% xs[c(i,i-1)])  
+  profiles$bullet <- sprintf("br1-1-5-%s",profiles$x)
+  aligned[[i]] <- bulletAlign(profiles, value="resid")
+  twist <- c(twist, aligned[[i]]$lag)
+  ccf <- c(ccf, aligned[[i]]$ccf)
+}
+
+#qplot(xs, c(0, twist)) + ylim(c(-10,10))
+#qplot(xs, c(1, ccf)) + geom_hline(yintercept=0.95, colour="red")
+qplot(xs, cumsum(c(0, twist))) +ylim(c(700,1100))
+dframe <- data.frame(x = xs, twist=cumsum(c(0, twist)), ccf = c(0,ccf))
+qplot(x, twist, data=subset(dframe, between(x, 220, 600))) +geom_smooth(method="lm")
+
+
+summary(m115 <- lm(twist~x, data=subset(dframe, between(x, 220, 600))))
+
+gg115 <- merge(gg115, dframe, by="x")
+qplot(y-twist, x, fill=resid, data=gg115, geom="tile") + scale_fill_gradient2(limits=c(-7,7))
+ggsave(file="im115-untwist.pdf")
+
+gg115$modeltwist <- predict(m115, newdata=gg115)
+# round to precision of y:
+gg115$roundtwist <- 1.5625*round(gg115$modeltwist/1.5625, 0)
+
+qplot(y-roundtwist, x, fill=resid, data=gg115, geom="tile") + scale_fill_gradient2(limits=c(-7,7))
+ggsave(file="im115-roundtwist.pdf")
+
+qplot(x, ccf, data=dframe) + geom_hline(yintercept=0.975)
+
+mean_profile_all <- gg115 %>% filter(ccf > .975) %>% group_by(y) %>%
+  summarize(
+    resid = mean(resid)
+  )
+
+mean_profile_500 <- gg115 %>% filter(ccf > .975, between(x,50,500)) %>% group_by(y) %>%
+  summarize(
+    resid = mean(resid)
+  )
+
+mean_profile_300 <- gg115 %>% filter(ccf > .975, between(x,50,300)) %>% group_by(y) %>%
+  summarize(
+    resid = mean(resid)
+  )
+```
+
+in black: average of all, in blue average based on profiles below 500, in green average based on profiles below 300, in red profile at 100.
+```{r, echo=FALSE}
+qplot(y, resid, data=mean_profile_all, geom="line") + theme_bw() +
+  geom_line(aes(y, resid), data=mean_profile_300, colour="green") +
+  geom_line(aes(y, resid), data=mean_profile_500, colour="blue") +
+  geom_line(aes(y, resid), data=gg115 %>% filter(x==100), colour="red") + ylim(c(-5,5))
+
+```
