@@ -44,6 +44,13 @@ qplot(xs, cumsum(c(0, twist))) +ylim(c(700,1100))
 dframe <- data.frame(x = xs, twist=cumsum(c(0, twist)), ccf = c(0,ccf))
 qplot(x, twist, data=subset(dframe, between(x, 220, 600))) +geom_smooth(method="lm")
 
+Rs <- data.frame(zoo::rollapply(data=dframe$twist, width=200, FUN=function(twist) {
+  x <- 1:length(twist)
+  m <- lm(twist~x)
+  data.frame(r.squared=summary(m)$r.squared, twist=coef(m)[2])
+}, by=1))
+
+twist <- median(subset(Rs, r.squared > .8)$twist)
 
 summary(m115 <- lm(twist~x, data=subset(dframe, between(x, 220, 600))))
 
@@ -52,11 +59,15 @@ qplot(y-twist, x, fill=resid, data=gg115, geom="tile") + scale_fill_gradient2(li
 ggsave(file="im115-untwist.pdf")
 
 gg115$modeltwist <- predict(m115, newdata=gg115)
+gg115$modeltwist2 <- gg115$x*twist
 # round to precision of y:
 gg115$roundtwist <- 1.5625*round(gg115$modeltwist/1.5625, 0)
+gg115$roundtwist2 <- 1.5625*round(gg115$modeltwist2/1.5625, 0)
 
 qplot(y-roundtwist, x, fill=resid, data=gg115, geom="tile") + scale_fill_gradient2(limits=c(-7,7))
 ggsave(file="im115-roundtwist.pdf")
+
+qplot(y-roundtwist2, x, fill=resid, data=gg115, geom="tile") + scale_fill_gradient2(limits=c(-7,7))
 
 qplot(x, ccf, data=dframe) + geom_hline(yintercept=0.975)
 
