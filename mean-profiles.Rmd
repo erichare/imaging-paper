@@ -62,25 +62,28 @@ qplot(x, ccf, data=dframe) + geom_hline(yintercept=0.975)
 
 mean_profile_all <- gg115 %>% filter(ccf > .975) %>% group_by(y) %>%
   summarize(
-    resid = mean(resid)
+    resid = mean(resid),
+    type="mean-all"
   )
 
-mean_profile_500 <- gg115 %>% filter(ccf > .975, between(x,50,500)) %>% group_by(y) %>%
+mean_high_200 <- gg115 %>% filter(ccf > .975, between(x,50,500)) %>% group_by(y) %>%
   summarize(
-    resid = mean(resid)
+    resid = mean(resid),
+    type="mean-high-200"
   )
 
-mean_profile_300 <- gg115 %>% filter(ccf > .975, between(x,50,300)) %>% group_by(y) %>%
+mean_low_200 <- gg115 %>% filter(ccf > .975, between(x,50,375)) %>% group_by(y) %>%
   summarize(
-    resid = mean(resid)
+    resid = mean(resid),
+    type="mean-low-200"
   )
+
+profiles <- gg115 %>% filter(x==100) %>% select(y, resid) %>%  transform(type="profile-at-100")
+profiles <- rbind(profiles, mean_profile_all, 
+                 mean_high_200, mean_low_200)
 ```
 
 in black: average of all, in blue average based on profiles below 500, in green average based on profiles below 300, in red profile at 100.
 ```{r, echo=FALSE}
-qplot(y, resid, data=mean_profile_all, geom="line") + theme_bw() +
-  geom_line(aes(y, resid), data=mean_profile_300, colour="green") +
-  geom_line(aes(y, resid), data=mean_profile_500, colour="blue") +
-  geom_line(aes(y, resid), data=gg115 %>% filter(x==100), colour="red") + ylim(c(-5,5))
-
+qplot(y, resid, data=profiles, geom="line", group=type, colour=type) + theme_bw() + ylim(c(-5,5))
 ```
