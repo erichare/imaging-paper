@@ -14,7 +14,7 @@ library(x3prplus)
 library(ggplot2)
 library(dplyr)
 
-br115 <- "~/CSAFE/Bullets/Hamby252_3DX3P1of2/Br1 Bullet 2-1.x3p"
+br115 <- "~/CSAFE/Bullets/Hamby252_3DX3P1of2/Br1 Bullet 1-5.x3p"
 im115 <- fortify_x3p(read.x3pplus(br115))
 qplot(y, x, fill=value, data=im115, geom="tile")
 ggsave(file="im115.pdf")
