@@ -13,11 +13,13 @@ unknowns <- dir("~/CSAFE/Bullets/Hamby252_3DX3P2of2/", pattern="x3p", full.names
 
 pattern <- "Bullet B"
 pattern <- "Bullet C"
+pattern <- "Bullet D"
+pattern <- "Bullet E"
 pattern <- "Br[12] "
 twistlist <- c(knowns, unknowns) %>% 
   grep(pattern=pattern, x=., value=TRUE) %>% 
   purrr::map_df(getTwist)
-# path only keeps track of the order of the results at the moment. that's useless.
+# .id only keeps track of the order of the results at the moment. that's useless.
 twistlist$path <- c(knowns, unknowns) %>% 
   grep(pattern=pattern, x=., value=TRUE)
 
