@@ -15,6 +15,7 @@ pattern <- "Bullet B"
 pattern <- "Bullet C"
 pattern <- "Bullet D"
 pattern <- "Bullet E"
+pattern <- "Bullet [FHJ]"
 pattern <- "Br[12] "
 twistlist <- c(knowns, unknowns) %>% 
   grep(pattern=pattern, x=., value=TRUE) %>% 
