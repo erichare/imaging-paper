@@ -11,14 +11,19 @@ library(dplyr)
 knowns <- dir("~/CSAFE/Bullets/Hamby252_3DX3P1of2/", pattern="x3p", full.names=TRUE)
 unknowns <- dir("~/CSAFE/Bullets/Hamby252_3DX3P2of2/", pattern="x3p", full.names=TRUE)
 
+pattern <- "Bullet B"
 pattern <- "Bullet C"
+pattern <- "Br[12] "
 twistlist <- c(knowns, unknowns) %>% 
   grep(pattern=pattern, x=., value=TRUE) %>% 
-  purrr::map_df(getTwist, .id="path")
+  purrr::map_df(getTwist)
+# path only keeps track of the order of the results at the moment. that's useless.
+twistlist$path <- c(knowns, unknowns) %>% 
+  grep(pattern=pattern, x=., value=TRUE)
 
 twistlist$bulletland <- with(twistlist, gsub(".*//(.*).x3p", "\\1", path))
 
-file <- "mean-profile-papers/twist.csv"
-fileexist = file.exist(file)
-write.table(twistlist, file=file, sep="\t", header=!fileexist,
+file <- "mean-profile-papers/twists.csv"
+fileexist = file.exists(file)
+write.table(twistlist[,c(4,3,1,2)], file=file, sep=",", col.names=!fileexist,
             row.names=FALSE, append=fileexist)
