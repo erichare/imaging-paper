@@ -4,36 +4,15 @@ library(dplyr)
 library(ggplot2)
 library(zoo)
 
-knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
+knowndatadir <- "~/Downloads/Hamby Set 44/known"
 knowns <- file.path(knowndatadir, dir(knowndatadir, pattern="x3p"))
 
-unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
+unknowndatadir <- "~/Downloads/Hamby Set 44/unknown"
 unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
-
-groove_locations <- lapply(c(knowns, unknowns), function(bul) {
-    cat(bul, "\n")
-    bullet <- read.x3pplus(bul)
-    fortified <- fortify_x3p(bullet)
-    all_grooves <- lapply(unique(fortified$x), function(x) {
-        cat("Processing", x, "\n")
-        cc <- get_crosscut(bullet = bullet, x = x)
-        result <- get_grooves(cc, smoothfactor = 15)
-        
-        return(result$groove)
-    })
-    
-    result <- cbind(data.frame(bullet = bul, x = unique(fortified$x)), do.call(rbind, all_grooves))
-    names(result) <- c("bullet", "x", "groove_left", "groove_right")
-    
-    return(result)
-})
-
-groove.locs <- do.call(rbind, groove_locations)
-write.csv(groove.locs, file = "grooves.csv", row.names = FALSE)
 
 groove_locations_means <- lapply(c(knowns, unknowns), function(bul) {
     cat(bul, "\n")
-    bullet <- read.x3pplus(bul)
+    bullet <- read.x3pplus(bul, transpose = TRUE)
     fortified <- fortify_x3p(bullet)
     
     fort.mean <- fortified %>%
@@ -48,9 +27,9 @@ groove_locations_means <- lapply(c(knowns, unknowns), function(bul) {
 })
 groove.means <- cbind(data.frame(bullet = c(knowns, unknowns), do.call(rbind, groove_locations_means)))
 names(groove.means) <- c("bullet", "groove_left", "groove_right")
-write.csv(groove.means, file = "csvs/grooves-mean.csv", row.names = FALSE)
+write.csv(groove.means, file = "csvs/grooves-mean-set44.csv", row.names = FALSE)
 
-groove.means <- read.csv("csvs/grooves-mean.csv")
+groove.means <- read.csv("csvs/grooves-mean-set44.csv")
 mean_window <- 150
 
 lapply(as.data.frame(t(groove.means)), function(test) {
