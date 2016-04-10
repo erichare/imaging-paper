@@ -21,7 +21,7 @@ groove_locations_means <- lapply(c(knowns, unknowns), function(bul) {
         summarise(value = mean(value, na.rm = TRUE))
     
     cc <- cbind(x = NA, fort.mean)
-    result <- get_grooves(cc, smoothfactor = 15, adjust = 0)
+    result <- get_grooves(cc, smoothfactor = 25, adjust = 0, groove_cutoff = 500)
 
     return(result$groove)
 })
@@ -38,7 +38,7 @@ lapply(as.data.frame(t(groove.means)), function(test) {
     right <- as.numeric(as.character(test[3]))
     
     cat(bul, "\n")
-    bullet <- read.x3pplus(bul)
+    bullet <- read.x3pplus(bul, transpose = TRUE)
     cc <- get_crosscut(bullet = bullet, x = 150)
     result <- get_grooves(cc, mean_left = left, mean_right = right, mean_window = mean_window, smoothfactor = 25)
     
