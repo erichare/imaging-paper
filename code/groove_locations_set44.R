@@ -43,7 +43,32 @@ lapply(as.data.frame(t(groove.means)), function(test) {
     result <- get_grooves(cc, mean_left = left, mean_right = right, mean_window = mean_window, smoothfactor = 25)
     
     print(result$plot)
-
+    
     value <- readline("Press Enter to Continue, or q to Quit")
     if (value == "q") break;    
 })
+
+groove_locations <- lapply(as.data.frame(t(groove.means)), function(test) {
+    bul <- as.character(test[1])
+    left <- as.numeric(as.character(test[2]))
+    right <- as.numeric(as.character(test[3]))
+    
+    cat(bul, "\n")
+    bullet <- read.x3pplus(bul, transpose = TRUE)
+    fortified <- fortify_x3p(bullet)
+    all_grooves <- lapply(unique(fortified$x), function(x) {
+        cat("Processing", x, "\n")
+        cc <- get_crosscut(bullet = bullet, x = x)
+        result <- get_grooves(cc, mean_left = left, mean_right = right, mean_window = mean_window, smoothfactor = 25)
+        
+        return(result$groove)
+    })
+    
+    result <- cbind(data.frame(bullet = bul, x = unique(fortified$x)), do.call(rbind, all_grooves))
+    names(result) <- c("bullet", "x", "groove_left", "groove_right")
+    
+    return(result)
+})
+
+groove.locs <- do.call(rbind, groove_locations)
+write.csv(groove.locs, file = "grooves-set44.csv", row.names = FALSE)
