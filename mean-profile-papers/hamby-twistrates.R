@@ -16,7 +16,15 @@ pattern <- "Bullet C"
 pattern <- "Bullet D"
 pattern <- "Bullet E"
 pattern <- "Bullet [FHJ]"
+pattern <- "Bullet [LMQ]"
+pattern <- "Bullet [SUX]"
+pattern <- "Bullet [YZ]"
 pattern <- "Br[12] "
+pattern <- "Br[34] "
+pattern <- "Br[56] "
+pattern <- "Br[78] "
+pattern <- "Br9 "
+pattern <- "Br10 "
 twistlist <- c(knowns, unknowns) %>% 
   grep(pattern=pattern, x=., value=TRUE) %>% 
   purrr::map_df(getTwist)
@@ -30,3 +38,8 @@ file <- "mean-profile-papers/twists.csv"
 fileexist = file.exists(file)
 write.table(twistlist[,c(4,3,1,2)], file=file, sep=",", col.names=!fileexist,
             row.names=FALSE, append=fileexist)
+
+
+twists <- read.csv("mean-profile-papers/twists.csv")
+qplot(twist, min.r.squared, data=twists)
+
