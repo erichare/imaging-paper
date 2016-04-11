@@ -4,10 +4,10 @@ library(dplyr)
 library(ggplot2)
 library(zoo)
 
-knowndatadir <- "~/Downloads/Hamby Set 44/known/"
+knowndatadir <- "~/Downloads/Hamby Set 44/known"
 knowns <- file.path(knowndatadir, dir(knowndatadir, pattern="x3p"))
 
-unknowndatadir <- "~/Downloads/Hamby Set 44/unknown/"
+unknowndatadir <- "~/Downloads/Hamby Set 44/unknown"
 unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 
 if (!file.exists("csvs/crosscuts-25-set44.csv")) {

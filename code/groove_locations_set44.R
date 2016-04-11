@@ -77,4 +77,4 @@ groove_locations <- lapply(as.data.frame(t(groove.means)), function(test) {
 })
 
 groove.locs <- do.call(rbind, groove_locations)
-write.csv(groove.locs, file = "grooves-set44.csv", row.names = FALSE)
+write.csv(groove.locs, file = "csvs/grooves-set44.csv", row.names = FALSE)
