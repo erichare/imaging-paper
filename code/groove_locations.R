@@ -57,11 +57,17 @@ groove_locations <- lapply(as.data.frame(t(groove.means)), function(test) {
     bullet <- read.x3pplus(bul)
     fortified <- fortify_x3p(bullet)
     all_grooves <- lapply(unique(fortified$x), function(x) {
-        cat("Processing", x, "\n")
-        cc <- get_crosscut(bullet = bullet, x = x)
-        result <- get_grooves(cc, mean_left = left, mean_right = right, mean_window = mean_window, smoothfactor = 25)
+        myresult <- try({
+            cat("Processing", x, "\n")
+            cc <- get_crosscut(bullet = bullet, x = x)
+            result <- get_grooves(cc, mean_left = left, mean_right = right, mean_window = mean_window, smoothfactor = 25)
+            
+            result$groove
+        })
+
+        if (inherits(myresult, "try-error")) return(c(left, right))
         
-        return(result$groove)
+        return(myresult)
     })
     
     result <- cbind(data.frame(bullet = bul, x = unique(fortified$x)), do.call(rbind, all_grooves))
