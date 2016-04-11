@@ -34,7 +34,7 @@ twistlist$path <- c(knowns, unknowns) %>%
 
 twistlist$bulletland <- with(twistlist, gsub(".*//(.*).x3p", "\\1", path))
 
-file <- "mean-profile-papers/twists.csv"
+file <- "mean-profile-papers/twistRobust.csv"
 fileexist = file.exists(file)
 write.table(twistlist[,c(4,3,1,2)], file=file, sep=",", col.names=!fileexist,
             row.names=FALSE, append=fileexist)
@@ -42,4 +42,9 @@ write.table(twistlist[,c(4,3,1,2)], file=file, sep=",", col.names=!fileexist,
 
 twists <- read.csv("mean-profile-papers/twists.csv")
 qplot(twist, min.r.squared, data=twists)
-
+twists$bullet <- gsub("(.*)-[0-9]*","\\1",twists$bulletland)
+qplot(twist, min.r.squared, data=twists) + facet_wrap(~bullet)
+summary(twists$twist)
+twists$constraint <- "none"
+twists$method <- "q75"
+write.csv(twists, "mean-profile-papers/twists.csv", row.names=FALSE)
