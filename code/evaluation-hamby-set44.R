@@ -117,36 +117,30 @@ imp1b <- data.frame(importance(rtrees1b))
 
 
 
-write.csv(CCFs, file=file.path(dataStr, "bullet-stats-cms.csv"), row.names=FALSE)
+write.csv(CCFs, file=file.path(dataStr, "bullet-stats-set44.csv"), row.names=FALSE)
 
 
 ##################################################
 
 
 library(ggplot2)
-CCFs <- read.csv(file.path(dataStr, "bullet-stats-cms.csv"))
-
-means <- CCFs %>% group_by(match) %>% summarize(
-  meanx = mean(ccf), 
-  sdx = sd(ccf),
-  meany = mean(matches.per.y),
-  sdy = sd(matches.per.y))
+CCFs <- read.csv(file.path(dataStr, "bullet-stats-set44.csv"))
 
 #####################
 # throw in all three evaluations into the mix:
 
 bstats <- NULL
 for (i in c(25)) {
-  dataStr <- sprintf("data-%d-25", i)
-  temp <- read.csv(file.path(dataStr, "bullet-stats-cms.csv"))
+  dataStr <- sprintf("data-set44-%d-25", i)
+  temp <- read.csv(file.path(dataStr, "bullet-stats-set44.csv"))
   includes <- setdiff(names(temp), c("b1", "b2", "data", "resID", "id.x", "id.y"))
   temp$diffx <- with(temp, abs(x1-x2))
   temp$perc_matches <- with(temp, matches.per.y/(matches.per.y+mismatches.per.y))
-  rp <- rpart(match~., data=temp[,includes])
+  #rp <- rpart(match~., data=temp[,includes])
   
-  prp(rp, extra = 101)
+  #prp(rp, extra = 101)
   #ch <- scan()
-  temp$pred <- predict(rp)
+  temp$pred <- predict(rtrees, temp, type = "prob")[,2]
   temp$span <- i
   temp$bullet <- NULL
   temp$crosscutdist <- NULL
