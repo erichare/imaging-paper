@@ -220,11 +220,11 @@ for (i in c(25)) {
   includes <- setdiff(names(temp), c("b1", "b2", "data", "resID", "id.x", "id.y"))
   temp$diffx <- with(temp, abs(x1-x2))
   #temp$perc_matches <- with(temp, num.matches/(num.matches+num.mismatches))
-  rp <- randomForest(factor(match)~., data=temp[,includes], ntree = 300)
+  #rp <- randomForest(factor(match)~., data=temp[,includes], ntree = 300)
   
  # prp(rp, extra = 101)
   #ch <- scan()
-  temp$pred <- predict(rp)
+  temp$pred <- predict(rtrees, temp)
   temp$span <- i
   temp$bullet <- NULL
   temp$crosscutdist <- NULL
