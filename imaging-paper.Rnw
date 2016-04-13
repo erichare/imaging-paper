@@ -1128,18 +1128,26 @@ rocs$variable <- reorder(rocs$variable, -rocs$auc, min)
 levels(rocs$variable)[3:4] <- c("#non-matches", "#matches")
 
 labels <- unique(subset(rocs, auc > 0.5)[,c("variable", "auc")])
-labels$labels <- paste("AUC:", labels$auc)
+labels$labels <- sprintf("AUC: %.2f", labels$auc)
 labels$type <- NA
 
-
+eer <- rocs %>% filter(auc > 0.5) %>% 
+  mutate(differror = abs(1-`TRUE` - `FALSE`))
+eer <- eer %>% group_by(variable) %>% mutate(
+  minerror = differror==min(differror),
+  labels = sprintf("EER: %.2f", 0.5*(`FALSE`+1-`TRUE`))
+) %>% filter(minerror==TRUE)
+  
 ggplot(data=subset(rocs, auc > 0.5)) +
   geom_ribbon(aes(x=`FALSE`, ymax=`TRUE`, ymin=0), alpha=0.2) +
   geom_line(aes(x=`FALSE`,y=`TRUE`))+ theme_bw() + xlab("False negative rate") + 
   ylab("False positive rate") + facet_wrap(facets=~variable, ncol=4) + 
   geom_label(x=1, y=0, aes(label=labels), data=labels, hjust=1, vjust=0) + 
-  geom_abline(linetype=2)
+  geom_abline(linetype=2) + 
+  geom_point(aes(x=`FALSE`, y=`TRUE`), data=eer, size=2.5) +
+  geom_label(x=1, y=0.125, aes(label=labels), data=eer, hjust=1, vjust=0)
 @
-\caption{\label{fig:rocs}ROC curves for all of the features described in section~\ref{sec:algorithm}. Variables are sorted according to their area under the curve (AUC). Except for the distance $D$ between signatures, all individual features derived from the surface measurements and the aligned striation marks are more predictive than the maximal CMS. }
+\caption{\label{fig:rocs}ROC curves for all of the features described in section~\ref{sec:algorithm}. Variables are sorted according to their area under the curve (AUC). \hh{The equal error rate (EER) is marked by a point on the ROC curve.} Except for the distance $D$ between signatures, all individual features derived from the surface measurements and the aligned striation marks are more predictive than the maximal CMS. }
 \end{figure}
 
 
@@ -1257,7 +1265,9 @@ ggplot(data=subset(rocs, auc > 0.5)) +
 %' \end{figure}
 
 %Similarly, the Euclidean distance $D$ between two signatures is strongly correlated to known matches. Out of the 48 pairs of land-to-land signatures with a distance of less than .25, 47 correspond to known matches (the single known mismatch consists of a pair of signatures that both are very flat with peaks and valleys of less than 1.5$\mu m$). %The average distance between known matches in the Hamby study is $\Sexpr{mean(bstats$D[bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[bstats$match])}\mu m$; while known mismatches have an average  distance of  $\Sexpr{mean(bstats$D[!bstats$match])}\mu m$ with a standard deviation of $\Sexpr{sd(bstats$D[!bstats$match])}\mu m$.
-All of the features in Figure~\ref{fig:densities} show large, if not significant, differences between matches and non-matches. The predictive power of each one of these features is shown in the form of the Receiving Operating Characteristic (ROC) curves in Figure~\ref{fig:rocs}. The features are arranged in descending order according to the area under the curve (AUC). The feature with the highest individual predictive power is $S$, the sum of the average heights of two signatures at peaks and valleys. The maximal number of CMS is only in the seventh position here. The overall high AUC values indicate that we can successfully employ machine learning methods to distinguish matches from non-matches.
+All of the features in Figure~\ref{fig:densities} show large, if not significant, differences between matches and non-matches. The predictive power of each one of these features is shown in the form of the Receiving Operating Characteristic (ROC) curves in Figure~\ref{fig:rocs}. The features are arranged in descending order according to the area under the curve (AUC).
+\hh{XXX The dots mark the equal error rate, i.e. the location on the ROC curve, where false positive and false negative error rates are the same. The smaller the value, the better. We see that in this instance a lowe EER goes hand in hand with high predictive power as measured in AUC. XXX HH: do we need to say more about EERs?}
+The feature with the highest individual predictive power is $S$, the sum of the average heights of two signatures at peaks and valleys. The maximal number of CMS is only in the seventh position here. The overall high AUC values indicate that we can successfully employ machine learning methods to distinguish matches from non-matches.
 %Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of the set of feature variables derived in section~\ref{sec:algorithm} from the 3D topological surface measurements. There are quite large differences in these averages, indicating 
 
 Using recursive partitioning, we fit a decision tree~\citep{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
