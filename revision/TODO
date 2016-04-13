@@ -21,11 +21,16 @@ Reviewer B:
 
 9. Equal Error Rates on the ROC curves would be a helpful metric as well as the AUC.
 
+***included***
+
 10. Would it be possible to stress the classification system by only using part of the profile? Such as would occur when a partial bullet is recovered? By stressing the random forest you would be able to compare it to other classifiers.
 
 11. What is the standard error of the error rates presented for the matching algorithms? The number of cross comparisons gives false impression the standard errors the when presenting the results.
 
 12. In the conclusions section the authors mention an assumption of ``uniqueness". In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.
+
+***probably refers to articles such as ``how good is good enough?", books ``modern scientific evidence", "judging science" .... I am not sure that those are really necessary or helpful. It might be better to re-phrase the sentence in the conclusion.***
+
 
 13. A discussion on how the authors view the use of their matching algorithm would be useful to the forensic community. For example are they intending to use this to build a closed set identification system similar to IAFIS or are them intending this to work in a manner similar to a biometric verification system? etc.
 
