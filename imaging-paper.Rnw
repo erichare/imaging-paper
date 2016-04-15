@@ -431,8 +431,8 @@ Applying the loess fit to a range of different signatures (see Figure~\ref{fig:m
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width=.65\columnwidth]{images/matchup-rgl.png}
-\caption{\label{fig:manualmatch-rgl}3D view of the manually adjusted side-by-side comparison of bullet~1-5 and bullet 2-1 after removing the curvature.}
+\includegraphics[width=.65\columnwidth]{images/matchup-rgl-copy.png}
+\caption{\label{fig:manualmatch-rgl}3D view of the manually adjusted side-by-side comparison of bullet~1-5 and bullet 2-1 after removing the curvature. \hh{Bullet 2-1 is shaded light grey in the background.}}
 \end{figure}
 
 In this section, we describe the algorithm for matching signatures first, and the impact of parameter choices in the subsections thereafter.

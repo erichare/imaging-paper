@@ -144,6 +144,8 @@ DONE 41. So, my suggestion here is to change the sentence in the abstract to som
 
 47. Figure 5: In this figure, where is the limit between bullet 1-5 and bullet 2-1?
 
+***Light grey shading in the background was added to help with the distinction between the two flattened bullet lands.***
+
 48. Line 246: Replace ``this representations" with ``this representation" or ``these representations"
 
 49. Caption of Figure 8: ``At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures." is not a complete sentence.
