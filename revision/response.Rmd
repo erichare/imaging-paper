@@ -24,7 +24,13 @@ Reviewer B:
 
 7. There should have been a comparison of different classification methods to show that the random forest is reasonable.
 
+***I am not quite sure what a 'reasonable' classification method is supposed to mean. Shouldn't a classification method be judged by its success in predicting the outcome? 
+Apart from that, random forests are based on decision trees, which are an extremely flexible tool for classification, that can deal with quantitative and categorical types of variables and, in the implementation we used, also deal with some missing values (which was not needed in the data here).***
+
 8. On the random forest classifier- are the prior probabilities being estimated from the cross comparisons described on page 15? What exactly are the prior probabilities used in the random forest?
+
+***No data-based adjustment was made to the prior probabilities, i.e. prior probabilities of 50:50 for matches/non-matches were used.
+HH: what does the reviewer mean by cross-comparison? On page 15 we discuss some results from matching based on CMS.***
 
 9. Equal Error Rates on the ROC curves would be a helpful metric as well as the AUC.
 
@@ -32,14 +38,21 @@ Reviewer B:
 
 10. Would it be possible to stress the classification system by only using part of the profile? Such as would occur when a partial bullet is recovered? By stressing the random forest you would be able to compare it to other classifiers.
 
+***Yes, it would be possible to stress the classification system by using only parts of the profile, but a systematic evaluation of this by far exceeds the scope of this paper.***
+
 11. What is the standard error of the error rates presented for the matching algorithms? The number of cross comparisons gives false impression the standard errors the when presenting the results.
+
+***HH: I'm sure I am misunderstanding the comment, but I don't know how to answer this question. The standard error of a rate in (0,1) would be sqrt(p*(1-p)). So because p is small the square root is going to be still pretty small. 
+We are presenting out of bag error rates for the random forest - maybe we need to explain what out-of bag means in more detail?***
 
 12. In the conclusions section the authors mention an assumption of ``uniqueness". In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.
 
 ***probably refers to articles such as ``how good is good enough?", books ``modern scientific evidence", "judging science" .... I am not sure that those are really necessary or helpful. It might be better to re-phrase the sentence in the conclusion.***
 
 
+
 13. A discussion on how the authors view the use of their matching algorithm would be useful to the forensic community. For example are they intending to use this to build a closed set identification system similar to IAFIS or are them intending this to work in a manner similar to a biometric verification system? etc.
+
 
 
 Reviewer C:
