@@ -136,9 +136,9 @@ DONE 41. So, my suggestion here is to change the sentence in the abstract to som
 
 43. I strongly encourage the authors to not follow this trend and use the term ``ballistics" only when you are actually talking about ballistics.
 
-44. 2nd to last line in the abstract: In point (a) ``correctly identify lands with too much damage to be suitable for matching" I suggest replacing the word ``matching" with ``comparison" to use the same terminology as the other pattern evidence disciplines.
+DONE 44. 2nd to last line in the abstract: In point (a) ``correctly identify lands with too much damage to be suitable for matching" I suggest replacing the word ``matching" with ``comparison" to use the same terminology as the other pattern evidence disciplines.
 
-45. Line 55: Replace ``in the forensic sciences" with ``in forensic science". (See Margot P, Commentary on The Need for a Research Culture in the Forensic Sciences, UCLA Law Review (2011) 58: 795-801.)
+DONE 45. Line 55: Replace ``in the forensic sciences" with ``in forensic science". (See Margot P, Commentary on The Need for a Research Culture in the Forensic Sciences, UCLA Law Review (2011) 58: 795-801.)
 
 46. Lines 156-158: The sentence ``The blue area around the signature are 95% bootstrapped confidence intervals based on 1,000 bootstrap samples." is confusing. The term ``signature" is defined two sentences further. Is the sentence referring to Figure 4b? If yes, it should probably come at the end of this paragraph.
 
@@ -148,6 +148,6 @@ DONE 41. So, my suggestion here is to change the sentence in the abstract to som
 
 DONE 48. Line 246: Replace ``this representations" with ``this representation" or ``these representations"
 
-49. Caption of Figure 8: ``At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures." is not a complete sentence.
+DONE 49. Caption of Figure 8: ``At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures." is not a complete sentence.
 
 DONE 50. Line 266: Capitalize the ``b" in ``by".
