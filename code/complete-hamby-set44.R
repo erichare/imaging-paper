@@ -46,7 +46,7 @@ for (span in c(25)) {
             br1 <- filter(bullets_smoothed, bullet == x$path)
             br2 <- filter(bullets_smoothed, bullet == sigh$path)
             
-            if (br1$bullet[1] == br2$bullet[2]) return(NULL)
+            if (x$path == sigh$path) return(NULL)
             bulletGetMaxCMS(br1, br2, span=span)
         })
         save(reslist, file=file.path(dataStr, sprintf("unkn%d.RData", j)))
