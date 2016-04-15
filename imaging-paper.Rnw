@@ -671,7 +671,7 @@ In addition to the features listed above, we also keep track of the value of the
 %' \end{figure}
 
 \subsection{Horizontal alignment}
-Signatures of each of the two lands, 1-5 and 2-1,  in Figure~\ref{fig:manualmatch-rgl} are shown in Figure~\ref{fig:cross100} extracted at a height of $x = 100\mu m$. Striation marks show up in this representations as peaks and valleys.  The individual characteristics are quite prominent and, again, suggest a match between the lands. A horizontal shift of one of the signatures (result shown in Fig~\ref{fig:crosscutX}) emphasizes the strong similarities. 
+Signatures of each of the two lands, 1-5 and 2-1,  in Figure~\ref{fig:manualmatch-rgl} are shown in Figure~\ref{fig:cross100} extracted at a height of $x = 100\mu m$. Striation marks show up in these representations as peaks and valleys.  The individual characteristics are quite prominent and, again, suggest a match between the lands. A horizontal shift of one of the signatures (result shown in Fig~\ref{fig:crosscutX}) emphasizes the strong similarities. 
 %
 \begin{figure}[hbtp]
 \centering
