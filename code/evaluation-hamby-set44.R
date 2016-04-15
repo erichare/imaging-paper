@@ -67,7 +67,7 @@ CCFs <- plyr::ldply(datas, function(x) {
   ccf  
 })
 
-CCFs$resID <- rep(1:219, length=nrow(CCFs))
+#CCFs$resID <- rep(1:219, length=nrow(CCFs))
 CCFs <- CCFs[order(as.character(CCFs$b2)),]
 CCFs$b2 <- factor(as.character(CCFs$b2))
 
@@ -95,6 +95,7 @@ CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
 CCFs$match <- CCFs$id.x == CCFs$id.y
 CCFs$span <- span
 
+write.csv(CCFs, file=file.path(dataStr, "bullet-stats-set44.csv"), row.names=FALSE)
 
 library(rpart)
 library(rpart.plot)
@@ -114,12 +115,6 @@ includes3 <- c(setdiff(includes2, "cms.per.y"), "cms2.per.y")
 set.seed(20160105)
 rtrees1b <- randomForest(factor(match)~., data=CCFs[,includes3], ntree=300)
 imp1b <- data.frame(importance(rtrees1b))
-
-
-
-write.csv(CCFs, file=file.path(dataStr, "bullet-stats-set44.csv"), row.names=FALSE)
-
-
 ##################################################
 
 
