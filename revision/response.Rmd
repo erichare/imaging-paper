@@ -50,20 +50,36 @@ Reviewer C:
 
 16. On a related subject, I believe that a random forest provides the probability that two bullets were fired by the same gun given the set of observations (Fig 19), not the probability of interest: the probability of two sets of observations given that the two bullets were fired by the same gun. The authors may want to revise some of the statements in their discussion and conclusion.
 
+***why should the probability of two sets of observations given that the two bullets were fired by the same gun be the probability of interest? I would agree that the random forest and any of its conclusions are restricted to how good the underlying 'database' is. The more representative the set of bullets, the better the predictions should be. It is not the purpose of this paper to find the probability of two sets of observations given that the two bullets were fired by the same gun. We made sure to remove any misleading statements that might suggest the latter probability. ***
+
 17. I am concerned by the assumption of independence of between the different lands on a given bullet that the authors seems to use in their error rates calculations (and ROC curves). The assumption seems unreasonable since as soon as a land has been paired between two bullets, it seems that it becomes more likely to pair the other lands. In other words, I believe that the authors need to redo their error rate measurements, but using bullets as their experimental units and not lands. I am also concerned by the overwhelming majority of non-matches, this must certainly artificially increase the rate of correct exclusion and distort the data.
+
+***Assuming independence between the lands of each barrel is certainly not realistic in practice, however, by assuming independence we make the task of matching harder for the algorithm. XXX still need to do XXX Based on the actual numerical values of features derived from each of the lands, an independence assumption is not unrealistic, because the features do not exhibit any clustering associated to barrel. The technique suggested by the reviewer could be solved using a hierarchical approach to matching, and we agree with the assessment that it would likely decrease the error rates. ***
 
 18. the authors attempt to define a "stable" profile (see Figure 9) and use the stable profile for comparison. What happens if such profile does not exist. Would it not be best to compare surfaces instead of sections? a 2D version of the proposed algorithm should be easily implementable (and has been done at least by Riva).
 
+***Figure 11 shows images of all bullet lands we encountered in the Hamby set where no stable profile could be identified. All four of these images show massive signs of tank rash - this motivates our suggestion to not consider bullet lands without a stable region for the further analysis.
+Concentrating on one-dimensional profiles is quite common in the literature, and we have expanded the discussion on this choice with appropriate citations.***
+
+
 19. L323: how do the authors know that there are "172 known matches" since the 15 "trace bullets" are supposed to be of unknown sources? which raise the question on how where the ROC and other density graphs generated? only based on the bullets of known origin?
 
+***For the Hamby study there is a known ground truth of known matches and known non-matches, which we used for determining the accuracy of the algorithm. As state in the paper, the ROC curves are based on comparisons of 88 lands from unknown bullets (90 minus the two lands that showed too much tank rash) and 118 lands from known bullets (120 minus two bullet lands affected by tank rash), resulting in a total of 10,384 land to land comparisons.***
+
 20. If would be helpful if the legend from Fig15 could include a definition of the CMS, CNMS, CCF, ... acronyms such that the reader does not need to flip back and forth between several pages.
+
+***Done for figure 15 and 16***
 
 
 Reviewer 1:
 
 21. First, the term "land" is used in the title but not defined until p. 3.  I recommend changing the title, to ensure broad comprehenson; perhaps "Automatic Matching of Bullet Marks," or something of that kind.
 
+***Let's discuss that on Monday***
+
 22. Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth.  
+
+
 
 DONE 23. p. 2, l. -1:  It would be good to reword so the sentence doesn't start with "x3p".  Also p. 3, l. 2.
 

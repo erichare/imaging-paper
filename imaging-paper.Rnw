@@ -1004,7 +1004,7 @@ For smaller numbers of CMS, the percentage of false positives quickly increases.
 
 \begin{figure}[hbtp]
   \centering
-<<density-overview,echo=FALSE, warning=FALSE, fig.width=12, fig.height=6, out.width='\\textwidth'>>=
+<<density-overview,echo=FALSE, warning=FALSE, fig.width=12.5, fig.height=6.25, out.width='\\textwidth'>>=
 features <- c("CMS", "CNMS",  "num.matches", "num.nonmatches", "D", "S", "ccf")
 densities <- plyr::ldply(features, function(x) {
   xr <- range(bstats[,x])
@@ -1025,14 +1025,25 @@ dm <- melt(densities, measure.var=c("KM", "KNM"))
 dm$var <- factor(dm$var, levels=features)
 levels(dm$var)[3:4] <- c("#matches", "#non-matches")
 levels(dm$variable) <- c("Known matches (KM)", "Known non-matches (KNM)")
+dm$varLabel <- dm$var
+levels(dm$varLabel) <- c(
+  "Consecutive Matching Striae (CMS)", 
+  "Consecutive Non-Matching Striae (CNMS)",
+  "#matches",
+  "#non-matches",
+  "Average difference (D)",
+  "Sum of peaks (S)",
+  "Cross-correlation function (ccf)")
 
 qplot(x, value, group=variable, geom="polygon", data=dm, fill=variable, 
       alpha=I(0.6), colour=I("grey20")) + 
-  facet_wrap(~var, ncol=4, scales="free") +
-  theme_bw() + ylab("density") + xlab("") +
+  facet_wrap(~varLabel, ncol=4, scales="free") +
+  theme_bw() + ylab("") + xlab("") +
   scale_fill_brewer("Matches", palette="Paired") +
-  theme(legend.position=c(1,0), legend.justification = c("right", "bottom"),
+  theme(legend.position=c(1,0), 
+        legend.justification = c("right", "bottom"),
         legend.background = element_rect(colour="grey75"),
+        axis.title.y=element_blank(),
         plot.margin = unit(c(0,0,0,0), unit="cm"))
 @
 \caption{\label{fig:densities}Overview of all the marginal densities for features described in section~\ref{sec:algorithm}. Shifts in the mode of the density functions between known matches and known non-matches indicate the variable's predictive power in distinguishing matches and non-matches. Predictive power is shown in more detail in Figure~\ref{fig:rocs}.}
@@ -1071,7 +1082,7 @@ qplot(x, value, group=variable, geom="polygon", data=dm, fill=variable,
 
 \begin{figure}[hbtp]
   \centering
-<<rocs-overview,echo=FALSE, warning=FALSE, fig.width=12, fig.height=6, out.width='\\textwidth'>>=
+<<rocs-overview,echo=FALSE, warning=FALSE, fig.width=12.5, fig.height=6.25, out.width='\\textwidth'>>=
 # plot false positive against false negative
 # prob of false positive: P(match | KNM)
 # prob of false negative: P(non-match | KM)
@@ -1126,6 +1137,17 @@ names(aucs) <- c("variable", "type", "auc")
 rocs <- merge(rocs, aucs, by=c("variable", "type"))
 rocs$variable <- reorder(rocs$variable, -rocs$auc, min)
 levels(rocs$variable)[3:4] <- c("#non-matches", "#matches")
+rocs$varLabel <- rocs$variable
+levels(rocs$varLabel) <- c(
+  "Sum of peaks (S)",
+  "Cross-correlation function (ccf)",
+  "#non-matches",
+  "#matches",
+  "Consecutive Non-Matching Striae (CNMS)",
+  "Consecutive Matching Striae (CMS)", 
+  "Average difference (D)"
+  )
+
 
 labels <- unique(subset(rocs, auc > 0.5)[,c("variable", "auc")])
 labels$labels <- sprintf("AUC: %.2f", labels$auc)
@@ -1140,8 +1162,9 @@ eer <- eer %>% group_by(variable) %>% mutate(
   
 ggplot(data=subset(rocs, auc > 0.5)) +
   geom_ribbon(aes(x=`FALSE`, ymax=`TRUE`, ymin=0), alpha=0.2) +
-  geom_line(aes(x=`FALSE`,y=`TRUE`))+ theme_bw() + xlab("False negative rate") + 
-  ylab("False positive rate") + facet_wrap(facets=~variable, ncol=4) + 
+  geom_line(aes(x=`FALSE`,y=`TRUE`))+ theme_bw() + 
+  xlab("False negative rate") + 
+  ylab("False positive rate") + facet_wrap(facets=~varLabel, ncol=4) + 
   geom_label(x=1, y=0, aes(label=labels), data=labels, hjust=1, vjust=0) + 
   geom_abline(linetype=2) + 
   geom_point(aes(x=`FALSE`, y=`TRUE`), data=eer, size=2.5) +
