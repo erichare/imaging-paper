@@ -31,6 +31,10 @@ describe extracting mean profile of an area of the image after untwisting the im
 bachrach:2002
 general description of an automated matching system based on 3D imaging. 
 Uses cross-correlation function for alignment.
+
+petraco:2012
+I am not sure that this book is the same as the report for the NIJ grant. This is a huge effort, and we should certainly cite it, but there are not a lot of actual results included or comparisons done.
+
 ***
 
 6. page 7- figure 4- What exactly are you bootstrapping? It is unclear in the paper whether you are bootstrapping residual or bullets or something else entirely. Please clarify.
