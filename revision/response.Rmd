@@ -20,6 +20,19 @@ Reviewer B:
 
 5. The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the ``twicing" for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.
 
+
+***Additional papers considered (not complete, and not yet included in the paper): 
+chumbley:2010 
+uses 1d profiles and discusses several different angles of extraction (no alignment necessary, no grooves and no flattening)
+
+chu:2010
+describe extracting mean profile of an area of the image after untwisting the image 
+
+bachrach:2002
+general description of an automated matching system based on 3D imaging. 
+Uses cross-correlation function for alignment.
+***
+
 6. page 7- figure 4- What exactly are you bootstrapping? It is unclear in the paper whether you are bootstrapping residual or bullets or something else entirely. Please clarify.
 
 ***HH: will do***
