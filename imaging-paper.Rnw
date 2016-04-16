@@ -929,7 +929,7 @@ ggplot(data=subset(bstats, !flagged)) +
 \end{minipage}
 \begin{minipage}[t]{.52\textwidth}
 <<cms-spines, echo=FALSE,  fig.width=7, fig.height=4, out.width='\\textwidth'>>=
-bstats$km <- c( "KNM", "KM")[as.numeric(bstats$match)+1]
+bstats$km <- c( "Known non-match", "Known match")[as.numeric(bstats$match)+1]
 ggplot(data=subset(bstats, !flagged)) + 
   geom_bar(aes(x=factor(CMS), fill=km), position="fill") +
   theme(legend.position="bottom") + 
