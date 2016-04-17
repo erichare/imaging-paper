@@ -704,6 +704,7 @@ qplot(y+min(lof$y), resid, group=bulletname, colour=bulletname, data=lofY,
 \caption{\label{fig:cross100}Signatures of bullets 1-5 and 2-1 taken at  heights of $x = 100\mu m$. A horizontal shift of the values of bullet~1-5 to the right shows the similarity of the striation marks.}
 \end{figure}
 %
+\hh{For this alignment we use the cross-correlation function to find a maximal amount of agreement between the signatures~\cite{bachrach:2002, thompson:2013}.}
 This horizontal shift is based on the cross-correlation between the two signatures: let $f(t)$ and $g(t)$ define the signature values  at $t$, where $t$ are locations between 0~$\mu m$ and about 2500~$\mu m$, 1.5625~$\mu m$ apart.
 The cross-correlation between $f$ and $g$ at lag $k$ is then defined as
 \[
