@@ -1,7 +1,19 @@
-\begin{thebibliography}{29}
+\begin{thebibliography}{30}
 % BibTex style file: imsart-nameyear.bst, 2013-01-28
 % Default style options (sort=1,type=nameyear).
 % Used options (sort=1,type=nameyear).
+
+\bibitem[\protect\citeauthoryear{Bachrach}{2002}]{bachrach:2002}
+\begin{barticle}[author]
+\bauthor{\bsnm{Bachrach},~\bfnm{B.}\binits{B.}}
+(\byear{2002}).
+\btitle{{{D}evelopment of a 3{D}-based automated firearms evidence comparison
+  system}}.
+\bjournal{J. Forensic Sci.}
+\bvolume{47}
+\bpages{1253--1264}.
+\end{barticle}
+\endbibitem
 
 \bibitem[\protect\citeauthoryear{Biasotti}{1959}]{biasotti:1959}
 \begin{barticle}[author]
@@ -49,7 +61,7 @@
   matching striae (CMS) criteria}.
 \bjournal{Forensic Science International}
 \bvolume{231}
-\bpages{137 - 141}.
+\bpages{137--141}.
 \bdoi{http://dx.doi.org/10.1016/j.forsciint.2013.04.025}
 \end{barticle}
 \endbibitem
