@@ -67,8 +67,9 @@ HH: what does the reviewer mean by cross-comparison? On page 15 we discuss some 
 
 11. What is the standard error of the error rates presented for the matching algorithms? The number of cross comparisons gives false impression the standard errors the when presenting the results.
 
-***HH: I'm sure I am misunderstanding the comment, but I don't know how to answer this question. The standard error of a rate in (0,1) would be sqrt(p*(1-p)). So because p is small the square root is going to be still pretty small. 
-We are presenting out of bag error rates for the random forest - maybe we need to explain what out-of bag means in more detail?***
+***HH: I'm sure I am misunderstanding the comment, but I don't know how to answer this question. The standard error of a rate in (0,1) would be sqrt(p*(1-p)). So because p is small the square root is going to be still pretty small. We are presenting out of bag error rates for the random forest - maybe we need to explain what out-of bag means in more detail?***
+
+***EH: Yeah, I was a little unsure of this. Maybe we can ask Alicia, and if she also is confused by it I can type up an explanation on how the OOB error is computed.***
 
 12. In the conclusions section the authors mention an assumption of ``uniqueness". In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.
 
@@ -100,8 +101,7 @@ Reviewer C:
 
 18. the authors attempt to define a "stable" profile (see Figure 9) and use the stable profile for comparison. What happens if such profile does not exist. Would it not be best to compare surfaces instead of sections? a 2D version of the proposed algorithm should be easily implementable (and has been done at least by Riva).
 
-***Figure 11 shows images of all bullet lands we encountered in the Hamby set where no stable profile could be identified. All four of these images show massive signs of tank rash - this motivates our suggestion to not consider bullet lands without a stable region for the further analysis.
-Concentrating on one-dimensional profiles is quite common in the literature, and we have expanded the discussion on this choice with appropriate citations.***
+***Figure 11 shows images of all bullet lands we encountered in the Hamby set where no stable profile could be identified. All four of these images show massive signs of tank rash - this motivates our suggestion to not consider bullet lands without a stable region for the further analysis. Concentrating on one-dimensional profiles is quite common in the literature, and we have expanded the discussion on this choice with appropriate citations.***
 
 
 19. L323: how do the authors know that there are "172 known matches" since the 15 "trace bullets" are supposed to be of unknown sources? which raise the question on how where the ROC and other density graphs generated? only based on the bullets of known origin?
@@ -112,16 +112,15 @@ Concentrating on one-dimensional profiles is quite common in the literature, and
 
 ***Done for figure 15 and 16***
 
-
 Reviewer 1:
 
 21. First, the term "land" is used in the title but not defined until p. 3.  I recommend changing the title, to ensure broad comprehenson; perhaps "Automatic Matching of Bullet Marks," or something of that kind.
 
-***Let's discuss that on Monday***
+***HH: Let's discuss that on Monday***
 
 22. Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth.  
 
-
+***EH: Presumably the typical width is some kind of class characteristic dependent on the gun itself, right?***
 
 23. p. 2, l. -1:  It would be good to reword so the sentence doesn't start with "x3p".  Also p. 3, l. 2.
 
@@ -129,7 +128,11 @@ Reviewer 1:
 
 24. p. 3, Fig. 1:  The numbers on the y-axis are superimposed.
 
+***EH: We could slightly rotate the image in RGL, but the top-down view is nice. Alternatively I could just disable the axis labels - We don't really need to see them in this image, right?***
+
 25. p. 3, l. -10:  Be explicit that grooves and striations are synonyms.
+
+***EH: Hm. I think we phrased this correctly and the reviewer misunderstood - We literally ARE showing groove to groove impressions. Maybe we need to be more clear about groove impressions... but in the following paragraph + the image of the bullet I think its fairly clear. We could add in a little disclaimer like "Grooves, not to be confused with striae, are..."***
 
 26. p. 7, l. 1:  Make this "... can be described in the form ...".
 
@@ -212,8 +215,10 @@ Reviewer 1:
 49. Caption of Figure 8: ``At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures." is not a complete sentence.
 
 ***DONE***
+
 ***HH: would a removal of the comma make it a complete sentence?***
 
+***EH: I actually thought it already was a complete sentence... but I changed it to "The correlation peaks at a lag of -17, which indicates the largest amount of agreement between the signatures."***
 
 50. Line 266: Capitalize the ``b" in ``by".
 
