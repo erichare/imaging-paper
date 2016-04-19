@@ -36,6 +36,9 @@ describe extracting mean profile of an area of the image after untwisting the im
 general description of an automated matching system based on 3D imaging. 
 Uses cross-correlation function for alignment.***
 
+***vorburger:2011
+different uses of the cross-correlation function. One of them aligning profiles***
+
 ***bachrach:2006
 67page final report for NIJ grant (for Intelligent Automation Inc.)
 wear study: "difference between comparing the nth and (n+1)th bullet fired by a barrel as opposed to the nth and (n+100)th bullet fired by a barrel? In other words, does the proximity between firings make a difference? Although some wear effect could be detected in both of these scenarios, these effects do not appear to be significant enough to prevent correct identification"***
@@ -147,6 +150,7 @@ Reviewer 1:
 
 25. p. 3, l. -10:  Be explicit that grooves and striations are synonyms.
 
+***HH: this is clearly a misunderstanding, so we need to be nice about breaking this to the reviewer, and emphasize it in the paper some more.***
 ***EH: Hm. I think we phrased this correctly and the reviewer misunderstood - We literally ARE showing groove to groove impressions. Maybe we need to be more clear about groove impressions... but in the following paragraph + the image of the bullet I think its fairly clear. We could add in a little disclaimer like "Grooves, not to be confused with striae, are..."***
 
 26. p. 7, l. 1:  Make this "... can be described in the form ...".
@@ -234,6 +238,7 @@ Reviewer 1:
 ***HH: would a removal of the comma make it a complete sentence?***
 
 ***EH: I actually thought it already was a complete sentence... but I changed it to "The correlation peaks at a lag of -17, which indicates the largest amount of agreement between the signatures."***
+***HH: Ta, as they say around here :)***
 
 50. Line 266: Capitalize the ``b" in ``by".
 
