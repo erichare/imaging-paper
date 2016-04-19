@@ -611,6 +611,7 @@ All of the other steps are done on pairs of bullet lands:
 \begin{enumerate}[label=(\roman*)]
 \item Maximal number of CMS (consecutive matching striae), and, similarly, the number of consecutively non-matching striae (CNMS), 
 \item Number of matches and non-matches,
+\item \hh{The value of the cross-correlation function (ccf) between the aligned signatures \cite{vorburger:2011}, }
 \item Average difference $D$ between signatures, defined as the Euclidean vertical distance between surface measurements of aligned signatures. Let $f(t)$ and $g(t)$ be smoothed, aligned signatures:
 \[
 D^2 = \frac{1}{\text{\#}t}\sum_t \left[f(t) - g(t)\right]^2,

@@ -1,4 +1,4 @@
-\begin{thebibliography}{30}
+\begin{thebibliography}{31}
 % BibTex style file: imsart-nameyear.bst, 2013-01-28
 % Default style options (sort=1,type=nameyear).
 % Used options (sort=1,type=nameyear).
@@ -337,6 +337,26 @@ In \bbooktitle{Geometry Driven Statistics}
 \btitle{Exploratory Data Analysis.}
 \bpublisher{Addison-Wesley}.
 \end{bbook}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Vorburger et~al.}{2011}]{vorburger:2011}
+\begin{barticle}[author]
+\bauthor{\bsnm{Vorburger},~\bfnm{T.~V.}\binits{T.~V.}},
+  \bauthor{\bsnm{Song},~\bfnm{J.~F.}\binits{J.~F.}},
+  \bauthor{\bsnm{Chu},~\bfnm{W.}\binits{W.}},
+  \bauthor{\bsnm{Ma},~\bfnm{L.}\binits{L.}},
+  \bauthor{\bsnm{Bui},~\bfnm{S.~H.}\binits{S.~H.}},
+  \bauthor{\bsnm{Zheng},~\bfnm{A.}\binits{A.}} \AND
+  \bauthor{\bsnm{Renegar},~\bfnm{T.~B.}\binits{T.~B.}}
+(\byear{2011}).
+\btitle{Applications of cross-correlation functions}.
+\bjournal{Wear}
+\bvolume{271}
+\bpages{529--533}.
+\bnote{The 12th International Conference on Metrology and Properties of
+  Engineering Surfaces}.
+\bdoi{http://dx.doi.org/10.1016/j.wear.2010.03.030}
+\end{barticle}
 \endbibitem
 
 \bibitem[\protect\citeauthoryear{Wickham}{2009}]{ggplot2}
