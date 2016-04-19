@@ -36,12 +36,22 @@ describe extracting mean profile of an area of the image after untwisting the im
 general description of an automated matching system based on 3D imaging. 
 Uses cross-correlation function for alignment.***
 
+***bachrach:2006
+67page final report for NIJ grant (for Intelligent Automation Inc.)
+wear study: "difference between comparing the nth and (n+1)th bullet fired by a barrel as opposed to the nth and (n+100)th bullet fired by a barrel? In other words, does the proximity between firings make a difference? Although some wear effect could be detected in both of these scenarios, these effects do not appear to be significant enough to prevent correct identification"***
+
 ***petraco:2012
 I am not sure that this book is the same as the report for the NIJ grant. This is a huge effort, and we should certainly cite it, but there are not a lot of actual results included or comparisons done.***
 
 ***riva:2014
-automatic matching system based on 3d images of cartridge cases. Matching involves breech faces, but no striation marks.
-***
+automatic matching system based on 3d images of cartridge cases. Matching involves breech faces, but no striation marks.***
+
+***xie:2009
+first sentence: "Every firearm has individual characteristics that are as unique to it as fingerprints are to human beings." the paper itself doesn't back up any of these claims. very disappointing***
+
+
+***leon:2006
+first sentence: "Fired bullets bear striation marks that can be thought of as a ‘‘fingerprint’’ left by the firearm." based on multiple 2d images. They extract a 1d 'signature'***
 
 6. page 7- figure 4- What exactly are you bootstrapping? It is unclear in the paper whether you are bootstrapping residual or bullets or something else entirely. Please clarify.
 
@@ -89,7 +99,7 @@ Reviewer C:
 
 15.  The authors would need to study (or at least discuss extensively) the ability of their method to capture the variability in bullet profiles over time (at interval of several dozen of bullets fired by the same weapon, when the weapon has been cleaned, or when the bullet was degraded by hitting a target). In addition, a dataset of 10 firearms (even consecutively manufactured) does not provide any information on the rarity of a particular bullet profile, and therefore does not address the second probability statement. Alternatively, the proposed metrics could be tested in a database searching situation, which has not been done.
 
-***At the time of the submission of this manuscript, the 35 bullets from Hamby set 252 were the only ones accessible to the public. They are part of Dr Zheng's efforts at NIST to provide a ballistics reference database. In the future more results will be available, but until we are unable to provide a data-informed discussion of the very important issues raised by the reviewer.***
+***At the time of the submission of this manuscript, the 35 bullets from Hamby set 252 were the only ones accessible to the public. They are part of Dr Zheng's efforts at NIST to provide a ballistics reference database. In the future more results will be available, but until then we are unable to provide a data-informed discussion of the very important issues raised by the reviewer.***
 
 16. On a related subject, I believe that a random forest provides the probability that two bullets were fired by the same gun given the set of observations (Fig 19), not the probability of interest: the probability of two sets of observations given that the two bullets were fired by the same gun. The authors may want to revise some of the statements in their discussion and conclusion.
 
@@ -121,6 +131,9 @@ Reviewer 1:
 22. Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth.  
 
 ***EH: Presumably the typical width is some kind of class characteristic dependent on the gun itself, right?***
+***HH: I am not sure about the width of a striation - the width depends on where it is measured (in both x and z direction). I'm sure there are definitions of that available. We might need some more literature.***
+
+
 
 23. p. 2, l. -1:  It would be good to reword so the sentence doesn't start with "x3p".  Also p. 3, l. 2.
 
@@ -129,6 +142,8 @@ Reviewer 1:
 24. p. 3, Fig. 1:  The numbers on the y-axis are superimposed.
 
 ***EH: We could slightly rotate the image in RGL, but the top-down view is nice. Alternatively I could just disable the axis labels - We don't really need to see them in this image, right?***
+***HH: I just deleted the values from the axis***
+
 
 25. p. 3, l. -10:  Be explicit that grooves and striations are synonyms.
 
