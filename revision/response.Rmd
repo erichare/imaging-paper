@@ -67,8 +67,9 @@ Apart from that, random forests are based on decision trees, which are an extrem
 
 8. On the random forest classifier- are the prior probabilities being estimated from the cross comparisons described on page 15? What exactly are the prior probabilities used in the random forest?
 
-***No data-based adjustment was made to the prior probabilities, i.e. prior probabilities of 50:50 for matches/non-matches were used.
-HH: what does the reviewer mean by cross-comparison? On page 15 we discuss some results from matching based on CMS.***
+***No data-based adjustment was made to the prior probabilities, i.e. prior probabilities of 50:50 for matches/non-matches were used.***
+
+***HH: what does the reviewer mean by cross-comparison? On page 15 we discuss some results from matching based on CMS.***
 
 9. Equal Error Rates on the ROC curves would be a helpful metric as well as the AUC.
 
@@ -131,12 +132,21 @@ Reviewer 1:
 
 ***HH: Let's discuss that on Monday***
 
-22. Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth.  
+***EH: Quick definition of land in abstract***
+
+25. p. 3, l. -10:  Be explicit that grooves and striations are synonyms.
+
+***HH: this is clearly a misunderstanding, so we need to be nice about breaking this to the reviewer, and emphasize it in the paper some more.***
+
+***EH: Hm. I think we phrased this correctly and the reviewer misunderstood - We literally ARE showing groove to groove impressions. Maybe we need to be more clear about groove impressions... but in the following paragraph + the image of the bullet I think its fairly clear. We could add in a little disclaimer like "Grooves, not to be confused with striae, are..."***
+
+22. Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth. 
+***EH: Add typical width of groove + lands***
 
 ***EH: Presumably the typical width is some kind of class characteristic dependent on the gun itself, right?***
 ***HH: I am not sure about the width of a striation - the width depends on where it is measured (in both x and z direction). I'm sure there are definitions of that available. We might need some more literature.***
 
-
+* Make note of the width 35 * 6 
 
 23. p. 2, l. -1:  It would be good to reword so the sentence doesn't start with "x3p".  Also p. 3, l. 2.
 
@@ -145,13 +155,8 @@ Reviewer 1:
 24. p. 3, Fig. 1:  The numbers on the y-axis are superimposed.
 
 ***EH: We could slightly rotate the image in RGL, but the top-down view is nice. Alternatively I could just disable the axis labels - We don't really need to see them in this image, right?***
+
 ***HH: I just deleted the values from the axis***
-
-
-25. p. 3, l. -10:  Be explicit that grooves and striations are synonyms.
-
-***HH: this is clearly a misunderstanding, so we need to be nice about breaking this to the reviewer, and emphasize it in the paper some more.***
-***EH: Hm. I think we phrased this correctly and the reviewer misunderstood - We literally ARE showing groove to groove impressions. Maybe we need to be more clear about groove impressions... but in the following paragraph + the image of the bullet I think its fairly clear. We could add in a little disclaimer like "Grooves, not to be confused with striae, are..."***
 
 26. p. 7, l. 1:  Make this "... can be described in the form ...".
 
@@ -175,6 +180,8 @@ Reviewer 1:
 
 31. p. 16, l. -1/-2:  Could you elaborate on why a "large number of maximal CMS by itself is not indicative of a match"?  I think the reason is that there could be other marks that are completely incompatible and preclude a match, based on the next sentence, but I am not sure and a few words would be helpful.  
 
+***EH: From our data out of non matches its a 2 / 10212 event... but with a lot of pairwise comparisons, it will happen by chance even if its very unlikely. Adding a couple more bullets / comparisons we may see higher values.***
+
 32. p. 17, l. -13:  I'd prefer another term than "correlation" here.  In fact, the entire sentence could be improved.
 
 ***DONE (Maybe)***
@@ -189,7 +196,11 @@ Reviewer 1:
 
 35. p. 20,  l. -3:  I really like the idea of including an inconclusive zone.
 
+***EH: Add thank you, and explain the ones that could be considered inconclusive. Lots more discussion would be needed about the extent of that zone.***
+
 36. p. 21, Fig. 20:  Most of the features plotted have been defined, but I don't recall x1 and x2.  You may want to remind the reader about all the definitions, or have a table of features appear early in the random forests discussion.
+
+***EH: Take out all references to x1 and x2***
 
 37. p. 22, l. -9:  Change "bottomline" to "bottom line".
 
@@ -201,6 +212,8 @@ Reviewer 1:
 
 39. p. 23, l. -13/-5:  I don't think this mention of the Aadhar project adds much, and it distracts from the points you want to highlight about the work in this paper.
 
+***EH: We can take this out***
+
 40. Supplement, p. 8, l. 18:  Change "de-facto" to "de facto".
 
 ***DONE***
@@ -211,7 +224,11 @@ Reviewer 1:
 
 42. the concept of ``match": The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).
 
+***EH: Don't call it primary goal, call it one of the primary goals***
+
 43. I strongly encourage the authors to not follow this trend and use the term ``ballistics" only when you are actually talking about ballistics.
+
+***EH: Change this, HH agrees.**
 
 44. 2nd to last line in the abstract: In point (a) ``correctly identify lands with too much damage to be suitable for matching" I suggest replacing the word ``matching" with ``comparison" to use the same terminology as the other pattern evidence disciplines.
 
@@ -222,6 +239,8 @@ Reviewer 1:
 ***DONE***
 
 46. Lines 156-158: The sentence ``The blue area around the signature are 95% bootstrapped confidence intervals based on 1,000 bootstrap samples." is confusing. The term ``signature" is defined two sentences further. Is the sentence referring to Figure 4b? If yes, it should probably come at the end of this paragraph.
+
+***HH: Remove blue area / references to it... maybe?***
 
 47. Figure 5: In this figure, where is the limit between bullet 1-5 and bullet 2-1?
 
@@ -238,7 +257,10 @@ Reviewer 1:
 ***HH: would a removal of the comma make it a complete sentence?***
 
 ***EH: I actually thought it already was a complete sentence... but I changed it to "The correlation peaks at a lag of -17, which indicates the largest amount of agreement between the signatures."***
+
 ***HH: Ta, as they say around here :)***
+
+***EH: Change to the correlation is maximizes.***
 
 50. Line 266: Capitalize the ``b" in ``by".
 
