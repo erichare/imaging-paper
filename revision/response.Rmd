@@ -212,7 +212,7 @@ Reviewer 1:
 
 39. p. 23, l. -13/-5:  I don't think this mention of the Aadhar project adds much, and it distracts from the points you want to highlight about the work in this paper.
 
-***EH: We can take this out***
+***We have removed references to the Aadhar project.***
 
 40. Supplement, p. 8, l. 18:  Change "de-facto" to "de facto".
 
@@ -224,11 +224,11 @@ Reviewer 1:
 
 42. the concept of ``match": The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).
 
-***EH: Don't call it primary goal, call it one of the primary goals***
+***We have clarified that matching two bullets is one of the goals, but not the sole or primary goal.***
 
 43. I strongly encourage the authors to not follow this trend and use the term ``ballistics" only when you are actually talking about ballistics.
 
-***EH: Change this, HH agrees.**
+***We have removed references to the term ``ballistics" except in the context of citing prior work which uses the term.***
 
 44. 2nd to last line in the abstract: In point (a) ``correctly identify lands with too much damage to be suitable for matching" I suggest replacing the word ``matching" with ``comparison" to use the same terminology as the other pattern evidence disciplines.
 
@@ -252,15 +252,7 @@ Reviewer 1:
 
 49. Caption of Figure 8: ``At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures." is not a complete sentence.
 
-***DONE***
-
-***HH: would a removal of the comma make it a complete sentence?***
-
-***EH: I actually thought it already was a complete sentence... but I changed it to "The correlation peaks at a lag of -17, which indicates the largest amount of agreement between the signatures."***
-
-***HH: Ta, as they say around here :)***
-
-***EH: Change to the correlation is maximizes.***
+***We have revised this caption to remove the ambiguity from the word ``peaks", which we had intended to mean "maximizes."***
 
 50. Line 266: Capitalize the ``b" in ``by".
 
