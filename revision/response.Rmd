@@ -184,7 +184,7 @@ Reviewer 1:
 
 32. p. 17, l. -13:  I'd prefer another term than "correlation" here.  In fact, the entire sentence could be improved.
 
-***DONE (Maybe)***
+***DONE***
 
 33. p. 17, l. -2:  Remove the comma after "indicates".
 
@@ -196,7 +196,7 @@ Reviewer 1:
 
 35. p. 20,  l. -3:  I really like the idea of including an inconclusive zone.
 
-***EH: Add thank you, and explain the ones that could be considered inconclusive. Lots more discussion would be needed about the extent of that zone.***
+***Thank you for the comment. We have chosen to leave off a more detailed discussion on an inconclusive zone. Certainly, formulating such a zone would have important implications in terms of the criminal justice system, but it is one that we felt was outside the scope of this particular paper. Certainly, should an automated algorithm like we propose be used as an aid in the conviction or the exoneration of suspects, much attention would be needed on the extent of this zone.***
 
 36. p. 21, Fig. 20:  Most of the features plotted have been defined, but I don't recall x1 and x2.  You may want to remind the reader about all the definitions, or have a table of features appear early in the random forests discussion.
 

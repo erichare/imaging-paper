@@ -54,3 +54,5 @@ imaging-supplement-concordance.tex
 imaging-paper-concordance.tex
 
 app/degraded_images/*
+
+imaging-paper.bbl

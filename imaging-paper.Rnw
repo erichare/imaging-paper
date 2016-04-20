@@ -1426,9 +1426,10 @@ imp$Variable <- row.names(imp)
 imp$Variable[c(7,8)] <- c("#matches", "#non-matches")
 imp1 <- subset(imp, !(Variable %in% c("x1", "sd.D", "S")))
 imp2 <- subset(imp, Variable %in% c("x1", "sd.D", "S"))
-qplot(MeanDecreaseGini,1, data=imp, geom="point") + 
-  geom_text(aes(y=1.2, label=Variable), angle=45, hjust=0, data=imp1) + 
-  geom_text(aes(y=0.8, label=Variable), angle=-45, hjust=0, data=imp2) + 
+imp3 <- subset(imp, !(Variable %in% c("x1", "x2", "sd.D", "lag")))
+qplot(MeanDecreaseGini,1, data=imp3, geom="point") + 
+  geom_text(aes(y=1.2, label=Variable), angle=45, hjust=0, data=subset(imp3, Variable != "S")) + 
+  geom_text(aes(y=1.2, label=Variable), angle=45, vjust=1.2, hjust=0, data=subset(imp3, Variable == "S")) + 
   ylim(c(0, 2.75)) + theme_bw() + ylab("") +
   theme(axis.ticks.y=element_blank(), axis.text.y=element_blank(),
         panel.grid.major.y=element_blank(), panel.grid.minor.y=element_blank()) +
