@@ -20,41 +20,25 @@ Reviewer B:
 
 5. The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the ``twicing" for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.
 
-***Using the cross correlation function as a method of alignment is actually pretty standard - the approriate references are now included.
-***
+***Using the cross correlation function as a method of alignment is actually pretty standard - the approriate references are now included.***
 
+***Additional papers considered (not complete, and not yet included in the paper, but I think all of them should be cited): chumbley:2010 uses 1d profiles and discusses several different angles of extraction (no alignment necessary, no grooves and no flattening) chubley:2010 is a much more detailed version over David Faden's thesis***
 
-***Additional papers considered (not complete, and not yet included in the paper, but I think all of them should be cited): 
-chumbley:2010 
-uses 1d profiles and discusses several different angles of extraction (no alignment necessary, no grooves and no flattening)
-chubley:2010 is a much more detailed version over David Faden's thesis***
+***chu:2010 describe extracting mean profile of an area of the image after untwisting the image ***
 
-***chu:2010
-describe extracting mean profile of an area of the image after untwisting the image ***
+***bachrach:2002 general description of an automated matching system based on 3D imaging. Uses cross-correlation function for alignment.***
 
-***bachrach:2002
-general description of an automated matching system based on 3D imaging. 
-Uses cross-correlation function for alignment.***
+***vorburger:2011 different uses of the cross-correlation function. One of them aligning profiles***
 
-***vorburger:2011
-different uses of the cross-correlation function. One of them aligning profiles***
+***bachrach:2006 67page final report for NIJ grant (for Intelligent Automation Inc.) wear study: "difference between comparing the nth and (n+1)th bullet fired by a barrel as opposed to the nth and (n+100)th bullet fired by a barrel? In other words, does the proximity between firings make a difference? Although some wear effect could be detected in both of these scenarios, these effects do not appear to be significant enough to prevent correct identification"***
 
-***bachrach:2006
-67page final report for NIJ grant (for Intelligent Automation Inc.)
-wear study: "difference between comparing the nth and (n+1)th bullet fired by a barrel as opposed to the nth and (n+100)th bullet fired by a barrel? In other words, does the proximity between firings make a difference? Although some wear effect could be detected in both of these scenarios, these effects do not appear to be significant enough to prevent correct identification"***
+***petraco:2012 I am not sure that this book is the same as the report for the NIJ grant. This is a huge effort, and we should certainly cite it, but there are not a lot of actual results included or comparisons done.***
 
-***petraco:2012
-I am not sure that this book is the same as the report for the NIJ grant. This is a huge effort, and we should certainly cite it, but there are not a lot of actual results included or comparisons done.***
+***riva:2014 automatic matching system based on 3d images of cartridge cases. Matching involves breech faces, but no striation marks.***
 
-***riva:2014
-automatic matching system based on 3d images of cartridge cases. Matching involves breech faces, but no striation marks.***
+***xie:2009 first sentence: "Every firearm has individual characteristics that are as unique to it as fingerprints are to human beings." the paper itself doesn't back up any of these claims. very disappointing***
 
-***xie:2009
-first sentence: "Every firearm has individual characteristics that are as unique to it as fingerprints are to human beings." the paper itself doesn't back up any of these claims. very disappointing***
-
-
-***leon:2006
-first sentence: "Fired bullets bear striation marks that can be thought of as a ‘‘fingerprint’’ left by the firearm." based on multiple 2d images. They extract a 1d 'signature'***
+***leon:2006 first sentence: "Fired bullets bear striation marks that can be thought of as a ‘‘fingerprint’’ left by the firearm." based on multiple 2d images. They extract a 1d 'signature'***
 
 6. page 7- figure 4- What exactly are you bootstrapping? It is unclear in the paper whether you are bootstrapping residual or bullets or something else entirely. Please clarify.
 
@@ -62,8 +46,7 @@ first sentence: "Fired bullets bear striation marks that can be thought of as a 
 
 7. There should have been a comparison of different classification methods to show that the random forest is reasonable.
 
-***I am not quite sure what a 'reasonable' classification method is supposed to mean. Shouldn't a classification method be judged by its success in predicting the outcome? 
-Apart from that, random forests are based on decision trees, which are an extremely flexible tool for classification, that can deal with quantitative and categorical types of variables and, in the implementation we used, also deal with some missing values (which was not needed in the data here).***
+***I am not quite sure what a 'reasonable' classification method is supposed to mean. Shouldn't a classification method be judged by its success in predicting the outcome? Apart from that, random forests are based on decision trees, which are an extremely flexible tool for classification, that can deal with quantitative and categorical types of variables and, in the implementation we used, also deal with some missing values (which was not needed in the data here).***
 
 8. On the random forest classifier- are the prior probabilities being estimated from the cross comparisons described on page 15? What exactly are the prior probabilities used in the random forest?
 
@@ -89,8 +72,6 @@ Apart from that, random forests are based on decision trees, which are an extrem
 
 ***probably refers to articles such as ``how good is good enough?", books ``modern scientific evidence", "judging science" .... I am not sure that those are really necessary or helpful. It might be better to re-phrase the sentence in the conclusion.***
 
-
-
 13. A discussion on how the authors view the use of their matching algorithm would be useful to the forensic community. For example are they intending to use this to build a closed set identification system similar to IAFIS or are them intending this to work in a manner similar to a biometric verification system? etc.
 
 ***HH: in my view we ourselves are not building a closed set identification system. The problem with existing closed set systems is that it is unclear how the matching is exactly done and what statistical properties it has (number of parameters, distribution of them, sensitivities). Repeatability and reproducibility is a huge issue in this area. 'Matching' is also not just a single step - it consists, as we have laid out in the paper, of a series of steps, which all deserve attention. While the reviewer pointed out to us to use 'standard methods' - there are no actual standards in place. There might be a set of alternatives, and some evidence as to which methods might work better in some situations than others, but there is a lack of an in-depth discussion of the alternatives at each step as well as an overall discussion. In this manuscript we are detailing one route to divvy up the process and provide the code for others to reproduce our findings.  ***
@@ -98,8 +79,6 @@ Apart from that, random forests are based on decision trees, which are an extrem
 Reviewer C:
 
 14. there is a lack of knowledge of the existing literature on statistical work performed on tool marks and firearms. For example, the work performed by Nicholas Petraco, Fabiano Riva, or Alan Zheng in the past 5 years is not mentioned. Instead, old research projects are mentioned, which mostly focus on manual identification. The authors need to discuss the novelty of their method (and how it potentially addresses the shortcomings of these recent methods)
-
-
 
 15.  The authors would need to study (or at least discuss extensively) the ability of their method to capture the variability in bullet profiles over time (at interval of several dozen of bullets fired by the same weapon, when the weapon has been cleaned, or when the bullet was degraded by hitting a target). In addition, a dataset of 10 firearms (even consecutively manufactured) does not provide any information on the rarity of a particular bullet profile, and therefore does not address the second probability statement. Alternatively, the proposed metrics could be tested in a database searching situation, which has not been done.
 
@@ -130,33 +109,25 @@ Reviewer 1:
 
 21. First, the term "land" is used in the title but not defined until p. 3.  I recommend changing the title, to ensure broad comprehenson; perhaps "Automatic Matching of Bullet Marks," or something of that kind.
 
-***HH: Let's discuss that on Monday***
+***To clarify the title, we have modified the abstract to provide a brief definition of bullet lands.***
 
-***EH: Quick definition of land in abstract***
+22. p. 3, l. -10:  Be explicit that grooves and striations are synonyms.
 
-25. p. 3, l. -10:  Be explicit that grooves and striations are synonyms.
+***Grooves and striations are actually not synonyms in this case. The grooves are impressions induced by the rifling of the gun barrel, and properties associated with them are class characteristics not unique to individual gun barrels. We've taken care to ensure the distinction is clear between the striae of interest, which are extracted from the lands of the bullet (between grooves), and the grooves themselves.***
 
-***HH: this is clearly a misunderstanding, so we need to be nice about breaking this to the reviewer, and emphasize it in the paper some more.***
-
-***EH: Hm. I think we phrased this correctly and the reviewer misunderstood - We literally ARE showing groove to groove impressions. Maybe we need to be more clear about groove impressions... but in the following paragraph + the image of the bullet I think its fairly clear. We could add in a little disclaimer like "Grooves, not to be confused with striae, are..."***
-
-22. Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth. 
+23. Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth. 
 ***EH: Add typical width of groove + lands***
 
 ***EH: Presumably the typical width is some kind of class characteristic dependent on the gun itself, right?***
 ***HH: I am not sure about the width of a striation - the width depends on where it is measured (in both x and z direction). I'm sure there are definitions of that available. We might need some more literature.***
 
-* Make note of the width 35 * 6 
-
-23. p. 2, l. -1:  It would be good to reword so the sentence doesn't start with "x3p".  Also p. 3, l. 2.
+24. p. 2, l. -1:  It would be good to reword so the sentence doesn't start with "x3p".  Also p. 3, l. 2.
 
 ***DONE***
 
-24. p. 3, Fig. 1:  The numbers on the y-axis are superimposed.
+25. p. 3, Fig. 1:  The numbers on the y-axis are superimposed.
 
-***EH: We could slightly rotate the image in RGL, but the top-down view is nice. Alternatively I could just disable the axis labels - We don't really need to see them in this image, right?***
-
-***HH: I just deleted the values from the axis***
+***We have removed the values from the y-axis, as they are not necessary in interpreting the image.***
 
 26. p. 7, l. 1:  Make this "... can be described in the form ...".
 
@@ -180,7 +151,7 @@ Reviewer 1:
 
 31. p. 16, l. -1/-2:  Could you elaborate on why a "large number of maximal CMS by itself is not indicative of a match"?  I think the reason is that there could be other marks that are completely incompatible and preclude a match, based on the next sentence, but I am not sure and a few words would be helpful.  
 
-***EH: From our data out of non matches its a 2 / 10212 event... but with a lot of pairwise comparisons, it will happen by chance even if its very unlikely. Adding a couple more bullets / comparisons we may see higher values.***
+***In the Hamby study, with 10,212 land-to-land comparisons which are known non-matches, two of these comparisons still yielded a CMS of 12. Figure 13 emphasizes this. In our particular data, all comparisons with a CMS of 13 or more were in fact matches. Still, it is likely due to pure chance alone that, particularly if more bullets were used in comparison, a small portion would have high pairwise CMS despite being non-matches.***
 
 32. p. 17, l. -13:  I'd prefer another term than "correlation" here.  In fact, the entire sentence could be improved.
 
