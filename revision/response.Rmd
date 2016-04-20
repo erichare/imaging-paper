@@ -5,20 +5,20 @@ date: "April 14, 2016"
 output: html_document
 ---
 
-AE:
+# AE
 
 1. The paper should better explain the role of the new methods for forensic science. The authors should consider referencing some of the previous work the reviewers mention.
 2. Methodologically, the crux of the data analysis seems to be a generic application of decision trees. It would be good to clarify that aspect, and to more formally explain how the ensemble of the steps took by the authors to complete this work can be applied to other forensic science questions.
 
 
-Reviewer A:
+# Reviewer A
 
 4. Random forests, as used and described on pages 18-21 of the paper comes out looking like a winner, but other than that success---worth reporting *somewhere*---, there is no new information on that method. No new insights. And certainly no comparisons with the tens of other things that could have been tried.
 
 
-Reviewer B:
+# Reviewer B
 
-5. The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the ``twicing" for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.
+5. The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the "twicing" for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.
 
 ***Using the cross correlation function as a method of alignment is actually pretty standard - the approriate references are now included.***
 
@@ -68,15 +68,15 @@ Reviewer B:
 
 ***EH: Yeah, I was a little unsure of this. Maybe we can ask Alicia, and if she also is confused by it I can type up an explanation on how the OOB error is computed.***
 
-12. In the conclusions section the authors mention an assumption of ``uniqueness". In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.
+12. In the conclusions section the authors mention an assumption of "uniqueness". In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.
 
-***probably refers to articles such as ``how good is good enough?", books ``modern scientific evidence", "judging science" .... I am not sure that those are really necessary or helpful. It might be better to re-phrase the sentence in the conclusion.***
+***probably refers to articles such as "how good is good enough?", books "modern scientific evidence", "judging science" .... I am not sure that those are really necessary or helpful. It might be better to re-phrase the sentence in the conclusion.***
 
 13. A discussion on how the authors view the use of their matching algorithm would be useful to the forensic community. For example are they intending to use this to build a closed set identification system similar to IAFIS or are them intending this to work in a manner similar to a biometric verification system? etc.
 
 ***HH: in my view we ourselves are not building a closed set identification system. The problem with existing closed set systems is that it is unclear how the matching is exactly done and what statistical properties it has (number of parameters, distribution of them, sensitivities). Repeatability and reproducibility is a huge issue in this area. 'Matching' is also not just a single step - it consists, as we have laid out in the paper, of a series of steps, which all deserve attention. While the reviewer pointed out to us to use 'standard methods' - there are no actual standards in place. There might be a set of alternatives, and some evidence as to which methods might work better in some situations than others, but there is a lack of an in-depth discussion of the alternatives at each step as well as an overall discussion. In this manuscript we are detailing one route to divvy up the process and provide the code for others to reproduce our findings.  ***
 
-Reviewer C:
+# Reviewer C
 
 14. there is a lack of knowledge of the existing literature on statistical work performed on tool marks and firearms. For example, the work performed by Nicholas Petraco, Fabiano Riva, or Alan Zheng in the past 5 years is not mentioned. Instead, old research projects are mentioned, which mostly focus on manual identification. The authors need to discuss the novelty of their method (and how it potentially addresses the shortcomings of these recent methods)
 
@@ -105,7 +105,7 @@ Reviewer C:
 
 ***Done for figure 15 and 16***
 
-Reviewer 1:
+# Reviewer 1
 
 21. First, the term "land" is used in the title but not defined until p. 3.  I recommend changing the title, to ensure broad comprehenson; perhaps "Automatic Matching of Bullet Marks," or something of that kind.
 
@@ -116,9 +116,11 @@ Reviewer 1:
 ***Grooves and striations are actually not synonyms in this case. The grooves are impressions induced by the rifling of the gun barrel, and properties associated with them are class characteristics not unique to individual gun barrels. We've taken care to ensure the distinction is clear between the striae of interest, which are extracted from the lands of the bullet (between grooves), and the grooves themselves.***
 
 23. Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth. 
+
 ***EH: Add typical width of groove + lands***
 
 ***EH: Presumably the typical width is some kind of class characteristic dependent on the gun itself, right?***
+
 ***HH: I am not sure about the width of a striation - the width depends on where it is measured (in both x and z direction). I'm sure there are definitions of that available. We might need some more literature.***
 
 24. p. 2, l. -1:  It would be good to reword so the sentence doesn't start with "x3p".  Also p. 3, l. 2.
@@ -152,6 +154,8 @@ Reviewer 1:
 31. p. 16, l. -1/-2:  Could you elaborate on why a "large number of maximal CMS by itself is not indicative of a match"?  I think the reason is that there could be other marks that are completely incompatible and preclude a match, based on the next sentence, but I am not sure and a few words would be helpful.  
 
 ***In the Hamby study, with 10,212 land-to-land comparisons which are known non-matches, two of these comparisons still yielded a CMS of 12. Figure 13 emphasizes this. In our particular data, all comparisons with a CMS of 13 or more were in fact matches. Still, it is likely due to pure chance alone that, particularly if more bullets were used in comparison, a small portion would have high pairwise CMS despite being non-matches.***
+
+***EH: Talk about adding features decreasing error rate. CMS by itself is not a sufficient condition for a match...***
 
 32. p. 17, l. -13:  I'd prefer another term than "correlation" here.  In fact, the entire sentence could be improved.
 
@@ -189,27 +193,29 @@ Reviewer 1:
 
 ***DONE***
 
-41. So, my suggestion here is to change the sentence in the abstract to something like ``Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel." Or ``...help the trier of fact determine...".
+# Reviewer 2
+
+41. So, my suggestion here is to change the sentence in the abstract to something like "Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel." Or "...help the trier of fact determine...".
 
 ***DONE***
 
-42. the concept of ``match": The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).
+42. the concept of "match": The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).
 
 ***We have clarified that matching two bullets is one of the goals, but not the sole or primary goal.***
 
-43. I strongly encourage the authors to not follow this trend and use the term ``ballistics" only when you are actually talking about ballistics.
+43. I strongly encourage the authors to not follow this trend and use the term "ballistics" only when you are actually talking about ballistics.
 
-***We have removed references to the term ``ballistics" except in the context of citing prior work which uses the term.***
+***We have removed references to the term "ballistics" except in the context of citing prior work which uses the term.***
 
-44. 2nd to last line in the abstract: In point (a) ``correctly identify lands with too much damage to be suitable for matching" I suggest replacing the word ``matching" with ``comparison" to use the same terminology as the other pattern evidence disciplines.
-
-***DONE***
-
-45. Line 55: Replace ``in the forensic sciences" with ``in forensic science". (See Margot P, Commentary on The Need for a Research Culture in the Forensic Sciences, UCLA Law Review (2011) 58: 795-801.)
+44. 2nd to last line in the abstract: In point (a) "correctly identify lands with too much damage to be suitable for matching" I suggest replacing the word "matching" with "comparison" to use the same terminology as the other pattern evidence disciplines.
 
 ***DONE***
 
-46. Lines 156-158: The sentence ``The blue area around the signature are 95% bootstrapped confidence intervals based on 1,000 bootstrap samples." is confusing. The term ``signature" is defined two sentences further. Is the sentence referring to Figure 4b? If yes, it should probably come at the end of this paragraph.
+45. Line 55: Replace "in the forensic sciences" with "in forensic science". (See Margot P, Commentary on The Need for a Research Culture in the Forensic Sciences, UCLA Law Review (2011) 58: 795-801.)
+
+***DONE***
+
+46. Lines 156-158: The sentence "The blue area around the signature are 95% bootstrapped confidence intervals based on 1,000 bootstrap samples." is confusing. The term "signature" is defined two sentences further. Is the sentence referring to Figure 4b? If yes, it should probably come at the end of this paragraph.
 
 ***HH: Remove blue area / references to it... maybe?***
 
@@ -217,14 +223,16 @@ Reviewer 1:
 
 ***Light grey shading in the background was added to help with the distinction between the two flattened bullet lands.***
 
-48. Line 246: Replace ``this representations" with ``this representation" or ``these representations"
+48. Line 246: Replace "this representations" with "this representation" or "these representations"
 
 ***DONE***
 
-49. Caption of Figure 8: ``At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures." is not a complete sentence.
+49. Caption of Figure 8: "At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures." is not a complete sentence.
 
-***We have revised this caption to remove the ambiguity from the word ``peaks", which we had intended to mean "maximizes."***
+***We have revised this caption to remove the ambiguity from the word "peaks", which we had intended to mean "maximizes."***
 
-50. Line 266: Capitalize the ``b" in ``by".
+50. Line 266: Capitalize the "b" in "by".
 
 ***DONE***
+
+***EH: Add reviewers 2 and 3 to the document***

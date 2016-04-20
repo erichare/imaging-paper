@@ -116,18 +116,23 @@ $(document).ready(function () {
 </div>
 
 
-<p>AE:</p>
+<div id="ae" class="section level1">
+<h1>AE</h1>
 <ol style="list-style-type: decimal">
 <li>The paper should better explain the role of the new methods for forensic science. The authors should consider referencing some of the previous work the reviewers mention.</li>
 <li>Methodologically, the crux of the data analysis seems to be a generic application of decision trees. It would be good to clarify that aspect, and to more formally explain how the ensemble of the steps took by the authors to complete this work can be applied to other forensic science questions.</li>
 </ol>
-<p>Reviewer A:</p>
+</div>
+<div id="reviewer-a" class="section level1">
+<h1>Reviewer A</h1>
 <ol start="4" style="list-style-type: decimal">
 <li>Random forests, as used and described on pages 18-21 of the paper comes out looking like a winner, but other than that success—worth reporting <em>somewhere</em>—, there is no new information on that method. No new insights. And certainly no comparisons with the tens of other things that could have been tried.</li>
 </ol>
-<p>Reviewer B:</p>
+</div>
+<div id="reviewer-b" class="section level1">
+<h1>Reviewer B</h1>
 <ol start="5" style="list-style-type: decimal">
-<li>The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See <a href="https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf" class="uri">https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf</a> The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the ``twicing&quot; for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.</li>
+<li>The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See <a href="https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf" class="uri">https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf</a> The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the “twicing” for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.</li>
 </ol>
 <p><strong><em>Using the cross correlation function as a method of alignment is actually pretty standard - the approriate references are now included.</em></strong></p>
 <p><strong><em>Additional papers considered (not complete, and not yet included in the paper, but I think all of them should be cited): chumbley:2010 uses 1d profiles and discusses several different angles of extraction (no alignment necessary, no grooves and no flattening) chubley:2010 is a much more detailed version over David Faden’s thesis</em></strong></p>
@@ -166,14 +171,16 @@ $(document).ready(function () {
 <p><strong><em>HH: I’m sure I am misunderstanding the comment, but I don’t know how to answer this question. The standard error of a rate in (0,1) would be sqrt(p</em>(1-p)). So because p is small the square root is going to be still pretty small. We are presenting out of bag error rates for the random forest - maybe we need to explain what out-of bag means in more detail?</strong>*</p>
 <p><strong><em>EH: Yeah, I was a little unsure of this. Maybe we can ask Alicia, and if she also is confused by it I can type up an explanation on how the OOB error is computed.</em></strong></p>
 <ol start="12" style="list-style-type: decimal">
-<li>In the conclusions section the authors mention an assumption of ``uniqueness“. In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.</li>
+<li>In the conclusions section the authors mention an assumption of “uniqueness”. In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.</li>
 </ol>
-<p><strong><em>probably refers to articles such as <code>how good is good enough?&quot;, books</code>modern scientific evidence“,”judging science&quot; …. I am not sure that those are really necessary or helpful. It might be better to re-phrase the sentence in the conclusion.</em></strong></p>
+<p><strong><em>probably refers to articles such as “how good is good enough?”, books “modern scientific evidence”, “judging science” …. I am not sure that those are really necessary or helpful. It might be better to re-phrase the sentence in the conclusion.</em></strong></p>
 <ol start="13" style="list-style-type: decimal">
 <li>A discussion on how the authors view the use of their matching algorithm would be useful to the forensic community. For example are they intending to use this to build a closed set identification system similar to IAFIS or are them intending this to work in a manner similar to a biometric verification system? etc.</li>
 </ol>
 <p><strong><em>HH: in my view we ourselves are not building a closed set identification system. The problem with existing closed set systems is that it is unclear how the matching is exactly done and what statistical properties it has (number of parameters, distribution of them, sensitivities). Repeatability and reproducibility is a huge issue in this area. ‘Matching’ is also not just a single step - it consists, as we have laid out in the paper, of a series of steps, which all deserve attention. While the reviewer pointed out to us to use ‘standard methods’ - there are no actual standards in place. There might be a set of alternatives, and some evidence as to which methods might work better in some situations than others, but there is a lack of an in-depth discussion of the alternatives at each step as well as an overall discussion. In this manuscript we are detailing one route to divvy up the process and provide the code for others to reproduce our findings. </em></strong></p>
-<p>Reviewer C:</p>
+</div>
+<div id="reviewer-c" class="section level1">
+<h1>Reviewer C</h1>
 <ol start="14" style="list-style-type: decimal">
 <li><p>there is a lack of knowledge of the existing literature on statistical work performed on tool marks and firearms. For example, the work performed by Nicholas Petraco, Fabiano Riva, or Alan Zheng in the past 5 years is not mentioned. Instead, old research projects are mentioned, which mostly focus on manual identification. The authors need to discuss the novelty of their method (and how it potentially addresses the shortcomings of these recent methods)</p></li>
 <li><p>The authors would need to study (or at least discuss extensively) the ability of their method to capture the variability in bullet profiles over time (at interval of several dozen of bullets fired by the same weapon, when the weapon has been cleaned, or when the bullet was degraded by hitting a target). In addition, a dataset of 10 firearms (even consecutively manufactured) does not provide any information on the rarity of a particular bullet profile, and therefore does not address the second probability statement. Alternatively, the proposed metrics could be tested in a database searching situation, which has not been done.</p></li>
@@ -199,7 +206,9 @@ $(document).ready(function () {
 <li>If would be helpful if the legend from Fig15 could include a definition of the CMS, CNMS, CCF, … acronyms such that the reader does not need to flip back and forth between several pages.</li>
 </ol>
 <p><strong><em>Done for figure 15 and 16</em></strong></p>
-<p>Reviewer 1:</p>
+</div>
+<div id="reviewer-1" class="section level1">
+<h1>Reviewer 1</h1>
 <ol start="21" style="list-style-type: decimal">
 <li>First, the term “land” is used in the title but not defined until p. 3. I recommend changing the title, to ensure broad comprehenson; perhaps “Automatic Matching of Bullet Marks,” or something of that kind.</li>
 </ol>
@@ -209,9 +218,11 @@ $(document).ready(function () {
 </ol>
 <p><strong><em>Grooves and striations are actually not synonyms in this case. The grooves are impressions induced by the rifling of the gun barrel, and properties associated with them are class characteristics not unique to individual gun barrels. We’ve taken care to ensure the distinction is clear between the striae of interest, which are extracted from the lands of the bullet (between grooves), and the grooves themselves.</em></strong></p>
 <ol start="23" style="list-style-type: decimal">
-<li>Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth. <strong><em>EH: Add typical width of groove + lands</em></strong></li>
+<li>Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth.</li>
 </ol>
-<p><strong><em>EH: Presumably the typical width is some kind of class characteristic dependent on the gun itself, right?</em></strong> <strong><em>HH: I am not sure about the width of a striation - the width depends on where it is measured (in both x and z direction). I’m sure there are definitions of that available. We might need some more literature.</em></strong></p>
+<p><strong><em>EH: Add typical width of groove + lands</em></strong></p>
+<p><strong><em>EH: Presumably the typical width is some kind of class characteristic dependent on the gun itself, right?</em></strong></p>
+<p><strong><em>HH: I am not sure about the width of a striation - the width depends on where it is measured (in both x and z direction). I’m sure there are definitions of that available. We might need some more literature.</em></strong></p>
 <ol start="24" style="list-style-type: decimal">
 <li>p. 2, l. -1: It would be good to reword so the sentence doesn’t start with “x3p”. Also p. 3, l. 2.</li>
 </ol>
@@ -244,6 +255,7 @@ $(document).ready(function () {
 <li>p. 16, l. -1/-2: Could you elaborate on why a “large number of maximal CMS by itself is not indicative of a match”? I think the reason is that there could be other marks that are completely incompatible and preclude a match, based on the next sentence, but I am not sure and a few words would be helpful.</li>
 </ol>
 <p><strong><em>In the Hamby study, with 10,212 land-to-land comparisons which are known non-matches, two of these comparisons still yielded a CMS of 12. Figure 13 emphasizes this. In our particular data, all comparisons with a CMS of 13 or more were in fact matches. Still, it is likely due to pure chance alone that, particularly if more bullets were used in comparison, a small portion would have high pairwise CMS despite being non-matches.</em></strong></p>
+<p><strong><em>EH: Talk about adding features decreasing error rate. CMS by itself is not a sufficient condition for a match…</em></strong></p>
 <ol start="32" style="list-style-type: decimal">
 <li>p. 17, l. -13: I’d prefer another term than “correlation” here. In fact, the entire sentence could be improved.</li>
 </ol>
@@ -280,28 +292,31 @@ $(document).ready(function () {
 <li>Supplement, p. 8, l. 18: Change “de-facto” to “de facto”.</li>
 </ol>
 <p><strong><em>DONE</em></strong></p>
+</div>
+<div id="reviewer-2" class="section level1">
+<h1>Reviewer 2</h1>
 <ol start="41" style="list-style-type: decimal">
-<li>So, my suggestion here is to change the sentence in the abstract to something like <code>Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel.&quot; Or</code>…help the trier of fact determine…“.</li>
+<li>So, my suggestion here is to change the sentence in the abstract to something like “Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel.” Or “…help the trier of fact determine…”.</li>
 </ol>
 <p><strong><em>DONE</em></strong></p>
 <ol start="42" style="list-style-type: decimal">
-<li>the concept of ``match“: The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).</li>
+<li>the concept of “match”: The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).</li>
 </ol>
 <p><strong><em>We have clarified that matching two bullets is one of the goals, but not the sole or primary goal.</em></strong></p>
 <ol start="43" style="list-style-type: decimal">
-<li>I strongly encourage the authors to not follow this trend and use the term ``ballistics&quot; only when you are actually talking about ballistics.</li>
+<li>I strongly encourage the authors to not follow this trend and use the term “ballistics” only when you are actually talking about ballistics.</li>
 </ol>
-<p><strong><em>We have removed references to the term ``ballistics&quot; except in the context of citing prior work which uses the term.</em></strong></p>
+<p><strong><em>We have removed references to the term “ballistics” except in the context of citing prior work which uses the term.</em></strong></p>
 <ol start="44" style="list-style-type: decimal">
-<li>2nd to last line in the abstract: In point (a) <code>correctly identify lands with too much damage to be suitable for matching&quot; I suggest replacing the word</code>matching&quot; with ``comparison&quot; to use the same terminology as the other pattern evidence disciplines.</li>
+<li>2nd to last line in the abstract: In point (a) “correctly identify lands with too much damage to be suitable for matching” I suggest replacing the word “matching” with “comparison” to use the same terminology as the other pattern evidence disciplines.</li>
 </ol>
 <p><strong><em>DONE</em></strong></p>
 <ol start="45" style="list-style-type: decimal">
-<li>Line 55: Replace <code>in the forensic sciences&quot; with</code>in forensic science“. (See Margot P, Commentary on The Need for a Research Culture in the Forensic Sciences, UCLA Law Review (2011) 58: 795-801.)</li>
+<li>Line 55: Replace “in the forensic sciences” with “in forensic science”. (See Margot P, Commentary on The Need for a Research Culture in the Forensic Sciences, UCLA Law Review (2011) 58: 795-801.)</li>
 </ol>
 <p><strong><em>DONE</em></strong></p>
 <ol start="46" style="list-style-type: decimal">
-<li>Lines 156-158: The sentence <code>The blue area around the signature are 95% bootstrapped confidence intervals based on 1,000 bootstrap samples.&quot; is confusing. The term</code>signature&quot; is defined two sentences further. Is the sentence referring to Figure 4b? If yes, it should probably come at the end of this paragraph.</li>
+<li>Lines 156-158: The sentence “The blue area around the signature are 95% bootstrapped confidence intervals based on 1,000 bootstrap samples.” is confusing. The term “signature” is defined two sentences further. Is the sentence referring to Figure 4b? If yes, it should probably come at the end of this paragraph.</li>
 </ol>
 <p><strong><em>HH: Remove blue area / references to it… maybe?</em></strong></p>
 <ol start="47" style="list-style-type: decimal">
@@ -309,17 +324,19 @@ $(document).ready(function () {
 </ol>
 <p><strong><em>Light grey shading in the background was added to help with the distinction between the two flattened bullet lands.</em></strong></p>
 <ol start="48" style="list-style-type: decimal">
-<li>Line 246: Replace <code>this representations&quot; with</code>this representation&quot; or ``these representations&quot;</li>
+<li>Line 246: Replace “this representations” with “this representation” or “these representations”</li>
 </ol>
 <p><strong><em>DONE</em></strong></p>
 <ol start="49" style="list-style-type: decimal">
-<li>Caption of Figure 8: ``At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures.&quot; is not a complete sentence.</li>
+<li>Caption of Figure 8: “At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures.” is not a complete sentence.</li>
 </ol>
-<p>***We have revised this caption to remove the ambiguity from the word ``peaks“, which we had intended to mean”maximizes.“***</p>
+<p><strong><em>We have revised this caption to remove the ambiguity from the word “peaks”, which we had intended to mean “maximizes.”</em></strong></p>
 <ol start="50" style="list-style-type: decimal">
-<li>Line 266: Capitalize the <code>b&quot; in</code>by“.</li>
+<li>Line 266: Capitalize the “b” in “by”.</li>
 </ol>
 <p><strong><em>DONE</em></strong></p>
+<p><strong><em>EH: Add reviewers 2 and 3 to the document</em></strong></p>
+</div>
 
 
 
