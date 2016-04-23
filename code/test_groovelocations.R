@@ -3,24 +3,41 @@ library(x3prplus)
 library(ggplot2)
 library(dplyr)
 
-grooves <- read.csv("csvs/grooves-mean.csv")
+ccs <- read.csv("csvs/crosscuts-25.csv")
+grooves <- read.csv("csvs/grooves.csv")
 
-lapply(as.data.frame(t(grooves)), function(x) {
-    mybullet <- read.x3pplus(as.character(x[1]))
-    fortified <- fortify_x3p(mybullet)
+apply(ccs, 1, function(row) {
+    cat(row[1])
     
-    cc <- fortified %>%
-        group_by(y) %>%
-        summarise(value = mean(value, na.rm = TRUE))
+    mybullet <- get_crosscut(row[1], x = as.numeric(row[2]))
+    relevant.groove <- filter(grooves, bullet == row[1], x == mybullet$x[1])
     
-    cc2 <- get_crosscut(bullet = mybullet, x = 136)
-    
-    print(qplot(y, value, data = cc, geom = "line",colour = I("red")) +
+    print(qplot(y, value, data = mybullet, geom = "line") +
         theme_bw() +
-        geom_vline(xintercept = as.numeric(as.character(x[2])), colour = I("blue")) +
-        geom_vline(xintercept = as.numeric(as.character(x[3])), colour = I("blue")) +
-        geom_line(data = cc2, alpha = I(0.8)))
-    
-    value <- readline("Press Enter to Continue, or q to Quit")
+        geom_vline(xintercept = relevant.groove$groove_left, color = "blue") +
+        geom_vline(xintercept = relevant.groove$groove_right, color = "blue"))
+
+    value <- readline("Press Enter to Continue, g to enter groove, or q to Quit")
     if (value == "q") break;
+    
+    if (value == "g") {
+        newvalue <- ""
+        while (newvalue != "g") {
+            left <- as.numeric(readline("Enter the coordinate of the left groove "))
+            right <- as.numeric(readline("Enter the coordinate of the right groove "))
+            
+            print(qplot(y, value, data = mybullet, geom = "line") +
+                theme_bw() +
+                geom_vline(xintercept = left, color = "blue") +
+                geom_vline(xintercept = right, color = "blue"))
+            
+            newvalue <- readline("Press g to confirm, or any other key to try again")
+        }
+        
+        grooves$groove_left[grooves$bullet == row[1] & grooves$x == mybullet$x[1]] <<- left
+        grooves$groove_right[grooves$bullet == row[1] & grooves$x == mybullet$x[1]] <<- right
+        grooves$manual[grooves$bullet == row[1] & grooves$x == mybullet$x[1]] <<- TRUE
+    }
 })
+
+write.csv(grooves, file = "csvs/grooves.csv", row.names = FALSE)
