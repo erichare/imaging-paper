@@ -39,12 +39,12 @@ for (span in c(25)) {
     dataStr <- sprintf("data-%d-25", span) # using crosscuts-25.csv
     
     if (!file.exists(dataStr)) dir.create(dataStr)
-    for (j in 1:length(all_bullets)) {
-        reslist <- lapply(all_bullets, function(x) {
+    for (j in 1:length(unknowns)) {
+        reslist <- lapply(knowns, function(x) {
             cat("Processing", j, "vs", basename(x$path), "with span", span, "\n")
             
             br1 <- filter(bullets_smoothed, bullet == x$path)
-            br2 <- filter(bullets_smoothed, bullet == all_bullets[[j]]$path)
+            br2 <- filter(bullets_smoothed, bullet == unknowns[[j]]$path)
             
             if (all_bullets[[j]]$path != x$path) {
                 bulletGetMaxCMS(br1, br2, span=span)
