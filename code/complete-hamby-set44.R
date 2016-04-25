@@ -38,10 +38,10 @@ for (span in c(25)) {
     dataStr <- sprintf("data-set44-%d-25", span) # using crosscuts-25.csv
     
     if (!file.exists(dataStr)) dir.create(dataStr)
-    for (j in 1:210) {
-        reslist <- lapply(c(knowns, unknowns), function(x) {
+    for (j in 1:90) {
+        reslist <- lapply(knowns, function(x) {
             cat("Processing", j, "vs", basename(x$path), "with span", span, "\n")
-            sigh <- c(knowns, unknowns)[[j]]
+            sigh <- unknowns[[j]]
             
             br1 <- filter(bullets_smoothed, bullet == x$path)
             br2 <- filter(bullets_smoothed, bullet == sigh$path)
