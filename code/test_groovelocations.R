@@ -6,7 +6,7 @@ library(dplyr)
 ccs <- read.csv("csvs/crosscuts-25-set44.csv")
 grooves <- read.csv("csvs/grooves-set44.csv")
 
-apply(ccs[-(1:27),], 1, function(row) {
+apply(ccs, 1, function(row) {
     cat(row[1])
     
     mybullet <- get_crosscut(row[1], x = as.numeric(row[2]), transpose = TRUE)
