@@ -77,7 +77,7 @@ matches$id <- 1:nrow(matches)
 
 library(reshape2)
 mm <- melt(matches, id.var="id")
-mm <- subset(mm, value != "Ukn Bullet ")
+mm <- subset(mm, value != "Ukn Bullet " & value != "")
 
 CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
 CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
