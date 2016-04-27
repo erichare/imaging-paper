@@ -22,8 +22,8 @@ all_bullets <- lapply(as.character(ccs$path), function(x) {
 
 grooves <- read.csv("csvs/grooves.csv")
 
-knowns <- all_bullets[1:120]
-unknowns <- all_bullets[121:210]
+knowns <- all_bullets[1:240]
+unknowns <- all_bullets[241:420]
 bullets_processed <- lapply(all_bullets, function(bul) {
     cat("Computing processed bullet", basename(bul$path), "\n")
     
