@@ -1,1 +1,120 @@
-Br1 Bullet 1-1,Br1 Bullet 2-3,F-1,C-5,Br1 Bullet 1-2,Br1 Bullet 2-4,F-2,C-6,Br1 Bullet 1-3,Br1 Bullet 2-5,F-3,C-1,Br1 Bullet 1-4,Br1 Bullet 2-6,F-4,C-2,Br1 Bullet 1-5,Br1 Bullet 2-1,F-5,C-3,Br1 Bullet 1-6,Br1 Bullet 2-2,F-6,C-4,Br2 Bullet 1-1,Br2 Bullet 2-2,H-5,,Br2 Bullet 1-2,Br2 Bullet 2-3,H-6,,Br2 Bullet 1-3,Br2 Bullet 2-4,H-1,,Br2 Bullet 1-4,Br2 Bullet 2-5,H-2,,Br2 Bullet 1-5,Br2 Bullet 2-6,H-3,,Br2 Bullet 1-6,Br2 Bullet 2-1,H-4,,Br3 Bullet 1-1,Br3 Bullet 2-3,X-6,S-1,Br3 Bullet 1-2,Br3 Bullet 2-4,X-1,S-2,Br3 Bullet 1-3,Br3 Bullet 2-5,X-2,S-3,Br3 Bullet 1-4,Br3 Bullet 2-6,X-3,S-4,Br3 Bullet 1-5,Br3 Bullet 2-1,X-4,S-5,Br3 Bullet 1-6,Br3 Bullet 2-2,X-5,S-6,Br5 Bullet 1-1,Br5 Bullet 2-3,D-3,Z-2,Br5 Bullet 1-2,Br5 Bullet 2-4,D-4,Z-3,Br5 Bullet 1-3,Br5 Bullet 2-5,D-5,Z-4,Br5 Bullet 1-4,Br5 Bullet 2-6,D-6,Z-5,Br5 Bullet 1-5,Br5 Bullet 2-1,D-1,Z-6,Br5 Bullet 1-6,Br5 Bullet 2-2,D-2,Z-1,Br6 Bullet 1-1,Br6 Bullet 2-4,M-6,E-4,Y-1Br6 Bullet 1-2,Br6 Bullet 2-5,M-1,E-5,Y-2Br6 Bullet 1-3,Br6 Bullet 2-6,M-2,E-6,Y-3Br6 Bullet 1-4,Br6 Bullet 2-1,M-3,E-1,Y-4Br6 Bullet 1-5,Br6 Bullet 2-2,M-4,E-2,Y-5Br6 Bullet 1-6,Br6 Bullet 2-3,M-5,E-3,Y-6Br7 Bullet 1-1,Br7 Bullet 2-2,J-2,,Br7 Bullet 1-2,Br7 Bullet 2-3,J-3,,Br7 Bullet 1-3,Br7 Bullet 2-4,J-4,,Br7 Bullet 1-4,Br7 Bullet 2-5,J-5,,Br7 Bullet 1-5,Br7 Bullet 2-6,J-6,,Br7 Bullet 1-6,Br7 Bullet 2-1,J-1,,Br4 Bullet 1-1,Br4 Bullet 2-3,B-6,,Br4 Bullet 1-2,Br4 Bullet 2-4,B-1,,Br4 Bullet 1-3,Br4 Bullet 2-5,B-2,,Br4 Bullet 1-4,Br4 Bullet 2-6,B-3,,Br4 Bullet 1-5,Br4 Bullet 2-1,B-4,,Br4 Bullet 1-6,Br4 Bullet 2-2,B-5,,Br8 Bullet 1-1,Br8 Bullet 2-1,L-1,,Br8 Bullet 1-2,Br8 Bullet 2-2,L-2,,Br8 Bullet 1-3,Br8 Bullet 2-3,L-3,,Br8 Bullet 1-4,Br8 Bullet 2-4,L-4,,Br8 Bullet 1-5,Br8 Bullet 2-5,L-5,,Br8 Bullet 1-6,Br8 Bullet 2-6,L-6,,Br9 Bullet 1-1,Br9 Bullet 2-2,U-6,,Br9 Bullet 1-2,Br9 Bullet 2-3,U-1,,Br9 Bullet 1-3,Br9 Bullet 2-4,U-2,,Br9 Bullet 1-4,Br9 Bullet 2-5,U-3,,Br9 Bullet 1-5,Br9 Bullet 2-6,U-4,,Br9 Bullet 1-6,Br9 Bullet 2-1,U-5,,Br10 Bullet 1-1,Br10 Bullet 2-3,Q-6,,Br10 Bullet 1-2,Br10 Bullet 2-4,Q-1,,Br10 Bullet 1-3,Br10 Bullet 2-5,Q-2,,Br10 Bullet 1-4,Br10 Bullet 2-6,Q-3,,Br10 Bullet 1-5,Br10 Bullet 2-1,Q-4,,Br10 Bullet 1-6,Br10 Bullet 2-2,Q-5,,
+"Br1 Bullet 1-1","Br1 Bullet 2-3","Ukn Bullet F-1","Ukn Bullet C-5",""
+"Br1 Bullet 1-2","Br1 Bullet 2-4","Ukn Bullet F-2","Ukn Bullet C-6",""
+"Br1 Bullet 1-3","Br1 Bullet 2-5","Ukn Bullet F-3","Ukn Bullet C-1",""
+"Br1 Bullet 1-4","Br1 Bullet 2-6","Ukn Bullet F-4","Ukn Bullet C-2",""
+"Br1 Bullet 1-5","Br1 Bullet 2-1","Ukn Bullet F-5","Ukn Bullet C-3",""
+"Br1 Bullet 1-6","Br1 Bullet 2-2","Ukn Bullet F-6","Ukn Bullet C-4",""
+"Br2 Bullet 1-1","Br2 Bullet 2-2","Ukn Bullet H-5","",""
+"Br2 Bullet 1-2","Br2 Bullet 2-3","Ukn Bullet H-6","",""
+"Br2 Bullet 1-3","Br2 Bullet 2-4","Ukn Bullet H-1","",""
+"Br2 Bullet 1-4","Br2 Bullet 2-5","Ukn Bullet H-2","",""
+"Br2 Bullet 1-5","Br2 Bullet 2-6","Ukn Bullet H-3","",""
+"Br2 Bullet 1-6","Br2 Bullet 2-1","Ukn Bullet H-4","",""
+"Br3 Bullet 1-1","Br3 Bullet 2-3","Ukn Bullet X-6","Ukn Bullet S-1",""
+"Br3 Bullet 1-2","Br3 Bullet 2-4","Ukn Bullet X-1","Ukn Bullet S-2",""
+"Br3 Bullet 1-3","Br3 Bullet 2-5","Ukn Bullet X-2","Ukn Bullet S-3",""
+"Br3 Bullet 1-4","Br3 Bullet 2-6","Ukn Bullet X-3","Ukn Bullet S-4",""
+"Br3 Bullet 1-5","Br3 Bullet 2-1","Ukn Bullet X-4","Ukn Bullet S-5",""
+"Br3 Bullet 1-6","Br3 Bullet 2-2","Ukn Bullet X-5","Ukn Bullet S-6",""
+"Br5 Bullet 1-1","Br5 Bullet 2-3","Ukn Bullet D-3","Ukn Bullet Z-2",""
+"Br5 Bullet 1-2","Br5 Bullet 2-4","Ukn Bullet D-4","Ukn Bullet Z-3",""
+"Br5 Bullet 1-3","Br5 Bullet 2-5","Ukn Bullet D-5","Ukn Bullet Z-4",""
+"Br5 Bullet 1-4","Br5 Bullet 2-6","Ukn Bullet D-6","Ukn Bullet Z-5",""
+"Br5 Bullet 1-5","Br5 Bullet 2-1","Ukn Bullet D-1","Ukn Bullet Z-6",""
+"Br5 Bullet 1-6","Br5 Bullet 2-2","Ukn Bullet D-2","Ukn Bullet Z-1",""
+"Br6 Bullet 1-1","Br6 Bullet 2-4","Ukn Bullet M-6","Ukn Bullet E-4","Ukn Bullet Y-1"
+"Br6 Bullet 1-2","Br6 Bullet 2-5","Ukn Bullet M-1","Ukn Bullet E-5","Ukn Bullet Y-2"
+"Br6 Bullet 1-3","Br6 Bullet 2-6","Ukn Bullet M-2","Ukn Bullet E-6","Ukn Bullet Y-3"
+"Br6 Bullet 1-4","Br6 Bullet 2-1","Ukn Bullet M-3","Ukn Bullet E-1","Ukn Bullet Y-4"
+"Br6 Bullet 1-5","Br6 Bullet 2-2","Ukn Bullet M-4","Ukn Bullet E-2","Ukn Bullet Y-5"
+"Br6 Bullet 1-6","Br6 Bullet 2-3","Ukn Bullet M-5","Ukn Bullet E-3","Ukn Bullet Y-6"
+"Br7 Bullet 1-1","Br7 Bullet 2-2","Ukn Bullet J-2","",""
+"Br7 Bullet 1-2","Br7 Bullet 2-3","Ukn Bullet J-3","",""
+"Br7 Bullet 1-3","Br7 Bullet 2-4","Ukn Bullet J-4","",""
+"Br7 Bullet 1-4","Br7 Bullet 2-5","Ukn Bullet J-5","",""
+"Br7 Bullet 1-5","Br7 Bullet 2-6","Ukn Bullet J-6","",""
+"Br7 Bullet 1-6","Br7 Bullet 2-1","Ukn Bullet J-1","",""
+"Br4 Bullet 1-1","Br4 Bullet 2-3","Ukn Bullet B-6","",""
+"Br4 Bullet 1-2","Br4 Bullet 2-4","Ukn Bullet B-1","",""
+"Br4 Bullet 1-3","Br4 Bullet 2-5","Ukn Bullet B-2","",""
+"Br4 Bullet 1-4","Br4 Bullet 2-6","Ukn Bullet B-3","",""
+"Br4 Bullet 1-5","Br4 Bullet 2-1","Ukn Bullet B-4","",""
+"Br4 Bullet 1-6","Br4 Bullet 2-2","Ukn Bullet B-5","",""
+"Br8 Bullet 1-1","Br8 Bullet 2-1","Ukn Bullet L-1","",""
+"Br8 Bullet 1-2","Br8 Bullet 2-2","Ukn Bullet L-2","",""
+"Br8 Bullet 1-3","Br8 Bullet 2-3","Ukn Bullet L-3","",""
+"Br8 Bullet 1-4","Br8 Bullet 2-4","Ukn Bullet L-4","",""
+"Br8 Bullet 1-5","Br8 Bullet 2-5","Ukn Bullet L-5","",""
+"Br8 Bullet 1-6","Br8 Bullet 2-6","Ukn Bullet L-6","",""
+"Br9 Bullet 1-1","Br9 Bullet 2-2","Ukn Bullet U-6","",""
+"Br9 Bullet 1-2","Br9 Bullet 2-3","Ukn Bullet U-1","",""
+"Br9 Bullet 1-3","Br9 Bullet 2-4","Ukn Bullet U-2","",""
+"Br9 Bullet 1-4","Br9 Bullet 2-5","Ukn Bullet U-3","",""
+"Br9 Bullet 1-5","Br9 Bullet 2-6","Ukn Bullet U-4","",""
+"Br9 Bullet 1-6","Br9 Bullet 2-1","Ukn Bullet U-5","",""
+"Br10 Bullet 1-1","Br10 Bullet 2-3","Ukn Bullet Q-6","",""
+"Br10 Bullet 1-2","Br10 Bullet 2-4","Ukn Bullet Q-1","",""
+"Br10 Bullet 1-3","Br10 Bullet 2-5","Ukn Bullet Q-2","",""
+"Br10 Bullet 1-4","Br10 Bullet 2-6","Ukn Bullet Q-3","",""
+"Br10 Bullet 1-5","Br10 Bullet 2-1","Ukn Bullet Q-4","",""
+"Br10 Bullet 1-6","Br10 Bullet 2-2","Ukn Bullet Q-5","",""
+"br1_1_land1","br1_2_land6","brA_1_land5","brC_1_land4","brE_1_land1"
+"br1_1_land2","br1_2_land1","brA_1_land6","brC_1_land5","brE_1_land2"
+"br1_1_land3","br1_2_land2","brA_1_land1","brC_1_land6","brE_1_land3"
+"br1_1_land4","br1_2_land3","brA_1_land2","brC_1_land1","brE_1_land4"
+"br1_1_land5","br1_2_land4","brA_1_land3","brC_1_land2","brE_1_land5"
+"br1_1_land6","br1_2_land5","brA_1_land4","brC_1_land3","brE_1_land6"
+"br2_1_land1","br2_2_land3","brW_1_land1","",""
+"br2_1_land2","br2_2_land4","brW_1_land2","",""
+"br2_1_land3","br2_2_land5","brW_1_land3","",""
+"br2_1_land4","br2_2_land6","brW_1_land4","",""
+"br2_1_land5","br2_2_land1","brW_1_land5","",""
+"br2_1_land6","br2_2_land2","brW_1_land6","",""
+"br3_1_land1","br3_2_land2","brU_1_land2","",""
+"br3_1_land2","br3_2_land3","brU_1_land3","",""
+"br3_1_land3","br3_2_land4","brU_1_land4","",""
+"br3_1_land4","br3_2_land5","brU_1_land5","",""
+"br3_1_land5","br3_2_land6","brU_1_land6","",""
+"br3_1_land6","br3_2_land1","brU_1_land1","",""
+"br4_1_land1","br4_2_land4","brR_1_land4","brX_1_land3",""
+"br4_1_land2","br4_2_land5","brR_1_land5","brX_1_land4",""
+"br4_1_land3","br4_2_land6","brR_1_land6","brX_1_land5",""
+"br4_1_land4","br4_2_land1","brR_1_land1","brX_1_land6",""
+"br4_1_land5","br4_2_land2","brR_1_land2","brX_1_land1",""
+"br4_1_land6","br4_2_land3","brR_1_land3","brX_1_land2",""
+"br5_1_land1","br5_2_land3","brB_1_land1","brN_1_land1",""
+"br5_1_land2","br5_2_land4","brB_1_land2","brN_1_land2",""
+"br5_1_land3","br5_2_land5","brB_1_land3","brN_1_land3",""
+"br5_1_land4","br5_2_land6","brB_1_land4","brN_1_land4",""
+"br5_1_land5","br5_2_land1","brB_1_land5","brN_1_land5",""
+"br5_1_land6","br5_2_land2","brB_1_land6","brN_1_land6",""
+"br6_1_land1","br6_2_land2","brV_1_land1","",""
+"br6_1_land2","br6_2_land3","brV_1_land2","",""
+"br6_1_land3","br6_2_land4","brV_1_land3","",""
+"br6_1_land4","br6_2_land5","brV_1_land4","",""
+"br6_1_land5","br6_2_land6","brV_1_land5","",""
+"br6_1_land6","br6_2_land1","brV_1_land6","",""
+"br7_1_land1","br7_2_land1","brG_1_land2","brM_1_land3",""
+"br7_1_land2","br7_2_land2","brG_1_land3","brM_1_land4",""
+"br7_1_land3","br7_2_land3","brG_1_land4","brM_1_land5",""
+"br7_1_land4","br7_2_land4","brG_1_land5","brM_1_land6",""
+"br7_1_land5","br7_2_land5","brG_1_land6","brM_1_land1",""
+"br7_1_land6","br7_2_land6","brG_1_land1","brM_1_land2",""
+"br8_1_land1","br8_2_land4","brL_1_land1","",""
+"br8_1_land2","br8_2_land5","brL_1_land2","",""
+"br8_1_land3","br8_2_land6","brL_1_land3","",""
+"br8_1_land4","br8_2_land1","brL_1_land4","",""
+"br8_1_land5","br8_2_land2","brL_1_land5","",""
+"br8_1_land6","br8_2_land3","brL_1_land6","",""
+"br9_1_land1","br9_2_land3","brI_1_land3","",""
+"br9_1_land2","br9_2_land4","brI_1_land4","",""
+"br9_1_land3","br9_2_land5","brI_1_land5","",""
+"br9_1_land4","br9_2_land6","brI_1_land6","",""
+"br9_1_land5","br9_2_land1","brI_1_land1","",""
+"br9_1_land6","br9_2_land2","brI_1_land2","",""
+"br10_1_land1","br10_2_land3","brH_1_land6","",""
+"br10_1_land2","br10_2_land4","brH_1_land1","",""
+"br10_1_land3","br10_2_land5","brH_1_land2","",""
+"br10_1_land4","br10_2_land6","brH_1_land3","",""
+"br10_1_land5","br10_2_land1","brH_1_land4","",""
+"br10_1_land6","br10_2_land2","brH_1_land5","",""

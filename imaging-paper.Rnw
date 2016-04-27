@@ -441,6 +441,7 @@ In this section, we describe the algorithm for matching signatures first, and th
 \subsection{Algorithm}\label{sec:algorithm}
 <<twolands100, cache=TRUE,  echo=FALSE>>=
 images <- file.path(datadir, dir(datadir))
+images <- images[grep(" ", images)]
 
 #lof <- processBullets(paths = images[c(5,7)], x = 100)
 subLOFx1 <- processBullets(read.x3p(images[5]), name = images[5], x = 100)
@@ -464,6 +465,7 @@ levels(lofX$type) <- c("groove", NA, "peak")
 
 <<twolands100adjust, echo=FALSE>>=
 images <- file.path(datadir, dir(datadir))
+images <- images[grep(" ", images)]
 
 #lof <- processBullets(paths = images[c(5,7)], x = 100)
 subLOFx1 <- processBullets(read.x3p(images[5]), name = images[5], x = 100)
@@ -735,6 +737,8 @@ This poses both a caveat to matching attempts as well as an opportunity for qual
   \centering
 <<crosscuts-vary-b31, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\textwidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
+paths <- paths[grep(" ", paths)]
+
 crosscuts <- seq(100,250, by=25)
 lof <- processBullets(read.x3p(paths[37]), name = paths[37], x = crosscuts)
 lof$bullet <- paste(scrubPath(lof$bullet), lof$x)
@@ -1309,7 +1313,7 @@ library(RColorBrewer)
 vals = alpha(brewer.pal(3, name="Paired"), alpha=0.5)
 names(bstats)[9:10] <- c("#matches", "#non-matches")
 includesVar <- setdiff(names(bstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist", "flagged", "km"))
-cc <- read.csv("csvs/crosscuts-25.csv")
+#cc <- read.csv("csvs/crosscuts-25.csv")
 # cc$bullet <- gsub(".*//","",cc$path)
 # cc$bullet <- gsub(".x3p", "", cc$bullet)
 # bstats$flagged <- bstats$b2 %in% cc$bullet[which(is.na(cc$cc))] |

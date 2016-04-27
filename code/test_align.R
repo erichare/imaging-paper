@@ -2,8 +2,6 @@ library(ggplot2)
 library(x3pr)
 library(x3prplus)
 library(dplyr)
-
-
     
 matches <- read.csv("csvs/matches.csv", header = FALSE)
 ccs <- read.csv("csvs/crosscuts-25.csv")

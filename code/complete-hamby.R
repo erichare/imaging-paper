@@ -11,7 +11,9 @@ unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 # match unknown land using crosscuts
 ccs <- read.csv("csvs/crosscuts-25.csv")
 all_bullets <- lapply(as.character(ccs$path), function(x) {
-    result <- read.x3pplus(x)
+    transpose <- (length(grep(" ", x)) == 0)
+    
+    result <- read.x3pplus(x, transpose = transpose)
     result[[3]] <- x
     names(result)[3] <- "path"
         

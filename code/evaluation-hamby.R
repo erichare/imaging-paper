@@ -1,7 +1,7 @@
 span <- 25
 dataStr <- sprintf("data-%d-25", span)
 datas <- file.path(dataStr, dir(dataStr, pattern="RData"))
-datas <- datas[grep(paste0(dataStr,"/u.*"), datas)]
+datas <- datas[grep(paste0(dataStr,"/u.*-new.RData"), datas)]
 
 CCFs <- plyr::ldply(datas, function(x) {
   load(x)
@@ -14,14 +14,6 @@ CCFs <- plyr::ldply(datas, function(x) {
     subLOFx1 <- subset(lofX, bullet==b12[1])
     subLOFx2 <- subset(lofX, bullet==b12[2]) 
     
-    subLOFx1$y <- subLOFx1$y - min(subLOFx1$y)
-    subLOFx2$y <- subLOFx2$y - min(subLOFx2$y)
-
-    ccf <- ccf(subLOFx1$val, subLOFx2$val, plot = FALSE, lag.max=200, na.action = na.omit)
-    lag <- ccf$lag[which.max(ccf$acf)]
-    incr <- min(diff(sort(unique(subLOFx1$y))))
-    
-    subLOFx1$y <- subLOFx1$y -  lag * incr # amount of shifting should just be lag * y.inc
     ys <- intersect(subLOFx1$y, subLOFx2$y)
     idx1 <- which(subLOFx1$y %in% ys)
     idx2 <- which(subLOFx2$y %in% ys)
@@ -35,7 +27,7 @@ CCFs <- plyr::ldply(datas, function(x) {
     # feature extraction
     signature.length <- min(nrow(subLOFx1), nrow(subLOFx2))
     
-    data.frame(ccf=max(ccf$acf), lag=which.max(ccf$acf), 
+    data.frame(ccf=res$ccf, lag=res$lag, 
                D=distr.dist, 
                sd.D = distr.sd,
                b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
@@ -81,9 +73,6 @@ CCFs$b2 <- gsub(".x3p","", CCFs$b2)
 
 
 matches <- read.csv("csvs/matches.csv", header=FALSE, stringsAsFactors = FALSE)
-matches$V3 <- paste("Ukn Bullet",matches$V3)
-matches$V4 <- paste("Ukn Bullet",matches$V4)
-matches$V5 <- paste("Ukn Bullet",matches$V5)
 matches$id <- 1:nrow(matches)
 
 library(reshape2)

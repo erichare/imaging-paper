@@ -289,6 +289,8 @@ scrubPath <- function(x) {
 }
 
 paths <- file.path(datadir, dir(datadir))
+paths <- paths[grep(" ", paths)]
+
 crosscuts <- seq(100, 400, by = 50)
 lof <- processBullets(read.x3p(paths[5]), name = scrubPath(paths[5]), x = crosscuts)
 lof$bullet <- paste(lof$bullet, lof$x)
@@ -355,7 +357,7 @@ unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 # can we identify the barrels the unknown bullets came from?
 
 # match unknown land using crosscuts
-ccs <- read.csv("csvs/crosscuts-25.csv")
+ccs <- read.csv("csvs/crosscuts-25-old.csv")
 all_bullets <- lapply(as.character(ccs$path), function(x) {
   result <- read.x3p(x)
   result[[3]] <- x
@@ -441,10 +443,12 @@ However, if we use all of the available comparisons to fit another random forest
 <<allhamby, echo=FALSE, message=FALSE, warning=FALSE>>=
 knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
 knowns <- dir(path=knowndatadir)
+knowns <- knowns[grep(" ", knowns)]
 knowns <- gsub(".x3p", "", knowns)
 
 unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 unknowns <- dir(path=unknowndatadir)
+unknowns <- unknowns[grep(" ", unknowns)]
 unknowns <- gsub(".x3p", "", unknowns)
 
 #bstats <- read.csv("data-25-25/bullet-stats.csv")
@@ -494,7 +498,7 @@ ballstats$forest <- predict(rtrees3, newdata=ballstats, type="prob")[,2]
 Figures~\ref{fig:aligned} and~\ref{fig:aligned-second} give an overview of all the signatures from bullet lands in the Hamby study aligned by barrel. Three to five bullets were fired from each barrel. The figures give us both some insight into how well signatures match and how consistent individual characteristics are impregnated on bullets fired from each of the barrels. Signatures for some lands match remarkably well -- such as land 5 from barrel 1, whereas all lands from barrel 5 show some variability both in the location and depths of peaks and valleys.
 
 <<aligned, echo=FALSE, warning=FALSE,  cache=TRUE>>=
-matches <- read.csv("csvs/matches.csv", header = FALSE)
+matches <- read.csv("csvs/matches-old.csv", header = FALSE)
 matches$barrel <- rep(1:10, each=6)
 matches$id <- 1:nrow(matches)
 library(reshape2)
@@ -508,7 +512,7 @@ mm$path <- "app/images/Hamby252_3DX3P1of2//"
 mm$path[unkns] <- "app/images/Hamby252_3DX3P2of2//"
 mm$path <-   with(mm, paste0(path, prefix, value, ".x3p"))
   
-ccs <- read.csv("csvs/crosscuts-25.csv")
+ccs <- read.csv("csvs/crosscuts-25-old.csv")
 mm <- merge(mm, ccs, by="path", all=TRUE)
 mm <- subset(mm, !is.na(mm$cc))
 

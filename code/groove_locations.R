@@ -11,8 +11,10 @@ unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
 unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
 
 groove_locations_means <- lapply(c(knowns, unknowns), function(bul) {
+    transpose <- (length(grep(" ", bul)) == 0)
+    
     cat(bul, "\n")
-    bullet <- read.x3pplus(bul)
+    bullet <- read.x3pplus(bul, transpose = transpose)
     fortified <- fortify_x3p(bullet)
     
     fort.mean <- fortified %>%
@@ -37,9 +39,11 @@ lapply(as.data.frame(t(groove.means)), function(test) {
     left <- as.numeric(as.character(test[2]))
     right <- as.numeric(as.character(test[3]))
     
+    transpose <- (length(grep(" ", bul)) == 0)
+    
     cat(bul, "\n")
-    bullet <- read.x3pplus(bul)
-    cc <- get_crosscut(bullet = bullet, x = 150)
+    bullet <- read.x3pplus(bul, transpose = transpose)
+    cc <- get_crosscut(bullet = bullet, x = 150, transpose = transpose)
     result <- get_grooves(cc, mean_left = left, mean_right = right, mean_window = mean_window, smoothfactor = 25)
     
     print(result$plot)
@@ -53,13 +57,15 @@ groove_locations <- lapply(as.data.frame(t(groove.means)), function(test) {
     left <- as.numeric(as.character(test[2]))
     right <- as.numeric(as.character(test[3]))
     
+    transpose <- (length(grep(" ", bul)) == 0)
+    
     cat(bul, "\n")
-    bullet <- read.x3pplus(bul)
+    bullet <- read.x3pplus(bul, transpose = transpose)
     fortified <- fortify_x3p(bullet)
     all_grooves <- lapply(unique(fortified$x), function(x) {
         myresult <- try({
             cat("Processing", x, "\n")
-            cc <- get_crosscut(bullet = bullet, x = x)
+            cc <- get_crosscut(bullet = bullet, x = x, transpose = transpose)
             result <- get_grooves(cc, mean_left = left, mean_right = right, mean_window = mean_window, smoothfactor = 25)
             
             result$groove
