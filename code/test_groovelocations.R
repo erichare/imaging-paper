@@ -3,13 +3,13 @@ library(x3prplus)
 library(ggplot2)
 library(dplyr)
 
-ccs <- read.csv("csvs/crosscuts-25-set44.csv")
-grooves <- read.csv("csvs/grooves-set44.csv")
+ccs <- read.csv("csvs/crosscuts-25.csv")
+grooves <- read.csv("csvs/grooves.csv")
 
 apply(ccs, 1, function(row) {
     cat(row[1])
     
-    mybullet <- get_crosscut(row[1], x = as.numeric(row[2]), transpose = TRUE)
+    mybullet <- get_crosscut(row[1], x = as.numeric(row[2]))
     relevant.groove <- filter(grooves, bullet == row[1], x == mybullet$x[1])
     
     print(qplot(y, value, data = mybullet, geom = "line") +
@@ -40,4 +40,4 @@ apply(ccs, 1, function(row) {
     }
 })
 
-write.csv(grooves, file = "csvs/grooves-set44.csv", row.names = FALSE)
+write.csv(grooves, file = "csvs/grooves.csv", row.names = FALSE)

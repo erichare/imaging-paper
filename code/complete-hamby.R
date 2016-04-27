@@ -50,6 +50,6 @@ for (span in c(25)) {
                 bulletGetMaxCMS(br1, br2, span=span)
             }
         })
-        save(reslist, file=file.path(dataStr, sprintf("unkn%d.RData", j)))
+        save(reslist, file=file.path(dataStr, sprintf("unkn%d-new.RData", j)))
     }
 }
