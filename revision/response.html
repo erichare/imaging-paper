@@ -119,8 +119,8 @@ $(document).ready(function () {
 <div id="ae" class="section level1">
 <h1>AE</h1>
 <ol style="list-style-type: decimal">
-<li>The paper should better explain the role of the new methods for forensic science. The authors should consider referencing some of the previous work the reviewers mention.</li>
-<li>Methodologically, the crux of the data analysis seems to be a generic application of decision trees. It would be good to clarify that aspect, and to more formally explain how the ensemble of the steps took by the authors to complete this work can be applied to other forensic science questions.</li>
+<li><p>The paper should better explain the role of the new methods for forensic science. The authors should consider referencing some of the previous work the reviewers mention.</p></li>
+<li><p>Methodologically, the crux of the data analysis seems to be a generic application of decision trees. It would be good to clarify that aspect, and to more formally explain how the ensemble of the steps took by the authors to complete this work can be applied to other forensic science questions.</p></li>
 </ol>
 </div>
 <div id="reviewer-a" class="section level1">
@@ -189,7 +189,7 @@ $(document).ready(function () {
 <ol start="16" style="list-style-type: decimal">
 <li>On a related subject, I believe that a random forest provides the probability that two bullets were fired by the same gun given the set of observations (Fig 19), not the probability of interest: the probability of two sets of observations given that the two bullets were fired by the same gun. The authors may want to revise some of the statements in their discussion and conclusion.</li>
 </ol>
-<p><strong><em>why should the probability of two sets of observations given that the two bullets were fired by the same gun be the probability of interest? I would agree that the random forest and any of its conclusions are restricted to how good the underlying ‘database’ is. The more representative the set of bullets, the better the predictions should be. It is not the purpose of this paper to find the probability of two sets of observations given that the two bullets were fired by the same gun. We made sure to remove any misleading statements that might suggest the latter probability. </em></strong></p>
+<p><strong><em>HH: why should the probability of two sets of observations given that the two bullets were fired by the same gun be the probability of interest? I would agree that the random forest and any of its conclusions are restricted to how good the underlying ‘database’ is. The more representative the set of bullets, the better the predictions should be. It is not the purpose of this paper to find the probability of two sets of observations given that the two bullets were fired by the same gun. We made sure to remove any misleading statements that might suggest the latter probability. </em></strong></p>
 <ol start="17" style="list-style-type: decimal">
 <li>I am concerned by the assumption of independence of between the different lands on a given bullet that the authors seems to use in their error rates calculations (and ROC curves). The assumption seems unreasonable since as soon as a land has been paired between two bullets, it seems that it becomes more likely to pair the other lands. In other words, I believe that the authors need to redo their error rate measurements, but using bullets as their experimental units and not lands. I am also concerned by the overwhelming majority of non-matches, this must certainly artificially increase the rate of correct exclusion and distort the data.</li>
 </ol>
@@ -216,13 +216,14 @@ $(document).ready(function () {
 <ol start="22" style="list-style-type: decimal">
 <li>p. 3, l. -10: Be explicit that grooves and striations are synonyms.</li>
 </ol>
-<p><strong><em>Grooves and striations are actually not synonyms in this case. The grooves are impressions induced by the rifling of the gun, and properties associated with them are class characteristics not unique to individual gun barrels. We’ve taken care to ensure the distinction is clear between the striae of interest, which are extracted from the lands of the bullet (between grooves), and the grooves themselves.</em></strong></p>
+<p><strong><em>Grooves and striations are actually not synonyms in this case. The grooves are impressions induced by the rifling of the barrel, and properties associated with them are class characteristics not unique to individual gun barrels. We’ve taken care to ensure the distinction is clear between the striae of interest, which are extracted from the lands of the bullet (between grooves), and the grooves themselves.</em></strong></p>
 <ol start="23" style="list-style-type: decimal">
 <li>Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth.</li>
 </ol>
 <p><strong><em>EH: Add typical width of groove + lands</em></strong></p>
 <p><strong><em>EH: Presumably the typical width is some kind of class characteristic dependent on the gun itself, right?</em></strong></p>
 <p><strong><em>HH: I am not sure about the width of a striation - the width depends on where it is measured (in both x and z direction). I’m sure there are definitions of that available. We might need some more literature.</em></strong></p>
+<p><strong><em>EH: <a href="http://nvlpubs.nist.gov/nistpubs/jres/116/3/v116.n03.a01.pdf" class="uri">http://nvlpubs.nist.gov/nistpubs/jres/116/3/v116.n03.a01.pdf</a> - “The number and width of striations in a land impression can vary depending on the size of the bullet and the characteristics of the barrel. For example, according to Biasotti’s study, the Smith and Wesson barrel with a land impression width of 2.4 mm has an average of 60 striations with total striation counts between 16 and 97 [13]. Observing the land impression images used in our study, 50 pixels (about 0.08 mm) is a reasonable choice for the average width of a structuring element.”</em></strong></p>
 <ol start="24" style="list-style-type: decimal">
 <li>p. 2, l. -1: It would be good to reword so the sentence doesn’t start with “x3p”. Also p. 3, l. 2.</li>
 </ol>
