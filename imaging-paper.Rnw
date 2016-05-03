@@ -121,6 +121,8 @@ library(rpart)
 library(rpart.plot)
 library(xtable)
 library(sm)
+library(reshape2)
+library(randomForest)
 @
 
 
@@ -1026,7 +1028,7 @@ densities <- plyr::ldply(features, function(x) {
   dframe$order <- 1:nrow(dframe)
   dframe
 }) 
-library(reshape2)
+
 dm <- melt(densities, measure.var=c("KM", "KNM"))
 dm$var <- factor(dm$var, levels=features)
 levels(dm$var)[3:4] <- c("#matches", "#non-matches")
@@ -1307,9 +1309,6 @@ Neither one of these methods allows for an assessment of cross-correlations. Thi
 \begin{figure}[hbtp]
   \centering
 <<tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.7\\textwidth'>>=
-library(rpart)
-library(rpart.plot)
-library(RColorBrewer)
 vals = alpha(brewer.pal(3, name="Paired"), alpha=0.5)
 names(bstats)[9:10] <- c("#matches", "#non-matches")
 includesVar <- setdiff(names(bstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist", "flagged", "km"))
@@ -1335,9 +1334,6 @@ bstats$pred[bstats$flagged] <- NA
 \end{figure}
 
 <<rforest, echo=FALSE, message=FALSE>>=
-library(randomForest)
-library(reshape2)
-
 set.seed(20160105)
 names(bstats)[9:10] <- c("num.matches", "num.nonmatches")
 includesVar <- setdiff(names(bstats), c("b1", "b2", "data", "resID", "id.x", "id.y", "pred", "forest", "bullet", "span", "crosscutdist", "flagged", "km"))
