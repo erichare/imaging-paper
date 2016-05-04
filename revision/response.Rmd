@@ -9,15 +9,25 @@ output: html_document
 
 1. The paper should better explain the role of the new methods for forensic science. The authors should consider referencing some of the previous work the reviewers mention.
 
+***AC: TODO***
+
 2. Methodologically, the crux of the data analysis seems to be a generic application of decision trees. It would be good to clarify that aspect, and to more formally explain how the ensemble of the steps took by the authors to complete this work can be applied to other forensic science questions.
+
+***We have detailed a multi-stage analysis process that begins with a source image, processes the image, extracts features, and ultimately uses a random forest to compute predicted match probabilities. While the forest is a component of the process, we've taken care to emphasize that the preceeding steps outline a more general framework for analysis of striae in images that could theoretically apply to other forensic science questions as well. 
+
+***EH: TODO: Add to paper***
 
 # Reviewer A
 
-4. Random forests, as used and described on pages 18-21 of the paper comes out looking like a winner, but other than that success---worth reporting *somewhere*---, there is no new information on that method. No new insights. And certainly no comparisons with the tens of other things that could have been tried.
+3. Random forests, as used and described on pages 18-21 of the paper comes out looking like a winner, but other than that success---worth reporting *somewhere*---, there is no new information on that method. No new insights. And certainly no comparisons with the tens of other things that could have been tried.
+
+***HH: Could you look at this response i wrote?***
+
+***We were not intending to provide new insights on random forests. The insights were in the feature extraction and image processing leading up to the random forest fit. As the forest ultimately predicted every land-to-land comparison properly, we felt that a comparison to other learning methods wass outside the scope of this paper. Had a wider variety of data been available, there would likely be more variability in the predictions and a comparison to other learning methods would be prudent. For this particular paper, however, the groove detection, profile extraction, and feature definitions were the intended focus.***
 
 # Reviewer B
 
-5. The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the "twicing" for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.
+4. The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the "twicing" for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.
 
 ***Using the cross correlation function as a method of alignment is actually pretty standard - the approriate references are now included.***
 
@@ -39,81 +49,85 @@ output: html_document
 
 ***leon:2006 first sentence: "Fired bullets bear striation marks that can be thought of as a ‘‘fingerprint’’ left by the firearm." based on multiple 2d images. They extract a 1d 'signature'***
 
-6. page 7- figure 4- What exactly are you bootstrapping? It is unclear in the paper whether you are bootstrapping residual or bullets or something else entirely. Please clarify.
+5. page 7- figure 4- What exactly are you bootstrapping? It is unclear in the paper whether you are bootstrapping residual or bullets or something else entirely. Please clarify.
 
 ***HH: will do***
 
-7. There should have been a comparison of different classification methods to show that the random forest is reasonable.
+6. There should have been a comparison of different classification methods to show that the random forest is reasonable.
 
-***I am not quite sure what a 'reasonable' classification method is supposed to mean. Shouldn't a classification method be judged by its success in predicting the outcome? Apart from that, random forests are based on decision trees, which are an extremely flexible tool for classification, that can deal with quantitative and categorical types of variables and, in the implementation we used, also deal with some missing values (which was not needed in the data here).***
+***HH: I am not quite sure what a 'reasonable' classification method is supposed to mean. Shouldn't a classification method be judged by its success in predicting the outcome? Apart from that, random forests are based on decision trees, which are an extremely flexible tool for classification, that can deal with quantitative and categorical types of variables and, in the implementation we used, also deal with some missing values (which was not needed in the data here).***
 
-8. On the random forest classifier- are the prior probabilities being estimated from the cross comparisons described on page 15? What exactly are the prior probabilities used in the random forest?
+7. On the random forest classifier- are the prior probabilities being estimated from the cross comparisons described on page 15? What exactly are the prior probabilities used in the random forest?
 
 ***No data-based adjustment was made to the prior probabilities, i.e. prior probabilities of 50:50 for matches/non-matches were used.***
 
 ***HH: what does the reviewer mean by cross-comparison? On page 15 we discuss some results from matching based on CMS.***
 
-9. Equal Error Rates on the ROC curves would be a helpful metric as well as the AUC.
+8. Equal Error Rates on the ROC curves would be a helpful metric as well as the AUC.
 
-***included***
+***Included***
 
-10. Would it be possible to stress the classification system by only using part of the profile? Such as would occur when a partial bullet is recovered? By stressing the random forest you would be able to compare it to other classifiers.
+9. Would it be possible to stress the classification system by only using part of the profile? Such as would occur when a partial bullet is recovered? By stressing the random forest you would be able to compare it to other classifiers.
 
 ***Yes, it would be possible to stress the classification system by using only parts of the profile, but a systematic evaluation of this by far exceeds the scope of this paper.***
 
-11. What is the standard error of the error rates presented for the matching algorithms? The number of cross comparisons gives false impression the standard errors the when presenting the results.
+10. What is the standard error of the error rates presented for the matching algorithms? The number of cross comparisons gives false impression the standard errors the when presenting the results.
 
 ***HH: I'm sure I am misunderstanding the comment, but I don't know how to answer this question. The standard error of a rate in (0,1) would be sqrt(p*(1-p)). So because p is small the square root is going to be still pretty small. We are presenting out of bag error rates for the random forest - maybe we need to explain what out-of bag means in more detail?***
 
 ***EH: Yeah, I was a little unsure of this. Maybe we can ask Alicia, and if she also is confused by it I can type up an explanation on how the OOB error is computed.***
 
-12. In the conclusions section the authors mention an assumption of "uniqueness". In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.
+11. In the conclusions section the authors mention an assumption of "uniqueness". In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.
+
+***AC: TODO***
 
 ***probably refers to articles such as "how good is good enough?", books "modern scientific evidence", "judging science" .... I am not sure that those are really necessary or helpful. It might be better to re-phrase the sentence in the conclusion.***
 
-13. A discussion on how the authors view the use of their matching algorithm would be useful to the forensic community. For example are they intending to use this to build a closed set identification system similar to IAFIS or are them intending this to work in a manner similar to a biometric verification system? etc.
+12. A discussion on how the authors view the use of their matching algorithm would be useful to the forensic community. For example are they intending to use this to build a closed set identification system similar to IAFIS or are them intending this to work in a manner similar to a biometric verification system? etc.
 
 ***HH: in my view we ourselves are not building a closed set identification system. The problem with existing closed set systems is that it is unclear how the matching is exactly done and what statistical properties it has (number of parameters, distribution of them, sensitivities). Repeatability and reproducibility is a huge issue in this area. 'Matching' is also not just a single step - it consists, as we have laid out in the paper, of a series of steps, which all deserve attention. While the reviewer pointed out to us to use 'standard methods' - there are no actual standards in place. There might be a set of alternatives, and some evidence as to which methods might work better in some situations than others, but there is a lack of an in-depth discussion of the alternatives at each step as well as an overall discussion. In this manuscript we are detailing one route to divvy up the process and provide the code for others to reproduce our findings.  ***
 
 # Reviewer C
 
-14. there is a lack of knowledge of the existing literature on statistical work performed on tool marks and firearms. For example, the work performed by Nicholas Petraco, Fabiano Riva, or Alan Zheng in the past 5 years is not mentioned. Instead, old research projects are mentioned, which mostly focus on manual identification. The authors need to discuss the novelty of their method (and how it potentially addresses the shortcomings of these recent methods)
+13. there is a lack of knowledge of the existing literature on statistical work performed on tool marks and firearms. For example, the work performed by Nicholas Petraco, Fabiano Riva, or Alan Zheng in the past 5 years is not mentioned. Instead, old research projects are mentioned, which mostly focus on manual identification. The authors need to discuss the novelty of their method (and how it potentially addresses the shortcomings of these recent methods)
 
-15.  The authors would need to study (or at least discuss extensively) the ability of their method to capture the variability in bullet profiles over time (at interval of several dozen of bullets fired by the same weapon, when the weapon has been cleaned, or when the bullet was degraded by hitting a target). In addition, a dataset of 10 firearms (even consecutively manufactured) does not provide any information on the rarity of a particular bullet profile, and therefore does not address the second probability statement. Alternatively, the proposed metrics could be tested in a database searching situation, which has not been done.
+***TODO***
+
+14.  The authors would need to study (or at least discuss extensively) the ability of their method to capture the variability in bullet profiles over time (at interval of several dozen of bullets fired by the same weapon, when the weapon has been cleaned, or when the bullet was degraded by hitting a target). In addition, a dataset of 10 firearms (even consecutively manufactured) does not provide any information on the rarity of a particular bullet profile, and therefore does not address the second probability statement. Alternatively, the proposed metrics could be tested in a database searching situation, which has not been done.
 
 ***At the time of the submission of this manuscript, the 35 bullets from Hamby set 252 were the only ones accessible to the public. They are part of Dr Zheng's efforts at NIST to provide a ballistics reference database. In the future more results will be available, but until then we are unable to provide a data-informed discussion of the very important issues raised by the reviewer.***
 
-16. On a related subject, I believe that a random forest provides the probability that two bullets were fired by the same gun given the set of observations (Fig 19), not the probability of interest: the probability of two sets of observations given that the two bullets were fired by the same gun. The authors may want to revise some of the statements in their discussion and conclusion.
+15. On a related subject, I believe that a random forest provides the probability that two bullets were fired by the same gun given the set of observations (Fig 19), not the probability of interest: the probability of two sets of observations given that the two bullets were fired by the same gun. The authors may want to revise some of the statements in their discussion and conclusion.
 
 ***HH: why should the probability of two sets of observations given that the two bullets were fired by the same gun be the probability of interest? I would agree that the random forest and any of its conclusions are restricted to how good the underlying 'database' is. The more representative the set of bullets, the better the predictions should be. It is not the purpose of this paper to find the probability of two sets of observations given that the two bullets were fired by the same gun. We made sure to remove any misleading statements that might suggest the latter probability. ***
 
-17. I am concerned by the assumption of independence of between the different lands on a given bullet that the authors seems to use in their error rates calculations (and ROC curves). The assumption seems unreasonable since as soon as a land has been paired between two bullets, it seems that it becomes more likely to pair the other lands. In other words, I believe that the authors need to redo their error rate measurements, but using bullets as their experimental units and not lands. I am also concerned by the overwhelming majority of non-matches, this must certainly artificially increase the rate of correct exclusion and distort the data.
+16. I am concerned by the assumption of independence of between the different lands on a given bullet that the authors seems to use in their error rates calculations (and ROC curves). The assumption seems unreasonable since as soon as a land has been paired between two bullets, it seems that it becomes more likely to pair the other lands. In other words, I believe that the authors need to redo their error rate measurements, but using bullets as their experimental units and not lands. I am also concerned by the overwhelming majority of non-matches, this must certainly artificially increase the rate of correct exclusion and distort the data.
 
 ***Assuming independence between the lands of each barrel is certainly not realistic in practice, however, by assuming independence we make the task of matching harder for the algorithm. XXX still need to do XXX Based on the actual numerical values of features derived from each of the lands, an independence assumption is not unrealistic, because the features do not exhibit any clustering associated to barrel. The technique suggested by the reviewer could be solved using a hierarchical approach to matching, and we agree with the assessment that it would likely decrease the error rates.***
 
-18. the authors attempt to define a "stable" profile (see Figure 9) and use the stable profile for comparison. What happens if such profile does not exist. Would it not be best to compare surfaces instead of sections? a 2D version of the proposed algorithm should be easily implementable (and has been done at least by Riva).
+17. the authors attempt to define a "stable" profile (see Figure 9) and use the stable profile for comparison. What happens if such profile does not exist. Would it not be best to compare surfaces instead of sections? a 2D version of the proposed algorithm should be easily implementable (and has been done at least by Riva).
 
 ***Figure 11 shows images of all bullet lands we encountered in the Hamby set where no stable profile could be identified. All four of these images show massive signs of tank rash - this motivates our suggestion to not consider bullet lands without a stable region for the further analysis. Concentrating on one-dimensional profiles is quite common in the literature, and we have expanded the discussion on this choice with appropriate citations.***
 
-19. L323: how do the authors know that there are "172 known matches" since the 15 "trace bullets" are supposed to be of unknown sources? which raise the question on how where the ROC and other density graphs generated? only based on the bullets of known origin?
+18. L323: how do the authors know that there are "172 known matches" since the 15 "trace bullets" are supposed to be of unknown sources? which raise the question on how where the ROC and other density graphs generated? only based on the bullets of known origin?
 
 ***For the Hamby study there is a known ground truth of known matches and known non-matches, which we used for determining the accuracy of the algorithm. As state in the paper, the ROC curves are based on comparisons of 88 lands from unknown bullets (90 minus the two lands that showed too much tank rash) and 118 lands from known bullets (120 minus two bullet lands affected by tank rash), resulting in a total of 10,384 land to land comparisons.***
 
-20. If would be helpful if the legend from Fig15 could include a definition of the CMS, CNMS, CCF, ... acronyms such that the reader does not need to flip back and forth between several pages.
+19. If would be helpful if the legend from Fig15 could include a definition of the CMS, CNMS, CCF, ... acronyms such that the reader does not need to flip back and forth between several pages.
 
 ***Done for figure 15 and 16***
 
 # Reviewer 1
 
-21. First, the term "land" is used in the title but not defined until p. 3.  I recommend changing the title, to ensure broad comprehenson; perhaps "Automatic Matching of Bullet Marks," or something of that kind.
+20. First, the term "land" is used in the title but not defined until p. 3.  I recommend changing the title, to ensure broad comprehenson; perhaps "Automatic Matching of Bullet Marks," or something of that kind.
 
 ***To clarify the title, we have modified the abstract to provide a brief definition of bullet lands.***
 
-22. p. 3, l. -10:  Be explicit that grooves and striations are synonyms.
+21. p. 3, l. -10:  Be explicit that grooves and striations are synonyms.
 
 ***Grooves and striations are actually not synonyms in this case. The grooves are impressions induced by the rifling of the barrel, and properties associated with them are class characteristics not unique to individual gun barrels. We've taken care to ensure the distinction is clear between the striae of interest, which are extracted from the lands of the bullet (between grooves), and the grooves themselves.***
 
-23. Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth. 
+22. Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth. 
 
 ***EH: Add typical width of groove + lands***
 
@@ -123,112 +137,112 @@ output: html_document
 
 ***EH: http://nvlpubs.nist.gov/nistpubs/jres/116/3/v116.n03.a01.pdf - "The number and width of striations in a land impression can vary depending on the size of the bullet and the characteristics of the barrel. For example, according to Biasotti’s study, the Smith and Wesson barrel with a land impression width of 2.4 mm has an average of 60 striations with total striation counts between 16 and 97 [13]. Observing the land impression images used in our study, 50 pixels (about 0.08 mm) is a reasonable choice for the average width of a structuring element."***
 
-24. p. 2, l. -1:  It would be good to reword so the sentence doesn't start with "x3p".  Also p. 3, l. 2.
+23. p. 2, l. -1:  It would be good to reword so the sentence doesn't start with "x3p".  Also p. 3, l. 2.
 
 ***DONE***
 
-25. p. 3, Fig. 1:  The numbers on the y-axis are superimposed.
+24. p. 3, Fig. 1:  The numbers on the y-axis are superimposed.
 
 ***We have removed the values from the y-axis, as they are not necessary in interpreting the image.***
 
-26. p. 7, l. 1:  Make this "... can be described in the form ...".
+25. p. 7, l. 1:  Make this "... can be described in the form ...".
 
 ***DONE***
 
-27. p. 7, l. 9:  Remove the comma after "here" in "... function used here, ...".
+26. p. 7, l. 9:  Remove the comma after "here" in "... function used here, ...".
 
 ***DONE***
 
-28. p. 7, l. -6:  I'm confused.  The text says "bullets 2 are shown" but the caption refers to bullet 2- which I think should be a specific land on a single bullet.
+27. p. 7, l. -6:  I'm confused.  The text says "bullets 2 are shown" but the caption refers to bullet 2- which I think should be a specific land on a single bullet.
 
 ***DONE***
 
-29. p. 12, l. -11:  The use of a colon to transition to a new paragraph seems odd.  I recommend just rewording so is a single paragraph and does not use a colon at all.  It is almost as if you are trying to quote rather than state.
+28. p. 12, l. -11:  The use of a colon to transition to a new paragraph seems odd.  I recommend just rewording so is a single paragraph and does not use a colon at all.  It is almost as if you are trying to quote rather than state.
 
 ***DONE***
 
-30. p. 13, l. -3:  You write "Given that striation patterns are typically much larger, ..." and I think it would be more clear to write "Given that striation widths are typically much larger, ...".
+29. p. 13, l. -3:  You write "Given that striation patterns are typically much larger, ..." and I think it would be more clear to write "Given that striation widths are typically much larger, ...".
 
 ***DONE***
 
-31. p. 16, l. -1/-2:  Could you elaborate on why a "large number of maximal CMS by itself is not indicative of a match"?  I think the reason is that there could be other marks that are completely incompatible and preclude a match, based on the next sentence, but I am not sure and a few words would be helpful.  
+30. p. 16, l. -1/-2:  Could you elaborate on why a "large number of maximal CMS by itself is not indicative of a match"?  I think the reason is that there could be other marks that are completely incompatible and preclude a match, based on the next sentence, but I am not sure and a few words would be helpful.  
 
 ***In the Hamby study, with 10,212 land-to-land comparisons which are known non-matches, two of these comparisons still yielded a CMS of 12. Figure 13 emphasizes this. In our particular data, all comparisons with a CMS of 13 or more were in fact matches. Still, it is likely due to pure chance alone that, particularly if more bullets were used in comparison, a small portion would have high pairwise CMS despite being non-matches. Adding features beyond just CMS will decrease this error rate - In other words, a high CMS value is not a sufficient condition for a match.***
 
-32. p. 17, l. -13:  I'd prefer another term than "correlation" here.  In fact, the entire sentence could be improved.
+31. p. 17, l. -13:  I'd prefer another term than "correlation" here.  In fact, the entire sentence could be improved.
 
 ***DONE***
 
-33. p. 17, l. -2:  Remove the comma after "indicates".
+32. p. 17, l. -2:  Remove the comma after "indicates".
 
 ***DONE***
 
-34. p. 18, l. -4:  Change "this study" to "that study", so the reader is certain you mean Ma et al. (2001) and not your own.
+33. p. 18, l. -4:  Change "this study" to "that study", so the reader is certain you mean Ma et al. (2001) and not your own.
 
 ***DONE***
 
-35. p. 20,  l. -3:  I really like the idea of including an inconclusive zone.
+34. p. 20,  l. -3:  I really like the idea of including an inconclusive zone.
 
 ***Thank you for the comment. We have chosen to leave off a more detailed discussion on an inconclusive zone. Certainly, formulating such a zone would have important implications in terms of the criminal justice system, but it is one that we felt was outside the scope of this particular paper. Certainly, should an automated algorithm like we propose be used as an aid in the conviction or the exoneration of suspects, much attention would be needed on the extent of this zone.***
 
-36. p. 21, Fig. 20:  Most of the features plotted have been defined, but I don't recall x1 and x2.  You may want to remind the reader about all the definitions, or have a table of features appear early in the random forests discussion.
+35. p. 21, Fig. 20:  Most of the features plotted have been defined, but I don't recall x1 and x2.  You may want to remind the reader about all the definitions, or have a table of features appear early in the random forests discussion.
 
 ***We have removed references to x1 and x2. Thanks for pointing them out. These were features representing the height of the bullet at which the signature was extracted for each of the two bullets, but they were not intended to be part of the random forest.***
 
-37. p. 22, l. -9:  Change "bottomline" to "bottom line".
+36. p. 22, l. -9:  Change "bottomline" to "bottom line".
 
 ***DONE***
 
-38. p. 23, l. 4:  Remove the comma after "found".
+37. p. 23, l. 4:  Remove the comma after "found".
 
 ***DONE***
 
-39. p. 23, l. -13/-5:  I don't think this mention of the Aadhar project adds much, and it distracts from the points you want to highlight about the work in this paper.
+38. p. 23, l. -13/-5:  I don't think this mention of the Aadhar project adds much, and it distracts from the points you want to highlight about the work in this paper.
 
 ***We have removed references to the Aadhar project.***
 
-40. Supplement, p. 8, l. 18:  Change "de-facto" to "de facto".
+39. Supplement, p. 8, l. 18:  Change "de-facto" to "de facto".
 
 ***DONE***
 
 # Reviewer 2
 
-41. So, my suggestion here is to change the sentence in the abstract to something like "Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel." Or "...help the trier of fact determine...".
+40. So, my suggestion here is to change the sentence in the abstract to something like "Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel." Or "...help the trier of fact determine...".
 
 ***DONE***
 
-42. the concept of "match": The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).
+41. the concept of "match": The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).
 
 ***We have clarified that matching two bullets is one of the goals, but not the sole or primary goal.***
 
-43. I strongly encourage the authors to not follow this trend and use the term "ballistics" only when you are actually talking about ballistics.
+42. I strongly encourage the authors to not follow this trend and use the term "ballistics" only when you are actually talking about ballistics.
 
 ***We have removed references to the term "ballistics" except in the context of citing prior work which uses the term.***
 
-44. 2nd to last line in the abstract: In point (a) "correctly identify lands with too much damage to be suitable for matching" I suggest replacing the word "matching" with "comparison" to use the same terminology as the other pattern evidence disciplines.
+43. 2nd to last line in the abstract: In point (a) "correctly identify lands with too much damage to be suitable for matching" I suggest replacing the word "matching" with "comparison" to use the same terminology as the other pattern evidence disciplines.
 
 ***DONE***
 
-45. Line 55: Replace "in the forensic sciences" with "in forensic science". (See Margot P, Commentary on The Need for a Research Culture in the Forensic Sciences, UCLA Law Review (2011) 58: 795-801.)
+44. Line 55: Replace "in the forensic sciences" with "in forensic science". (See Margot P, Commentary on The Need for a Research Culture in the Forensic Sciences, UCLA Law Review (2011) 58: 795-801.)
 
 ***DONE***
 
-46. Lines 156-158: The sentence "The blue area around the signature are 95% bootstrapped confidence intervals based on 1,000 bootstrap samples." is confusing. The term "signature" is defined two sentences further. Is the sentence referring to Figure 4b? If yes, it should probably come at the end of this paragraph.
+45. Lines 156-158: The sentence "The blue area around the signature are 95% bootstrapped confidence intervals based on 1,000 bootstrap samples." is confusing. The term "signature" is defined two sentences further. Is the sentence referring to Figure 4b? If yes, it should probably come at the end of this paragraph.
 
 ***HH: Remove blue area / references to it... maybe?***
 
-47. Figure 5: In this figure, where is the limit between bullet 1-5 and bullet 2-1?
+46. Figure 5: In this figure, where is the limit between bullet 1-5 and bullet 2-1?
 
 ***Light grey shading in the background was added to help with the distinction between the two flattened bullet lands.***
 
-48. Line 246: Replace "this representations" with "this representation" or "these representations"
+47. Line 246: Replace "this representations" with "this representation" or "these representations"
 
 ***DONE***
 
-49. Caption of Figure 8: "At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures." is not a complete sentence.
+48. Caption of Figure 8: "At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures." is not a complete sentence.
 
 ***We have revised this caption to remove the ambiguity from the word "peaks", which we had intended to mean "maximizes."***
 
-50. Line 266: Capitalize the "b" in "by".
+49. Line 266: Capitalize the "b" in "by".
 
 ***DONE***
