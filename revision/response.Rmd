@@ -13,9 +13,7 @@ output: html_document
 
 2. Methodologically, the crux of the data analysis seems to be a generic application of decision trees. It would be good to clarify that aspect, and to more formally explain how the ensemble of the steps took by the authors to complete this work can be applied to other forensic science questions.
 
-***We have detailed a multi-stage analysis process that begins with a source image, processes the image, extracts features, and ultimately uses a random forest to compute predicted match probabilities. While the forest is a component of the process, we've taken care to emphasize that the preceeding steps outline a more general framework for analysis of striae in images that could theoretically apply to other forensic science questions as well. 
-
-***EH: TODO: Add to paper***
+***We have detailed a multi-stage analysis process that begins with a source image, processes the image, extracts features, and ultimately uses a random forest to compute predicted match probabilities. While the forest is a component of the process, we've taken care to emphasize that the preceeding steps outline a more general framework for analysis of striae in images that could theoretically apply to other forensic science questions as well.***
 
 # Reviewer A
 
