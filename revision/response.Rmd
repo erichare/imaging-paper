@@ -71,6 +71,8 @@ output: html_document
 
 10. What is the standard error of the error rates presented for the matching algorithms? The number of cross comparisons gives false impression the standard errors the when presenting the results.
 
+***Under the assumption of land-to-land independence, the number of land-to-land matches is distributed according to a Binomial(N, p) distribution where N is the total number of bullet lands and p is the probability of a match between two bullet lands. However, the bullet lands from the Hamby study are all known to be either pairwise matches or non-matches. Thus, we present the Out-of-bag (OOB) error for the random forest, representing the error rate as determined from the observations not present in the particular bootstrap samples. This is discussed further on Page 19.***
+
 ***HH: I'm sure I am misunderstanding the comment, but I don't know how to answer this question. The standard error of a rate in (0,1) would be sqrt(p*(1-p)). So because p is small the square root is going to be still pretty small. We are presenting out of bag error rates for the random forest - maybe we need to explain what out-of bag means in more detail?***
 
 ***EH: Yeah, I was a little unsure of this. Maybe we can ask Alicia, and if she also is confused by it I can type up an explanation on how the OOB error is computed.***
@@ -91,11 +93,13 @@ output: html_document
 
 ***TODO***
 
-14.  The authors would need to study (or at least discuss extensively) the ability of their method to capture the variability in bullet profiles over time (at interval of several dozen of bullets fired by the same weapon, when the weapon has been cleaned, or when the bullet was degraded by hitting a target). In addition, a dataset of 10 firearms (even consecutively manufactured) does not provide any information on the rarity of a particular bullet profile, and therefore does not address the second probability statement. Alternatively, the proposed metrics could be tested in a database searching situation, which has not been done.
+14. The authors would need to study (or at least discuss extensively) the ability of their method to capture the variability in bullet profiles over time (at interval of several dozen of bullets fired by the same weapon, when the weapon has been cleaned, or when the bullet was degraded by hitting a target). In addition, a dataset of 10 firearms (even consecutively manufactured) does not provide any information on the rarity of a particular bullet profile, and therefore does not address the second probability statement. Alternatively, the proposed metrics could be tested in a database searching situation, which has not been done.
 
 ***At the time of the submission of this manuscript, the 35 bullets from Hamby set 252 were the only ones accessible to the public. They are part of Dr Zheng's efforts at NIST to provide a ballistics reference database. In the future more results will be available, but until then we are unable to provide a data-informed discussion of the very important issues raised by the reviewer.***
 
 15. On a related subject, I believe that a random forest provides the probability that two bullets were fired by the same gun given the set of observations (Fig 19), not the probability of interest: the probability of two sets of observations given that the two bullets were fired by the same gun. The authors may want to revise some of the statements in their discussion and conclusion.
+
+***AC: TODO***
 
 ***HH: why should the probability of two sets of observations given that the two bullets were fired by the same gun be the probability of interest? I would agree that the random forest and any of its conclusions are restricted to how good the underlying 'database' is. The more representative the set of bullets, the better the predictions should be. It is not the purpose of this paper to find the probability of two sets of observations given that the two bullets were fired by the same gun. We made sure to remove any misleading statements that might suggest the latter probability. ***
 
