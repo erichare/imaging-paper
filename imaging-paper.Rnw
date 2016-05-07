@@ -1404,6 +1404,14 @@ qplot(data=predm, value, match, geom="jitter", colour=match, shape=match) + them
   xlab("Predicted probability of a match") +
   theme(legend.position="none")
 
+qplot(data=predm, value, geom="boxplot", fill=match, x=match, alpha=I(0.5)) + 
+  theme_bw() + facet_grid(variable~.) +
+  scale_fill_brewer(palette="Paired", labels=c("KNM", "KM")) +
+   ylab("") + 
+   xlab("Predicted probability of a match") +
+  coord_flip() + 
+  theme(legend.position="none")
+
 # qplot(pred, forest, geom="jitter", data=bstats, colour=match, 
 #       shape=match) + theme_bw() +
 #   theme(legend.position="bottom") +
