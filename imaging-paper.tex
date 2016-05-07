@@ -200,10 +200,15 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 \end{subfigure}
 \caption{Example of a groove-to-groove scan of a bullet land. The red-dotted rectangle on the right shows the location and orientation of the segment. }
 \end{figure}
-Each fired bullet is provided in the form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
+
+
+
+Each fired bullet is provided in the form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". In the Hamby data, typical length (groove-to-groove) of a land is about 2005.9 micrometers or 2.01 millimeters. For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
+
+The typical number and width of striation markings on bullet varies significantly depending on the gun barrel. For instance, a Smith and Wesson barrel with a land-width of 2.4 millimeters contained an average 60 striae, with an average width of about 0.08 millimeters~\citep{chu:2011}.
 
 The purpose of our paper is to present an automatic matching routine that allows for a completely objective assessment of the quality of a match. 
-The original paper on the complete Hamby study already reports the successful use of several computer-assisted methods; aside from a zero false positive rate no further details on a false-negative error rate for bullets are given nor are error rates for land-to-land matches mentioned. 
+The original paper on the complete Hamby study already reports the successful use of several computer-assisted methods; aside from a zero false positive rate, no further details on a false-negative error rate for bullets are given nor are error rates for land-to-land matches mentioned. 
 % Hamby study: automated systems were successfully used for matching:
 %  Intelligent Automation's SciClops - Dr. Ben Bachrach (Maryland, United States);
 % Automated Land Identification System (ALIS) - Mr. Tsuneo Uchiyama (Tokyo, Japan);
@@ -215,10 +220,9 @@ A procedure for bullet matching using the BulletTrax3D system is described in \c
 The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. %We then describe a web application for visualizing and working with bullet surfaces. 
 We then proceed to describing an automatic matching routine which we evaluate on the bullets made available through the Hamby study.
 
-
 \section{Bullet signatures}
 
-In an approach to analyze the striation pattern we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section of the surface measurements at a fixed height $x$ along the bullet land.
+In an approach to analyze the striation pattern, we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section of the surface measurements at a fixed height $x$ along the bullet land.
 %An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the surface measurements across. 
 Figure \ref{fig:fixedX} shows a plot of the side profile of a bullet land. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
@@ -240,10 +244,10 @@ Instead of a circular fit, we use multiple loess fits to model the overall struc
 
 \subsection{Identifying groove locations}
 %In an attempt to improve upon the previous algorithm, w
-We first have to identify the locations of the left and right groove in the image. The grooves are assumed to not contain information relevant for determining matches. They also dominate the structure, and therefore need  to be removed.  
+We first have to identify the locations of the left and right groove in the image. The grooves are assumed to contain no information relevant for determining matches. They also dominate the structure, and therefore need to be removed.  
 Fortunately, the location and appearance of the grooves in the surface profiles is quite consistent.
 Surface measurements reach local maxima around the peak of the groove at either end of the range of $y$, we can then follow the descent of the surface measurements inwards to the valley of the groove. 
-The location of the valleys  mark the points at which we should trim the image. The procedure can be described as follows:
+The location of the valleys mark the points at which we should trim the image. The procedure can be described as follows:
 
 \begin{enumerate}
     \item At a fixed height $x$ extract a bullet's profile (Figure~\ref{fig:loess_step1}, with $x = 243.75\mu m$).

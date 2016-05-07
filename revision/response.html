@@ -169,7 +169,6 @@ $(document).ready(function () {
 <li>On the random forest classifier- are the prior probabilities being estimated from the cross comparisons described on page 15? What exactly are the prior probabilities used in the random forest?</li>
 </ol>
 <p><strong><em>No data-based adjustment was made to the prior probabilities, i.e. prior probabilities of 50:50 for matches/non-matches were used.</em></strong></p>
-<p><strong><em>HH: what does the reviewer mean by cross-comparison? On page 15 we discuss some results from matching based on CMS.</em></strong></p>
 <ol start="8" style="list-style-type: decimal">
 <li>Equal Error Rates on the ROC curves would be a helpful metric as well as the AUC.</li>
 </ol>
@@ -181,6 +180,7 @@ $(document).ready(function () {
 <ol start="10" style="list-style-type: decimal">
 <li>What is the standard error of the error rates presented for the matching algorithms? The number of cross comparisons gives false impression the standard errors the when presenting the results.</li>
 </ol>
+<p><strong><em>Under the assumption of land-to-land independence, the number of land-to-land matches is distributed according to a Binomial(N, p) distribution where N is the total number of bullet lands and p is the probability of a match between two bullet lands. However, the bullet lands from the Hamby study are all known to be either pairwise matches or non-matches. Thus, we present the Out-of-bag (OOB) error for the random forest, representing the error rate as determined from the observations not present in the particular bootstrap samples. This is discussed further on Page 19.</em></strong></p>
 <p><strong><em>HH: I’m sure I am misunderstanding the comment, but I don’t know how to answer this question. The standard error of a rate in (0,1) would be sqrt(p</em>(1-p)). So because p is small the square root is going to be still pretty small. We are presenting out of bag error rates for the random forest - maybe we need to explain what out-of bag means in more detail?</strong>*</p>
 <p><strong><em>EH: Yeah, I was a little unsure of this. Maybe we can ask Alicia, and if she also is confused by it I can type up an explanation on how the OOB error is computed.</em></strong></p>
 <ol start="11" style="list-style-type: decimal">
@@ -206,6 +206,7 @@ $(document).ready(function () {
 <ol start="15" style="list-style-type: decimal">
 <li>On a related subject, I believe that a random forest provides the probability that two bullets were fired by the same gun given the set of observations (Fig 19), not the probability of interest: the probability of two sets of observations given that the two bullets were fired by the same gun. The authors may want to revise some of the statements in their discussion and conclusion.</li>
 </ol>
+<p><strong><em>AC: TODO</em></strong></p>
 <p><strong><em>HH: why should the probability of two sets of observations given that the two bullets were fired by the same gun be the probability of interest? I would agree that the random forest and any of its conclusions are restricted to how good the underlying ‘database’ is. The more representative the set of bullets, the better the predictions should be. It is not the purpose of this paper to find the probability of two sets of observations given that the two bullets were fired by the same gun. We made sure to remove any misleading statements that might suggest the latter probability. </em></strong></p>
 <ol start="16" style="list-style-type: decimal">
 <li>I am concerned by the assumption of independence of between the different lands on a given bullet that the authors seems to use in their error rates calculations (and ROC curves). The assumption seems unreasonable since as soon as a land has been paired between two bullets, it seems that it becomes more likely to pair the other lands. In other words, I believe that the authors need to redo their error rate measurements, but using bullets as their experimental units and not lands. I am also concerned by the overwhelming majority of non-matches, this must certainly artificially increase the rate of correct exclusion and distort the data.</li>
@@ -237,10 +238,7 @@ $(document).ready(function () {
 <ol start="22" style="list-style-type: decimal">
 <li>Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth.</li>
 </ol>
-<p><strong><em>EH: Add typical width of groove + lands</em></strong></p>
-<p><strong><em>EH: Presumably the typical width is some kind of class characteristic dependent on the gun itself, right?</em></strong></p>
-<p><strong><em>HH: I am not sure about the width of a striation - the width depends on where it is measured (in both x and z direction). I’m sure there are definitions of that available. We might need some more literature.</em></strong></p>
-<p><strong><em>EH: <a href="http://nvlpubs.nist.gov/nistpubs/jres/116/3/v116.n03.a01.pdf" class="uri">http://nvlpubs.nist.gov/nistpubs/jres/116/3/v116.n03.a01.pdf</a> - “The number and width of striations in a land impression can vary depending on the size of the bullet and the characteristics of the barrel. For example, according to Biasotti’s study, the Smith and Wesson barrel with a land impression width of 2.4 mm has an average of 60 striations with total striation counts between 16 and 97 [13]. Observing the land impression images used in our study, 50 pixels (about 0.08 mm) is a reasonable choice for the average width of a structuring element.”</em></strong></p>
+<p><strong><em>We have added the typical width of both the groove-to-groove (land) width, as well as the typical width of a striation.</em></strong></p>
 <ol start="23" style="list-style-type: decimal">
 <li>p. 2, l. -1: It would be good to reword so the sentence doesn’t start with “x3p”. Also p. 3, l. 2.</li>
 </ol>

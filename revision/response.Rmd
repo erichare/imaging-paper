@@ -59,8 +59,6 @@ output: html_document
 
 ***No data-based adjustment was made to the prior probabilities, i.e. prior probabilities of 50:50 for matches/non-matches were used.***
 
-***HH: what does the reviewer mean by cross-comparison? On page 15 we discuss some results from matching based on CMS.***
-
 8. Equal Error Rates on the ROC curves would be a helpful metric as well as the AUC.
 
 ***Included***
@@ -131,13 +129,7 @@ output: html_document
 
 22. Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth. 
 
-***EH: Add typical width of groove + lands***
-
-***EH: Presumably the typical width is some kind of class characteristic dependent on the gun itself, right?***
-
-***HH: I am not sure about the width of a striation - the width depends on where it is measured (in both x and z direction). I'm sure there are definitions of that available. We might need some more literature.***
-
-***EH: http://nvlpubs.nist.gov/nistpubs/jres/116/3/v116.n03.a01.pdf - "The number and width of striations in a land impression can vary depending on the size of the bullet and the characteristics of the barrel. For example, according to Biasotti’s study, the Smith and Wesson barrel with a land impression width of 2.4 mm has an average of 60 striations with total striation counts between 16 and 97 [13]. Observing the land impression images used in our study, 50 pixels (about 0.08 mm) is a reasonable choice for the average width of a structuring element."***
+***We have added the typical width of both the groove-to-groove (land) width, as well as the typical width of a striation.***
 
 23. p. 2, l. -1:  It would be good to reword so the sentence doesn't start with "x3p".  Also p. 3, l. 2.
 
