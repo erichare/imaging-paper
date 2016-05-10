@@ -123,24 +123,34 @@ $(document).ready(function () {
 </div>
 
 
+<div id="overall-todo" class="section level1">
+<h1>Overall TODO</h1>
+<ol style="list-style-type: decimal">
+<li>Read the paper start to finish</li>
+<li>Look at boxplots vs densities (maybe use jittered boxplots?)</li>
+</ol>
+</div>
 <div id="ae" class="section level1">
 <h1>AE</h1>
 <ol style="list-style-type: decimal">
 <li>The paper should better explain the role of the new methods for forensic science. The authors should consider referencing some of the previous work the reviewers mention.</li>
 </ol>
-<p><strong><em>AC: TODO</em></strong></p>
+<p><strong><em>The AE makes two very good points. We have greatly extended our review of the existing literature and have included references to relevant papers. Where possible, we have also cocntrasted the proposed approach with existing methods. We have also added a discussion of the potential uses of a score such as ours in the forensic and legal applications.</em></strong></p>
+<p><strong><em>TODO: Add to paper</em></strong></p>
 <ol start="2" style="list-style-type: decimal">
 <li>Methodologically, the crux of the data analysis seems to be a generic application of decision trees. It would be good to clarify that aspect, and to more formally explain how the ensemble of the steps took by the authors to complete this work can be applied to other forensic science questions.</li>
 </ol>
-<p><strong><em>We have detailed a multi-stage analysis process that begins with a source image, processes the image, extracts features, and ultimately uses a random forest to compute predicted match probabilities. While the forest is a component of the process, we’ve taken care to emphasize that the preceeding steps outline a more general framework for analysis of striae in images that could theoretically apply to other forensic science questions as well.</em></strong></p>
+<p><strong><em>The basic objective is to find the most discriminating combination of attributes to construct a score that provides a quantitative summary, or signature, for each bullet. In that sense, yes, random forests are a standard alternative. Random forests are extraordinarily flexible tools, and permit the use of both continuous and discrete variables in the construction of the score. This is one reason to think that they are likely to be useful in many other forensic applications. We have added a comment about this in the manuscript. One aspect of our work that is (sadly) novel, at least relative to the forensics community, is that we are making our algorithm and code completely public, so that the scientific community can evaluate the approach in detail.</em></strong></p>
+<p><strong><em>TODO: Add to paper</em></strong></p>
 </div>
 <div id="reviewer-a" class="section level1">
 <h1>Reviewer A</h1>
 <ol start="3" style="list-style-type: decimal">
 <li>Random forests, as used and described on pages 18-21 of the paper comes out looking like a winner, but other than that success—worth reporting <em>somewhere</em>—, there is no new information on that method. No new insights. And certainly no comparisons with the tens of other things that could have been tried.</li>
 </ol>
-<p><strong><em>HH: Could you look at this response i wrote?</em></strong></p>
 <p><strong><em>We were not intending to provide new insights on random forests. The insights were in the feature extraction and image processing leading up to the random forest fit. As the forest ultimately predicted every land-to-land comparison properly, we felt that a comparison to other learning methods wass outside the scope of this paper. Had a wider variety of data been available, there would likely be more variability in the predictions and a comparison to other learning methods would be prudent. For this particular paper, however, the groove detection, profile extraction, and feature definitions were the intended focus.</em></strong></p>
+<p><strong><em>We selected random forests because the method has desirable attributes and can be easily ported to other forensic applications. The focus of the paper was not to find the best algorithm to develop a score but rather show the potential of combining as large a number of attributes as are available to discriminate among bullets. </em></strong></p>
+<p><strong><em>TODO: Combine into one</em></strong></p>
 </div>
 <div id="reviewer-b" class="section level1">
 <h1>Reviewer B</h1>
@@ -164,7 +174,7 @@ $(document).ready(function () {
 <ol start="6" style="list-style-type: decimal">
 <li>There should have been a comparison of different classification methods to show that the random forest is reasonable.</li>
 </ol>
-<p><strong><em>HH: I am not quite sure what a ‘reasonable’ classification method is supposed to mean. Shouldn’t a classification method be judged by its success in predicting the outcome? Apart from that, random forests are based on decision trees, which are an extremely flexible tool for classification, that can deal with quantitative and categorical types of variables and, in the implementation we used, also deal with some missing values (which was not needed in the data here).</em></strong></p>
+<p><strong><em>A classification method should be judged by its success in predicting the outcome. Random forests are based on decision trees, which are an extremely flexible tool for classification, that can deal with quantitative and categorical types of variables and, in the implementation we used, also deal with some missing values (which was not needed in the data here).</em></strong></p>
 <ol start="7" style="list-style-type: decimal">
 <li>On the random forest classifier- are the prior probabilities being estimated from the cross comparisons described on page 15? What exactly are the prior probabilities used in the random forest?</li>
 </ol>
@@ -181,37 +191,37 @@ $(document).ready(function () {
 <li>What is the standard error of the error rates presented for the matching algorithms? The number of cross comparisons gives false impression the standard errors the when presenting the results.</li>
 </ol>
 <p><strong><em>Under the assumption of land-to-land independence, the number of land-to-land matches is distributed according to a Binomial(N, p) distribution where N is the total number of bullet lands and p is the probability of a match between two bullet lands. However, the bullet lands from the Hamby study are all known to be either pairwise matches or non-matches. Thus, we present the Out-of-bag (OOB) error for the random forest, representing the error rate as determined from the observations not present in the particular bootstrap samples. This is discussed further on Page 19.</em></strong></p>
-<p><strong><em>HH: I’m sure I am misunderstanding the comment, but I don’t know how to answer this question. The standard error of a rate in (0,1) would be sqrt(p</em>(1-p)). So because p is small the square root is going to be still pretty small. We are presenting out of bag error rates for the random forest - maybe we need to explain what out-of bag means in more detail?</strong>*</p>
-<p><strong><em>EH: Yeah, I was a little unsure of this. Maybe we can ask Alicia, and if she also is confused by it I can type up an explanation on how the OOB error is computed.</em></strong></p>
 <ol start="11" style="list-style-type: decimal">
 <li>In the conclusions section the authors mention an assumption of “uniqueness”. In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.</li>
 </ol>
-<p><strong><em>AC: TODO</em></strong></p>
-<p><strong><em>probably refers to articles such as “how good is good enough?”, books “modern scientific evidence”, “judging science” …. I am not sure that those are really necessary or helpful. It might be better to re-phrase the sentence in the conclusion.</em></strong></p>
+<p><strong><em>The reviewer is absolutely correct, but we are talking about a different ``uniqueness’’ concept here. The discipline of firearm and toolmark examining relies on two foundational assumptions: that every gun leaves a unique set of markings and that the marks are reproducible. This is still the credo among tool and firearms examiners. The reviewer is referring to the fact that in testimony, forensic scientists are beginning to move away from declaring that, for example, an individual gun, to the exclusion of all others, was the one that fired the bullet. The work we present addresses the fundamental assumption of uniqueness, and will hopefully help move the practice away from statements of unique source.</em></strong></p>
 <ol start="12" style="list-style-type: decimal">
 <li>A discussion on how the authors view the use of their matching algorithm would be useful to the forensic community. For example are they intending to use this to build a closed set identification system similar to IAFIS or are them intending this to work in a manner similar to a biometric verification system? etc.</li>
 </ol>
-<p><strong><em>HH: in my view we ourselves are not building a closed set identification system. The problem with existing closed set systems is that it is unclear how the matching is exactly done and what statistical properties it has (number of parameters, distribution of them, sensitivities). Repeatability and reproducibility is a huge issue in this area. ‘Matching’ is also not just a single step - it consists, as we have laid out in the paper, of a series of steps, which all deserve attention. While the reviewer pointed out to us to use ‘standard methods’ - there are no actual standards in place. There might be a set of alternatives, and some evidence as to which methods might work better in some situations than others, but there is a lack of an in-depth discussion of the alternatives at each step as well as an overall discussion. In this manuscript we are detailing one route to divvy up the process and provide the code for others to reproduce our findings. </em></strong></p>
+<p><strong><em>HH: in my view we ourselves are not building a closed set identification system. The problem with existing closed set systems is that it is unclear how the matching is exactly done and what statistical properties it has (number of parameters, distribution of them, sensitivities). Repeatability and reproducibility is a huge issue in this area. ‘Matching’ is also not just a single step - it consists, as we have laid out in the paper, of a series of steps, which all deserve attention. While the reviewer pointed out to us to use ‘standard methods’ - there are no actual standards in place. There might be a set of alternatives, and some evidence as to which methods might work better in some situations than others, but there is a lack of an in-depth discussion of the alternatives at each step as well as an overall discussion. In this manuscript we are detailing one route to divvy up the process and provide the code for others to reproduce our findings.</em></strong></p>
+<p>*** AC: Actually I think that the meaning is different. I wonder whether ``closed system’’ not in the sense of secret but rather in the sense of building a big database of signatures that can be searched (like AFIS, but open). This is what I interpret given the question about how forensic scientists might use this method. ***</p>
+<p><strong><em>TODO: Focus on open algorithms (opening up the closed system) / merge responses</em></strong></p>
 </div>
 <div id="reviewer-c" class="section level1">
 <h1>Reviewer C</h1>
 <ol start="13" style="list-style-type: decimal">
 <li>there is a lack of knowledge of the existing literature on statistical work performed on tool marks and firearms. For example, the work performed by Nicholas Petraco, Fabiano Riva, or Alan Zheng in the past 5 years is not mentioned. Instead, old research projects are mentioned, which mostly focus on manual identification. The authors need to discuss the novelty of their method (and how it potentially addresses the shortcomings of these recent methods)</li>
 </ol>
-<p><strong><em>TODO</em></strong></p>
+<p><strong><em>The point that the reviewer makes is valid. While we were familiar with the computer-assisted approaches that have been proposed, practice still relies on human examination of potential candidates presented by a system such as NIBIN. We have added what we hope is an acceptably complete review of the literature in the revised manuscript.</em></strong></p>
+<p><strong><em>TODO: Cite riva paper, explain work has been done on cartridges (not bullets)</em></strong></p>
 <ol start="14" style="list-style-type: decimal">
 <li>The authors would need to study (or at least discuss extensively) the ability of their method to capture the variability in bullet profiles over time (at interval of several dozen of bullets fired by the same weapon, when the weapon has been cleaned, or when the bullet was degraded by hitting a target). In addition, a dataset of 10 firearms (even consecutively manufactured) does not provide any information on the rarity of a particular bullet profile, and therefore does not address the second probability statement. Alternatively, the proposed metrics could be tested in a database searching situation, which has not been done.</li>
 </ol>
-<p><strong><em>At the time of the submission of this manuscript, the 35 bullets from Hamby set 252 were the only ones accessible to the public. They are part of Dr Zheng’s efforts at NIST to provide a ballistics reference database. In the future more results will be available, but until then we are unable to provide a data-informed discussion of the very important issues raised by the reviewer.</em></strong></p>
+<p><strong><em>At the time of the submission of this manuscript, the 35 bullets from 10 barrels from Hamby set 252 were the only ones accessible to the public. They are part of Dr Zheng’s efforts at NIST to provide a ballistics reference database. In the future more results will be available, but until then we are unable to provide a data-informed discussion of the very important issues raised by the reviewer.</em></strong></p>
 <ol start="15" style="list-style-type: decimal">
 <li>On a related subject, I believe that a random forest provides the probability that two bullets were fired by the same gun given the set of observations (Fig 19), not the probability of interest: the probability of two sets of observations given that the two bullets were fired by the same gun. The authors may want to revise some of the statements in their discussion and conclusion.</li>
 </ol>
-<p><strong><em>AC: TODO</em></strong></p>
-<p><strong><em>HH: why should the probability of two sets of observations given that the two bullets were fired by the same gun be the probability of interest? I would agree that the random forest and any of its conclusions are restricted to how good the underlying ‘database’ is. The more representative the set of bullets, the better the predictions should be. It is not the purpose of this paper to find the probability of two sets of observations given that the two bullets were fired by the same gun. We made sure to remove any misleading statements that might suggest the latter probability. </em></strong></p>
+<p><strong><em>The reviewer is correct in stating that two probabilities of interest are the probability of observing the data under the <code>same source'' (same gun) hypothesis or under the</code>different source’’ hypothesis. An empirical approach to get at those two probabilities is to derive the distribution of scores when two bullets are known to have been fired by the same gun and the distribution of scores when two bullets are known to have been fired by different guns. We have actually derived those to distributions and include them in the revised manuscript.</em></strong></p>
 <ol start="16" style="list-style-type: decimal">
 <li>I am concerned by the assumption of independence of between the different lands on a given bullet that the authors seems to use in their error rates calculations (and ROC curves). The assumption seems unreasonable since as soon as a land has been paired between two bullets, it seems that it becomes more likely to pair the other lands. In other words, I believe that the authors need to redo their error rate measurements, but using bullets as their experimental units and not lands. I am also concerned by the overwhelming majority of non-matches, this must certainly artificially increase the rate of correct exclusion and distort the data.</li>
 </ol>
-<p><strong><em>Assuming independence between the lands of each barrel is certainly not realistic in practice, however, by assuming independence we make the task of matching harder for the algorithm. XXX still need to do XXX Based on the actual numerical values of features derived from each of the lands, an independence assumption is not unrealistic, because the features do not exhibit any clustering associated to barrel. The technique suggested by the reviewer could be solved using a hierarchical approach to matching, and we agree with the assessment that it would likely decrease the error rates.</em></strong></p>
+<p><strong><em>Assuming independence between the lands of each barrel is certainly not realistic in practice, however, by assuming independence we make the task of matching harder for the algorithm. Based on the actual numerical values of features derived from each of the lands, an independence assumption is not unrealistic, because the features do not exhibit any clustering associated to barrel. The technique suggested by the reviewer could be solved using a hierarchical approach to matching, and we agree with the assessment that it would likely decrease the error rates.</em></strong></p>
+<p><strong><em>TODO: We will figure out</em></strong></p>
 <ol start="17" style="list-style-type: decimal">
 <li>the authors attempt to define a “stable” profile (see Figure 9) and use the stable profile for comparison. What happens if such profile does not exist. Would it not be best to compare surfaces instead of sections? a 2D version of the proposed algorithm should be easily implementable (and has been done at least by Riva).</li>
 </ol>
@@ -318,6 +328,8 @@ $(document).ready(function () {
 <li>the concept of “match”: The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).</li>
 </ol>
 <p><strong><em>We have clarified that matching two bullets is one of the goals, but not the sole or primary goal.</em></strong></p>
+<p>*** AC: The reviewer is correct. Here, we talk about ``match’’ only as a means to test whether our algorithm is actually pairing the samples that are true pairs. This is a term used only in this development stage and is not intended for the court. ****</p>
+<p><strong><em>TODO: Clarify that we are discussing “match” only in terms of assessing our algorithm. Merge AC’s response</em></strong></p>
 <ol start="42" style="list-style-type: decimal">
 <li>I strongly encourage the authors to not follow this trend and use the term “ballistics” only when you are actually talking about ballistics.</li>
 </ol>
