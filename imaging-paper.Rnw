@@ -346,7 +346,7 @@ The main idea of locally weighted regression is to use a weighting routine that 
 
 %\hh{XXX standard errors: are based on independence of errors (which we don't have because of the high autocorrelation) and the assumption that the amount of bias is neglible. Which we don't know. We can produce standard errors, but (a) the nominal confidence level will be violated, and (b) the errors only allow for pointwise errors. We need a different approach. XXX}
 
-Figure~\ref{fig:loess_fit} shows the loess fit, in blue, overlaid on the processed image of bullet~1-5. The fit seems to do a reasonable job of capturing the structure of the image. The blue area around the signature are  95\% bootstrapped confidence intervals based on 1,000 bootstrap samples. 
+Figure~\ref{fig:loess_fit} shows the loess fit, in blue, overlaid on the processed image of bullet~1-5. The fit seems to do a reasonable job of capturing the structure of the image. %The blue area around the signature are  95\% bootstrapped confidence intervals based on 1,000 bootstrap samples. 
 Figure~\ref{fig:loess_resid} shows the residuals from this fit. These residuals are called the \emph{signature} of bullet~1-5.
 %
 \begin{figure}[hbtp]
@@ -369,14 +369,15 @@ my.loess$fitted + ylab("Surface measurements")
 %my.loess$resid + ylab("Residuals of loess Fit") 
 %@
 <<boot_loess, echo=FALSE, fig.width=10, fig.height=3.5, out.width='\\textwidth', warning=FALSE>>=
-boot.loess <- boot_fit_loess(br111_bullet, br111.groove)
-poly <- with(boot.loess, data.frame(x = c(y,rev(y)), y=c(high, rev(low))))
-qplot(x=x, y=y, geom="polygon", fill=I("steelblue"), data=poly) +
+#boot.loess <- boot_fit_loess(br111_bullet, br111.groove)
+#poly <- with(boot.loess, data.frame(x = c(y,rev(y)), y=c(high, rev(low))))
+#qplot(x=x, y=y, geom="polygon", fill=I("steelblue"), data=poly) +
+ggplot() +
   geom_line(aes(x=y, y=resid), data=my.loess$data) +
   ylab("Residuals of loess fit") + xlab("y") + theme_bw()
 @
 \end{subfigure}
-\caption{Fit and residuals of a loess fit to bullet~1-5 (Barrel~1). The residuals define the {\it signature} of bullet~1-5. Blue areas around the residuals show  95\% bootstrap confidence intervals (based on $B=1,000$ bootstrap samples).
+\caption{Fit and residuals of a loess fit to bullet~1-5 (Barrel~1). The residuals define the {\it signature} of bullet~1-5. %Blue areas around the residuals show  95\% bootstrap confidence intervals (based on $B=1,000$ bootstrap samples).
 }
 \end{figure}
 %
