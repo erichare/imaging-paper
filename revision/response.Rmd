@@ -14,7 +14,7 @@ output: html_document
 
 1. The paper should better explain the role of the new methods for forensic science. The authors should consider referencing some of the previous work the reviewers mention.
 
-***The AE makes two very good points. We have greatly extended our review of the existing literature and have included references to relevant papers.  Where possible, we have also cocntrasted the proposed approach with existing methods.  We have also added a discussion of the potential uses of a score such as ours in the forensic and legal applications.***
+***The AE makes two very good points. We have greatly extended our review of the existing literature and have included references to relevant papers.  Where possible, we have also contrasted the proposed approach with existing methods.  We have also added a discussion of the potential uses of a score such as ours in the forensic and legal applications.***
 
 ***TODO: Add to paper***
 
@@ -28,11 +28,7 @@ output: html_document
 
 3. Random forests, as used and described on pages 18-21 of the paper comes out looking like a winner, but other than that success---worth reporting *somewhere*---, there is no new information on that method. No new insights. And certainly no comparisons with the tens of other things that could have been tried.
 
-***We were not intending to provide new insights on random forests. The insights were in the feature extraction and image processing leading up to the random forest fit. As the forest ultimately predicted every land-to-land comparison properly, we felt that a comparison to other learning methods wass outside the scope of this paper. Had a wider variety of data been available, there would likely be more variability in the predictions and a comparison to other learning methods would be prudent. For this particular paper, however, the groove detection, profile extraction, and feature definitions were the intended focus.***
-
-***We selected random forests because the method has desirable attributes and can be easily ported to other forensic applications.  The focus of the paper was not to find the best algorithm to develop a score but rather show the potential of combining as large a number of attributes as are available to discriminate among bullets.  ***
-
-***TODO: Combine into one***
+***We selected random forests because the method has desirable attributes and can be easily ported to other forensic applications. We were not intending to provide new insights on random forests. The focus of the paper was to show the potential of combining a large number ofimage attributes to discriminate among bullets. As the forest ultimately predicted every land-to-land comparison properly, we felt that a comparison to other learning methods was outside the scope of this paper. Had a wider variety of data been available, there would likely be more variability in the predictions and a comparison to other learning methods would be prudent.***
 
 # Reviewer B
 
@@ -218,11 +214,7 @@ output: html_document
 
 41. the concept of "match": The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).
 
-***We have clarified that matching two bullets is one of the goals, but not the sole or primary goal.***
-
-*** AC:  The reviewer is correct.  Here, we talk about ``match'' only as a means to test whether our algorithm is actually pairing the samples that are true pairs.  This is a term used only in this development stage and is not intended for the court. ****
-
-***TODO: Clarify that we are discussing "match" only in terms of assessing our algorithm. Merge AC's response***
+***The reviewer is correct. Here, we talk about "match" only as a means to test whether our algorithm is actually pairing the samples that are true pairs. This is a term used only in this development stage and is not intended for the court. As such, we have clarified that matching two bullets is one of our goals, but not the sole or primary goal of this procedure in forensic science.***
 
 42. I strongly encourage the authors to not follow this trend and use the term "ballistics" only when you are actually talking about ballistics.
 

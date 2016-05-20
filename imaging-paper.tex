@@ -205,7 +205,7 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 
 Each fired bullet is provided in the form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". In the Hamby data, typical length (groove-to-groove) of a land is about 2005.9 micrometers or 2.01 millimeters. For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
 
-The typical number and width of striation markings on bullet varies significantly depending on the gun barrel. For instance, a Smith and Wesson barrel with a land-width of 2.4 millimeters contained an average 60 striae, with an average width of about 0.08 millimeters~\citep{chu:2011}.
+The typical number and width of striation markings on bullets varies significantly depending on the gun barrel. For instance, a Smith and Wesson barrel with a land-width of 2.4 millimeters contained an average 60 striae, with an average width of about 0.08 millimeters~\citep{chu:2011}.
 
 The purpose of our paper is to present an automatic matching routine that allows for a completely objective assessment of the quality of a match. 
 The original paper on the complete Hamby study already reports the successful use of several computer-assisted methods; aside from a zero false positive rate, no further details on a false-negative error rate for bullets are given nor are error rates for land-to-land matches mentioned. 
@@ -440,15 +440,15 @@ We first identify a stable region for each bullet land and extract the signature
 
 All of the other steps are done on pairs of bullet lands:
 \begin{enumerate}
-\item {\bf Smooth the two signatures} by a loess with a very small span (see Figure~\ref{fig:smooth}). 
+\item {\bf Smooth the two signatures} using a loess with a very small span (see Figure~\ref{fig:smooth}). 
 \item Use cross-correlation to {\bf find the best alignment} of the two signatures: shift one of the signatures by the lag indicated by the cross-correlation function (see Figure~\ref{fig:ccf} for the cross-correlation function and Figure~\ref{fig:crosscutX} for the resulting shift).
 \item Using a rolling average, {\bf identify peaks and valleys} for each of the signatures. We then define an interval around the location of the extrema on each side as one third of the distance to the location of the next extrema (see Figure~\ref{fig:smoothcutb}). Peaks and valleys constitute the \emph{striation marks} of the bullet.
-\item {\bf Match striations across signatures:} based on the intervals around the extrema as defined above, we identify joint intervals between two signatures as those areas, in which two or more of the individual intervals overlap: a joint interval is defined as the smallest interval that encompasses all of the overlapping intervals. A joint interval is then called a match(ing stria) between the signatures, if all of the intervals are of the same type of extrema, i.e.\ they are either all peaks or all valleys. In Figure~\ref{fig:match} all matches are shown as color-filled rectangles corresponding to their type of extrema (peaks are shown in orange, and valleys in green). Non-matching intervals are left grey. 
+\item {\bf Match striations across signatures:} based on the intervals around the extrema as defined above, we identify joint intervals between two signatures as the areas in which two or more of the individual intervals overlap: a joint interval is defined as the smallest interval that encompasses all of the overlapping intervals. A joint interval is then called a match(ing stria) between the signatures, if all of the intervals are of the same type of extrema, i.e.\ they are either all peaks or all valleys. In Figure~\ref{fig:match} all matches are shown as color-filled rectangles corresponding to their type of extrema (peaks are shown in orange, and valleys in green). Non-matching intervals are left grey. 
 \item {\bf Extract features from the aligned signatures and the matches between them:} many different features could be extracted. Here, we describe a few of the ones that can be found in the literature and some that we found to be of practical relevance:
 \begin{enumerate}[label=(\roman*)]
 \item Maximal number of CMS (consecutive matching striae), and, similarly, the number of consecutively non-matching striae (CNMS), 
 \item Number of matches and non-matches,
-\item \hh{The value of the cross-correlation function (ccf) between the aligned signatures \cite{vorburger:2011}, }
+\item The value of the cross-correlation function (ccf) between the aligned signatures \cite{vorburger:2011},
 \item Average difference $D$ between signatures, defined as the Euclidean vertical distance between surface measurements of aligned signatures. Let $f(t)$ and $g(t)$ be smoothed, aligned signatures:
 \[
 D^2 = \frac{1}{\text{\#}t}\sum_t \left[f(t) - g(t)\right]^2,
@@ -460,13 +460,13 @@ D^2 = \frac{1}{\text{\#}t}\sum_t \left[f(t) - g(t)\right]^2,
 The difference $D$ between signatures is here defined as the Euclidean distance (in $\mu m$). In the paper by \citet{ma:2004}, distance is defined as a measure relative to the first signature, which serves as a comparison reference and is therefore a unitless quantity. 
 
 Counting the maximal number of CMS is part of the current practice to identify bullet matches~\citep{nichols:1997, nichols:2003, nichols:2003b}. 
-In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a  high number indicative of a match between the bullets. 
+In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a high number indicative of a match between the bullets. 
  Note that the definition of CMS given in this paper does not match the one given in \citet{thompson:2013}. There, CMS is defined only in terms of matching peaks without regarding valleys. Additionally, peaks in  \citet{thompson:2013} are  used only if they can be identified and matched `within a tolerable range' between lands. The definition given here is computationally less complex, but should yield highly correlated values, because of the requirement to only consider signatures from a stable region in the land (see Section~\ref{sec:heights} for further details on stability of regions). In the Hamby study, the definition of CMS by \citet{thompson:2013} leads to approximately half of the values of CMS defined in this paper (with a correlation coefficient between the values of the two definitions of about 0.92). 
 For lead bullets, such as used in the Hamby study, \citet{biasotti:1959} considered four or more consecutive peaks (corresponding to eight or more consecutive lines in our definition) to be sufficient evidence of a match.  %We will assess the claim that eight or more consecutive lines are sufficient for a match in the next section. 
 
 Determining a threshold such that CMS values above the threshold indicate a match with high reliability is beyond the scope of this work, even though it is critically important in practice. We provide some ideas in the next section, but first we assess the robustness of the matching algorithm to different choices of the parameter values. 
 %In order to get a better understanding of  how  this matching works in known matches and non-matches, we next investigate the algorithm's performance in a test scenario.
-In addition to the features listed above, we also keep track of the value of the cross-correlation function found during the alignment, the lag at which signatures show the best alignment, and the height at which signatures are extracted ($x_1$ and $x_2$).
+%In addition to the features listed above, we also keep track of the value of the cross-correlation function found during the alignment, the lag at which signatures show the best alignment, and the height at which signatures are extracted ($x_1$ and $x_2$).
 
 %' \begin{figure}[hbtp]
 %'   \centering
