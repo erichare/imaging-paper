@@ -1408,30 +1408,15 @@ Another thing to note about  the random forest's error rates is that they are ba
 predm <- melt(bstats, measure.var=c("pred", "forest"))
 levels(predm$variable) <- c("Tree", "Forest")
 predm$match <- c("KNM", "KM")[as.numeric(predm$match)+1]
+predm$barrel1 <- gsub("(.*) .*-[0-9]+", "\\1", predm$b1)
+predm$barrel2 <- gsub("(.*)-[0-9]+", "\\1", predm$b2)
+
 qplot(data=predm, value, match, geom="jitter", colour=match, shape=match) + theme_bw() + facet_grid(variable~.) +
     scale_colour_brewer(palette="Paired", labels=c("KNM", "KM")) +
   scale_shape_discrete(labels=c("KNM", "KM")) + ylab("") + 
   xlab("Predicted probability of a match") +
   theme(legend.position="none")
 
-qplot(data=predm, value, geom="boxplot", fill=match, x=match, alpha=I(0.5)) + 
-  theme_bw() + facet_grid(variable~.) +
-  scale_fill_brewer(palette="Paired", labels=c("KNM", "KM")) +
-   ylab("") + 
-   xlab("Predicted probability of a match") +
-  coord_flip() + 
-  theme(legend.position="none")
-
-# qplot(pred, forest, geom="jitter", data=bstats, colour=match, 
-#       shape=match) + theme_bw() +
-#   theme(legend.position="bottom") +
-#   geom_vline(xintercept=0.5, colour="grey50") +
-#   geom_hline(yintercept=0.5, colour="grey50") + 
-#   xlab("Predictions from decision tree") +
-#   ylab("Predictions from random forest")   +
-#   scale_colour_brewer(palette="Paired", labels=c("KNM", "KM")) +
-#   scale_shape_discrete(labels=c("KNM", "KM"))
-# 
 @
 \caption{\label{fig:tree-forest}Prediction results from the tree and the forest. Using a cut-off probability of 0.5 the forest correctly predicts every single comparison. Compared to the tree, the forest's prediction probabilities are  shrunk towards either end of the prediction range. }
 \end{figure}
