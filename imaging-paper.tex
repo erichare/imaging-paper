@@ -298,7 +298,7 @@ The main idea of locally weighted regression is to use a weighting routine that 
 
 %\hh{XXX standard errors: are based on independence of errors (which we don't have because of the high autocorrelation) and the assumption that the amount of bias is neglible. Which we don't know. We can produce standard errors, but (a) the nominal confidence level will be violated, and (b) the errors only allow for pointwise errors. We need a different approach. XXX}
 
-Figure~\ref{fig:loess_fit} shows the loess fit, in blue, overlaid on the processed image of bullet~1-5. The fit seems to do a reasonable job of capturing the structure of the image. The blue area around the signature are  95\% bootstrapped confidence intervals based on 1,000 bootstrap samples. 
+Figure~\ref{fig:loess_fit} shows the loess fit, in blue, overlaid on the processed image of bullet~1-5. The fit seems to do a reasonable job of capturing the structure of the image. %The blue area around the signature are  95\% bootstrapped confidence intervals based on 1,000 bootstrap samples. 
 Figure~\ref{fig:loess_resid} shows the residuals from this fit. These residuals are called the \emph{signature} of bullet~1-5.
 %
 \begin{figure}[hbtp]
@@ -323,7 +323,7 @@ Figure~\ref{fig:loess_resid} shows the residuals from this fit. These residuals 
 
 \end{knitrout}
 \end{subfigure}
-\caption{Fit and residuals of a loess fit to bullet~1-5 (Barrel~1). The residuals define the {\it signature} of bullet~1-5. Blue areas around the residuals show  95\% bootstrap confidence intervals (based on $B=1,000$ bootstrap samples).
+\caption{Fit and residuals of a loess fit to bullet~1-5 (Barrel~1). The residuals define the {\it signature} of bullet~1-5. %Blue areas around the residuals show  95\% bootstrap confidence intervals (based on $B=1,000$ bootstrap samples).
 }
 \end{figure}
 %
@@ -966,8 +966,6 @@ Another thing to note about  the random forest's error rates is that they are ba
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
 \includegraphics[width=.6\textwidth]{figure/tree:forest-1} 
-
-\includegraphics[width=.6\textwidth]{figure/tree:forest-2} 
 
 \end{knitrout}
 \caption{\label{fig:tree-forest}Prediction results from the tree and the forest. Using a cut-off probability of 0.5 the forest correctly predicts every single comparison. Compared to the tree, the forest's prediction probabilities are  shrunk towards either end of the prediction range. }
