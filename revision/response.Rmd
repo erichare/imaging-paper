@@ -9,6 +9,7 @@ output: html_document
 
 1. Read the paper start to finish
 2. Look at boxplots vs densities (maybe use jittered boxplots?)
+3. Talk to Alen, send paper, ask to add to intro? Add as author?
 
 # AE
 
@@ -56,7 +57,7 @@ output: html_document
 
 5. page 7- figure 4- What exactly are you bootstrapping? It is unclear in the paper whether you are bootstrapping residual or bullets or something else entirely. Please clarify.
 
-***HH: will do***
+***We have decided to remove the bootstrap confidence intervals for the loess fit residuals because they did not add enough information.***
 
 6. There should have been a comparison of different classification methods to show that the random forest is reasonable.
 
@@ -84,11 +85,9 @@ output: html_document
 
 12. A discussion on how the authors view the use of their matching algorithm would be useful to the forensic community. For example are they intending to use this to build a closed set identification system similar to IAFIS or are them intending this to work in a manner similar to a biometric verification system? etc.
 
-***HH: in my view we ourselves are not building a closed set identification system. The problem with existing closed set systems is that it is unclear how the matching is exactly done and what statistical properties it has (number of parameters, distribution of them, sensitivities). Repeatability and reproducibility is a huge issue in this area. 'Matching' is also not just a single step - it consists, as we have laid out in the paper, of a series of steps, which all deserve attention. While the reviewer pointed out to us to use 'standard methods' - there are no actual standards in place. There might be a set of alternatives, and some evidence as to which methods might work better in some situations than others, but there is a lack of an in-depth discussion of the alternatives at each step as well as an overall discussion. In this manuscript we are detailing one route to divvy up the process and provide the code for others to reproduce our findings.***
+***The problem with existing closed set systems is that it is unclear how the matching is exactly done and what statistical properties it has (number of parameters, distribution of them, sensitivities). Repeatability and reproducibility is a huge issue in this area. 'Matching' is also not just a single step - it consists, as we have laid out in the paper, of a series of steps, which all deserve attention. While it was pointed out to us to use 'standard methods' - there are no actual standards in place. The status quo is NIBIN, which is not accessible to anyone outside of law enforcement. There might be a set of alternatives, and some evidence as to which methods might work better in some situations than others, but there is a lack of an in-depth discussion of the alternatives at each step as well as an overall discussion. In this manuscript we are detailing one route to divvy up the process and provide the code for others to reproduce our findings.***
 
-*** AC:  Actually I think that the meaning is different.  I wonder whether ``closed system'' not in the sense of secret but rather in the sense of building a big database of signatures that can be searched (like AFIS, but open).  This is what I interpret given the question about how forensic scientists might use this method. *** 
-
-***TODO: Focus on open algorithms (opening up the closed system) / merge responses***
+***TODO: Add some of this discussion to the intro + conclusion***
 
 # Reviewer C
 
@@ -104,13 +103,13 @@ output: html_document
 
 15. On a related subject, I believe that a random forest provides the probability that two bullets were fired by the same gun given the set of observations (Fig 19), not the probability of interest: the probability of two sets of observations given that the two bullets were fired by the same gun. The authors may want to revise some of the statements in their discussion and conclusion.
 
-***The reviewer is correct in stating that two probabilities of interest are the probability of observing the data under the ``same source'' (same gun) hypothesis or under the ``different source'' hypothesis.  An empirical approach to get at those two probabilities is to derive the distribution of scores when two bullets are known to have been fired by the same gun and the distribution of scores when two bullets are known to have been fired by different guns.  We have actually derived those to distributions and include them in the revised manuscript.***
+***The reviewer is correct in stating that two probabilities of interest are the probability of observing the data under the "same source" (same gun) hypothesis or under the "different source" hypothesis.  An empirical approach to get at those two probabilities is to derive the distribution of scores when two bullets are known to have been fired by the same gun and the distribution of scores when two bullets are known to have been fired by different guns.  We have actually derived those to distributions and include them in the revised manuscript.***
 
 16. I am concerned by the assumption of independence of between the different lands on a given bullet that the authors seems to use in their error rates calculations (and ROC curves). The assumption seems unreasonable since as soon as a land has been paired between two bullets, it seems that it becomes more likely to pair the other lands. In other words, I believe that the authors need to redo their error rate measurements, but using bullets as their experimental units and not lands. I am also concerned by the overwhelming majority of non-matches, this must certainly artificially increase the rate of correct exclusion and distort the data.
 
-***Assuming independence between the lands of each barrel is certainly not realistic in practice, however, by assuming independence we make the task of matching harder for the algorithm. Based on the actual numerical values of features derived from each of the lands, an independence assumption is not unrealistic, because the features do not exhibit any clustering associated to barrel. The technique suggested by the reviewer could be solved using a hierarchical approach to matching, and we agree with the assessment that it would likely decrease the error rates.***
+***Assuming independence between the lands of each barrel is certainly not realistic in practice, however, by assuming independence we make the task of matching harder for the algorithm. This also has the benefit of potentially being more useful for degraded data, where we may not have a full set of six groove-to-groove scans. Based on the actual numerical values of features derived from each of the lands, an independence assumption is not unrealistic, because the features do not exhibit any clustering associated to barrel. The technique suggested by the reviewer could be solved using a hierarchical approach to matching, and we agree with the assessment that it would likely decrease the error rates.***
 
-***TODO: We will figure out***
+***TODO: We will figure out whether there is clustering associated with the barrel. Add discussion of why we are comparing land to land rather than bullet to bullet***
 
 17. the authors attempt to define a "stable" profile (see Figure 9) and use the stable profile for comparison. What happens if such profile does not exist. Would it not be best to compare surfaces instead of sections? a 2D version of the proposed algorithm should be easily implementable (and has been done at least by Riva).
 
