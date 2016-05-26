@@ -87,8 +87,6 @@ output: html_document
 
 ***The problem with existing closed set systems is that it is unclear how the matching is exactly done and what statistical properties it has (number of parameters, distribution of them, sensitivities). Repeatability and reproducibility is a huge issue in this area. 'Matching' is also not just a single step - it consists, as we have laid out in the paper, of a series of steps, which all deserve attention. While it was pointed out to us to use 'standard methods' - there are no actual standards in place. The status quo is NIBIN, which is not accessible to anyone outside of law enforcement. There might be a set of alternatives, and some evidence as to which methods might work better in some situations than others, but there is a lack of an in-depth discussion of the alternatives at each step as well as an overall discussion. In this manuscript we are detailing one route to divvy up the process and provide the code for others to reproduce our findings.***
 
-***TODO: Add some of this discussion to the intro + conclusion***
-
 # Reviewer C
 
 13. there is a lack of knowledge of the existing literature on statistical work performed on tool marks and firearms. For example, the work performed by Nicholas Petraco, Fabiano Riva, or Alan Zheng in the past 5 years is not mentioned. Instead, old research projects are mentioned, which mostly focus on manual identification. The authors need to discuss the novelty of their method (and how it potentially addresses the shortcomings of these recent methods)
@@ -109,7 +107,7 @@ output: html_document
 
 ***Assuming independence between the lands of each barrel is certainly not realistic in practice, however, by assuming independence we make the task of matching harder for the algorithm. This also has the benefit of potentially being more useful for degraded data, where we may not have a full set of six groove-to-groove scans. Based on the actual numerical values of features derived from each of the lands, an independence assumption is not unrealistic, because the features do not exhibit any clustering associated to barrel. The technique suggested by the reviewer could be solved using a hierarchical approach to matching, and we agree with the assessment that it would likely decrease the error rates.***
 
-***TODO: We will figure out whether there is clustering associated with the barrel. Add discussion of why we are comparing land to land rather than bullet to bullet***
+***TODO: We will figure out whether there is clustering associated with the barrel.***
 
 17. the authors attempt to define a "stable" profile (see Figure 9) and use the stable profile for comparison. What happens if such profile does not exist. Would it not be best to compare surfaces instead of sections? a 2D version of the proposed algorithm should be easily implementable (and has been done at least by Riva).
 
