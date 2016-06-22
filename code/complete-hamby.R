@@ -28,16 +28,19 @@ bullets_processed <- lapply(all_bullets, function(bul) {
     cat("Computing processed bullet", basename(bul$path), "\n")
     
     xval <- ccs$cc[which(ccs$path == bul$path)]
-    left <- grooves$groove_left[grooves$bullet == bul$path & grooves$x == xval]
-    right <- grooves$groove_right[grooves$bullet == bul$path & grooves$x == xval]
     
-    processBullets(bullet = bul, name = bul$path, x = xval, grooves = c(left, right))
+    grooves_sub <- filter(grooves, bullet == bul$path)
+    
+    left <- grooves_sub$groove_left[which.min(abs(xval - grooves_sub$x))]
+    right <- grooves_sub$groove_right[which.min(abs(xval - grooves_sub$x))]
+    
+    processBullets(bullet = bul, name = bul$path, x = grooves_sub$x[which.min(abs(xval - grooves_sub$x))], grooves = c(left, right))
 })
 names(bullets_processed) <- as.character(ccs$path)
 
 bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth
 
-for (span in c(25)) {
+for (span in c(1)) {
     dataStr <- sprintf("data-%d-25", span) # using crosscuts-25.csv
     
     if (!file.exists(dataStr)) dir.create(dataStr)
@@ -49,7 +52,7 @@ for (span in c(25)) {
             br2 <- filter(bullets_smoothed, bullet == unknowns[[j]]$path)
             
             if (all_bullets[[j]]$path != x$path) {
-                bulletGetMaxCMS(br1, br2, span=span)
+                bulletGetMaxCMS(br1, br2, column = "l30", span=span)
             }
         })
         save(reslist, file=file.path(dataStr, sprintf("unkn%d-new.RData", j)))
