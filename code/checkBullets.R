@@ -14,12 +14,12 @@ if (!file.exists("csvs/crosscuts-25.csv")) {
 crosscuts <- sapply(c(knowns, unknowns), function(x) {
     transpose <- (length(grep(" ", x)) == 0)
   cat(x, "- transposing:", transpose)
-  crosscut <- bulletCheckCrossCut(x, xlimits = seq(25, 500, by = 25), transpose = transpose)
+  crosscut <- bulletCheckCrossCut(x, xlimits = c(20, 400), distance = 20, transpose = transpose)
   cat(crosscut)
   cat("\n")
   crosscut
 })
-crosscuts[is.na(crosscuts)] <- 150
+crosscuts[is.na(crosscuts)] <- 100
 
 dframe <- data.frame(
   path = c(knowns, unknowns),
