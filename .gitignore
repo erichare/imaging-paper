@@ -56,3 +56,5 @@ imaging-paper-concordance.tex
 app/degraded_images/*
 
 imaging-paper.bbl
+
+code/filtering.nb.html

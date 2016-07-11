@@ -1,0 +1,33 @@
+---
+title: "Testing Filtering Parameters"
+output: html_notebook
+---
+
+```{r, message=FALSE}
+library(x3pr)
+library(x3prplus)
+library(ggplot2)
+library(smoother)
+library(changepoint)
+
+mybullet <- read.x3pplus("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2/Br1 Bullet 1-1.x3p")
+```
+
+```{r}
+mycc <- get_crosscut(x = 100, bullet = mybullet)
+my.groove <- get_grooves(mycc)
+my.loess <- fit_loess(mycc, my.groove)
+qplot(y, resid, data = my.loess$data, geom = "line") + theme_bw()
+```
+
+```{r}
+my.loess$data$smoothed <- smth.gaussian(my.loess$data$resid, window = 16)
+my.inds <- which(diff(sign(diff(my.loess$data$smoothed))) == -2) + 1
+my.inds2 <- which(diff(sign(diff(my.loess$data$smoothed))) == 2) + 1
+
+length(my.inds) + length(my.inds2)
+
+qplot(y, smoothed, data = my.loess$data, geom = "line") + theme_bw() +
+    geom_vline(xintercept = my.loess$data$y[my.inds], colour = "red") +
+    geom_vline(xintercept = my.loess$data$y[my.inds2], colour = "blue")
+```
