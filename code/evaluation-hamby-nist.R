@@ -23,7 +23,7 @@ CCFs <- plyr::ldply(datas, function(x) {
     if (length(knm) == 0) knm <- c(length(km)+1,0)
  #browser()    
     # feature extraction
-    signature.length <- min(nrow(subLOFx1), nrow(subLOFx2))
+    signature.length <- min(nrow(subLOFx1), nrow(subLOFx2)) * 1.5625 / 1000
     
     data.frame(ccf=res$ccf, lag=res$lag, 
                D=distr.dist, 
@@ -31,25 +31,25 @@ CCFs <- plyr::ldply(datas, function(x) {
                b1=b12[1], b2=b12[2], x1 = subLOFx1$x[1], x2 = subLOFx2$x[1],
                signature.length = signature.length,
                #num.matches = sum(res$lines$match),
-               matches.per.y = sum(res$lines$match) / signature.length,
+               matches.per.mm = sum(res$lines$match) / signature.length,
                #num.mismatches = sum(!res$lines$match), 
-               mismatches.per.y = sum(!res$lines$match) / signature.length,
+               mismatches.per.mm = sum(!res$lines$match) / signature.length,
                #cms = res$maxCMS,
-               cms.per.y = res$maxCMS / signature.length,
+               cms.per.mm = res$maxCMS / signature.length,
                #cms2 = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match),
-               cms2.per.y = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match) / signature.length,
+               cms2.per.mm = x3prplus::maxCMS(subset(res$lines, type==1 | is.na(type))$match) / signature.length,
                #non_cms = x3prplus::maxCMS(!res$lines$match),
-               non_cms.per.y = x3prplus::maxCMS(!res$lines$match) / signature.length,
+               non_cms.per.mm = x3prplus::maxCMS(!res$lines$match) / signature.length,
                #left_cms = max(knm[1] - km[1], 0),
-               left_cms.per.y = max(knm[1] - km[1], 0) / signature.length,
+               left_cms.per.mm = max(knm[1] - km[1], 0) / signature.length,
                #right_cms = max(km[length(km)] - knm[length(knm)],0),
-               right_cms.per.y = max(km[length(km)] - knm[length(knm)],0) / signature.length,
+               right_cms.per.mm = max(km[length(km)] - knm[length(knm)],0) / signature.length,
                #left_noncms = max(km[1] - knm[1], 0),
-               left_noncms.per.y = max(km[1] - knm[1], 0) / signature.length,
+               left_noncms.per.mm = max(km[1] - knm[1], 0) / signature.length,
                #right_noncms = max(knm[length(knm)]-km[length(km)],0),
-               right_noncms.per.y = max(knm[length(knm)]-km[length(km)],0) / signature.length,
+               right_noncms.per.mm = max(knm[length(knm)]-km[length(km)],0) / signature.length,
                #sumpeaks = sum(abs(res$lines$heights[res$lines$match]))
-               sumpeaks.per.y = sum(abs(res$lines$heights[res$lines$match])) / signature.length
+               sumpeaks.per.mm = sum(abs(res$lines$heights[res$lines$match])) / signature.length
     )
   })
 #  ccf$cms <- cmsdist
@@ -91,14 +91,14 @@ rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 prp(rp1, extra = 101)
 CCFs$pred <- predict(rp1)
 
-includes2 <- setdiff(includes, c("left_cms.per.y", "right_cms.per.y", "left_noncms.per.y", "right_noncms.per.y", "cms2.per.y"))
+includes2 <- setdiff(includes, c("lag", "x1", "x2", "left_cms.per.mm", "right_cms.per.mm", "left_noncms.per.mm", "right_noncms.per.mm", "cms2.per.mm"))
 library(randomForest)
 set.seed(20160105)
 rtrees <- randomForest(factor(match)~., data=CCFs[,includes2], ntree=300)
 CCFs$forest <- predict(rtrees, type="prob")[,2]
 imp <- data.frame(importance(rtrees))
 
-includes3 <- c(setdiff(includes2, "cms.per.y"), "cms2.per.y")
+includes3 <- c(setdiff(includes2, "cms.per.mm"), "cms2.per.mm")
 set.seed(20160105)
 rtrees1b <- randomForest(factor(match)~., data=CCFs[,includes3], ntree=300)
 imp1b <- data.frame(importance(rtrees1b))
@@ -140,7 +140,7 @@ library(ggplot2)
 CCFs <- read.csv(file.path(dataStr, "bullet-stats.csv"))
 
 qplot(factor(cms), data=CCFs)
-ggplot(data=CCFs) + geom_density(aes(x=cms.per.y, fill=match))
+ggplot(data=CCFs) + geom_density(aes(x=cms.per.mm, fill=match))
 sum(CCFs$cms >= 13)
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=D, colour=match))
 ggplot(data=CCFs) + geom_jitter(aes(x=factor(cms), y=ccf, colour=match)) + facet_wrap(~match)
@@ -161,8 +161,8 @@ qplot(ccf, num.matches, geom="jitter", data=CCFs, colour=match, alpha=0.1) + fac
 means <- CCFs %>% group_by(match) %>% summarize(
   meanx = mean(ccf), 
   sdx = sd(ccf),
-  meany = mean(matches.per.y),
-  sdy = sd(matches.per.y))
+  meany = mean(matches.per.mm),
+  sdy = sd(matches.per.mm))
 
 CCFs$dist <- sqrt(with(CCFs, (num.matches-means$meany[1])^2/means$sdy[1]^2 + (ccf-means$meanx[1])^2/means$sdx[1]^2 ))
 subCCFs <- subset(CCFs, match==FALSE)
