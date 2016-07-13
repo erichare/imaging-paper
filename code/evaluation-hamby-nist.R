@@ -80,9 +80,9 @@ mm <- subset(mm, value != "Ukn Bullet " & value != "")
 CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b1", by.y="value")
 CCFs <- merge(CCFs, mm[,c("id","value")], by.x="b2", by.y="value")
 CCFs$match <- CCFs$id.x == CCFs$id.y
-CCFs$span <- span
+CCFs$span <- 1
 
-write.csv(CCFs, file=file.path(dataStr, "bullet-stats.csv"), row.names=FALSE)
+write.csv(CCFs, file=file.path(dataStr, "bullet-stats-nist.csv"), row.names=FALSE)
 
 library(rpart)
 library(rpart.plot)
@@ -217,7 +217,7 @@ for (i in c(25)) {
 
 
 
-xtabs(~(pred>0.5)+match+span, data=bstats)
+xtabs(~(pred>0.5)+match+span, data=CCFs)
 
 bstats$bullet <- gsub("-[0-9]$", "", bstats$b2)
 bullets <- bstats %>% group_by(bullet, span) %>% summarize(
