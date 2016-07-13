@@ -41,19 +41,19 @@ names(bullets_processed) <- as.character(ccs$path)[grep(" ", as.character(ccs$pa
 #bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth
 bullets_smoothed <- bullets_processed %>% bind_rows
 
-for (span in c(1)) {
-    dataStr <- sprintf("data-%d-25", span) # using crosscuts-25.csv
+#for (span in c(1)) {
+    dataStr <- "data-nist" # using crosscuts-25.csv
     
     if (!file.exists(dataStr)) dir.create(dataStr)
     for (j in 1:length(unknowns)) {
         reslist <- lapply(knowns, function(x) {
-            cat("Processing", j, "vs", basename(x$path), "with span", span, "\n")
+            cat("Processing", j, "vs", basename(x$path), "\n")
             
             br1 <- filter(bullets_smoothed, bullet == x$path)
             br2 <- filter(bullets_smoothed, bullet == unknowns[[j]]$path)
             
-            bulletGetMaxCMS(br1, br2, column = "resid", span=span)
+            bulletGetMaxCMS_nist(br1, br2, column = "resid", span=span)
         })
         save(reslist, file=file.path(dataStr, sprintf("unkn%d-nist.RData", j)))
     }
-}
+#}
