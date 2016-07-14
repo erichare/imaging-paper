@@ -21,6 +21,10 @@ qplot(y, resid, data = my.loess$data, geom = "line") + theme_bw()
 ```
 
 ```{r}
+x3prplus:::get_peaks(my.loess$data)$plot
+```
+
+```{r}
 my.loess$data$smoothed_first <- smth.gaussian(my.loess$data$resid, window = 16)
 my.loess$data$smoothed <- my.loess$data$smoothed_first - smth.gaussian(my.loess$data$resid, window = 160)
 my.inds <- which(diff(sign(diff(my.loess$data$smoothed))) == -2) + 1
