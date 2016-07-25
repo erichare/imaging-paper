@@ -11,13 +11,9 @@ output: html_document
 
 ***The AE makes two very good points. We have greatly extended our review of the existing literature and have included references to relevant papers.  Where possible, we have also contrasted the proposed approach with existing methods.  We have also added a discussion of the potential uses of a score such as ours in the forensic and legal applications.***
 
-***TODO: Add to paper***
-
 2. Methodologically, the crux of the data analysis seems to be a generic application of decision trees. It would be good to clarify that aspect, and to more formally explain how the ensemble of the steps took by the authors to complete this work can be applied to other forensic science questions.
 
 ***The basic objective is to find the most discriminating combination of attributes to construct a score that provides a quantitative summary, or signature, for each bullet.  In that sense, yes, random forests are a standard alternative.  Random forests are extraordinarily flexible tools, and permit the use of both continuous and discrete variables in the construction of the score. This is one reason to think that they are likely to be useful in many other forensic applications. We have added a comment about this in the manuscript.  One aspect of our work that is (sadly) novel, at least relative to the forensics community, is that we are making our algorithm and code completely public, so that the scientific community can evaluate the approach in detail.***
-
-***TODO: Add to paper***
 
 # Reviewer A
 
