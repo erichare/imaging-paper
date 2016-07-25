@@ -1,7 +1,7 @@
 ---
 title: "Response to reviewers"
 author: "Heike Hofmann, Eric Hare, Alicia Carriquiry"
-date: "April 14, 2016"
+date: "July 26, 2016"
 output: html_document
 ---
 
@@ -25,11 +25,9 @@ output: html_document
 
 4. The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the "twicing" for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.
 
-***TODO: Check which references are and are not in the paper. Add Chu 2010, Chu 2009, Bachrach 2002, Vorburger 2011, Riva 2014. Cite Bachrach 2006 in response to reviewer about barrel effects***
+***Using the cross correlation function as a method of alignment is actually pretty standard - the appropriate references are now included.***
 
-***Using the cross correlation function as a method of alignment is actually pretty standard - the approriate references are now included.***
-
-***Additional papers considered (not complete, and not yet included in the paper, but I think all of them should be cited): chumbley:2010 uses 1d profiles and discusses several different angles of extraction (no alignment necessary, no grooves and no flattening) chubley:2010 is a much more detailed version over David Faden's thesis***
+***chumbley:2010 uses 1d profiles and discusses several different angles of extraction (no alignment necessary, no grooves and no flattening) chubley:2010 is a much more detailed version over David Faden's thesis***
 
 ***chu:2010 describe extracting mean profile of an area of the image after untwisting the image ***
 
@@ -85,8 +83,6 @@ output: html_document
 
 ***The point that the reviewer makes is valid.  While we were familiar with the computer-assisted approaches that have been proposed, practice still relies on human examination of potential candidates presented by a system such as NIBIN. We have added what we hope is an acceptably complete review of the literature in the revised manuscript.***
 
-***TODO: Cite riva paper, explain work has been done on cartridges (not bullets). Cite John Song's papers***
-
 14. The authors would need to study (or at least discuss extensively) the ability of their method to capture the variability in bullet profiles over time (at interval of several dozen of bullets fired by the same weapon, when the weapon has been cleaned, or when the bullet was degraded by hitting a target). In addition, a dataset of 10 firearms (even consecutively manufactured) does not provide any information on the rarity of a particular bullet profile, and therefore does not address the second probability statement. Alternatively, the proposed metrics could be tested in a database searching situation, which has not been done.
 
 ***At the time of the submission of this manuscript, the 35 bullets from 10 barrels from Hamby set 252 were the only ones accessible to the public. They are part of Dr Zheng's efforts at NIST to provide a ballistics reference database. In the future more results will be available, but until then we are unable to provide a data-informed discussion of the very important issues raised by the reviewer.***
@@ -97,7 +93,7 @@ output: html_document
 
 16. I am concerned by the assumption of independence of between the different lands on a given bullet that the authors seems to use in their error rates calculations (and ROC curves). The assumption seems unreasonable since as soon as a land has been paired between two bullets, it seems that it becomes more likely to pair the other lands. In other words, I believe that the authors need to redo their error rate measurements, but using bullets as their experimental units and not lands. I am also concerned by the overwhelming majority of non-matches, this must certainly artificially increase the rate of correct exclusion and distort the data.
 
-***Assuming independence between the lands of each barrel is certainly not realistic in practice, however, by assuming independence we make the task of matching harder for the algorithm. This also has the benefit of potentially being more useful for degraded data, where we may not have a full set of six groove-to-groove scans. Based on the actual numerical values of features derived from each of the lands, an independence assumption is not unrealistic, because the features do not exhibit any clustering associated to barrel. The technique suggested by the reviewer could be solved using a hierarchical approach to matching, and we agree with the assessment that it would likely decrease the error rates.***
+***Assuming independence between the lands of each barrel is certainly not realistic in practice, however, by assuming independence we make the task of matching harder for the algorithm. This also has the benefit of potentially being more useful for degraded data, where we may not have a full set of six groove-to-groove scans. Based on the actual numerical values of features derived from each of the lands, an independence assumption is not unrealistic, because the features do not exhibit any clustering associated to barrel (Bachrach 2006). The technique suggested by the reviewer could be solved using a hierarchical approach to matching, and we agree with the assessment that it would likely decrease the error rates.***
 
 17. the authors attempt to define a "stable" profile (see Figure 9) and use the stable profile for comparison. What happens if such profile does not exist. Would it not be best to compare surfaces instead of sections? a 2D version of the proposed algorithm should be easily implementable (and has been done at least by Riva).
 
@@ -217,7 +213,7 @@ output: html_document
 
 45. Lines 156-158: The sentence "The blue area around the signature are 95% bootstrapped confidence intervals based on 1,000 bootstrap samples." is confusing. The term "signature" is defined two sentences further. Is the sentence referring to Figure 4b? If yes, it should probably come at the end of this paragraph.
 
-***HH: Remove blue area / references to it... maybe?***
+***DONE***
 
 46. Figure 5: In this figure, where is the limit between bullet 1-5 and bullet 2-1?
 

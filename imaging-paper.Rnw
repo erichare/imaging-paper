@@ -158,7 +158,7 @@ Rifling, manufacturing defects, and impurities in a barrel create striation mark
 From a statistical standpoint, identification of the gun that fired the bullet(s) requires that we compare the probabilities of observing matching striae under the competing hypotheses that the gun fired, or did not fire, the crime scene bullet. If indeed the uniqueness assumption is plausible, the latter probability approaches zero.
 
 Current standard practice~\cite{afte:1992} relies in part on the assessment of the so-called maximal number of consecutively matching striae (CMS), first defined by \citet{biasotti:1959}.
-One of the problems is that a human inspection to determine CMS is subjective \citep{miller:1998}. 
+One of the problems is that a human inspection to determine CMS is subjective \citep{miller:1998}.
 
 Here, we focus on the question of defining what constitutes a match, since there is no agreement in the forensics community. We propose a framework which allows for the automatic analysis of the surface topologies of bullets, and the transcription of the individual characteristics into a 2D plotting framework. 
 This allows for an objective and quantitative assessment of striae-based bullet matches.
@@ -205,7 +205,7 @@ The original paper on the complete Hamby study already reports the successful us
 % Integrated Ballistics Identification System (IBIS) – Mr. Robert Thompson (California, United States);
 % BulletTRAX-3DTM - Forensic Technology Scientists (Montreal, Canada) (2 sets)
  
-A procedure for bullet matching using the BulletTrax3D system is described in \citet{roberge:2006}. This study is based on another set of ten consecutively rifled barrels; matches are identified based on a bullet-to-bullet correlation score. The authors state that this process `could be automated', but no implementation of the algorithm is available. 
+A procedure for bullet matching using the BulletTrax3D system is described in \citet{roberge:2006}. This study is based on another set of ten consecutively rifled barrels; matches are identified based on a bullet-to-bullet correlation score. The authors state that this process `could be automated', but no implementation of the algorithm is available. Modern automated techniques using 3D images have also been conducted by \citet{riva:2014}, but this work applies to striae found on cartridge cases and not bullets.
 
 The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. %We then describe a web application for visualizing and working with bullet surfaces. 
 We then proceed to describing an automatic matching routine which we evaluate on the bullets made available through the Hamby study.
@@ -719,7 +719,7 @@ qplot(y+min(lof$y), resid, group=bulletname, colour=bulletname, data=lofY,
 \caption{\label{fig:cross100}Signatures of bullets 1-5 and 2-1 taken at  heights of $x = 100\mu m$. A horizontal shift of the values of bullet~1-5 to the right shows the similarity of the striation marks.}
 \end{figure}
 %
-\hh{For this alignment we use the cross-correlation function to find a maximal amount of agreement between the signatures~\cite{bachrach:2002, vorburger:2011, thompson:2013}.}
+\hh{For this alignment we use the cross-correlation function to find a maximal amount of agreement between the signatures~\cite{bachrach:2002, chu:2010, vorburger:2011, thompson:2013}.}
 This horizontal shift is based on the cross-correlation between the two signatures: let $f(t)$ and $g(t)$ define the signature values  at $t$, where $t$ are locations between 0~$\mu m$ and about 2500~$\mu m$, 1.5625~$\mu m$ apart.
 The cross-correlation between $f$ and $g$ at lag $k$ is then defined as
 \[
