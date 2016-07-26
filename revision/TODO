@@ -1,115 +1,18 @@
-AE:
 
-1. The paper should better explain the role of the new methods for forensic science. The authors should consider referencing some of the previous work the reviewers mention.
-2. Methodologically, the crux of the data analysis seems to be a generic application of decision trees. It would be good to clarify that aspect, and to more formally explain how the ensemble of the steps took by the authors to complete this work can be applied to other forensic science questions.
-
-
-Reviewer A:
-
-4. Random forests, as used and described on pages 18-21 of the paper comes out looking like a winner, but other than that success---worth reporting *somewhere*---, there is no new information on that method. No new insights. And certainly no comparisons with the tens of other things that could have been tried.
-
-
-Reviewer B:
-
-5. The authors should discuss their work in the context of Nicholas Petraco’s work as well as other ongoing research endeavors in impression and pattern evidence. See https://www.ncjrs.gov/pdffiles1/nij/grants/239048.pdf The alignment method should have been compared with a standard method- See Patraco’s NIJ report for a couple of examples. As presented the novel component of the paper is the ``twicing" for grooves combined with a loess fit to the remove curves from bullet images. I am not sure this is the authors intention. It would be interesting to compare this method with some of the classical methods from functional data analysis used for curve registration.
-
-6. page 7- figure 4- What exactly are you bootstrapping? It is unclear in the paper whether you are bootstrapping residual or bullets or something else entirely. Please clarify.
-
-7. There should have been a comparison of different classification methods to show that the random forest is reasonable.
-
-8. On the random forest classifier- are the prior probabilities being estimated from the cross comparisons described on page 15? What exactly are the prior probabilities used in the random forest?
-
-9. Equal Error Rates on the ROC curves would be a helpful metric as well as the AUC.
-
-***included***
-
-10. Would it be possible to stress the classification system by only using part of the profile? Such as would occur when a partial bullet is recovered? By stressing the random forest you would be able to compare it to other classifiers.
-
-11. What is the standard error of the error rates presented for the matching algorithms? The number of cross comparisons gives false impression the standard errors the when presenting the results.
-
-12. In the conclusions section the authors mention an assumption of ``uniqueness". In general forensic science have moved beyond these questions- see the work of Saks and Kaye for details.
-
-***probably refers to articles such as ``how good is good enough?", books ``modern scientific evidence", "judging science" .... I am not sure that those are really necessary or helpful. It might be better to re-phrase the sentence in the conclusion.***
-
-
-13. A discussion on how the authors view the use of their matching algorithm would be useful to the forensic community. For example are they intending to use this to build a closed set identification system similar to IAFIS or are them intending this to work in a manner similar to a biometric verification system? etc.
-
-
-Reviewer C:
-
-14. there is a lack of knowledge of the existing literature on statistical work performed on tool marks and firearms. For example, the work performed by Nicholas Petraco, Fabiano Riva, or Alan Zheng in the past 5 years is not mentioned. Instead, old research projects are mentioned, which mostly focus on manual identification. The authors need to discuss the novelty of their method (and how it potentially addresses the shortcomings of these recent methods)
-
-15.  The authors would need to study (or at least discuss extensively) the ability of their method to capture the variability in bullet profiles over time (at interval of several dozen of bullets fired by the same weapon, when the weapon has been cleaned, or when the bullet was degraded by hitting a target). In addition, a dataset of 10 firearms (even consecutively manufactured) does not provide any information on the rarity of a particular bullet profile, and therefore does not address the second probability statement. Alternatively, the proposed metrics could be tested in a database searching situation, which has not been done.
-
-16. On a related subject, I believe that a random forest provides the probability that two bullets were fired by the same gun given the set of observations (Fig 19), not the probability of interest: the probability of two sets of observations given that the two bullets were fired by the same gun. The authors may want to revise some of the statements in their discussion and conclusion.
-
-17. I am concerned by the assumption of independence of between the different lands on a given bullet that the authors seems to use in their error rates calculations (and ROC curves). The assumption seems unreasonable since as soon as a land has been paired between two bullets, it seems that it becomes more likely to pair the other lands. In other words, I believe that the authors need to redo their error rate measurements, but using bullets as their experimental units and not lands. I am also concerned by the overwhelming majority of non-matches, this must certainly artificially increase the rate of correct exclusion and distort the data.
-
-18. the authors attempt to define a "stable" profile (see Figure 9) and use the stable profile for comparison. What happens if such profile does not exist. Would it not be best to compare surfaces instead of sections? a 2D version of the proposed algorithm should be easily implementable (and has been done at least by Riva).
-
-19. L323: how do the authors know that there are "172 known matches" since the 15 "trace bullets" are supposed to be of unknown sources? which raise the question on how where the ROC and other density graphs generated? only based on the bullets of known origin?
-
-20. If would be helpful if the legend from Fig15 could include a definition of the CMS, CNMS, CCF, ... acronyms such that the reader does not need to flip back and forth between several pages.
-
-
-Reviewer 1:
-
-21. First, the term "land" is used in the title but not defined until p. 3.  I recommend changing the title, to ensure broad comprehenson; perhaps "Automatic Matching of Bullet Marks," or something of that kind.
-
-22. Early on in the paper, it might be helpful to mention the typical width of a striation, the number of striations typically seen on a fired bullet, and so forth.  
-
-DONE 23. p. 2, l. -1:  It would be good to reword so the sentence doesn't start with "x3p".  Also p. 3, l. 2.
-
-24. p. 3, Fig. 1:  The numbers on the y-axis are superimposed.
-
-25. p. 3, l. -10:  Be explicit that grooves and striations are synonyms.
-
-DONE 26. p. 7, l. 1:  Make this "... can be described in the form ...".
-
-DONE 27. p. 7, l. 9:  Remove the comma after "here" in "... function used here, ...".
-
-DONE 28. p. 7, l. -6:  I'm confused.  The text says "bullets 2 are shown" but the caption refers to bullet 2- which I think should be a specific land on a single bullet.
-
-DONE 29. p. 12, l. -11:  The use of a colon to transition to a new paragraph seems odd.  I recommend just rewording so is a single paragraph and does not use a colon at all.  It is almost as if you are trying to quote rather than state.
-
-DONE 30. p. 13, l. -3:  You write "Given that striation patterns are typically much larger, ..." and I think it would be more clear to write "Given that striation widths are typically much larger, ...".
-
-31. p. 16, l. -1/-2:  Could you elaborate on why a "large number of maximal CMS by itself is not indicative of a match"?  I think the reason is that there could be other marks that are completely incompatible and preclude a match, based on the next sentence, but I am not sure and a few words would be helpful.  
-
-DONE (MAYBE) 32. p. 17, l. -13:  I'd prefer another term than "correlation" here.  In fact, the entire sentence could be improved.
-
-DONE 33. p. 17, l. -2:  Remove the comma after "indicates".
-
-DONE 34. p. 18, l. -4:  Change "this study" to "that study", so the reader is certain you mean Ma et al. (2001) and not your own.
-
-35. p. 20,  l. -3:  I really like the idea of including an inconclusive zone.
-
-36. p. 21, Fig. 20:  Most of the features plotted have been defined, but I don't recall x1 and x2.  You may want to remind the reader about all the definitions, or have a table of features appear early in the random forests discussion.
-
-DONE 37. p. 22, l. -9:  Change "bottomline" to "bottom line".
-
-DONE 38. p. 23, l. 4:  Remove the comma after "found".
-
-39. p. 23, l. -13/-5:  I don't think this mention of the Aadhar project adds much, and it distracts from the points you want to highlight about the work in this paper.
-
-DONE 40. Supplement, p. 8, l. 18:  Change "de-facto" to "de facto".
-
-DONE 41. So, my suggestion here is to change the sentence in the abstract to something like ``Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel." Or ``...help the trier of fact determine...".
-
-42. the concept of ``match": The primary goal in forensic science is NOT to attempt to match two bullets. It is to quantify the value of the observations made on the two bullets with regard to the two competing propositions of interest to the court (i.e., assign a likelihood ratio or Bayes factor).
-
-43. I strongly encourage the authors to not follow this trend and use the term ``ballistics" only when you are actually talking about ballistics.
-
-44. 2nd to last line in the abstract: In point (a) ``correctly identify lands with too much damage to be suitable for matching" I suggest replacing the word ``matching" with ``comparison" to use the same terminology as the other pattern evidence disciplines.
-
-45. Line 55: Replace ``in the forensic sciences" with ``in forensic science". (See Margot P, Commentary on The Need for a Research Culture in the Forensic Sciences, UCLA Law Review (2011) 58: 795-801.)
-
-46. Lines 156-158: The sentence ``The blue area around the signature are 95% bootstrapped confidence intervals based on 1,000 bootstrap samples." is confusing. The term ``signature" is defined two sentences further. Is the sentence referring to Figure 4b? If yes, it should probably come at the end of this paragraph.
-
-47. Figure 5: In this figure, where is the limit between bullet 1-5 and bullet 2-1?
-
-48. Line 246: Replace ``this representations" with ``this representation" or ``these representations"
-
-49. Caption of Figure 8: ``At a lag of -17 the correlation peaks, indicating the largest amount of agreement between the signatures." is not a complete sentence.
-
-50. Line 266: Capitalize the ``b" in ``by".
+    ***chumbley:2010 uses 1d profiles and discusses several different angles of extraction (no alignment necessary, no grooves and no flattening) chubley:2010 is a much more detailed version over David Faden's thesis***
+    
+    ***chu:2010 describe extracting mean profile of an area of the image after untwisting the image ***
+    
+    ***bachrach:2002 general description of an automated matching system based on 3D imaging. Uses cross-correlation function for alignment.***
+    
+    ***vorburger:2011 different uses of the cross-correlation function. One of them aligning profiles***
+    
+    ***bachrach:2006 67page final report for NIJ grant (for Intelligent Automation Inc.) wear study: "difference between comparing the nth and (n+1)th bullet fired by a barrel as opposed to the nth and (n+100)th bullet fired by a barrel? In other words, does the proximity between firings make a difference? Although some wear effect could be detected in both of these scenarios, these effects do not appear to be significant enough to prevent correct identification"***
+    
+    ***petraco:2012 I am not sure that this book is the same as the report for the NIJ grant. This is a huge effort, and we should certainly cite it, but there are not a lot of actual results included or comparisons done.***
+    
+    ***riva:2014 automatic matching system based on 3d images of cartridge cases. Matching involves breech faces, but no striation marks.***
+    
+    ***xie:2009 first sentence: "Every firearm has individual characteristics that are as unique to it as fingerprints are to human beings." the paper itself doesn't back up any of these claims. very disappointing***
+    
+    ***leon:2006 first sentence: "Fired bullets bear striation marks that can be thought of as a ‘‘fingerprint’’ left by the firearm." based on multiple 2d images. They extract a 1d 'signature'***
