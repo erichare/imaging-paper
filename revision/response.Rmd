@@ -21,7 +21,7 @@ bibliography: references.bib
 
 3. Random forests, as used and described on pages 18-21 of the paper comes out looking like a winner, but other than that success---worth reporting *somewhere*---, there is no new information on that method. No new insights. And certainly no comparisons with the tens of other things that could have been tried.
 
-    ***We selected random forests because the method has desirable attributes and can be easily ported to other forensic applications. We were not intending to provide new insights on random forests. The focus of the paper was to show the potential of combining a large number ofimage attributes to discriminate among bullets. As the forest ultimately predicted every land-to-land comparison properly, we felt that a comparison to other learning methods was outside the scope of this paper. Had a wider variety of data been available, there would likely be more variability in the predictions and a comparison to other learning methods would be prudent.***
+    ***We selected random forests because the method has desirable attributes and can be easily ported to other forensic applications. We were not intending to provide new insights on random forests. The focus of the paper was to show the potential of combining a large number of image attributes to discriminate among bullets. As the forest ultimately predicted every land-to-land comparison properly, we felt that a comparison to other learning methods was outside the scope of this paper. Had a wider variety of data been available, there would likely be more variability in the predictions and a comparison to other learning methods would be prudent.***
 
 # Reviewer B
 
