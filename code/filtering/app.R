@@ -5,6 +5,17 @@ library(ggplot2)
 library(smoother)
 library(changepoint)
 
+## (Hold off on this) Power spectral density (in Matlab, psd function) (like kernel smoothing with an adaptive window)
+## High/low pass filters.
+## Target those frequencies 
+## Rather than gaussian, use local linear polynomial regression
+## Possibly need a different filter for each signature
+## Boundary effects: mirroring / data sharpening for bias reduction. reflect across boundaries on both sides
+## Smooth across whole thing but dont extrapolate
+## Significant Zero Crossings of the Derivative SiZeR (JASA paper Chu Marron) - R Package SiZeR
+## Interpolating spline > loess - use this to get the bullet signatures. Smooth with local polynomial
+## Total Variation (Try this after the alignment step)
+
 mybullet <- read.x3pplus("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2/Br1 Bullet 1-1.x3p")
 
 mycc <- get_crosscut(x = 100, bullet = mybullet)
