@@ -16,11 +16,38 @@ library(changepoint)
 ## Interpolating spline > loess - use this to get the bullet signatures. Smooth with local polynomial
 ## Total Variation (Try this after the alignment step)
 
-mybullet <- read.x3pplus("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2/Br1 Bullet 1-1.x3p")
+mybullet <- read.x3pplus("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2/Br1 Bullet 1-4.x3p")
 
 mycc <- get_crosscut(x = 100, bullet = mybullet)
 my.groove <- get_grooves(mycc)
 my.loess <- fit_loess(mycc, my.groove)
+
+## NEW
+mycc_sub <- dplyr::filter(mycc, y >= my.groove$groove[1], y <= my.groove$groove[2])
+qplot(y, value, data = mycc_sub, geom = "line") + theme_bw()
+mycc_sub$value <- na.fill(mycc_sub$value, "extend")
+mycc_sub$myspline <- residuals(smooth.spline(mycc_sub$y, mycc_sub$value))
+qplot(y, myspline, data = mycc_sub, geom = "line") + theme_bw()
+mycc_sub$smoothed <- fitted(loess(myspline ~ y, data = mycc_sub, span = 0.07))
+qplot(y, smoothed, data = mycc_sub, geom = "line") + theme_bw()
+
+mybullet2 <- read.x3pplus("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2/Br1 Bullet 2-6.x3p")
+
+mycc2 <- get_crosscut(x = 100, bullet = mybullet2)
+my.groove2 <- get_grooves(mycc2)
+
+mycc_sub2 <- dplyr::filter(mycc2, y >= my.groove2$groove[1], y <= my.groove2$groove[2])
+qplot(y, value, data = mycc_sub2, geom = "line") + theme_bw()
+mycc_sub2$value <- na.fill(mycc_sub2$value, "extend")
+mycc_sub2$myspline <- residuals(smooth.spline(mycc_sub2$y, mycc_sub2$value))
+qplot(y, myspline, data = mycc_sub2, geom = "line") + theme_bw()
+mycc_sub2$smoothed <- fitted(loess(myspline ~ y, data = mycc_sub2, span = 0.07))
+qplot(y, smoothed, data = mycc_sub2, geom = "line") + theme_bw() + geom_line(data = mycc_sub, aes(x = y, y = smoothed), colour = I("red"))
+mydf <- data.frame(bullet = c(rep("b1", nrow(mycc_sub)), rep("b2", nrow(mycc_sub2))),
+                   y = c(mycc_sub$y, mycc_sub2$y),
+                   l30 = c(mycc_sub$smoothed, mycc_sub2$smoothed))
+result <- bulletAlign(mydf)
+qplot(y, val, data = result$bullets, geom = "line", colour = bullet) + theme_bw()
 
 ui <- fluidPage(
    
