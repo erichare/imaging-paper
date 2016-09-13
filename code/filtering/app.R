@@ -16,9 +16,10 @@ library(changepoint)
 ## Interpolating spline > loess - use this to get the bullet signatures. Smooth with local polynomial
 ## Total Variation (Try this after the alignment step)
 
-mybullet <- read.x3pplus("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2/Br1 Bullet 1-4.x3p")
+mybullet <- read.x3pplus("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2/Br1 Bullet 1-5.x3p")
 
 mycc <- get_crosscut(x = 100, bullet = mybullet)
+mycc$value <- mycc$value - min(mycc$value, na.rm = TRUE)
 my.groove <- get_grooves(mycc)
 my.loess <- fit_loess(mycc, my.groove)
 
@@ -26,14 +27,18 @@ my.loess <- fit_loess(mycc, my.groove)
 mycc_sub <- dplyr::filter(mycc, y >= my.groove$groove[1], y <= my.groove$groove[2])
 qplot(y, value, data = mycc_sub, geom = "line") + theme_bw()
 mycc_sub$value <- na.fill(mycc_sub$value, "extend")
+splinefit <- smooth.spline(mycc_sub$y, mycc_sub$value)
+intersplinefit <- spline(mycc_sub$y, mycc_sub$value, method = "natural")
 mycc_sub$myspline <- residuals(smooth.spline(mycc_sub$y, mycc_sub$value))
 qplot(y, myspline, data = mycc_sub, geom = "line") + theme_bw()
 mycc_sub$smoothed <- fitted(loess(myspline ~ y, data = mycc_sub, span = 0.07))
 qplot(y, smoothed, data = mycc_sub, geom = "line") + theme_bw()
+qplot(intersplinefit$x, intersplinefit$y, geom = "line") + theme_bw()
 
-mybullet2 <- read.x3pplus("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2/Br1 Bullet 2-6.x3p")
+mybullet2 <- read.x3pplus("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2/Br1 Bullet 2-1.x3p")
 
 mycc2 <- get_crosscut(x = 100, bullet = mybullet2)
+mycc2$value <- mycc2$value - min(mycc2$value, na.rm = TRUE)
 my.groove2 <- get_grooves(mycc2)
 
 mycc_sub2 <- dplyr::filter(mycc2, y >= my.groove2$groove[1], y <= my.groove2$groove[2])
@@ -41,13 +46,23 @@ qplot(y, value, data = mycc_sub2, geom = "line") + theme_bw()
 mycc_sub2$value <- na.fill(mycc_sub2$value, "extend")
 mycc_sub2$myspline <- residuals(smooth.spline(mycc_sub2$y, mycc_sub2$value))
 qplot(y, myspline, data = mycc_sub2, geom = "line") + theme_bw()
+intersplinefit2 <- spline(mycc_sub2$y, mycc_sub2$value, method = "natural")
+qplot(intersplinefit2$x, intersplinefit2$y, geom = "line") + theme_bw()
+
+mydf_interp <- data.frame(bullet = c(rep("b1", length(intersplinefit$x)), rep("b2", length(intersplinefit2$x))),
+                   y = c(intersplinefit$x, intersplinefit2$x),
+                   l30 = c(intersplinefit$y, intersplinefit2$y))
+
 mycc_sub2$smoothed <- fitted(loess(myspline ~ y, data = mycc_sub2, span = 0.07))
 qplot(y, smoothed, data = mycc_sub2, geom = "line") + theme_bw() + geom_line(data = mycc_sub, aes(x = y, y = smoothed), colour = I("red"))
 mydf <- data.frame(bullet = c(rep("b1", nrow(mycc_sub)), rep("b2", nrow(mycc_sub2))),
                    y = c(mycc_sub$y, mycc_sub2$y),
                    l30 = c(mycc_sub$smoothed, mycc_sub2$smoothed))
 result <- bulletAlign(mydf)
+result2 <- bulletAlign(mydf_interp)
+
 qplot(y, val, data = result$bullets, geom = "line", colour = bullet) + theme_bw()
+qplot(y, val, data = result2$bullets, geom = "line", colour = bullet) + theme_bw()
 
 ui <- fluidPage(
    
