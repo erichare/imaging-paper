@@ -5,11 +5,10 @@ library(ggplot2)
 library(gridExtra)
 library(zoo)
 
-knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
-unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
+datadir <- "images/Hamby (2009) Barrel/bullets"
 
 # match unknown land using crosscuts
-ccs <- read.csv("csvs/crosscuts-25.csv")
+ccs <- read.csv("csvs/crosscuts.csv")
 all_bullets <- lapply(as.character(ccs$path), function(x) {
     transpose <- (length(grep(" ", x)) == 0)
     

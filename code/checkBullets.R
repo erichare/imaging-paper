@@ -4,13 +4,12 @@ library(dplyr)
 library(ggplot2)
 library(zoo)
 
-knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
-knowns <- file.path(knowndatadir, dir(knowndatadir, pattern="x3p"))
+datadir <- "images/Hamby (2009) Barrel/bullets"
+all_data <- file.path(datadir, dir(datadir))
+knowns <- all_data[grep("[bB]r[0-9].*", all_data)]
+unknowns <-  all_data[grep("[bB]r[0-9].*", all_data, invert = TRUE)]
 
-unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
-unknowns <- file.path(unknowndatadir, dir(unknowndatadir))
-
-if (!file.exists("csvs/crosscuts-25.csv")) {
+if (!file.exists("csvs/crosscuts.csv")) {
 crosscuts <- sapply(c(knowns, unknowns), function(x) {
     transpose <- (length(grep(" ", x)) == 0)
   cat(x, "- transposing:", transpose)
@@ -26,6 +25,5 @@ dframe <- data.frame(
   cc = crosscuts
 )
 
-
-write.csv(dframe, file="csvs/crosscuts-25.csv", row.names=FALSE)
+write.csv(dframe, file="csvs/crosscuts.csv", row.names=FALSE)
 }
