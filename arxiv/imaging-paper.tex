@@ -21,6 +21,7 @@
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
 \newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
 
 \usepackage{framed}
 \makeatletter
@@ -50,7 +51,7 @@
 \usepackage{alltt}
 
 \usepackage{amsthm,amsmath,natbib}
-%\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
 
 % provide arXiv number if available:
 \arxiv{arXiv:1601.05788}
@@ -60,8 +61,8 @@
 \usepackage{enumitem}
 \usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
 \usepackage{subcaption}
-%\usepackage{lineno}
-%\modulombers[5]
+\usepackage{lineno}
+\modulolinenumbers[5]
 
 \usepackage{xr}
 \externaldocument{imaging-supplement}
@@ -135,7 +136,7 @@ In 2009, the National Academy of Sciences published a report questioning the sci
 
 \end{frontmatter}
 
-%\linenumbers
+\linenumbers
 %\tableofcontents
 %\newpage
 
@@ -181,7 +182,7 @@ This allows for an objective and quantitative assessment of striae-based bullet 
 %\hh{XXX More detailed discussion of automatic approaches and database discussion XXX}
 
 Throughout this paper, we work with images from the James Hamby Consecutively Rifled Ruger Barrel Study~\citep{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce 20 known test bullets and 15 unknown bullets for comparison. 
-3D topographical images of each bullet were obtained using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). The x3p format conforms to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. It was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government firearm forensics researchers whose aim is to establish best practices for researchers using metrology in forensic science.
+3D topographical images of each bullet were obtained using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). The x3p format conforms to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. It was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government firearm forensics researchers whose aim is to establish best practices for researchers using metrology in forensic science. An open-source package for working with x3p files has been written in R \citep{R} by Dr. Nicholas Petraco which we build upon in the development of our algorithm \citep{x3pr}. This package enables the direct reading and manipulation of x3p files.
 
 \begin{figure}[hbtp]
   \centering
@@ -215,7 +216,7 @@ The original paper on the complete Hamby study already reports the successful us
 % Integrated Ballistics Identification System (IBIS) – Mr. Robert Thompson (California, United States);
 % BulletTRAX-3DTM - Forensic Technology Scientists (Montreal, Canada) (2 sets)
  
-A procedure for bullet matching using the BulletTrax3D system is described in \citet{roberge:2006}. This study is based on another set of ten consecutively rifled barrels; matches are identified based on a bullet-to-bullet correlation score. The authors state that this process `could be automated', but no implementation of the algorithm is available. Modern automated techniques using 3D images have also been conducted by \citet{riva:2014}, but this work applies to striae found on cartridge cases and not bullets.
+A procedure for bullet matching using the BulletTrax3D system is described in \citet{roberge:2006}. This study is based on another set of ten consecutively rifled barrels; matches are identified based on a bullet-to-bullet correlation score. The authors state that this process `could be automated', but no implementation of the algorithm is available. Modern automated techniques using 3D images have also been conducted by \citet{riva:2014}, but this work applies to striae found on cartridge cases and not bullets. Other work on 3D images has been conducted by \citet{petraco:2012}, which also describes work carried out on cartridge cases, as well as screwdriver striation patterns, with promising results. We aim to use similar ideas of automated 3D image analysis, and apply this work to bullet surfaces with the modern tools enabled by the R statistical software.
 
 The remainder of this paper is structured as follows: We first discuss two methods of modeling the class structure of the bullet surfaces. %We then describe a web application for visualizing and working with bullet surfaces. 
 We then proceed to describing an automatic matching routine which we evaluate on the bullets made available through the Hamby study.
@@ -328,62 +329,6 @@ Figure~\ref{fig:loess_resid} shows the residuals from this fit. These residuals 
 \end{figure}
 %
 
-%' \hh{XXX Do we need the next example? We could save some space here XXX}
-%' Figure~\ref{fig:loessfits} shows the signatures of all lands of bullet 2 (in grey) fired from the same barrel as bullet~1. The darker line overlaid on each of the signatures, shows signature from bullet~1-5. 
-%' %We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from bullet~1-5. This is shown in Figure~\ref{fig:loessfits}. 
-%' Bullet 2-1 is the best match for bullet~1-5, but the alignment is not quite  correct. \hh{This is one of the issues we are addressing next.}
-%' 
-%' \begin{figure}[hbtp]
-%'   \centering
-%' <<loessfits, echo=FALSE, fig.width=10, fig.height=5, out.width='\\textwidth', warning=FALSE>>=
-%' br121.groove <- get_grooves(br121_bullet)
-%' br122.groove <- get_grooves(br122_bullet)
-%' br123.groove <- get_grooves(br123_bullet)
-%' br124.groove <- get_grooves(br124_bullet)
-%' br125.groove <- get_grooves(br125_bullet)
-%' br126.groove <- get_grooves(br126_bullet)
-%' 
-%' my.loess1 <- fit_loess(br121_bullet, br121.groove)
-%' my.loess2 <- fit_loess(br122_bullet, br122.groove)
-%' my.loess3 <- fit_loess(br123_bullet, br123.groove)
-%' my.loess4 <- fit_loess(br124_bullet, br124.groove)
-%' my.loess5 <- fit_loess(br125_bullet, br125.groove)
-%' my.loess6 <- fit_loess(br126_bullet, br126.groove)
-%' 
-%' my.loessactual <- fit_loess(br111_bullet, br111.groove)
-%' 
-%' minrows <- min(length(my.loess1$data$resid),
-%'                length(my.loess2$data$resid),
-%'                length(my.loess3$data$resid),
-%'                length(my.loess4$data$resid),
-%'                length(my.loess5$data$resid),
-%'                length(my.loess6$data$resid),
-%'                length(my.loessactual$data$resid))
-%' 
-%' my.df <- data.frame(y = my.loess1$data$y[1:minrows], resid1 = my.loess1$data$resid[1:minrows],
-%'                     resid2 = my.loess2$data$resid[1:minrows], resid3 = my.loess3$data$resid[1:minrows],
-%'                     resid4 = my.loess4$data$resid[1:minrows], resid5 = my.loess5$data$resid[1:minrows],
-%'                     resid6 = my.loess6$data$resid[1:minrows])
-%' 
-%' melt.df <- my.df %>%
-%'     gather(key = part, value = resid, resid1:resid6)
-%' melt.df$part <- gsub("resid", "", melt.df$part)
-%' 
-%' actual.df <- my.loessactual$data[1:minrows,]
-%' melt.df$land <- melt.df$part
-%' qplot(y, resid, data=melt.df, #colour=factor(x), 
-%'       geom="line", size=I(.75), colour=I("grey70")) + 
-%'   facet_wrap(~land, ncol=3, labeller="label_both") + 
-%'   scale_colour_brewer(palette="Paired") +
-%'   theme_bw() + theme(legend.position="bottom") + 
-%'   geom_line(data = actual.df, aes(y, resid), colour="black", size=.75, alpha=0.5) + ggtitle("Signatures of bullet 1 in grey, bullet 1-5 in black") + 
-%'   ylab("Residuals of loess fit") +
-%'   theme(plot.margin = unit(c(0,0,0,0), unit="cm"))
-%' @    
-%' \caption{\label{fig:loessfits} Residuals of a loess fit to bullets 1 and 2 from barrel 1. Bullet~1-5 is shown in black. }
-%' \end{figure}
-%' 
-
 \section{Automatic matching}
 Applying the loess fit to a range of different signatures (see Figure~\ref{fig:manualmatch-rgl} for signatures extracted at heights between 50$\mu m$ and 150~$\mu m$) shows the 3D striation marks from two bullets. Signatures of bullet~1 are shown on the left (all extracted from heights below 100$\mu m$) and signatures of bullet 2 are shown on the right (extracted at heights above 100$\mu m$). Signatures are manually aligned, resulting in many of the striation marks to continuously pass from one side to the other. Visually, this allows for an easy assessment of these two bullet lands as a match. However, this match relies on visual inspection and can therefore not be completely objective.  The goal of this section is to eliminate the need for a visual inspection during the matching process and replace it by an automatic algorithm. This also allows for a quantification of the quality of the match.
 
@@ -394,7 +339,6 @@ Applying the loess fit to a range of different signatures (see Figure~\ref{fig:m
 \end{figure}
 
 In this section, we describe the algorithm for matching signatures first, and the impact of parameter choices in the subsections thereafter.
-
 
 \subsection{Algorithm}\label{sec:algorithm}
 

@@ -38,8 +38,7 @@
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
 \newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
-
-\pdfoutput=1
+\let\hlipl\hlkwb
 
 \usepackage{framed}
 \makeatletter
@@ -78,8 +77,8 @@
 \startlocaldefs
 \usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
 \usepackage{subcaption}
-%\usepackage{lineno}
-%\modulolinenumbers[5]
+\usepackage{lineno}
+\modulolinenumbers[5]
 
 \usepackage{dcolumn}
 \newcolumntype{d}[1]{D{.}{.}{#1}}
@@ -114,7 +113,7 @@
 
 \end{frontmatter}
 
-%\linenumbers
+\linenumbers
 \tableofcontents
 \newpage
 
@@ -324,7 +323,7 @@ Table~\ref{tab:importance} shows the results for feature importance for both of 
 \caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Averages (and standard deviations) for known matches (KM) and known non-matches (KNM) are shown in the last four columns.}
 \centering
 % latex table generated in R 3.3.1 by xtable 1.8-2 package
-% Mon Aug  8 08:49:14 2016
+% Fri Oct  7 08:56:58 2016
 \begin{tabular}{clrrrd{3.2}rd{3.2}}
   \hline
  & Variable & Importance 1 & Importance 2 & KM & (sd) & KNM & (sd).1 \\ 
