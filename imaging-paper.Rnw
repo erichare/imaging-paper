@@ -96,10 +96,10 @@ library(extrafont)
 library(knitr)
 imgdir <- "Figure/"
 codedir <- "code"
-datadir <- "app/images/Hamby252_3DX3P1of2/"
+datadir <- "images/Hamby (2009) Barrel/bullets"
 
 options(replace.assign=TRUE,scipen=3, digits=2)
-bstats <- read.csv("data-25-25/bullet-stats-old.csv")
+bstats <- read.csv("data/data-25-25/bullet-stats-old.csv")
 
 scrubPath <- function(x) {
   splits <- strsplit(as.character(x), split="/")
@@ -382,62 +382,6 @@ ggplot() +
 \end{figure}
 %
 
-%' \hh{XXX Do we need the next example? We could save some space here XXX}
-%' Figure~\ref{fig:loessfits} shows the signatures of all lands of bullet 2 (in grey) fired from the same barrel as bullet~1. The darker line overlaid on each of the signatures, shows signature from bullet~1-5. 
-%' %We can reproduce a similar figure to the one from the circular fits by overlaying the residuals from each loess fit for bullet 2 onto an image of the loess residuals from bullet~1-5. This is shown in Figure~\ref{fig:loessfits}. 
-%' Bullet 2-1 is the best match for bullet~1-5, but the alignment is not quite  correct. \hh{This is one of the issues we are addressing next.}
-%' 
-%' \begin{figure}[hbtp]
-%'   \centering
-%' <<loessfits, echo=FALSE, fig.width=10, fig.height=5, out.width='\\textwidth', warning=FALSE>>=
-%' br121.groove <- get_grooves(br121_bullet)
-%' br122.groove <- get_grooves(br122_bullet)
-%' br123.groove <- get_grooves(br123_bullet)
-%' br124.groove <- get_grooves(br124_bullet)
-%' br125.groove <- get_grooves(br125_bullet)
-%' br126.groove <- get_grooves(br126_bullet)
-%' 
-%' my.loess1 <- fit_loess(br121_bullet, br121.groove)
-%' my.loess2 <- fit_loess(br122_bullet, br122.groove)
-%' my.loess3 <- fit_loess(br123_bullet, br123.groove)
-%' my.loess4 <- fit_loess(br124_bullet, br124.groove)
-%' my.loess5 <- fit_loess(br125_bullet, br125.groove)
-%' my.loess6 <- fit_loess(br126_bullet, br126.groove)
-%' 
-%' my.loessactual <- fit_loess(br111_bullet, br111.groove)
-%' 
-%' minrows <- min(length(my.loess1$data$resid),
-%'                length(my.loess2$data$resid),
-%'                length(my.loess3$data$resid),
-%'                length(my.loess4$data$resid),
-%'                length(my.loess5$data$resid),
-%'                length(my.loess6$data$resid),
-%'                length(my.loessactual$data$resid))
-%' 
-%' my.df <- data.frame(y = my.loess1$data$y[1:minrows], resid1 = my.loess1$data$resid[1:minrows],
-%'                     resid2 = my.loess2$data$resid[1:minrows], resid3 = my.loess3$data$resid[1:minrows],
-%'                     resid4 = my.loess4$data$resid[1:minrows], resid5 = my.loess5$data$resid[1:minrows],
-%'                     resid6 = my.loess6$data$resid[1:minrows])
-%' 
-%' melt.df <- my.df %>%
-%'     gather(key = part, value = resid, resid1:resid6)
-%' melt.df$part <- gsub("resid", "", melt.df$part)
-%' 
-%' actual.df <- my.loessactual$data[1:minrows,]
-%' melt.df$land <- melt.df$part
-%' qplot(y, resid, data=melt.df, #colour=factor(x), 
-%'       geom="line", size=I(.75), colour=I("grey70")) + 
-%'   facet_wrap(~land, ncol=3, labeller="label_both") + 
-%'   scale_colour_brewer(palette="Paired") +
-%'   theme_bw() + theme(legend.position="bottom") + 
-%'   geom_line(data = actual.df, aes(y, resid), colour="black", size=.75, alpha=0.5) + ggtitle("Signatures of bullet 1 in grey, bullet 1-5 in black") + 
-%'   ylab("Residuals of loess fit") +
-%'   theme(plot.margin = unit(c(0,0,0,0), unit="cm"))
-%' @    
-%' \caption{\label{fig:loessfits} Residuals of a loess fit to bullets 1 and 2 from barrel 1. Bullet~1-5 is shown in black. }
-%' \end{figure}
-%' 
-
 \section{Automatic matching}
 Applying the loess fit to a range of different signatures (see Figure~\ref{fig:manualmatch-rgl} for signatures extracted at heights between 50$\mu m$ and 150~$\mu m$) shows the 3D striation marks from two bullets. Signatures of bullet~1 are shown on the left (all extracted from heights below 100$\mu m$) and signatures of bullet 2 are shown on the right (extracted at heights above 100$\mu m$). Signatures are manually aligned, resulting in many of the striation marks to continuously pass from one side to the other. Visually, this allows for an easy assessment of these two bullet lands as a match. However, this match relies on visual inspection and can therefore not be completely objective.  The goal of this section is to eliminate the need for a visual inspection during the matching process and replace it by an automatic algorithm. This also allows for a quantification of the quality of the match.
 
@@ -448,7 +392,6 @@ Applying the loess fit to a range of different signatures (see Figure~\ref{fig:m
 \end{figure}
 
 In this section, we describe the algorithm for matching signatures first, and the impact of parameter choices in the subsections thereafter.
-
 
 \subsection{Algorithm}\label{sec:algorithm}
 <<twolands100, cache=TRUE,  echo=FALSE>>=
@@ -749,7 +692,7 @@ This poses both a caveat to matching attempts as well as an opportunity for qual
   \centering
 <<crosscuts-vary-b31, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\textwidth', cache=TRUE, warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
-paths <- paths[grep(" ", paths)]
+paths <- paths[grep("Br[0-9]", paths)]
 
 crosscuts <- seq(100,250, by=25)
 lof <- processBullets(read.x3p(paths[37]), name = paths[37], x = crosscuts)
@@ -881,7 +824,7 @@ It might not be reasonable to assume that we can match all lands, but the idea i
 \begin{subfigure}[t]{\textwidth}\centering
 \caption{Maximal number of CMS between unknown bullet C-3 and all of the other 118 considered (known) lands. For two lands the number of maximum CMS is high. }
 <<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
-load("data-25-25/unkn9.RData")
+load("data/data-25-25/unkn9.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
 
 qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
@@ -1000,7 +943,7 @@ There are two things that should be noted at this point: the automated algorithm
 \begin{figure}[hbtp]
   \centering
 <<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.65\\textwidth', warning=FALSE>>=
-load("data-25-25/unkn47.RData")
+load("data/data-25-25/unkn47.RData")
 res <- reslist[[106]]
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
 
