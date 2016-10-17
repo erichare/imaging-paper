@@ -1,0 +1,103 @@
+---
+title: "Response to reviewers"
+author: "Eric Hare, Heike Hofmann, Alicia Carriquiry"
+date: "October 17, 2016"
+output:
+  pdf_document: default
+bibliography: references.bib
+---
+
+# Reviewer 1
+
+1. The authors have not provided a comprehensive literature review, to the point that the paper appears to be taking credit for the work that has been done by Dr. Nick Petraco, his collaborators, and others. I provided the references for Dr. Petraco’s work in my last review.
+
+    **Please see the attached document for an in-depth discussion of our use of Dr. Petraco's work**
+
+2. As I read the paper it is unclear how the matching criteria is different than the matching criteria currently in use by the tool mark’s community, especially those proposed by Monkres et al (2013) in Comparison and Statistical Analysis of Land
+Impressions from Consecutively Rifled Barrels and the PhD dissertation work published in Technometrics by Amy B. Hoeksema with her PhD advisor Max Morris in 2013. Dr. Hoeksema’s dissertation also has a wonderful explanation of Chumbley’s U-statistic, which appears to be similar to the author’s proposed statistic, which is a PhD dissertation in the department of the authors of the paper currently under review. My opinion is that a discussion and comparison of these classical methods with their new comparison
+statistic is necessary to demonstrate how the author’s work advances the science of land impression
+comparisons.
+
+    **On October 11th, 2016, we sat down with Dr. Morris in order to discuss the similarities and differences between the Chumbley U-statistic, and the methods used and features derived in our paper. He was surprised to see this comment, as the differences are rather stark. The Chumbley U-statistic characterizes toolmark signatures by producing two sets of correlation values. One set is produced by doing "coordinated shifts" after finding the ideal matching window, and computing each correlation value. The other set is computed by doing "independent shifts". Given that two toolmarks match, we'd expect that the correlation values from the coordinated shifts would be significantly higher than the independent shifts, and this is assessed using a Mann-Whitney U statistic. While very interesting and worth further discussion, Dr. Morris agreed that this is far different from the methods we have proposed. We use full pairs bullet signatures and extract features based on these. The features including correlation, as well as the number of matches, the number of consecutive matches, and more. At no time is a Mann-Whitney U statistic used, windows extracted, or any coordinated/independent shifts used.**
+    
+3. The main methods used in the paper under review are extremely dependent on Dr. Petraco’s work (implemented in an R library x3pr and available at https://github.com/npetraco). The authors built a new library titled x3prplus (available at https://github.com/heike/x3prplus) on top of x3pr. While working on my review, I went through a large amount of the two R libraries on github. The new library mainly appears to be wrappers for Dr. Petraco’s work. I find it very disconcerting and highly inappropriate that the authors are relying on Dr. Petraco’s work to such a high degree and that they are not referencing his work in their paper.
+
+    **Please see the attached document for a rebuttal to these claims**
+
+# Reviewer 2
+
+4. This paper is uninteresting because it is not novel, even when considering the applied nature of the proposed work. It is very common for statisticians recently involved in forensic science to assume that nothing has been done prior to their own involvement, and this seems to be the assumption made by the authors. Unfortunately, much work on the subject of automated bullet comparisons has been done and published (but not necessarily in the statistical literature) and the authors of this paper are simply re-inventing the wheel without providing anything new to the debate.
+
+    **XXX**
+
+5. The paper is pedestrian and incomplete because extremely similar work has been proposed by Jain, Chumbley, Prokoski, Petraco, Zheng and so on (the list is available to this reviewed, who is happy to share it with the editor if needed). The authors even ignored a milestone paper published by their own department head... The authors of the current paper have not made any attempt to review the relevant literature: if anything, they merely took the references that I provided in my first review and added them to their bibliographic review, while dismissing their work. For example, the authors' treatment of Riva et al's work is not appropriate: it is not because they consider cartridge cases that their methodology could not be applied to landmarks on bullets! I believe that if the authors had bothered reviewing the literature they would not have ended up re-inventing the wheel and they may have actually done something useful for the community.
+
+    **XXX**
+
+6. The paper is scientifically questionable because (1) nothing in this paper is novel (as discussed above), (2) the authors are extremely confused as to what type of inference they are proposing. They emphasize that legal and scientific scholars advocate the use of a Bayesian framework for the quantification of the weight of forensic evidence, yet the entire paper is about calculating error rates. I assume that the authors understand that in order to make an error, one has to make a decision, and whether in a Bayesian or frequentist framework, a decision is related to posterior probabilities and utility functions, not to Bayes factors. Bottom line, if the authors are endorsing the use of a Bayesian framework, they spent a great deal of effort addressing the wrong problem. If the authors are not endorsing a Bayesian framework, then they should say so, and scientifically support their work on based on its own merits.
+
+    **XXX**
+    
+7. The paper is ethically problematic because it seems that most of the code made available by the author is similar to, if not require the use of, legacy code provided by another author working in the same area, and who is absolutely not referenced in the current paper.
+
+    **We referenced the OpenFMC organization and devoted a paragraph to its discussion. This is the organization that is the recommended citation for the package which we use a function of, `x3pr`. We have added a reference to Dr. Petraco directly in this discussion. See the below citation, given by `x3pr` as of October 17th, 2016:**
+    ```{r}
+    citation("x3pr")
+    ```
+    
+8. Overall, this paper does not advance the field of forensic science one bit: (1) the statistical analysis proposed by the authors is not novel at all, thus we are not learning anything from it; (2) the final results reported by the authors are useless since (i) they are related to the wrong type of inference (error rates vs. Bayes factors, and (ii) they are based on such a small and distorted dataset that they can't even be used in court to support the admissibility (or rejection) of firearm evidence.
+    
+    **We are very clear about the limitations presented by a small dataset, particularly in the conclusion. Unfortunately, this is the data that we had to work with. With that said, the idea of statistical modeling is that once new data is obtained, its rather trivial to compute the set of features used in our model, and retrain the model with a broader and more varied dataset. Whether performance on holdout samples would remain as strong remains to be seen. But because this code is open-source and in the public domain, the algorithm can be assessed on new data by anyone willing to invest the time to run it.**
+
+# Reviewer 4
+
+9. This paper describes a statistical experiment to to determine whether two bullets were fired from the same gun barrel. The authors formulate a simple model, and perfom a version of least squares. 
+
+    **We feel this is a rather inaccurate summary of the work done in our paper. We do use a random forest model, but this is not the focus. Rather, the data analysis steps culminating in feature extraction are the focus. These features, computed on pairs of bullet lands, are then fed into a random forest model, but we do formulate this model. Furthermore, we do not perform a version of least squares - The random forest uses decision trees. We felt the purpose of our work was to highlight the individual data analysis steps that compromise a full analysis of bullet striations, beginning from an open-source data file, and ending with a predicted probability of a match.**
+
+10. No new statistical methodology is introduced, so the impact of this work is very narrow.  There is also no attempt to relate the work to any previous statistical studies or tests, as there is only one reference.
+
+    **The revised copy of our paper contains over thirty references, not just one. Many are from previous statistical studies on bullet matching (e.g., Biasotti 1959, Chu 2010, Riva 2014) while many more are references on statisitcal tests themselves (e.g., Therneau 2015, Liaw 2002, Cleveland 1979)**
+
+11. I believe that this work should be submitted to a more specialized journal, but Annals of Applied Statistics is definitely the wrong venue.
+    
+    **XXX**
+
+# Reviewer 5
+
+12. The authors have addressed the majority of my comments. Exceptions are: Comment 1): The authors corrected the second sentence in the abstract as suggested, yet did not correct the first sentence of the Introduction, which was a copy-paste of the second sentence in the abstract, and this first sentence in the Introduction is now still incorrect. This sentence, currently reading “Firearm examination is a forensic tool used to determine whether two bullets were fired from the same gun barrel.” should be replaced by “Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel.” in order to be correct and consistent with the abstract.
+
+    **Thank you. We apologize for the oversight, and have made this correction.**
+
+13. Comment 2): The weakness of the paper is that it lacks an explanation for why a binary “match” vs “non-match” approach was chosen. It does not explain what the value of the observations is with regard to the two competing propositions, i.e., the question of interest to the forensic scientist. If the authors want this to be a good paper, I encourage them to provide such an explanation.
+
+    **We have attempted to extend this discussion. Although we have assessed our algorithm in terms of a binary "match" vs. "non-match" scale, we didn't attempt to reduce the full scope of the problem down to this decision. As a matter of fact, the output from our model are predicted probabilities of a match, or scores from the random forest. These scores can be seen in Figure 19. For purposes of assessment, we considered a predicted probability of at least 50% as indicative of a match. However, in a real world application of this algorithm, the scores themselves are most certainly relevant. We apologize that we didn't make this distinction as clear in the previous revision, and we hope this alleviates some of the reviewer's concerns.**
+
+14. Comment 3): The term “ballistics” was corrected as suggested. Yet there remain two occurrences of “ballistic” as an adjective in lines 477 (“ballistic images”) and 490 (“ballistic imaging”). I interpret these as referring to images or imaging of the trajectory of bullets. If this is not what was meant, I strongly encourage the authors to replace “ballistic images” and “ballistic imaging” with phrases that represent what they actually meant.
+
+    **We have corrected the use of ballistics in these instances.**
+
+15. Comment 7): An attempt was made to visually distinguish between the two bullets, yet note that the shading that was added is barely visible when the figure is printed on a color laser printer.
+
+    **Thank you for pointing this out, as we did not attempt to check the printed copy of the paper. We have corrected this to improve the printed appearance.**
+
+# Reviewer 6
+
+16. The revised paper "Automatic Matching of Bullet Lands" describes an automated procedure for matching bullets that have been fired from the same gun.  It also compares the accuracy of the procedure on a test set of bullet images from the Hamby, Brundage and Thorpe study.  The key conclusion is that the automated algorithm outperforms human matching, and achieves high accuracy. The methods used in the paper are statistically simple, but also robust.  The problem is important and the paper fills a need.
+
+    **We thank you for the kind words.**
+
+17. Some aspects of the algorithm are judgmental, and I expect that at each step in the algorithm one might be able to find an alternative that is incrementally smarter.  But I think that is permitting the best to be the enemy of the good.
+
+    **We agree wholeheartedly with the reviewer. Several best judgment decisions were made during the course of the algorithm. We attempted to be explicit when certain parameters were chosen (e.g., the smoothing factor parameter) and include a discussion of how the results change when these parameters are varied. As such, thus algorithm could be modified to use best parameters as chosen from cross-validation, for instance.**
+
+18. The paper is clearly written and sufficiently concise.  The description and motivation for the work is good.  And the code is in the public domain, which is a great contribution.
+
+    **Thank you once again for the comments.**
+    
+## x3prplus
+
+```{r, child='x3prplus.Rmd'}
+
+```
+
