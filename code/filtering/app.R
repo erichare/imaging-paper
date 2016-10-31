@@ -1,6 +1,5 @@
 library(shiny)
-library(x3pr)
-library(x3prplus)
+library(bulletr)
 library(ggplot2)
 library(smoother)
 library(changepoint)
@@ -16,7 +15,7 @@ library(changepoint)
 ## Interpolating spline > loess - use this to get the bullet signatures. Smooth with local polynomial
 ## Total Variation (Try this after the alignment step)
 
-mybullet <- read.x3pplus("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2/Br1 Bullet 1-5.x3p")
+mybullet <- read_x3p("~/GitHub/imaging-paper/images/Hamby (2009) Barrel/bullets/Br1 Bullet 1-5.x3p")
 
 mycc <- get_crosscut(x = 100, bullet = mybullet)
 mycc$value <- mycc$value - min(mycc$value, na.rm = TRUE)
@@ -35,7 +34,7 @@ mycc_sub$smoothed <- fitted(loess(myspline ~ y, data = mycc_sub, span = 0.07))
 qplot(y, smoothed, data = mycc_sub, geom = "line") + theme_bw()
 qplot(intersplinefit$x, intersplinefit$y, geom = "line") + theme_bw()
 
-mybullet2 <- read.x3pplus("~/GitHub/imaging-paper/app/images/Hamby252_3DX3P1of2/Br1 Bullet 2-1.x3p")
+mybullet2 <- read_x3p("~/GitHub/imaging-paper/images/Hamby (2009) Barrel/bullets/Br1 Bullet 2-1.x3p")
 
 mycc2 <- get_crosscut(x = 100, bullet = mybullet2)
 mycc2$value <- mycc2$value - min(mycc2$value, na.rm = TRUE)
