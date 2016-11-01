@@ -21,8 +21,8 @@ all_bullets <- lapply(as.character(ccs$path), function(x) {
 
 grooves <- read.csv("csvs/grooves.csv")
 
-knowns <- all_bullets[1:240]
-unknowns <- all_bullets[241:420]
+knowns <- all_bullets[1:120]
+unknowns <- all_bullets[121:210]
 bullets_processed <- lapply(all_bullets, function(bul) {
     cat("Computing processed bullet", basename(bul$path), "\n")
     
@@ -39,7 +39,7 @@ names(bullets_processed) <- as.character(ccs$path)
 
 bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth
 
-for (span in c(1)) {
+for (span in c(5, 10, 15, 20, 25)) {
     dataStr <- sprintf("data-%d-25", span) # using crosscuts-25.csv
     
     if (!file.exists(dataStr)) dir.create(dataStr)
@@ -54,6 +54,6 @@ for (span in c(1)) {
                 bulletGetMaxCMS(br1, br2, column = "l30", span=span)
             }
         })
-        save(reslist, file=file.path(dataStr, sprintf("unkn%d-new.RData", j)))
+        save(reslist, file=file.path("data", dataStr, sprintf("unkn%d-new.RData", j)))
     }
 }

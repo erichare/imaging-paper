@@ -6,8 +6,8 @@ library(zoo)
 
 datadir <- "images/Hamby (2009) Barrel/bullets"
 all_data <- file.path(datadir, dir(datadir))
-knowns <- all_data[grep("[bB]r[0-9].*", all_data)]
-unknowns <-  all_data[grep("[bB]r[0-9].*", all_data, invert = TRUE)]
+knowns <- all_data[grep("[B]r[0-9].*", all_data)]
+unknowns <-  all_data[grep("Ukn*", all_data)]
 
 if (!file.exists("csvs/crosscuts.csv")) {
 crosscuts <- sapply(c(knowns, unknowns), function(x) {
