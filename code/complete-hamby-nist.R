@@ -5,26 +5,25 @@ library(ggplot2)
 library(gridExtra)
 library(zoo)
 
-knowndatadir <- "app/images/Hamby252_3DX3P1of2/"
-unknowndatadir <- "app/images/Hamby252_3DX3P2of2/"
+datadir <- "images/Hamby (2009) Barrel/bullets"
 
 # match unknown land using crosscuts
-ccs <- read.csv("csvs/crosscuts-25.csv")
+ccs <- read.csv("csvs/crosscuts.csv")
 all_bullets <- lapply(as.character(ccs$path), function(x) {
     transpose <- (length(grep(" ", x)) == 0)
     
     result <- read.x3pplus(x, transpose = transpose)
     result[[3]] <- x
     names(result)[3] <- "path"
-        
+    
     return(result)
 })
 
 grooves <- read.csv("csvs/grooves.csv")
 
-knowns <- all_bullets[1:240][grep(" ", as.character(ccs$path)[1:240])]
-unknowns <- all_bullets[241:420][grep(" ", as.character(ccs$path)[241:420])]
-bullets_processed <- lapply(c(knowns, unknowns), function(bul) {
+knowns <- all_bullets[1:120]
+unknowns <- all_bullets[121:210]
+bullets_processed <- lapply(all_bullets, function(bul) {
     cat("Computing processed bullet", basename(bul$path), "\n")
     
     xval <- ccs$cc[which(ccs$path == bul$path)]
@@ -36,13 +35,12 @@ bullets_processed <- lapply(c(knowns, unknowns), function(bul) {
     
     processBullets(bullet = bul, name = bul$path, x = grooves_sub$x[which.min(abs(xval - grooves_sub$x))], grooves = c(left, right))
 })
-names(bullets_processed) <- as.character(ccs$path)[grep(" ", as.character(ccs$path))]
+names(bullets_processed) <- as.character(ccs$path)
 
-#bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth
 bullets_smoothed <- bullets_processed %>% bind_rows
 
 #for (span in c(1)) {
-    dataStr <- "data-nist" # using crosscuts-25.csv
+    dataStr <- "data/data-nist" # using crosscuts-25.csv
     
     if (!file.exists(dataStr)) dir.create(dataStr)
     for (j in 1:length(unknowns)) {
