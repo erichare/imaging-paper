@@ -1,5 +1,5 @@
-span <- 1
-dataStr <- sprintf("data-%d-25", span)
+span <- 25
+dataStr <- sprintf("data/data-%d-25", span)
 datas <- file.path(dataStr, dir(dataStr, pattern="RData"))
 datas <- datas[grep(paste0(dataStr,"/u.*-new.RData"), datas)]
 
@@ -99,6 +99,7 @@ set.seed(20160105)
 rtrees <- randomForest(factor(match)~., data=CCFs[,includes2], ntree=300)
 CCFs$forest <- predict(rtrees, type="prob")[,2]
 imp <- data.frame(importance(rtrees))
+save(rtrees, file = file.path(dataStr, "bullet-forest.RData"))
 
 includes3 <- c(setdiff(includes2, "cms.per.y"), "cms2.per.y")
 set.seed(20160105)
