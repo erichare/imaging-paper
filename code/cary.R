@@ -19,7 +19,7 @@ ggplot(data = cary1_cross, aes(x = y, y = value)) + geom_line() + theme_bw()
 cary1_groove$plot
 
 cary1_loess <- fit_loess(bullet = cary1_cross, groove = list(groove = cary1_groove$groove), span = .03)
-cary1_processed <- processBullets(bullet = cary1, name = "cary1", x = myx, grooves = cary1_groove$groove)
+cary1_processed <- processBullets(bullet = cary1, name = cary_paths[1], x = myx, grooves = cary1_groove$groove)
 cary1_smoothed <- bulletSmooth(cary1_processed)
 
 other_carys <- lapply(cary_paths[-1], function(x) {
@@ -108,8 +108,21 @@ iteration <- as.numeric(gsub("../images/Cary Persistence/bullets/CWBLT([0-9]+)-1
 qplot(iteration[-1], myprobs[,2], geom = "point") + 
     geom_smooth() +
     theme_bw() + 
+    scale_x_continuous(breaks = c(0, 75, 150, 250, 500, 750, 1000, 1500, 2000)) +
+    ylim(c(0, 1)) +
     xlab("Cary Persistence Iteration") +
     ylab("Predicted Probability of Match ") +
     geom_hline(yintercept = 0.5) +
     ggtitle("Predicted Prob of Match (Cary 1 vs Cary 2-2000)")
+
+test <- rbind(cary1_smoothed, cary_smoothed) %>%
+    mutate(iteration = as.numeric(gsub("../images/Cary Persistence/bullets/CWBLT([0-9]+)-1.x3p", "\\1", bullet)))
+
+mydat <- filter(test, iteration %in% c(1, 10, 50, 100, 250, 500, 1000, 2000)) %>%
+    group_by(iteration) %>%
+    mutate(y = y - min(y))
+qplot(y, l30, data = mydat, geom = "line") +
+    facet_wrap(~iteration, ncol = 1) +
+    theme_bw() +
+    ggtitle("Cary Signatures at Specified Iterations")
 
