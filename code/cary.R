@@ -33,8 +33,9 @@ other_carys <- lapply(cary_paths[-1], function(x) {
 carys_processed <- lapply(other_carys, function(bul) {
     cat("Computing processed bullet", basename(bul$path), "\n")
     
-    myx <- bulletCheckCrossCut(path = bul$path, bullet = bul)
-    if (is.na(myx)) myx <- 200
+    #myx <- bulletCheckCrossCut(path = bul$path, bullet = bul)
+    #if (is.na(myx)) myx <- 200
+    myx <- 200
     
     cary_cross <- get_crosscut(path = bul$path, bullet = bul)
     cary_groove <- get_grooves(cary_cross, smoothfactor = 35)
@@ -105,8 +106,8 @@ myprobs <- predict(rtrees, ccf, type = "prob")
 
 iteration <- as.numeric(gsub("../images/Cary Persistence/bullets/CWBLT([0-9]+)-1.x3p", "\\1", cary_paths))
 qplot(iteration[-1], myprobs[,2], geom = "point") + 
+    geom_smooth() +
     theme_bw() + 
-    geom_line() +
     xlab("Cary Persistence Iteration") +
     ylab("Predicted Probability of Match ") +
     geom_hline(yintercept = 0.5) +
