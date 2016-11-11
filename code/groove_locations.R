@@ -84,3 +84,29 @@ groove_locations <- lapply(as.data.frame(t(groove.means)), function(test) {
 
 groove.locs <- do.call(rbind, groove_locations)
 write.csv(groove.locs, file = "grooves.csv", row.names = FALSE)
+
+grooves <- read.csv("csvs/grooves.csv")
+crosscuts <- read.csv("csvs/crosscuts.csv")
+apply(crosscuts, 1, function(row) {
+    cat(row[1])
+    mybullet <- get_crosscut(row[1], x = as.numeric(row[2]))
+    
+    grooves_sub <- subset(grooves, bullet == row[1])
+    
+    myind <- which.min(abs(grooves_sub$x - as.numeric(row[2])))
+    
+    mygroove_left <- grooves_sub$groove_left_pred[myind]
+    mygroove_right <- grooves_sub$groove_right_pred[myind]
+    
+    print(
+        qplot(y, value, data = mybullet, geom = "line") +
+            theme_bw() +
+            geom_vline(xintercept = mygroove_left, colour = "red") +
+            geom_vline(xintercept = mygroove_right, colour = "red")
+    )
+    #my.loess <- fit_loess(mybullet, x)
+    #print(my.loess$resid)
+    value <- readline("Press Enter to Continue, or q to Quit")
+    if (value == "q") break;    
+})
+
