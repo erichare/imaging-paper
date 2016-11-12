@@ -21,25 +21,34 @@ all_bullets <- lapply(as.character(ccs$path), function(x) {
 
 grooves <- read.csv("csvs/grooves.csv")
 
-knowns <- all_bullets[1:120]
-unknowns <- all_bullets[121:210]
-bullets_processed <- lapply(all_bullets, function(bul) {
+# Br1 Bullet 2-3.x3p
+# Br6 Bullet 2-1.x3p
+# Br9 Bullet 2-4.x3p
+# Ukn Bullet B-2.x3p
+# Ukn Bullet Q-4.x3p
+# Ukn Bullet Y-1.x3p
+
+knowns <- all_bullets[c(1:8, 10:78, 80:117, 119:120)]
+unknowns <- all_bullets[c(121, 123:177, 179:198, 200:210)]
+bullets_processed <- lapply(c(knowns, unknowns), function(bul) {
     cat("Computing processed bullet", basename(bul$path), "\n")
     
     xval <- ccs$cc[which(ccs$path == bul$path)]
     
     grooves_sub <- filter(grooves, bullet == bul$path)
     
-    left <- grooves_sub$groove_left[which.min(abs(xval - grooves_sub$x))]
-    right <- grooves_sub$groove_right[which.min(abs(xval - grooves_sub$x))]
+    left <- grooves_sub$groove_left_pred[which.min(abs(xval - grooves_sub$x))]
+    right <- grooves_sub$groove_right_pred[which.min(abs(xval - grooves_sub$x))]
     
     processBullets(bullet = bul, name = bul$path, x = grooves_sub$x[which.min(abs(xval - grooves_sub$x))], grooves = c(left, right))
 })
-names(bullets_processed) <- as.character(ccs$path)
+names(bullets_processed) <- as.character(ccs$path[c(1:8, 10:78, 80:117, 119:120, 121, 123:177, 179:198, 200:210)])
 
-bullets_smoothed <- bullets_processed %>% bind_rows %>% bulletSmooth
+bullets_smoothed <- bullets_processed %>% 
+    bind_rows %>%
+    bulletSmooth
 
-for (span in c(5, 10, 15, 20, 25)) {
+for (span in c(25)) {
     dataStr <- sprintf("data/data-%d-25", span) # using crosscuts-25.csv
     
     if (!file.exists(dataStr)) dir.create(dataStr)
