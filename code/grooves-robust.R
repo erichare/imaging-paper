@@ -33,6 +33,8 @@ res$grooves <- res$data %>% purrr::map(
 grooves2 <- res %>% unnest()
 write.csv(grooves2, file.choose(), row.names=FALSE)
 
+
+grooves2 %>% ggplot(aes(x = groove_left, y = groove_left_pred)) + geom_point()
 ####################
 # some visualizations
 
