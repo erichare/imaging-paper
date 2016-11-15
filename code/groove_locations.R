@@ -2,6 +2,7 @@ library(bulletr)
 library(dplyr)
 library(ggplot2)
 library(zoo)
+library(readr)
 
 datadir <- "images/Hamby (2009) Barrel/bullets"
 all_data <- file.path(datadir, dir(datadir))
@@ -27,10 +28,10 @@ groove_locations <- lapply(all_data, function(bul) {
 })
 
 groove.locs <- do.call(rbind, groove_locations)
-write.csv(groove.locs, file = "grooves.csv", row.names = FALSE)
+write.csv(groove.locs, file = "csvs/grooves.csv", row.names = FALSE)
 
-grooves <- read.csv("csvs/grooves.csv")
-crosscuts <- read.csv("csvs/crosscuts.csv")
+grooves <- read_csv("csvs/grooves.csv")
+crosscuts <- read_csv("csvs/crosscuts.csv")
 apply(crosscuts, 1, function(row) {
     cat(row[1])
     mybullet <- get_crosscut(row[1], x = as.numeric(row[2]))

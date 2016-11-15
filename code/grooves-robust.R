@@ -3,6 +3,7 @@ grooves <- readr::read_csv(file.choose())
 library(dplyr)
 library(ggplot2)
 library(MASS)
+library(tidyr)
 
 
 res <- grooves %>%  tidyr::nest(-bullet)
@@ -12,6 +13,8 @@ res$grooves <- res$data %>% purrr::map(
   .f = function(d) {
     groove_right_pred = d$groove_right
     groove_left_pred = d$groove_left
+    right_twist = NA
+    left_twist = NA
     
     d <- d %>% mutate(
       groove_right = replace(groove_right, groove_right == max(groove_right), NA),
@@ -20,13 +23,15 @@ res$grooves <- res$data %>% purrr::map(
     if (!all(is.na(d$groove_right))) {
       rr <- rlm(data=d, groove_right~x)
       groove_right_pred=predict(rr, d)
+      right_twist = rr$coefficients[2]
     }
     if (!all(is.na(d$groove_left))) {
       rl <- rlm(data=d, groove_left~x)
       groove_left_pred= predict(rl,d)
+      left_twist = rl$coefficients[2]
     }
     data.frame(groove_left_pred, groove_right_pred, 
-               right_twist=rr$coefficients[2], left_twist= rl$coefficients[2])
+               right_twist=right_twist, left_twist= left_twist)
   }
 )
 
