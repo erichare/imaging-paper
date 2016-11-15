@@ -1,5 +1,4 @@
-library(x3pr)
-library(x3prplus)
+library(bulletr)
 library(dplyr)
 library(ggplot2)
 library(gridExtra)
@@ -10,26 +9,21 @@ datadir <- "images/Hamby (2009) Barrel/bullets"
 # match unknown land using crosscuts
 ccs <- read.csv("csvs/crosscuts.csv")
 all_bullets <- lapply(as.character(ccs$path), function(x) {
-    transpose <- (length(grep(" ", x)) == 0)
-    
-    result <- read.x3pplus(x, transpose = transpose)
+    result <- read_x3p(x)
     result[[3]] <- x
     names(result)[3] <- "path"
         
     return(result)
 })
+names(all_bullets) <- ccs$path
 
 grooves <- read.csv("csvs/grooves.csv")
+toexclude <- ccs$path[is.na(ccs$cc)]
+all_bullets <- all_bullets[!(names(all_bullets) %in% toexclude)]
 
-# Br1 Bullet 2-3.x3p
-# Br6 Bullet 2-1.x3p
-# Br9 Bullet 2-4.x3p
-# Ukn Bullet B-2.x3p
-# Ukn Bullet Q-4.x3p
-# Ukn Bullet Y-1.x3p
+knowns <- all_bullets[grep("[Bb]r[0-9].*", names(all_bullets))]
+unknowns <- all_bullets[grep("Ukn*|br[A-Z].*", names(all_bullets))]
 
-knowns <- all_bullets[c(1:8, 10:78, 80:117, 119:120)]
-unknowns <- all_bullets[c(121, 123:177, 179:198, 200:210)]
 bullets_processed <- lapply(c(knowns, unknowns), function(bul) {
     cat("Computing processed bullet", basename(bul$path), "\n")
     
@@ -42,7 +36,7 @@ bullets_processed <- lapply(c(knowns, unknowns), function(bul) {
     
     processBullets(bullet = bul, name = bul$path, x = grooves_sub$x[which.min(abs(xval - grooves_sub$x))], grooves = c(left, right))
 })
-names(bullets_processed) <- as.character(ccs$path[c(1:8, 10:78, 80:117, 119:120, 121, 123:177, 179:198, 200:210)])
+names(bullets_processed) <- c(names(knowns), names(unknowns))
 
 bullets_smoothed <- bullets_processed %>% 
     bind_rows %>%

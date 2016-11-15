@@ -7,7 +7,7 @@ library(readr)
 datadir <- "images/Hamby (2009) Barrel/bullets"
 all_data <- file.path(datadir, dir(datadir))
 knowns <- all_data[grep("[Bb]r[0-9].*", all_data)]
-unknowns <-  all_data[grep("Ukn*|br[A-Z].*", all_data)]
+unknowns <- all_data[grep("Ukn*|br[A-Z].*", all_data)]
 
 groove_locations <- lapply(all_data, function(bul) {
     cat(bul, "\n")

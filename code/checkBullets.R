@@ -1,19 +1,17 @@
-library(x3pr)
-library(x3prplus)
+library(bulletr)
 library(dplyr)
 library(ggplot2)
 library(zoo)
 
 datadir <- "images/Hamby (2009) Barrel/bullets"
 all_data <- file.path(datadir, dir(datadir))
-knowns <- all_data[grep("[B]r[0-9].*", all_data)]
-unknowns <-  all_data[grep("Ukn*", all_data)]
+knowns <- all_data[grep("[Bb]r[0-9].*", all_data)]
+unknowns <- all_data[grep("Ukn*|br[A-Z].*", all_data)]
 
 if (!file.exists("csvs/crosscuts.csv")) {
 crosscuts <- sapply(c(knowns, unknowns), function(x) {
-    transpose <- (length(grep(" ", x)) == 0)
-  cat(x, "- transposing:", transpose)
-  crosscut <- bulletCheckCrossCut(x, xlimits = c(120, 400), distance = 20, transpose = transpose)
+  cat(x, " ")
+  crosscut <- bulletCheckCrossCut(x, xlimits = c(100, 400), distance = 25)
   cat(crosscut)
   cat("\n")
   crosscut
