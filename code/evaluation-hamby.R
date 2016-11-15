@@ -71,6 +71,10 @@ splits <- strsplit(as.character(CCFs$b2), split="/")
 CCFs$b2 <- sapply(splits, function(x) x[length(x)])
 CCFs$b2 <- gsub(".x3p","", CCFs$b2)
 
+# head(dplyr::select(CCFs, b1, b2, ccf) %>% arrange(desc(ccf)), n = 100)
+#ind1 <- intersect(grep("br", CCFs$b1), grep("br", CCFs$b2))
+#ind2 <- intersect(grep("Br|Ukn", CCFs$b1), grep("Br|Ukn", CCFs$b2))
+#CCFs <- CCFs[c(ind1, ind2),]
 
 matches <- read.csv("csvs/matches.csv", header=FALSE, stringsAsFactors = FALSE)
 matches$id <- 1:nrow(matches)
@@ -93,7 +97,7 @@ rp1 <- rpart(match~., CCFs[,includes])  # doesn't include cms at all !!!!
 prp(rp1, extra = 101)
 CCFs$pred <- predict(rp1)
 
-includes2 <- setdiff(includes, c("left_cms.per.y", "right_cms.per.y", "left_noncms.per.y", "right_noncms.per.y", "cms2.per.y"))
+includes2 <- setdiff(includes, c(".id", "left_cms.per.y", "right_cms.per.y", "left_noncms.per.y", "right_noncms.per.y", "cms2.per.y"))
 library(randomForest)
 set.seed(20160105)
 rtrees <- randomForest(factor(match)~., data=CCFs[,includes2], ntree=300)
