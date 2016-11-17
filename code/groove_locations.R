@@ -5,9 +5,8 @@ library(zoo)
 library(readr)
 
 datadir <- "images/Hamby (2009) Barrel/bullets"
-all_data <- file.path(datadir, dir(datadir))
-knowns <- all_data[grep("[Bb]r[0-9].*", all_data)]
-unknowns <- all_data[grep("Ukn*|br[A-Z].*", all_data)]
+datadir2 <- "images/Cary Persistence/bullets"
+all_data <- c(file.path(datadir, dir(datadir)), file.path(datadir2, dir(datadir2)))
 
 groove_locations <- lapply(all_data, function(bul) {
     cat(bul, "\n")
@@ -16,7 +15,7 @@ groove_locations <- lapply(all_data, function(bul) {
     all_grooves <- lapply(unique(fortified$x), function(x) {
             cat("Processing", x, "\n")
             cc <- get_crosscut(bullet = bullet, x = x)
-            result <- get_grooves(cc, smoothfactor = 25)
+            result <- get_grooves(cc, smoothfactor = 30)
             
         return(result$groove)
     })
