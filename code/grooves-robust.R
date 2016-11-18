@@ -21,14 +21,18 @@ res$grooves <- res$data %>% purrr::map(
       groove_left = replace(groove_left, groove_left == min(groove_left), NA)
     )
     if (!all(is.na(d$groove_right))) {
-      rr <- rlm(data=d, groove_right~x)
-      groove_right_pred=predict(rr, d)
-      right_twist = rr$coefficients[2]
+      rr <- try({rlm(data=d, groove_right~x)})
+      if (!inherits(rr, "try-error")) {
+          groove_right_pred=predict(rr, d)
+          right_twist = rr$coefficients[2]
+      }
     }
     if (!all(is.na(d$groove_left))) {
-      rl <- rlm(data=d, groove_left~x)
-      groove_left_pred= predict(rl,d)
-      left_twist = rl$coefficients[2]
+      rl <- try({rlm(data=d, groove_left~x)})
+      if (!inherits(rl, "try-error")) {
+          groove_left_pred= predict(rl,d)
+          left_twist = rl$coefficients[2]
+      }
     }
     data.frame(groove_left_pred, groove_right_pred, 
                right_twist=right_twist, left_twist= left_twist)
@@ -37,7 +41,6 @@ res$grooves <- res$data %>% purrr::map(
 
 grooves2 <- res %>% unnest()
 write.csv(grooves2, file.choose(), row.names=FALSE)
-
 
 grooves2 %>% ggplot(aes(x = groove_left, y = groove_left_pred)) + geom_point()
 ####################

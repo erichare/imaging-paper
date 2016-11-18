@@ -206,7 +206,7 @@ prp(rp1, extra = 101, fallen.leaves=TRUE)
 
 bstats <- NULL
 for (i in c(25)) {
-  dataStr <- sprintf("data-%d-25", i)
+  dataStr <- sprintf("data/data-%d-25", i)
   temp <- read.csv(file.path(dataStr, "bullet-stats.csv"))
   includes <- setdiff(names(temp), c("b1", "b2", "data", "resID", "id.x", "id.y"))
   temp$diffx <- with(temp, abs(x1-x2))
