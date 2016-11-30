@@ -345,55 +345,20 @@ Applying the loess fit to a range of different signatures (see Figure~\ref{fig:m
 In this section, we describe the algorithm for matching signatures first, and the impact of parameter choices in the subsections thereafter.
 
 \subsection{Algorithm}\label{sec:algorithm}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in 1:info\$num.pts.line: argument of length 0}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in 1:info\$num.pts.line: argument of length 0}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'subLOFx1' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in data.frame(subLOFx1): object 'subLOFx1' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'lofX' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'lofX' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in factor(lofX\$r05): object 'lofX' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in levels(lofX\$type) <- c("{}groove"{}, NA, "{}peak"{}): object 'lofX' not found}}\end{kframe}
-\end{knitrout}
 
 
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'lofX' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in matches\$allnas: object of type 'closure' is not subsettable}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in matches\$allnas: object of type 'closure' is not subsettable}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in UseMethod("{}group\_by\_"{}): no applicable method for 'group\_by\_' applied to an object of class "{}function"{}}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in subset.default(lines, lineid != 0): object 'lineid' not found}}\end{kframe}
-\end{knitrout}
 
 \begin{figure}[hbtp]
 \centering
     \begin{subfigure}[t]{\textwidth}\centering
 \caption{Loess smooth of signatures  at a height of $x = 100\mu m$ (span is 0.03).\label{fig:smooth}}{%
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=.65\textwidth]{figure/smooth-1} 
 
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'lofX' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in ggplot(data, aesthetics, environment = env): object 'lofX' not found}}\end{kframe}
 \end{knitrout}
     }
 \end{subfigure}
@@ -543,20 +508,9 @@ This poses both a caveat to matching attempts as well as an opportunity for qual
 \begin{figure}[hbtp]
   \centering
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\textwidth]{figure/crosscuts-vary-b31-1} 
 
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in 1:info\$num.pts.line: argument of length 0}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'lof' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in subset(lof, x \%in\% crosscuts[i:(i + 1)]): object 'lof' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in lapply(X = X, FUN = FUN, ...): object 'reslist' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in lapply(reslist, function(res) \{: object 'reslist' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in arrangeGrob(...): object 'lop' not found}}\end{kframe}
 \end{knitrout}
 \caption{\label{fig:crosscuts2}Signatures  for barrel 3, bullet~1-1 extracted from varying heights. Initially, the match between signatures taken at heights 25$\mu m$ apart is affected strongly by some break off at the bottom of the bullet. At a  level of $175\mu m$ the bullet's signature stabilizes. For this land, matches should not be attempted at lower heights. }
 \end{figure}
@@ -625,11 +579,7 @@ It might not be reasonable to assume that we can match all lands, but the idea i
 
 {\ttfamily\noindent\color{warningcolor}{\#\# Warning in readChar(con, 5L, useBytes = TRUE): cannot open compressed file 'data/data-25-25/unkn9.RData', probable reason 'No such file or directory'}}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in readChar(con, 5L, useBytes = TRUE): cannot open the connection}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in lapply(X = X, FUN = FUN, ...): object 'reslist' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'cmsdist' not found}}\end{kframe}
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in readChar(con, 5L, useBytes = TRUE): cannot open the connection}}\end{kframe}
 \includegraphics[width=.5\textwidth]{figure/cms-1} 
 
 \end{knitrout}
@@ -637,14 +587,9 @@ It might not be reasonable to assume that we can match all lands, but the idea i
 \begin{subfigure}[b]{.49\textwidth}\centering
 \caption{Overlaid signatures of C-3 and the land with the top matching CMS.}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\textwidth]{figure/top-1} 
 
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'reslist' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'res' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in fortify(data): object 'res' not found}}\end{kframe}
 \end{knitrout}
 \end{subfigure}
 \begin{subfigure}[b]{.49\textwidth}\centering
@@ -653,11 +598,9 @@ It might not be reasonable to assume that we can match all lands, but the idea i
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'reslist' not found}}
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in reslist[[which(cmsdist == 14)]]: attempt to select less than one element in get1index}}\end{kframe}
+\includegraphics[width=\textwidth]{figure/top2-1} 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'res' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in fortify(data): object 'res' not found}}\end{kframe}
 \end{knitrout}
 \end{subfigure}
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works very well. Unfortunately the matches are not always that convincing.}
@@ -735,11 +678,9 @@ There are two things that should be noted at this point: the automated algorithm
 
 {\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in readChar(con, 5L, useBytes = TRUE): cannot open the connection}}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'reslist' not found}}
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in reslist[[106]]: subscript out of bounds}}\end{kframe}
+\includegraphics[width=.65\textwidth]{figure/strange-res-1} 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'res' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in fortify(data): object 'res' not found}}\end{kframe}
 \end{knitrout}
 \caption{\label{fig:mismatch}Known mismatch with a relatively large number of maximal consecutive matching striae (twelve) in the middle. The pattern in the middle does look surprisingly similar, however the outer ends of the signatures easily reveals this comparison as mismatch. }
 \end{figure}
