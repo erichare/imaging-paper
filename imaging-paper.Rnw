@@ -397,7 +397,7 @@ Applying the loess fit to a range of different signatures (see Figure~\ref{fig:m
 In this section, we describe the algorithm for matching signatures first, and the impact of parameter choices in the subsections thereafter.
 
 \subsection{Algorithm}\label{sec:algorithm}
-<<twolands100, cache=TRUE,  echo=FALSE>>=
+<<twolands100,  echo=FALSE>>=
 images <- file.path(datadir, dir(datadir))
 images <- images[grep(" ", images)]
 
@@ -439,7 +439,7 @@ lofY <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
 
 @
 
-<<twolands100match, cache=TRUE, echo=FALSE, dependson='twolands100'>>=
+<<twolands100match, echo=FALSE, dependson='twolands100'>>=
 matches <- lofX %>% group_by(y) %>% summarise(
   potential = (length(unique(type)) == 1),
   allnas = sum(is.na(type))/n(),
@@ -693,7 +693,7 @@ This poses both a caveat to matching attempts as well as an opportunity for qual
 
 \begin{figure}[hbtp]
   \centering
-<<crosscuts-vary-b31, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\textwidth', cache=TRUE, warning = FALSE>>=
+<<crosscuts-vary-b31, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\textwidth', warning = FALSE>>=
 paths <- file.path(datadir, dir(datadir))
 paths <- paths[grep("Br[0-9]", paths)]
 

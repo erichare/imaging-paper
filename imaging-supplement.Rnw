@@ -225,7 +225,7 @@ qplot(data=subset(dbr111, x == 100), y, value-ypred,  #colour=factor(x),
 
 A single cylinder as a fit is unlikely to be a particularly good fit, because there seem to be quite massive deformations in the vertical direction. Even when we fit a circle at each distinct height of the bullet, as in Figure~\ref{fig:circlefits}, this does not address all of these issues. While the wider circumference at the base of the bullet can be resolved by individual circular fits, the systematic residual structure in Figure~\ref{fig:residualb} stays the same.
 
-<<bullet1, echo=FALSE, cache=TRUE>>=
+<<bullet1, echo=FALSE>>=
 db1 <- NULL
 for (i in 1:6) {
   bname <- sprintf(file.path(datadir, "Br1 Bullet 1-%d.x3p"), i)
@@ -239,7 +239,7 @@ db1 <- db1 %>% group_by(part, x) %>% do (
   )
 @
 
-<<bullet2, echo=FALSE, cache=TRUE>>=
+<<bullet2, echo=FALSE>>=
 db2 <- NULL
 for (i in 1:6) {
   bname <- sprintf(file.path(datadir, "Br1 Bullet 2-%d.x3p"), i)
@@ -279,7 +279,7 @@ Figure~\ref{fig:crosscuts} shows a sequence of signatures for bullet 1-5 (barrel
 Given that we have to expect some variation in nominally the same height values due to (manual) alignments in microscopes, we should take height values into account in the automatic matching routine by evaluating matches at several heights. 
 \begin{figure}[hbtp]
   \centering
-<<crosscuts-vary, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\textwidth', cache=TRUE, warning = FALSE>>=
+<<crosscuts-vary, echo=FALSE, fig.width = 12, fig.height = 7, out.width = '\\textwidth', warning = FALSE>>=
 
 scrubPath <- function(x) {
   splits <- strsplit(as.character(x), split="/")
@@ -496,7 +496,7 @@ ballstats$forest <- predict(rtrees3, newdata=ballstats, type="prob")[,2]
 
 Figures~\ref{fig:aligned} and~\ref{fig:aligned-second} give an overview of all the signatures from bullet lands in the Hamby study aligned by barrel. Three to five bullets were fired from each barrel. The figures give us both some insight into how well signatures match and how consistent individual characteristics are impregnated on bullets fired from each of the barrels. Signatures for some lands match remarkably well -- such as land 5 from barrel 1, whereas all lands from barrel 5 show some variability both in the location and depths of peaks and valleys.
 
-<<aligned, echo=FALSE, warning=FALSE,  cache=TRUE>>=
+<<aligned, echo=FALSE, warning=FALSE>>=
 matches <- read.csv("csvs/matches-old.csv", header = FALSE)
 matches$barrel <- rep(1:10, each=6)
 matches$id <- 1:nrow(matches)
