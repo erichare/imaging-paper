@@ -204,7 +204,7 @@ Throughout this paper, we work with images from the James Hamby Consecutively Ri
 
 
 
-Each fired bullet is provided in the form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". In the Hamby data, typical length (groove-to-groove) of a land is about 2005.9 micrometers or 2.01 millimeters. For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
+Each fired bullet is provided in the form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". In the Hamby data, typical length (groove-to-groove) of a land is about 1998.28 micrometers or 2 millimeters. For notational simplicity, we refer to a particular land of some bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
 
 The typical number and width of striation markings on bullets varies significantly depending on the gun barrel. For instance, a Smith and Wesson barrel with a land-width of 2.4 millimeters contained an average 60 striae, with an average width of about 0.08 millimeters~\citep{chu:2011}.
 
@@ -345,20 +345,55 @@ Applying the loess fit to a range of different signatures (see Figure~\ref{fig:m
 In this section, we describe the algorithm for matching signatures first, and the impact of parameter choices in the subsections thereafter.
 
 \subsection{Algorithm}\label{sec:algorithm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in 1:info\$num.pts.line: argument of length 0}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in 1:info\$num.pts.line: argument of length 0}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'subLOFx1' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in data.frame(subLOFx1): object 'subLOFx1' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in factor(lofX\$r05): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in levels(lofX\$type) <- c("{}groove"{}, NA, "{}peak"{}): object 'lofX' not found}}\end{kframe}
+\end{knitrout}
 
 
 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
 
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in matches\$allnas: object of type 'closure' is not subsettable}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in matches\$allnas: object of type 'closure' is not subsettable}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in UseMethod("{}group\_by\_"{}): no applicable method for 'group\_by\_' applied to an object of class "{}function"{}}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in subset.default(lines, lineid != 0): object 'lineid' not found}}\end{kframe}
+\end{knitrout}
 
 \begin{figure}[hbtp]
 \centering
     \begin{subfigure}[t]{\textwidth}\centering
 \caption{Loess smooth of signatures  at a height of $x = 100\mu m$ (span is 0.03).\label{fig:smooth}}{%
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=.65\textwidth]{figure/smooth-1} 
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in ggplot(data, aesthetics, environment = env): object 'lofX' not found}}\end{kframe}
 \end{knitrout}
     }
 \end{subfigure}
@@ -508,9 +543,20 @@ This poses both a caveat to matching attempts as well as an opportunity for qual
 \begin{figure}[hbtp]
   \centering
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\textwidth]{figure/crosscuts-vary-b31-1} 
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in 1:info\$num.pts.line: argument of length 0}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'lof' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in subset(lof, x \%in\% crosscuts[i:(i + 1)]): object 'lof' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in lapply(X = X, FUN = FUN, ...): object 'reslist' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in lapply(reslist, function(res) \{: object 'reslist' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in arrangeGrob(...): object 'lop' not found}}\end{kframe}
 \end{knitrout}
 \caption{\label{fig:crosscuts2}Signatures  for barrel 3, bullet~1-1 extracted from varying heights. Initially, the match between signatures taken at heights 25$\mu m$ apart is affected strongly by some break off at the bottom of the bullet. At a  level of $175\mu m$ the bullet's signature stabilizes. For this land, matches should not be attempted at lower heights. }
 \end{figure}
@@ -544,7 +590,7 @@ As a first step, we automatically assess the quality of each of the lands by  ch
 \begin{subfigure}[t]{.49\textwidth}\centering
 \caption{Barrel 6 Bullet 2-1}
 %' <<echo=FALSE>>=
-%' b1 <- read.x3p(file.path(datadir, "Br6 Bullet 2-1.x3p"))
+%' b1 <- read_x3p(file.path(datadir, "Br6 Bullet 2-1.x3p"))
 %' image(b1$surface.matrix)
 %' @
 \includegraphics[width=\textwidth]{images/br6-2-1-grey.png}
@@ -574,7 +620,16 @@ It might not be reasonable to assume that we can match all lands, but the idea i
 \begin{subfigure}[t]{\textwidth}\centering
 \caption{Maximal number of CMS between unknown bullet C-3 and all of the other 118 considered (known) lands. For two lands the number of maximum CMS is high. }
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in readChar(con, 5L, useBytes = TRUE): cannot open compressed file 'data/data-25-25/unkn9.RData', probable reason 'No such file or directory'}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in readChar(con, 5L, useBytes = TRUE): cannot open the connection}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in lapply(X = X, FUN = FUN, ...): object 'reslist' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'cmsdist' not found}}\end{kframe}
 \includegraphics[width=.5\textwidth]{figure/cms-1} 
 
 \end{knitrout}
@@ -582,17 +637,27 @@ It might not be reasonable to assume that we can match all lands, but the idea i
 \begin{subfigure}[b]{.49\textwidth}\centering
 \caption{Overlaid signatures of C-3 and the land with the top matching CMS.}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\textwidth]{figure/top-1} 
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'reslist' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'res' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in fortify(data): object 'res' not found}}\end{kframe}
 \end{knitrout}
 \end{subfigure}
 \begin{subfigure}[b]{.49\textwidth}\centering
 \caption{Top 2 match with C-3 based on CMS.}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\textwidth]{figure/top2-1} 
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'reslist' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'res' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in fortify(data): object 'res' not found}}\end{kframe}
 \end{knitrout}
 \end{subfigure}
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works very well. Unfortunately the matches are not always that convincing.}
@@ -665,9 +730,16 @@ There are two things that should be noted at this point: the automated algorithm
 \begin{figure}[hbtp]
   \centering
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=.65\textwidth]{figure/strange-res-1} 
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in readChar(con, 5L, useBytes = TRUE): cannot open the connection}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'reslist' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'res' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in fortify(data): object 'res' not found}}\end{kframe}
 \end{knitrout}
 \caption{\label{fig:mismatch}Known mismatch with a relatively large number of maximal consecutive matching striae (twelve) in the middle. The pattern in the middle does look surprisingly similar, however the outer ends of the signatures easily reveals this comparison as mismatch. }
 \end{figure}

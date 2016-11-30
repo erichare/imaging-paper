@@ -111,8 +111,7 @@ library(RColorBrewer)
 library(ggplot2)
 library(scales)
 library(dplyr)
-library(x3pr)
-library(x3prplus)
+library(bulletr)
 library(grid)
 library(gridExtra)
 library(zoo)
@@ -226,7 +225,7 @@ Figure \ref{fig:fixedX} shows a plot of the side profile of a bullet land. It ca
 
 cols = c(alpha("grey60", alpha=0.6), alpha("black", 0.5))
 
-br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
+br111 <- read_x3p(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 dbr111 <- fortify_x3p(br111)
 
 pars <- data.frame(getCircle(dbr111$y, dbr111$value))
@@ -403,8 +402,8 @@ images <- file.path(datadir, dir(datadir))
 images <- images[grep(" ", images)]
 
 #lof <- processBullets(paths = images[c(5,7)], x = 100)
-subLOFx1 <- processBullets(read.x3p(images[5]), name = images[5], x = 100)
-subLOFx2 <- processBullets(read.x3p(images[7]), name = images[7], x = 100)
+subLOFx1 <- processBullets(read_x3p(images[5]), name = images[5], x = 100)
+subLOFx2 <- processBullets(read_x3p(images[7]), name = images[7], x = 100)
 #subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
 #subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
 subLOFx1$y <- subLOFx1$y + 23*1.5625 # working now!!!
@@ -427,8 +426,8 @@ images <- file.path(datadir, dir(datadir))
 images <- images[grep(" ", images)]
 
 #lof <- processBullets(paths = images[c(5,7)], x = 100)
-subLOFx1 <- processBullets(read.x3p(images[5]), name = images[5], x = 100)
-subLOFx2 <- processBullets(read.x3p(images[7]), name = images[7], x = 100)
+subLOFx1 <- processBullets(read_x3p(images[5]), name = images[5], x = 100)
+subLOFx2 <- processBullets(read_x3p(images[7]), name = images[7], x = 100)
 #subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
 #subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
 subLOFx1$y <- subLOFx1$y - min(subLOFx1$y)
@@ -500,8 +499,8 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
 #images <- file.path(datadir, dir(datadir))
   #lof <- processBullets(paths = images[c(5,7)], x = 100)
 
-  subLOFx1 <- processBullets(read.x3p(images[5]), name = images[5], x = 100)
-  subLOFx2 <- processBullets(read.x3p(images[7]), name = images[7], x = 100)
+  subLOFx1 <- processBullets(read_x3p(images[5]), name = images[5], x = 100)
+  subLOFx2 <- processBullets(read_x3p(images[7]), name = images[7], x = 100)
   lof <- rbind(subLOFx1, subLOFx2)
 
   lof <- bulletSmooth(lof)
@@ -699,7 +698,7 @@ paths <- file.path(datadir, dir(datadir))
 paths <- paths[grep("Br[0-9]", paths)]
 
 crosscuts <- seq(100,250, by=25)
-lof <- processBullets(read.x3p(paths[37]), name = paths[37], x = crosscuts)
+lof <- processBullets(read_x3p(paths[37]), name = paths[37], x = crosscuts)
 lof$bullet <- paste(scrubPath(lof$bullet), lof$x)
 
 reslist <- lapply(1:length(crosscuts[-1]), function(i) {
@@ -798,7 +797,7 @@ As a first step, we automatically assess the quality of each of the lands by  ch
 \begin{subfigure}[t]{.49\textwidth}\centering
 \caption{Barrel 6 Bullet 2-1}
 %' <<echo=FALSE>>=
-%' b1 <- read.x3p(file.path(datadir, "Br6 Bullet 2-1.x3p"))
+%' b1 <- read_x3p(file.path(datadir, "Br6 Bullet 2-1.x3p"))
 %' image(b1$surface.matrix)
 %' @
 \includegraphics[width=\textwidth]{images/br6-2-1-grey.png}

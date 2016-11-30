@@ -88,8 +88,7 @@ library(RColorBrewer)
 library(ggplot2)
 library(scales)
 library(dplyr)
-library(x3pr)
-library(x3prplus)
+library(bulletr)
 library(grid)
 library(gridExtra)
 library(zoo)
@@ -110,7 +109,7 @@ Figure~\ref{fig:fixedX} shows the  profile of surface measurements of bullet 1-5
 
 cols = c(alpha("grey60", alpha=0.6), alpha("black", 0.5))
 
-br111 <- read.x3p(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
+br111 <- read_x3p(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 dbr111 <- fortify_x3p(br111)
 
 pars <- data.frame(getCircle(dbr111$y, dbr111$value))
@@ -230,7 +229,7 @@ A single cylinder as a fit is unlikely to be a particularly good fit, because th
 db1 <- NULL
 for (i in 1:6) {
   bname <- sprintf(file.path(datadir, "Br1 Bullet 1-%d.x3p"), i)
-  dbi <- fortify_x3p(read.x3p(bname))
+  dbi <- fortify_x3p(read_x3p(bname))
   dbi$part <- i
   db1 <- rbind(db1, dbi)
 }
@@ -244,7 +243,7 @@ db1 <- db1 %>% group_by(part, x) %>% do (
 db2 <- NULL
 for (i in 1:6) {
   bname <- sprintf(file.path(datadir, "Br1 Bullet 2-%d.x3p"), i)
-  dbi <- fortify_x3p(read.x3p(bname))
+  dbi <- fortify_x3p(read_x3p(bname))
   dbi$part <- i
   db2 <- rbind(db2, dbi)
 }
@@ -292,7 +291,7 @@ paths <- file.path(datadir, dir(datadir))
 paths <- paths[grep(" ", paths)]
 
 crosscuts <- seq(100, 400, by = 50)
-lof <- processBullets(read.x3p(paths[5]), name = scrubPath(paths[5]), x = crosscuts)
+lof <- processBullets(read_x3p(paths[5]), name = scrubPath(paths[5]), x = crosscuts)
 lof$bullet <- paste(lof$bullet, lof$x)
 
 reslist <- lapply(crosscuts[-1], function(cc) {
@@ -343,8 +342,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]], lop[[4]], lop[[5]], lop[[6]],
 \newpage
 \section{Signature intensities}\label{supp:bulletbottom}
 <<setup-signatures, echo=FALSE, message=FALSE>>=
-library(x3pr)
-library(x3prplus)
+library(bulletr)
 library(dplyr)
 library(ggplot2)
 library(gridExtra)
@@ -360,7 +358,7 @@ unknowndatadir <- "images/Hamby (2009) Barrel/bullets"
 ccs <- read.csv("csvs/crosscuts-25-old.csv")
 ccs$path <- file.path(knowndatadir, basename(as.character(ccs$path)))
 all_bullets <- lapply(as.character(ccs$path), function(x) {
-  result <- read.x3p(x)
+  result <- read_x3p(x)
   result[[3]] <- x
   names(result)[3] <- "path"
   
@@ -400,7 +398,7 @@ Figure~\ref{fig:overview} shows an overview of the signatures at different heigh
 <<one-bulletland-sd, echo=FALSE, dependson='setup-signatures', fig.height=5, fig.width=8, out.width='0.7\\textwidth', warning=FALSE>>=
 k <- 1
 x <- as.character(ccs$path)[k]
-land <- read.x3p(x)
+land <- read_x3p(x)
 land[[3]] <- x
 names(land)[3] <- "path"
 
