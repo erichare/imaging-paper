@@ -401,9 +401,12 @@ In this section, we describe the algorithm for matching signatures first, and th
 images <- file.path(datadir, dir(datadir))
 images <- images[grep(" ", images)]
 
+im1 <- "images/Hamby (2009) Barrel/bullets/Br1 Bullet 1-5.x3p"
+im2 <- "images/Hamby (2009) Barrel/bullets/Br1 Bullet 2-1.x3p"
+
 #lof <- processBullets(paths = images[c(5,7)], x = 100)
-subLOFx1 <- processBullets(read_x3p(images[5]), name = images[5], x = 100)
-subLOFx2 <- processBullets(read_x3p(images[7]), name = images[7], x = 100)
+subLOFx1 <- processBullets(read_x3p(im1), name = im1, x = 100)
+subLOFx2 <- processBullets(read_x3p(im2), name = im2, x = 100)
 #subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
 #subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
 subLOFx1$y <- subLOFx1$y + 23*1.5625 # working now!!!
@@ -426,8 +429,8 @@ images <- file.path(datadir, dir(datadir))
 images <- images[grep(" ", images)]
 
 #lof <- processBullets(paths = images[c(5,7)], x = 100)
-subLOFx1 <- processBullets(read_x3p(images[5]), name = images[5], x = 100)
-subLOFx2 <- processBullets(read_x3p(images[7]), name = images[7], x = 100)
+subLOFx1 <- processBullets(read_x3p(im1), name = im1, x = 100)
+subLOFx2 <- processBullets(read_x3p(im2), name = im2, x = 100)
 #subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
 #subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
 subLOFx1$y <- subLOFx1$y - min(subLOFx1$y)
@@ -499,8 +502,8 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
 #images <- file.path(datadir, dir(datadir))
   #lof <- processBullets(paths = images[c(5,7)], x = 100)
 
-  subLOFx1 <- processBullets(read_x3p(images[5]), name = images[5], x = 100)
-  subLOFx2 <- processBullets(read_x3p(images[7]), name = images[7], x = 100)
+  subLOFx1 <- processBullets(read_x3p(im1), name = im1, x = 100)
+  subLOFx2 <- processBullets(read_x3p(im2), name = im2, x = 100)
   lof <- rbind(subLOFx1, subLOFx2)
 
   lof <- bulletSmooth(lof)

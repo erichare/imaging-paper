@@ -290,8 +290,10 @@ scrubPath <- function(x) {
 paths <- file.path(datadir, dir(datadir))
 paths <- paths[grep(" ", paths)]
 
+im1 <- "images/Hamby (2009) Barrel/bullets/Br1 Bullet 1-5.x3p"
+
 crosscuts <- seq(100, 400, by = 50)
-lof <- processBullets(read_x3p(paths[5]), name = scrubPath(paths[5]), x = crosscuts)
+lof <- processBullets(read_x3p(im1), name = scrubPath(im1), x = crosscuts)
 lof$bullet <- paste(lof$bullet, lof$x)
 
 reslist <- lapply(crosscuts[-1], function(cc) {
