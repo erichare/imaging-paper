@@ -35,7 +35,7 @@ alldata_fort <- lapply(all_bullets, fortify_x3p)
 test <- alldata_fort %>% bind_rows
 bullid <- rep(metadata_df$id, times = metadata_df$num_profiles * metadata_df$num_obs_per_profile)
 
-bullet_df <- cbind(id = 1:nrow(test), bullet_id = bullid, test)
+bullet_df <- cbind(id = 1:nrow(test), land_id = bullid, test)
 
 
 qry <- sqlCreateTable(con, "data", head(bullet_df, n = 1000), row.names = FALSE)
@@ -56,9 +56,16 @@ for (i in seq(1, nrow(bullet_df) - 100000, by = 100000)) {
 dbWriteTable(con, "metadata_derived", mydf, row.names = FALSE)
 # dbWriteTable(con, "data", bullet_df, row.names = FALSE)
 
+
+run_table <- data.frame(id = 1, crosscut_xmin = 100, crosscut_xmax = 400, crosscut_distance = 25, crosscut_span = 0.03, crosscut_minccf = .9,
+                        groove_smoothfactor = 30, groove_minquant = .1, groove_maxquant = .9,
+                        bullet_span = 0.03, bullet_residmin = -5, bullet_residmax = 5,
+                        peaks_smoothfactor = 25)
+dbWriteTable(con, "runs", run_table, row.names = FALSE)
+
 metadata <- dbReadTable(con, "metadata_bullet")
-metadata_derived <- dbReadTable(con, "metadata_bullet_derived")
-mygrooves <- dbReadTable(con, "metadata_profile_derived")
+metadata_derived <- dbReadTable(con, "metadata_derived")
+mygrooves <- dbReadTable(con, "profiles")
 
 myjoin <- left_join(metadata, metadata_derived)
 myjoin2 <- left_join(mygrooves, metadata)
@@ -89,8 +96,22 @@ bullets_smoothed <- bullets_processed[to_include] %>%
     left_join(select(metadata, id, name), by = c("bullet" = "name")) %>%
     ungroup() %>%
     select(-bullet) %>%
-    select(bullet_id = id, everything()) %>%
+    select(land_id = id, everything()) %>%
     mutate(id = 1:nrow(.)) %>%
     select(id, everything())
 
 dbWriteTable(con, "signatures", bullets_smoothed, row.names = FALSE)
+
+test <- combn(unique(signatures$profile_id), 2)
+
+result <- apply(test, 2, function(x) {
+    cat(x, "\n")
+    br1 <- filter(signatures, profile_id == x[1]) %>%
+        select(-id) %>%
+        rename(bullet = profile_id)
+    br2 <- filter(signatures, profile_id == x[2]) %>%
+        select(-id) %>%
+        rename(bullet = profile_id)
+    
+    bulletGetMaxCMS(br1, br2, column = "l30", span=span)
+})

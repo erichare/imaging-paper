@@ -40,7 +40,7 @@ names(bullets_processed) <- c(names(knowns), names(unknowns))
 
 bullets_smoothed <- bullets_processed %>% 
     bind_rows %>%
-    bulletSmooth
+    bulletSmooth()
 
 for (span in c(25)) {
     dataStr <- sprintf("data/data-%d-25", span) # using crosscuts-25.csv

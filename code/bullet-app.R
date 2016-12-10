@@ -14,7 +14,7 @@ host <- "127.0.0.1"
 con <- dbConnect(MySQL(), user = user, password = password,
                  dbname = dbname, host = host)
 
-bullet_choices <- dbGetQuery(con, "SELECT id,name FROM metadata_bullet")
+bullet_choices <- dbGetQuery(con, "SELECT id,name FROM metadata")
 bullet_choices_vec <- bullet_choices$id
 names(bullet_choices_vec) <- bullet_choices$name
 
@@ -40,20 +40,20 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
     bullet_metadata <- reactive({
-        result <- dbGetQuery(con, paste0("SELECT * FROM metadata_bullet WHERE id = ", input$land, ""))
+        result <- dbGetQuery(con, paste0("SELECT * FROM metadata WHERE id = ", input$land, ""))
         updateNumericInput(session, "crosscut", max = result$num_profiles[1])
         
         return(result)
     })
     
     observe({
-        result <- dbGetQuery(con, paste0("SELECT * FROM metadata_bullet_derived WHERE id = ", input$land, ""))
-        updateNumericInput(session, "crosscut", value = result$crosscut[1])
+        result <- dbGetQuery(con, paste0("SELECT * FROM metadata_derived WHERE id = ", input$land, ""))
+        updateNumericInput(session, "crosscut", value = result$ideal_crosscut[1])
     })
     
     bullet_metadata_derived <- reactive({
-        result <- dbGetQuery(con, paste0("SELECT * FROM metadata_bullet_derived WHERE id = ", input$land, ""))
-        #updateNumericInput(session, "crosscut", value = result$crosscut[1])
+        result <- dbGetQuery(con, paste0("SELECT * FROM metadata_derived WHERE id = ", input$land, ""))
+        #updateNumericInput(session, "crosscut", value = result$ideal_crosscut[1])
         
         return(result)
     })
@@ -65,7 +65,7 @@ server <- function(input, output, session) {
     mybullet <- reactive({
         mymet <- as.list(bullet_metadata())[-(1:2)]
         
-        bullet_data <- dbGetQuery(con, paste0("SELECT * FROM data WHERE bullet_id = ", input$land, ""))
+        bullet_data <- dbGetQuery(con, paste0("SELECT * FROM data WHERE land_id = ", input$land, ""))
         attr(bullet_data, "info") <- mymet
         
         unfort <- unfortify_x3p(bullet_data)
@@ -74,13 +74,13 @@ server <- function(input, output, session) {
     })
     
     myprofile <- reactive({
-        bullet_prof <- dbGetQuery(con, paste0("SELECT * FROM data WHERE bullet_id = ", input$land, " AND x = ", input$crosscut))
+        bullet_prof <- dbGetQuery(con, paste0("SELECT * FROM data WHERE land_id = ", input$land, " AND x = ", input$crosscut))
 
         return(bullet_prof %>% select(x, y, value))
     })
     
     profile_metadata_derived <- reactive({
-        result <- dbGetQuery(con, paste0("SELECT * FROM metadata_profile_derived WHERE bullet_id = ", input$land, " AND x = ", input$crosscut))
+        result <- dbGetQuery(con, paste0("SELECT * FROM profiles WHERE land_id = ", input$land, " AND x = ", input$crosscut))
         #updateNumericInput(session, "crosscut", value = result$crosscut[1])
         
         return(result)
@@ -99,7 +99,7 @@ server <- function(input, output, session) {
     })
     
     mysignature <- reactive({
-        bullet_sig <- dbGetQuery(con, paste0("SELECT * FROM signatures WHERE bullet_id = ", input$land))
+        bullet_sig <- dbGetQuery(con, paste0("SELECT * FROM signatures WHERE profile_id = ", profile_metadata_derived()$id[1]))
         
         return(bullet_sig)
     })
