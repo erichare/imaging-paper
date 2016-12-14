@@ -1,14 +1,20 @@
 library(RMySQL)
 library(MASS)
+library(xgboost)
 library(dplyr)
 library(tidyr)
 library(bulletr)
 library(parallel)
 library(randomForest)
 
+## TODO
+# DONE Determine amount of overlap and use as feature in analysis
+# DONE RF/SVM/Logistic/xgboost
+# DONE put password in filename thats hidden
+
 dbname <- "bullets"
 user <- "buser"
-password <- "TihrcdTJn#7pWv"
+password <- readLines("code/buser_pass.txt")
 host <- "127.0.0.1"
 
 con <- dbConnect(MySQL(), user = user, password = password,
@@ -201,34 +207,23 @@ relevant_ids1 <- filter(bullets_smoothed, run_id == compares$run1_id)
 relevant_ids2 <- filter(bullets_smoothed, run_id == compares$run2_id)
 all_combinations <- combn(unique(c(relevant_ids1$profile_id, relevant_ids2$profile_id)), 2, simplify = FALSE)
 
-peaks_smoothfactor <- runs$peaks_smoothfactor[1]
+peaks_smoothfactor <- compares$peaks_smoothfactor[1]
 clusterExport(cl, varlist = c("peaks_smoothfactor", "bullets_smoothed"), envir = environment())
 all_comparisons <- parLapply(cl, all_combinations, function(x) {
+    library(dplyr)
+    library(bulletr)
+    
     cat(x, "\n")
-    br1 <- filter(bullets_smoothed, profile_id == x[1], run_id == compares$run1_id) %>%
+    
+    br1 <- filter(bullets_smoothed, profile_id == x[1]) %>%
         select(-id) %>%
         rename(bullet = profile_id)
-    br2 <- filter(bullets_smoothed, profile_id == x[2], run_id == compares$run2_id) %>%
+    br2 <- filter(bullets_smoothed, profile_id == x[2]) %>%
         select(-id) %>%
         rename(bullet = profile_id)
     
     bulletGetMaxCMS(br1, br2, column = "l30", span = peaks_smoothfactor)
 })
-
-compare_derived_metadata <- lapply(all_comparisons, function(x) {
-    c(x[1], x[2], x[3])
-}) %>% bind_rows
-alignment <- cbind(id = 1:nrow(compare_derived_metadata), 
-                                  compare_id = compares$id[1],
-                                  profile1_id = sapply(all_combinations, `[`, 1),
-                                  profile2_id = sapply(all_combinations, `[`, 2),
-                                  compare_derived_metadata)
-mylens <- sapply(all_comparisons, function(x) { nrow(x[[4]]) })
-peaks <- lapply(all_comparisons, `[[`, 4) %>% bind_rows
-peaks <- cbind(id = 1:nrow(peaks), alignment_id = rep(alignment$id, mylens), peaks)
-
-# dbWriteTable(con, "alignment", alignment, row.names = FALSE, append = TRUE)
-# dbWriteTable(con, "peaks", peaks, row.names = FALSE, append = TRUE)
 
 ###
 ### Random Forest
@@ -259,31 +254,22 @@ ccf_temp <- parLapply(cl, all_comparisons, function(res) {
                sd.D = distr.sd,
                b1=b12[1], b2=b12[2],
                signature.length = signature.length,
-               #num.matches = sum(res$lines$match),
+               overlap = length(ys),
                matches.per.y = sum(res$lines$match) / signature.length,
-               #num.mismatches = sum(!res$lines$match), 
                mismatches.per.y = sum(!res$lines$match) / signature.length,
-               #cms = res$maxCMS,
                cms.per.y = res$maxCMS / signature.length,
-               #cms2 = bulletr::maxCMS(subset(res$lines, type==1 | is.na(type))$match),
                cms2.per.y = bulletr::maxCMS(subset(res$lines, type==1 | is.na(type))$match) / signature.length,
-               #non_cms = bulletr::maxCMS(!res$lines$match),
                non_cms.per.y = bulletr::maxCMS(!res$lines$match) / signature.length,
-               #left_cms = max(knm[1] - km[1], 0),
                left_cms.per.y = max(knm[1] - km[1], 0) / signature.length,
-               #right_cms = max(km[length(km)] - knm[length(knm)],0),
                right_cms.per.y = max(km[length(km)] - knm[length(knm)],0) / signature.length,
-               #left_noncms = max(km[1] - knm[1], 0),
                left_noncms.per.y = max(km[1] - knm[1], 0) / signature.length,
-               #right_noncms = max(knm[length(knm)]-km[length(km)],0),
                right_noncms.per.y = max(knm[length(knm)]-km[length(km)],0) / signature.length,
-               #sumpeaks = sum(abs(res$lines$heights[res$lines$match]))
                sumpeaks.per.y = sum(abs(res$lines$heights[res$lines$match])) / signature.length
     )
 })
 ccf <- as.data.frame(do.call(rbind, ccf_temp)) %>%
     mutate(id = 1:nrow(.), compare_id = compares$id[1]) %>%
-    select(id, compare_id, profile1_id = b1, profile2_id = b2, ccf, lag, D, sd.D, signature.length,
+    select(id, compare_id, profile1_id = b1, profile2_id = b2, ccf, lag, D, sd.D, signature.length, overlap,
            matches.per.y, mismatches.per.y, cms.per.y, non_cms.per.y, sumpeaks.per.y)
 dbWriteTable(con, "ccf", ccf, row.names = FALSE, append = TRUE)
 
@@ -301,3 +287,12 @@ rtrees <- randomForest(factor(match) ~ ., data = CCFs[,includes], ntree = 300)
 CCFs$forest <- predict(rtrees, type = "prob")[,2]
 imp <- data.frame(importance(rtrees))
 xtabs(~(forest > 0.5) + match, data = CCFs)
+
+###
+### XGBoost
+###
+mymat <- as.matrix(CCFs[,setdiff(includes, "match")])
+mylab <-  as.numeric(CCFs$match)
+xgmodel <- xgboost(data = mymat, label = mylab, nrounds = 2)
+CCFs$xgboost <- predict(xgmodel, mymat)
+xtabs(~(xgboost > 0.5) + match, data = CCFs)
