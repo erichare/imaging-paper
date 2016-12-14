@@ -11,6 +11,8 @@ library(randomForest)
 # DONE Determine amount of overlap and use as feature in analysis
 # DONE RF/SVM/Logistic/xgboost
 # DONE put password in filename thats hidden
+# Look into Caret / model validation
+# Do a mean signature (window around ideal crosscut)
 
 dbname <- "bullets"
 user <- "buser"
@@ -254,17 +256,17 @@ ccf_temp <- parLapply(cl, all_comparisons, function(res) {
                sd.D = distr.sd,
                b1=b12[1], b2=b12[2],
                signature.length = signature.length,
-               overlap = length(ys),
-               matches.per.y = sum(res$lines$match) / signature.length,
-               mismatches.per.y = sum(!res$lines$match) / signature.length,
-               cms.per.y = res$maxCMS / signature.length,
-               cms2.per.y = bulletr::maxCMS(subset(res$lines, type==1 | is.na(type))$match) / signature.length,
-               non_cms.per.y = bulletr::maxCMS(!res$lines$match) / signature.length,
-               left_cms.per.y = max(knm[1] - km[1], 0) / signature.length,
-               right_cms.per.y = max(km[length(km)] - knm[length(knm)],0) / signature.length,
-               left_noncms.per.y = max(km[1] - knm[1], 0) / signature.length,
-               right_noncms.per.y = max(knm[length(knm)]-km[length(km)],0) / signature.length,
-               sumpeaks.per.y = sum(abs(res$lines$heights[res$lines$match])) / signature.length
+               overlap = length(ys) / signature.length,
+               matches.per.y = sum(res$lines$match) / length(ys),
+               mismatches.per.y = sum(!res$lines$match) / length(ys),
+               cms.per.y = res$maxCMS / length(ys),
+               cms2.per.y = bulletr::maxCMS(subset(res$lines, type==1 | is.na(type))$match) / length(ys),
+               non_cms.per.y = bulletr::maxCMS(!res$lines$match) / length(ys),
+               left_cms.per.y = max(knm[1] - km[1], 0) / length(ys),
+               right_cms.per.y = max(km[length(km)] - knm[length(knm)],0) / length(ys),
+               left_noncms.per.y = max(km[1] - knm[1], 0) / length(ys),
+               right_noncms.per.y = max(knm[length(knm)]-km[length(km)],0) / length(ys),
+               sumpeaks.per.y = sum(abs(res$lines$heights[res$lines$match])) / length(ys)
     )
 })
 ccf <- as.data.frame(do.call(rbind, ccf_temp)) %>%
@@ -281,9 +283,9 @@ CCFs <- ccf %>%
     mutate(match = as.logical(match)) %>%
     select(-land_id.x, -land_id.y)
 
-includes <- setdiff(names(CCFs), c("id", "compare_id", "profile1_id", "profile2_id"))
+includes <- setdiff(names(CCFs), c("id", "compare_id", "profile1_id", "profile2_id", "overlap"))
 
-rtrees <- randomForest(factor(match) ~ ., data = CCFs[,includes], ntree = 300)
+rtrees <- randomForest(factor(match) ~ ., data = CCFs[,includes], ntree = 300, classwt = c(2, 1))
 CCFs$forest <- predict(rtrees, type = "prob")[,2]
 imp <- data.frame(importance(rtrees))
 xtabs(~(forest > 0.5) + match, data = CCFs)
@@ -291,8 +293,8 @@ xtabs(~(forest > 0.5) + match, data = CCFs)
 ###
 ### XGBoost
 ###
-mymat <- as.matrix(CCFs[,setdiff(includes, "match")])
+mymat <- as.matrix(CCFs[,setdiff(includes, c("match", "forest"))])
 mylab <-  as.numeric(CCFs$match)
-xgmodel <- xgboost(data = mymat, label = mylab, nrounds = 2)
+xgmodel <- xgboost(data = mymat, label = mylab, nrounds = 100)
 CCFs$xgboost <- predict(xgmodel, mymat)
 xtabs(~(xgboost > 0.5) + match, data = CCFs)
