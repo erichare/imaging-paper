@@ -16,8 +16,8 @@ library(randomForest)
 
 dbname <- "bullets"
 user <- "buser"
-password <- readLines("code/buser_pass.txt")
-host <- "127.0.0.1"
+password <- readLines("buser_pass.txt")
+host <- "50.81.214.252"
 
 con <- dbConnect(MySQL(), user = user, password = password,
                  dbname = dbname, host = host)
@@ -203,6 +203,7 @@ dbWriteTable(con, "signatures", bullets_smoothed, row.names = FALSE, append = TR
 ###
 ### Comparisons
 ###
+bullets_smoothed <- dbReadTable(con, "signatures")
 compares <- dbReadTable(con, "compares")
 
 relevant_ids1 <- filter(bullets_smoothed, run_id == compares$run1_id)
@@ -218,10 +219,10 @@ all_comparisons <- parLapply(cl, all_combinations, function(x) {
     cat(x, "\n")
     
     br1 <- filter(bullets_smoothed, profile_id == x[1]) %>%
-        select(-id) %>%
+        select(-signature_id, -run_id) %>%
         rename(bullet = profile_id)
     br2 <- filter(bullets_smoothed, profile_id == x[2]) %>%
-        select(-id) %>%
+        select(-signature_id, -run_id) %>%
         rename(bullet = profile_id)
     
     bulletGetMaxCMS(br1, br2, column = "l30", span = peaks_smoothfactor)
@@ -251,44 +252,87 @@ ccf_temp <- parLapply(cl, all_comparisons, function(res) {
     # feature extraction
     signature.length <- min(nrow(subLOFx1), nrow(subLOFx2))
     
-    c(ccf=res$ccf, lag=res$lag, 
+    c(ccf=res$ccf, lag=res$lag / 1000, 
                D=distr.dist, 
-               sd.D = distr.sd,
+               sd_D = distr.sd,
                b1=b12[1], b2=b12[2],
-               signature.length = signature.length,
-               overlap = length(ys) / signature.length,
-               matches.per.y = sum(res$lines$match) / length(ys),
-               mismatches.per.y = sum(!res$lines$match) / length(ys),
-               cms.per.y = res$maxCMS / length(ys),
-               cms2.per.y = bulletr::maxCMS(subset(res$lines, type==1 | is.na(type))$match) / length(ys),
-               non_cms.per.y = bulletr::maxCMS(!res$lines$match) / length(ys),
-               left_cms.per.y = max(knm[1] - km[1], 0) / length(ys),
-               right_cms.per.y = max(km[length(km)] - knm[length(knm)],0) / length(ys),
-               left_noncms.per.y = max(km[1] - knm[1], 0) / length(ys),
-               right_noncms.per.y = max(knm[length(knm)]-km[length(km)],0) / length(ys),
-               sumpeaks.per.y = sum(abs(res$lines$heights[res$lines$match])) / length(ys)
+               signature_length = signature.length * 1.5625 / 1000,
+               overlap = length(ys) * 1.5625 / signature.length / 1000,
+               matches = sum(res$lines$match) * (1000 / 1.5625) / length(ys),
+               mismatches = sum(!res$lines$match) * (1000 / 1.5625) / length(ys),
+               cms = res$maxCMS * (1000 / 1.5625) / length(ys),
+               cms2 = bulletr::maxCMS(subset(res$lines, type==1 | is.na(type))$match) * (1000 / 1.5625) / length(ys),
+               non_cms = bulletr::maxCMS(!res$lines$match) * (1000 / 1.5625) / length(ys),
+               left_cms = max(knm[1] - km[1], 0) * (1000 / 1.5625) / length(ys),
+               right_cms = max(km[length(km)] - knm[length(knm)],0) * (1000 / 1.5625) / length(ys),
+               left_noncms = max(km[1] - knm[1], 0) * (1000 / 1.5625) / length(ys),
+               right_noncms = max(knm[length(knm)]-km[length(km)],0) * (1000 / 1.5625) / length(ys),
+               sumpeaks = sum(abs(res$lines$heights[res$lines$match])) * (1000 / 1.5625) / length(ys)
     )
 })
 ccf <- as.data.frame(do.call(rbind, ccf_temp)) %>%
-    mutate(id = 1:nrow(.), compare_id = compares$id[1]) %>%
-    select(id, compare_id, profile1_id = b1, profile2_id = b2, ccf, lag, D, sd.D, signature.length, overlap,
-           matches.per.y, mismatches.per.y, cms.per.y, non_cms.per.y, sumpeaks.per.y)
+    mutate(compare_id = compares$compare_id[1]) %>%
+    select(compare_id, profile1_id = b1, profile2_id = b2, ccf, lag, D, sd_D, signature_length, overlap,
+           matches, mismatches, cms, non_cms, sumpeaks)
 dbWriteTable(con, "ccf", ccf, row.names = FALSE, append = TRUE)
 
 my_matches <- dbReadTable(con, "matches")
-CCFs <- ccf %>%
-    left_join(select(profiles, id, land_id), by = c("profile1_id" = "id")) %>%
-    left_join(select(profiles, id, land_id), by = c("profile2_id" = "id")) %>%
+CCFs_withlands <- ccf %>%
+    left_join(select(profiles, profile_id, land_id), by = c("profile1_id" = "profile_id")) %>%
+    left_join(select(profiles, profile_id, land_id), by = c("profile2_id" = "profile_id")) %>%
     left_join(my_matches, by = c("land_id.x" = "land1_id", "land_id.y" = "land2_id")) %>%
-    mutate(match = as.logical(match)) %>%
+    mutate(match = as.logical(match)) 
+
+CCFs <- CCFs_withlands %>%
     select(-land_id.x, -land_id.y)
 
-includes <- setdiff(names(CCFs), c("id", "compare_id", "profile1_id", "profile2_id", "overlap"))
+includes <- setdiff(names(CCFs), c("compare_id", "profile1_id", "profile2_id"))
 
-rtrees <- randomForest(factor(match) ~ ., data = CCFs[,includes], ntree = 300, classwt = c(2, 1))
+rtrees <- randomForest(factor(match) ~ ., data = CCFs[,includes], ntree = 300)
 CCFs$forest <- predict(rtrees, type = "prob")[,2]
 imp <- data.frame(importance(rtrees))
 xtabs(~(forest > 0.5) + match, data = CCFs)
+
+CCFs_set252 <- CCFs_withlands %>%
+    left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
+    left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
+    filter(study.x == "Hamby252", study.y == "Hamby252")
+
+rtrees_252 <- randomForest(factor(match) ~ ., data = CCFs_set252[,includes], ntree = 300)
+CCFs_set252$forest <- predict(rtrees_252, type = "prob")[,2]
+imp <- data.frame(importance(rtrees_252))
+xtabs(~(forest > 0.5) + match, data = CCFs_set252)
+
+CCFs_set44 <- CCFs_withlands %>%
+    left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
+    left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
+    filter(study.x == "Hamby44", study.y == "Hamby44")
+
+rtrees_44 <- randomForest(factor(match) ~ ., data = CCFs_set44[,includes], ntree = 300)
+CCFs_set44$forest <- predict(rtrees_44, type = "prob")[,2]
+imp <- data.frame(importance(rtrees_44))
+xtabs(~(forest > 0.5) + match, data = CCFs_set44)
+
+CCFs_cary <- CCFs_withlands %>%
+    left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
+    left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
+    filter(study.x == "Cary", study.y == "Cary")
+
+CCFs_cary$forest <- predict(rtrees, newdata = CCFs_cary, type = "prob")[,2]
+imp <- data.frame(importance(rtrees))
+xtabs(~(forest > 0.5) + match, data = CCFs_cary)
+
+CCFs_set252 %>%
+    filter(!match) %>%
+    arrange(desc(forest)) %>%
+    head
+
+CCFs_set252 %>%
+    filter(match) %>%
+    arrange(forest) %>%
+    head
+
+qplot(y, l30, data = filter(bullets_smoothed, profile_id %in% c(33984, 48069)), colour = factor(profile_id), geom = "line")
 
 ###
 ### XGBoost
