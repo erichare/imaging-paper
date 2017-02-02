@@ -38,6 +38,7 @@
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
 \newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
 
 \usepackage{framed}
 \makeatletter
@@ -70,7 +71,7 @@
 \RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
 
 % provide arXiv number if available:
-\arxiv{arXiv:0000.0000}
+\arxiv{arXiv:1601.05788}
 
 % put your definitions there:
 \startlocaldefs
@@ -124,7 +125,7 @@ Figure~\ref{fig:fixedX} shows the  profile of surface measurements of bullet 1-5
   \centering
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=0.5\textwidth]{fixedX-1} 
+\includegraphics[width=0.5\textwidth]{figure/fixedX-1} 
 
 \end{knitrout}
 \caption{\label{fig:fixedX}Side profile of the surface measurements (in $\mu m$) of a bullet land at a fixed height of $x$. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
@@ -199,7 +200,7 @@ The residuals are dominated, as expected, by the grooves, which show up as large
 \caption{\label{fig:residuala}Residual structure at height $x = 1.5625\mu m$ (bottom of the bullet).}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\textwidth]{residual2-1} 
+\includegraphics[width=\textwidth]{figure/residual2-1} 
 
 \end{knitrout}
 \end{subfigure}    
@@ -207,7 +208,7 @@ The residuals are dominated, as expected, by the grooves, which show up as large
 \caption{\label{fig:residualb} Residual structure at height $x = 100.00\mu m$}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\textwidth]{residual-1} 
+\includegraphics[width=\textwidth]{figure/residual-1} 
 
 \end{knitrout}
 \end{subfigure}
@@ -224,7 +225,7 @@ A single cylinder as a fit is unlikely to be a particularly good fit, because th
   \centering
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\textwidth]{circlefits-1} 
+\includegraphics[width=\textwidth]{figure/circlefits-1} 
 
 \end{knitrout}
 \caption{Circular fit to the signature of each land of bullet 2, with signature from bullet 1-5 overlaid.\label{fig:circlefits} The signature of bullet 1-5 matches best with bullet 2-1.}
@@ -239,7 +240,7 @@ Given that we have to expect some variation in nominally the same height values 
   \centering
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\textwidth]{crosscuts-vary-1} 
+\includegraphics[width=\textwidth]{figure/crosscuts-vary-1} 
 
 \end{knitrout}
 \caption{\label{fig:crosscuts}Overview of the variations in the signatures at different heights. The signature extracted at $x = 100\mu m$ is compared to signatures at every 50$\mu m$. With every step away from the original height, the number of differences between the signatures increases; the number of maximum CMS decreases from initially 22 to  four or fewer at a height of $x = 300\mu m$ and above. }
@@ -253,7 +254,7 @@ Figure~\ref{fig:overview} shows an overview of the signatures at different heigh
 \begin{figure}[hbtp]
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=0.7\textwidth]{one-bulletland-sd-1} 
+\includegraphics[width=0.7\textwidth]{figure/one-bulletland-sd-1} 
 
 \end{knitrout}
 \caption{\label{fig:overview}Signatures of the same bullet at different heights.  With increasing height, peaks and valleys are less pronounced, resulting in a smaller standard deviation.}
@@ -263,8 +264,11 @@ At larger heights  individual characteristics become less distinctive, making tr
 \begin{figure}[hbtp]
 \centering
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=.7\textwidth]{crosscuts-sd-1} 
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# `geom\_smooth()` using method = 'gam'}}\end{kframe}
+\includegraphics[width=.7\textwidth]{figure/crosscuts-sd-1} 
 
 \end{knitrout}
 \caption{\label{fig:sds}Standard deviation reduces as height increase.}
@@ -278,7 +282,7 @@ One way to expand the use of the James Hamby study is to not only match all of t
 
 When we predict the new 10,731 comparisons using the random forest based on the previously considered 10,384 known-unknown comparisons, we encounter 18 false negatives and 9 false positives, corresponding to an actual false error rate of 0.19 and a false positive rate of 0.00085, which is close to the random forest's estimated OOB error rates of 0.226744 and 0.000098. 
 
-However, if we use all of the available comparisons to fit another random forest of 300 trees, the de-facto error rates for false positives and false negatives are again at 0. The estimated OOB error rates are 0.00024 for the false positive rate and 0.22180 for the false negative rate. The false positive rate is therefore virtually unchanged, while we see a slight improvement in the false negative rate for an overall OOB error rate of 0.3\%, i.e.\ an increase to twice the number of comparisons leads to a decrease of 25\% of the estimated error rate. This is yet another argument in favor of a larger database for training algorithms.
+However, if we use all of the available comparisons to fit another random forest of 300 trees, the defacto error rates for false positives and false negatives are again at 0. The estimated OOB error rates are 0.00024 for the false positive rate and 0.22180 for the false negative rate. The false positive rate is therefore virtually unchanged, while we see a slight improvement in the false negative rate for an overall OOB error rate of 0.3\%, i.e.\ an increase to twice the number of comparisons leads to a decrease of 25\% of the estimated error rate. This is yet another argument in favor of a larger database for training algorithms.
 
 %\hh{XXX maybe use log of D to remove the left boundary XXX}
 
@@ -297,7 +301,7 @@ Figures~\ref{fig:aligned} and~\ref{fig:aligned-second} give an overview of all t
 \begin{figure}[hbtp]
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=7.5in]{aligned-first-1} 
+\includegraphics[width=7.5in]{figure/aligned-first-1} 
 
 \end{knitrout}
 \caption{\label{fig:aligned}Overview of aligned signatures for all bullet lands for  barrels 1 to 5 of the Hamby study. }
@@ -306,7 +310,7 @@ Figures~\ref{fig:aligned} and~\ref{fig:aligned-second} give an overview of all t
 \begin{figure}[hbtp]
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=7.5in]{aligned-second-1} 
+\includegraphics[width=7.5in]{figure/aligned-second-1} 
 
 \end{knitrout}
 \caption{\label{fig:aligned-second}Overview of aligned signatures for all bullet lands for  barrels 5 to 10 of the Hamby study. }
@@ -321,11 +325,11 @@ Table~\ref{tab:importance} shows the results for feature importance for both of 
 \begin{table}[tbhp]
 \caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Averages (and standard deviations) for known matches (KM) and known non-matches (KNM) are shown in the last four columns.}
 \centering
-% latex table generated in R 3.2.3 by xtable 1.8-0 package
-% Wed Jan 20 18:06:55 2016
+% latex table generated in R 3.3.2 by xtable 1.8-2 package
+% Thu Jan 12 11:56:56 2017
 \begin{tabular}{clrrrd{3.2}rd{3.2}}
   \hline
- & Variable & Importance 1 & Importance 2 & KM & (sd) & KNM & (sd) \\ 
+ & Variable & Importance 1 & Importance 2 & KM & (sd) & KNM & (sd).1 \\ 
   \hline
 1 & ccf & 87.0 & 134.6 & 0.7 & ( 0.25) & 0.3 & (   0.10) \\ 
   2 & \#matches & 81.9 & 128.3 & 15.5 & ( 7.91) & 4.3 & (   2.51) \\ 
@@ -333,11 +337,7 @@ Table~\ref{tab:importance} shows the results for feature importance for both of 
   4 & \#non-matches & 35.9 & 62.7 & 9.8 & ( 5.80) & 18.8 & (   3.92) \\ 
   5 & D & 26.1 & 45.7 & 1.9 & ( 2.32) & 3.3 & (   1.94) \\ 
   6 & CMS & 15.9 & 25.1 & 8.5 & ( 5.65) & 2.3 & (   1.40) \\ 
-  7 & sd.D & 15.0 & 23.6 & 2.9 & ( 0.80) & 2.9 & (   0.70) \\ 
-  8 & CNMS & 13.3 & 20.9 & 4.8 & ( 4.10) & 10.2 & (   4.35) \\ 
-  9 & lag & 9.9 & 17.0 & 200.8 & (48.29) & 204.0 & ( 113.63) \\ 
-  10 & x2 & 4.2 & 6.2 & 166.5 & (81.07) & 163.5 & (  72.30) \\ 
-  11 & x1 & 3.9 & 6.1 & 175.0 & (71.59) & 175.0 & (  71.40) \\ 
+  7 & CNMS & 13.3 & 20.9 & 4.8 & ( 4.10) & 10.2 & (   4.35) \\ 
    \hline
 \end{tabular}
 

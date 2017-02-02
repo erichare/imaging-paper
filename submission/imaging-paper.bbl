@@ -1,7 +1,19 @@
-\begin{thebibliography}{29}
+\begin{thebibliography}{35}
 % BibTex style file: imsart-nameyear.bst, 2013-01-28
 % Default style options (sort=1,type=nameyear).
 % Used options (sort=1,type=nameyear).
+
+\bibitem[\protect\citeauthoryear{Bachrach}{2002}]{bachrach:2002}
+\begin{barticle}[author]
+\bauthor{\bsnm{Bachrach},~\bfnm{B.}\binits{B.}}
+(\byear{2002}).
+\btitle{{{D}evelopment of a 3{D}-based automated firearms evidence comparison
+  system}}.
+\bjournal{J. Forensic Sci.}
+\bvolume{47}
+\bpages{1253--1264}.
+\end{barticle}
+\endbibitem
 
 \bibitem[\protect\citeauthoryear{Biasotti}{1959}]{biasotti:1959}
 \begin{barticle}[author]
@@ -38,6 +50,40 @@
 \end{bbook}
 \endbibitem
 
+\bibitem[\protect\citeauthoryear{Chu et~al.}{2010}]{chu:2010}
+\begin{barticle}[author]
+\bauthor{\bsnm{Chu},~\bfnm{W.}\binits{W.}},
+  \bauthor{\bsnm{Song},~\bfnm{J.}\binits{J.}},
+  \bauthor{\bsnm{Vorburger},~\bfnm{T.}\binits{T.}},
+  \bauthor{\bsnm{Yen},~\bfnm{J.}\binits{J.}},
+  \bauthor{\bsnm{Ballou},~\bfnm{S.}\binits{S.}} \AND
+  \bauthor{\bsnm{Bachrach},~\bfnm{B.}\binits{B.}}
+(\byear{2010}).
+\btitle{{{P}ilot study of automated bullet signature identification based on
+  topography measurements and correlations}}.
+\bjournal{J. Forensic Sci.}
+\bvolume{55}
+\bpages{341--347}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Chu et~al.}{2011}]{chu:2011}
+\begin{barticle}[author]
+\bauthor{\bsnm{Chu},~\bfnm{W.}\binits{W.}},
+  \bauthor{\bsnm{Song},~\bfnm{J.}\binits{J.}},
+  \bauthor{\bsnm{Vorburger},~\bfnm{T.}\binits{T.}},
+  \bauthor{\bsnm{Thompson},~\bfnm{R.}\binits{R.}} \AND
+  \bauthor{\bsnm{Silver},~\bfnm{R.}\binits{R.}}
+(\byear{2011}).
+\btitle{{{S}electing Valid Correlation Areas for Automated Bullet
+  Identification System Based on Striation Detection}}.
+\bjournal{Journal of Research of the National Institute of Standards and
+  Technology}
+\bvolume{116}
+\bpages{649}.
+\end{barticle}
+\endbibitem
+
 \bibitem[\protect\citeauthoryear{Chu et~al.}{2013}]{thompson:2013}
 \begin{barticle}[author]
 \bauthor{\bsnm{Chu},~\bfnm{Wei}\binits{W.}},
@@ -49,7 +95,7 @@
   matching striae (CMS) criteria}.
 \bjournal{Forensic Science International}
 \bvolume{231}
-\bpages{137 - 141}.
+\bpages{137--141}.
 \bdoi{http://dx.doi.org/10.1016/j.forsciint.2013.04.025}
 \end{barticle}
 \endbibitem
@@ -153,13 +199,13 @@
 \end{barticle}
 \endbibitem
 
-\bibitem[\protect\citeauthoryear{Hofmann and Hare}{2015}]{x3prplus}
+\bibitem[\protect\citeauthoryear{Hofmann and Hare}{2016}]{bulletr}
 \begin{bmanual}[author]
 \bauthor{\bsnm{Hofmann},~\bfnm{Heike}\binits{H.}} \AND
   \bauthor{\bsnm{Hare},~\bfnm{Eric}\binits{E.}}
-(\byear{2015}).
-\btitle{x3prplus: Simple Models for x3d surface topology}
-\bnote{{R} package version 0.0.1}.
+(\byear{2016}).
+\btitle{bulletr: Algorithms for Matching Bullet Lands}
+\bnote{R package version 0.1}.
 \end{bmanual}
 \endbibitem
 
@@ -174,31 +220,6 @@
 \end{barticle}
 \endbibitem
 
-\bibitem[\protect\citeauthoryear{Jain and Cao}{2015}]{jain:2015}
-\begin{bincollection}[author]
-\bauthor{\bsnm{Jain},~\bfnm{Anil~K.}\binits{A.~K.}} \AND
-  \bauthor{\bsnm{Cao},~\bfnm{K.}\binits{K.}}
-(\byear{2015}).
-\btitle{Fingerprint Image Analysis: Role of Orientation Patch and Ridge
-  Structure Dictionaries}.
-In \bbooktitle{Geometry Driven Statistics}
-(\beditor{\bfnm{I.~L.}\binits{I.~L.}~\bsnm{Dryden}} \AND
-  \beditor{\bfnm{J.~T.}\binits{J.~T.}~\bsnm{Kent}}, eds.)
-\bpublisher{John Wiley and Sons}, \baddress{New York}.
-\end{bincollection}
-\endbibitem
-
-\bibitem[\protect\citeauthoryear{Jain and Ross}{2015}]{jain:2015:tphil}
-\begin{barticle}[author]
-\bauthor{\bsnm{Jain},~\bfnm{A.~K.}\binits{A.~K.}} \AND
-  \bauthor{\bsnm{Ross},~\bfnm{A.}\binits{A.}}
-(\byear{2015}).
-\btitle{Bridging the Gap: From Biometrics to Forensics}.
-\bjournal{Philosophical Transactions of The Royal Society B}
-\bvolume{370}.
-\end{barticle}
-\endbibitem
-
 \bibitem[\protect\citeauthoryear{Liaw and Wiener}{2002}]{randomForest}
 \begin{barticle}[author]
 \bauthor{\bsnm{Liaw},~\bfnm{Andy}\binits{A.}} \AND
@@ -208,6 +229,19 @@ In \bbooktitle{Geometry Driven Statistics}
 \bjournal{R News}
 \bvolume{2}
 \bpages{18-22}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Lock and Morris}{2013}]{lock2013significance}
+\begin{barticle}[author]
+\bauthor{\bsnm{Lock},~\bfnm{Amy~B}\binits{A.~B.}} \AND
+  \bauthor{\bsnm{Morris},~\bfnm{Max~D}\binits{M.~D.}}
+(\byear{2013}).
+\btitle{Significance of angle in the statistical comparison of forensic tool
+  marks}.
+\bjournal{Technometrics}
+\bvolume{55}
+\bpages{548--561}.
 \end{barticle}
 \endbibitem
 
@@ -284,6 +318,41 @@ In \bbooktitle{Geometry Driven Statistics}
 \end{barticle}
 \endbibitem
 
+\bibitem[\protect\citeauthoryear{{OpenFMC}}{2014}]{x3pr}
+\begin{bmanual}[author]
+\bauthor{\bsnm{{OpenFMC}}}
+(\byear{2014}).
+\btitle{x3pr: Read/Write functionality for X3P surface metrology format}
+\bnote{R package version 1.0}.
+\end{bmanual}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Petraco and Chan}{2012}]{petraco:2012}
+\begin{bbook}[author]
+\bauthor{\bsnm{Petraco},~\bfnm{Nicholas}\binits{N.}} \AND
+  \bauthor{\bsnm{Chan},~\bfnm{Helen}\binits{H.}}
+(\byear{2012}).
+\btitle{Application of Machine Learning to Toolmarks: Statistically Based
+  Methods for Impression Pattern Comparisons}.
+\bpublisher{Bibliographisches Institut AG}, \baddress{Mannheim, W. Germany,
+  Germany}.
+\end{bbook}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Riva and Champod}{2014}]{riva:2014}
+\begin{barticle}[author]
+\bauthor{\bsnm{Riva},~\bfnm{Fabiano}\binits{F.}} \AND
+  \bauthor{\bsnm{Champod},~\bfnm{Christophe}\binits{C.}}
+(\byear{2014}).
+\btitle{Automatic Comparison and Evaluation of Impressions Left by a Firearm on
+  Fired Cartridge Cases}.
+\bjournal{Journal of Forensic Sciences}
+\bvolume{59}
+\bpages{637--647}.
+\bdoi{10.1111/1556-4029.12382}
+\end{barticle}
+\endbibitem
+
 \bibitem[\protect\citeauthoryear{Roberge and Beauchamp}{2006}]{roberge:2006}
 \begin{barticle}[author]
 \bauthor{\bsnm{Roberge},~\bfnm{D.}\binits{D.}} \AND
@@ -297,10 +366,10 @@ In \bbooktitle{Geometry Driven Statistics}
 \end{barticle}
 \endbibitem
 
-\bibitem[\protect\citeauthoryear{{R Core Team}}{2015}]{R}
+\bibitem[\protect\citeauthoryear{{R Core Team}}{2016}]{R}
 \begin{bmanual}[author]
 \bauthor{\bsnm{{R Core Team}}}
-(\byear{2015}).
+(\byear{2016}).
 \btitle{R: A Language and Environment for Statistical Computing}
 \bpublisher{R Foundation for Statistical Computing},
 \baddress{Vienna, Austria}.
@@ -325,6 +394,26 @@ In \bbooktitle{Geometry Driven Statistics}
 \btitle{Exploratory Data Analysis.}
 \bpublisher{Addison-Wesley}.
 \end{bbook}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Vorburger et~al.}{2011}]{vorburger:2011}
+\begin{barticle}[author]
+\bauthor{\bsnm{Vorburger},~\bfnm{T.~V.}\binits{T.~V.}},
+  \bauthor{\bsnm{Song},~\bfnm{J.~F.}\binits{J.~F.}},
+  \bauthor{\bsnm{Chu},~\bfnm{W.}\binits{W.}},
+  \bauthor{\bsnm{Ma},~\bfnm{L.}\binits{L.}},
+  \bauthor{\bsnm{Bui},~\bfnm{S.~H.}\binits{S.~H.}},
+  \bauthor{\bsnm{Zheng},~\bfnm{A.}\binits{A.}} \AND
+  \bauthor{\bsnm{Renegar},~\bfnm{T.~B.}\binits{T.~B.}}
+(\byear{2011}).
+\btitle{Applications of cross-correlation functions}.
+\bjournal{Wear}
+\bvolume{271}
+\bpages{529--533}.
+\bnote{The 12th International Conference on Metrology and Properties of
+  Engineering Surfaces}.
+\bdoi{http://dx.doi.org/10.1016/j.wear.2010.03.030}
+\end{barticle}
 \endbibitem
 
 \bibitem[\protect\citeauthoryear{Wickham}{2009}]{ggplot2}
