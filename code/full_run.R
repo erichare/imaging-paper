@@ -6,6 +6,7 @@ library(tidyr)
 library(bulletr)
 library(parallel)
 library(randomForest)
+library(ggplot2)
 
 ## TODO
 # DONE Determine amount of overlap and use as feature in analysis
@@ -332,7 +333,7 @@ CCFs_set252 %>%
     arrange(forest) %>%
     head
 
-qplot(y, l30, data = filter(bullets_smoothed, profile_id %in% c(33984, 48069)), colour = factor(profile_id), geom = "line")
+qplot(y, l30, data = filter(bullets_smoothed, profile_id %in% c(78869, 206742)), colour = factor(profile_id), geom = "line")
 
 ###
 ### XGBoost
