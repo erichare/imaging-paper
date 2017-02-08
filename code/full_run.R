@@ -7,6 +7,7 @@ library(bulletr)
 library(parallel)
 library(randomForest)
 library(ggplot2)
+library(stringr)
 
 ## TODO
 # DONE Determine amount of overlap and use as feature in analysis
@@ -23,7 +24,7 @@ host <- "50.81.214.252"
 con <- dbConnect(MySQL(), user = user, password = password,
                  dbname = dbname, host = host)
 
-runs <- dbReadTable(con, "runs")
+runs <- dbReadTable(con, "runs") %>% filter(run_id == max(run_id))
 
 ###
 ### Parallel Infrastructure
@@ -32,10 +33,39 @@ no_cores <- detectCores()
 cl <- makeCluster(no_cores, outfile = "", renice = 0)
 
 ###
+### File Name Back Transform
+###
+get_filename <- function(study, barrel, bullet, land) {
+    if (study == "Hamby44") {
+        return(file.path("images", "Hamby (2009) Barrel", "bullets", 
+                         paste0("br", barrel, "_", bullet, "_land", land, ".x3p")))
+    } else if (study == "Hamby252") {
+        if (barrel %in% LETTERS) {
+            return(file.path("images", "Hamby (2009) Barrel", "bullets", 
+                             paste0("Ukn Bullet ", barrel, "-", land, ".x3p")))
+        } else {
+            return(file.path("images", "Hamby (2009) Barrel", "bullets", 
+                            paste0("Br", barrel, " Bullet ", bullet, "-", land, ".x3p")))
+        }
+    } else if (study == "Cary") {
+        return(file.path("images", "Cary Persistence", "bullets", 
+                         paste0("CWBLT", str_pad(bullet, 4, pad = "0"), "-1.x3p")))
+    } else {
+        return("Not Found")
+    }
+}
+
+###
 ### Bullet Loading
 ###
 all_bullets_metadata <- dbReadTable(con, "metadata")
-all_bullets <- parLapply(cl, all_bullets_metadata$name, function(x) {
+all_bullets_filenames <- character(nrow(all_bullets_metadata))
+for (i in 1:nrow(all_bullets_metadata)) {
+    x <- all_bullets_metadata[i,]
+    all_bullets_filenames[i] <- get_filename(x[2], x[3], x[4], x[5])
+}
+all_bullets_metadata$name <- all_bullets_filenames
+all_bullets <- parLapply(cl, all_bullets_filenames, function(x) {
     library(bulletr)
     
     result <- read_x3p(x)
@@ -50,6 +80,7 @@ all_bullets <- parLapply(cl, all_bullets_metadata$name, function(x) {
 crosscut_xmin <- runs$crosscut_xmin[1]
 crosscut_xmax <- runs$crosscut_xmax[1]
 crosscut_distance <- runs$crosscut_distance[1]
+crosscut_window <- runs$crosscut_window[1]
 
 clusterExport(cl, varlist = c("crosscut_xmin", "crosscut_xmax", "crosscut_distance"), envir = environment())
 crosscuts <- parLapply(cl, all_bullets, function(x) {
@@ -165,18 +196,18 @@ dbWriteTable(con, "profiles", profiles, row.names = FALSE, append = TRUE)
 ###
 ### Signatures
 ###
-new_derived <- derived_metadata %>%
-    left_join(select(all_bullets_metadata, id, name))
-new_grooves <- grooves %>%
-    left_join(select(all_bullets_metadata, id, name), by = c("land_id" = "id"))
-clusterExport(cl, varlist = c("new_derived", "new_grooves"), envir = environment())
+new_derived <- dbReadTable(con, "metadata_derived") %>%
+    left_join(select(all_bullets_metadata, land_id, name))
+new_grooves <- dbReadTable(con, "profiles") %>%
+    left_join(select(all_bullets_metadata, land_id, name))
+clusterExport(cl, varlist = c("new_derived", "new_grooves", "crosscut_window"), envir = environment())
 
 all_bullets_included <- all_bullets[which(!is.na(new_derived$ideal_crosscut))]
 bullets_processed <- parLapply(cl, all_bullets_included, function(bul) {
     library(bulletr)
     library(dplyr)
     
-    cat("Computing processed bullet", basename(bul$path), "\n")
+    cat("Computing processed bullet", basename(bul$path), "with window", crosscut_window, "\n")
     
     xval <- new_derived$ideal_crosscut[which(new_derived$name == bul$path)]
     
@@ -185,27 +216,32 @@ bullets_processed <- parLapply(cl, all_bullets_included, function(bul) {
     left <- grooves_sub$groove_left_pred[which.min(abs(xval - grooves_sub$x))]
     right <- grooves_sub$groove_right_pred[which.min(abs(xval - grooves_sub$x))]
     
-    processBullets(bullet = bul, name = bul$path, x = grooves_sub$x[which.min(abs(xval - grooves_sub$x))], grooves = c(left, right))
+    processBullets(bullet = bul, name = bul$path, x = grooves_sub$x[which.min(abs(xval - grooves_sub$x))], grooves = c(left, right), window = crosscut_window)
 })
 
 bullet_span <- runs$bullet_span[1]
+maxsigid <- max(dbReadTable(con, "signatures")$signature_id)
 bullets_smoothed <- bullets_processed %>% 
     bind_rows %>%
     bulletSmooth(span = bullet_span) %>%
-    left_join(select(all_bullets_metadata, id, name), by = c("bullet" = "name")) %>%
-    left_join(select(grooves, id, land_id, x), by = c("id" = "land_id", "x" = "x")) %>%
+    left_join(select(all_bullets_metadata, land_id, name), by = c("bullet" = "name")) %>%
+    left_join(select(new_grooves, profile_id, land_id, x), by = c("land_id" = "land_id", "x" = "x")) %>%
     ungroup() %>%
-    select(-bullet, -id, -x, -abs_resid, -chop) %>%
-    select(profile_id = id.y, everything()) %>%
-    mutate(id = 1:nrow(.), run_id = 1) %>%
-    select(id, profile_id, run_id, everything())
+    select(-bullet, -land_id, -x, -abs_resid, -chop) %>%
+    mutate(signature_id = (maxsigid + 1):(maxsigid + nrow(.)), run_id = runs$run_id[1]) %>%
+    select(signature_id, profile_id, run_id, everything())
 dbWriteTable(con, "signatures", bullets_smoothed, row.names = FALSE, append = TRUE)
 
 ###
 ### Comparisons
 ###
 bullets_smoothed <- dbReadTable(con, "signatures")
-compares <- dbReadTable(con, "compares")
+
+ggplot(data = filter(bullets_smoothed, profile_id == 1080), aes(x = y, y = l30, color = factor(run_id))) +
+    geom_line() +
+    theme_bw()
+
+compares <- dbReadTable(con, "compares") %>% filter(compare_id == max(compare_id))
 
 relevant_ids1 <- filter(bullets_smoothed, run_id == compares$run1_id)
 relevant_ids2 <- filter(bullets_smoothed, run_id == compares$run2_id)
@@ -221,10 +257,12 @@ all_comparisons <- parLapply(cl, all_combinations, function(x) {
     
     br1 <- filter(bullets_smoothed, profile_id == x[1]) %>%
         select(-signature_id, -run_id) %>%
-        rename(bullet = profile_id)
+        rename(bullet = profile_id) %>%
+        filter(!is.na(l30))
     br2 <- filter(bullets_smoothed, profile_id == x[2]) %>%
         select(-signature_id, -run_id) %>%
-        rename(bullet = profile_id)
+        rename(bullet = profile_id) %>%
+        filter(!is.na(l30))
     
     bulletGetMaxCMS(br1, br2, column = "l30", span = peaks_smoothfactor)
 })
