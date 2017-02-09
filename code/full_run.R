@@ -19,7 +19,7 @@ library(stringr)
 dbname <- "bullets"
 user <- "buser"
 password <- readLines("buser_pass.txt")
-host <- "50.81.214.252"
+host <- "10.25.122.176"
 
 con <- dbConnect(MySQL(), user = user, password = password,
                  dbname = dbname, host = host)
@@ -316,7 +316,7 @@ ccf <- as.data.frame(do.call(rbind, ccf_temp)) %>%
 dbWriteTable(con, "ccf", ccf, row.names = FALSE, append = TRUE)
 
 my_matches <- dbReadTable(con, "matches")
-CCFs_withlands <- ccf %>%
+CCFs_withlands <- dbReadTable(con, "ccf") %>%
     left_join(select(profiles, profile_id, land_id), by = c("profile1_id" = "profile_id")) %>%
     left_join(select(profiles, profile_id, land_id), by = c("profile2_id" = "profile_id")) %>%
     left_join(my_matches, by = c("land_id.x" = "land1_id", "land_id.y" = "land2_id")) %>%
