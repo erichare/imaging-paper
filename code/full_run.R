@@ -373,7 +373,15 @@ CCFs_set252 %>%
     arrange(forest) %>%
     head
 
-qplot(y, l30, data = filter(bullets_smoothed, profile_id %in% c(78869, 206742)), colour = factor(profile_id), geom = "line")
+mylag <- CCFs_set252 %>%
+    filter(profile1_id == 33984, profile2_id == 48069) %>%
+    mutate(lag = lag * 1000)
+plotdat <- filter(bullets_smoothed, profile_id %in% c(33984, 48069))
+plotdat$y[plotdat$profile_id == 33984] <- plotdat$y[plotdat$profile_id == 33984] - mylag$lag
+
+qplot(y, l30, data = plotdat, colour = factor(profile_id), geom = "line") +
+    theme_bw() +
+    theme(legend.position = "bottom")
 
 ###
 ### XGBoost
