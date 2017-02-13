@@ -316,6 +316,8 @@ ccf <- as.data.frame(do.call(rbind, ccf_temp)) %>%
 dbWriteTable(con, "ccf", ccf, row.names = FALSE, append = TRUE)
 
 my_matches <- dbReadTable(con, "matches")
+profiles <- dbReadTable(con, "profiles")
+
 CCFs_withlands <- dbReadTable(con, "ccf") %>%
     left_join(select(profiles, profile_id, land_id), by = c("profile1_id" = "profile_id")) %>%
     left_join(select(profiles, profile_id, land_id), by = c("profile2_id" = "profile_id")) %>%
