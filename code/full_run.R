@@ -9,13 +9,9 @@ library(randomForest)
 library(ggplot2)
 library(stringr)
 
-## TODO
-# DONE Determine amount of overlap and use as feature in analysis
-# DONE RF/SVM/Logistic/xgboost
-# DONE put password in filename thats hidden
-# Look into Caret / model validation
-# Do a mean signature (window around ideal crosscut)
-
+###
+### DB Connection
+###
 dbname <- "bullets"
 user <- "buser"
 password <- readLines("buser_pass.txt")
@@ -235,13 +231,9 @@ dbWriteTable(con, "signatures", bullets_smoothed, row.names = FALSE, append = TR
 ###
 ### Comparisons
 ###
-bullets_smoothed <- dbReadTable(con, "signatures")
-
-ggplot(data = filter(bullets_smoothed, profile_id == 1080), aes(x = y, y = l30, color = factor(run_id))) +
-    geom_line() +
-    theme_bw()
-
 compares <- dbReadTable(con, "compares") %>% filter(compare_id == max(compare_id))
+
+bullets_smoothed <- dbReadTable(con, "signatures") %>% filter(run_id %in% c(compares$run1_id[1], compares$run2_id[1]))
 
 relevant_ids1 <- filter(bullets_smoothed, run_id == compares$run1_id)
 relevant_ids2 <- filter(bullets_smoothed, run_id == compares$run2_id)
@@ -267,6 +259,9 @@ all_comparisons <- parLapply(cl, all_combinations, function(x) {
     bulletGetMaxCMS(br1, br2, column = "l30", span = peaks_smoothfactor)
 })
 
+compare_doublesmooth <- compares$peaks_doublesmooth[1]
+clusterExport(cl, varlist = c("compare_doublesmooth"), envir = environment())
+
 ###
 ### Random Forest
 ###
@@ -291,7 +286,21 @@ ccf_temp <- parLapply(cl, all_comparisons, function(res) {
     # feature extraction
     signature.length <- min(nrow(subLOFx1), nrow(subLOFx2))
     
-    c(ccf=res$ccf, lag=res$lag / 1000, 
+    doublesmoothed <- lofX %>%
+        group_by(y) %>%
+        mutate(avgl30 = mean(l30, na.rm = TRUE)) %>%
+        ungroup() %>%
+        mutate(smoothavgl30 = smoothloess(x = y, y = avgl30, span = compare_doublesmooth),
+               l50 = l30 - smoothavgl30)
+    
+    final_doublesmoothed <- doublesmoothed %>%
+        filter(y %in% ys)
+    
+    double_cor <- cor(na.omit(final_doublesmoothed$l50[final_doublesmoothed$bullet == b12[1]]), 
+                      na.omit(final_doublesmoothed$l50[final_doublesmoothed$bullet == b12[2]]),
+                      use = "pairwise.complete.obs")
+    
+    c(ccf=res$ccf, double_cor = double_cor, lag=res$lag / 1000, 
                D=distr.dist, 
                sd_D = distr.sd,
                b1=b12[1], b2=b12[2],
@@ -311,14 +320,15 @@ ccf_temp <- parLapply(cl, all_comparisons, function(res) {
 })
 ccf <- as.data.frame(do.call(rbind, ccf_temp)) %>%
     mutate(compare_id = compares$compare_id[1]) %>%
-    select(compare_id, profile1_id = b1, profile2_id = b2, ccf, lag, D, sd_D, signature_length, overlap,
+    select(compare_id, profile1_id = b1, profile2_id = b2, ccf, double_cor, lag, D, sd_D, signature_length, overlap,
            matches, mismatches, cms, non_cms, sumpeaks)
+save(ccf, file = "ccf_compare2.RData")
 dbWriteTable(con, "ccf", ccf, row.names = FALSE, append = TRUE)
 
 my_matches <- dbReadTable(con, "matches")
 profiles <- dbReadTable(con, "profiles")
 
-CCFs_withlands <- dbReadTable(con, "ccf") %>%
+CCFs_withlands <- ccf %>%
     left_join(select(profiles, profile_id, land_id), by = c("profile1_id" = "profile_id")) %>%
     left_join(select(profiles, profile_id, land_id), by = c("profile2_id" = "profile_id")) %>%
     left_join(my_matches, by = c("land_id.x" = "land1_id", "land_id.y" = "land2_id")) %>%
@@ -359,7 +369,7 @@ CCFs_cary <- CCFs_withlands %>%
     left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
     filter(study.x == "Cary", study.y == "Cary")
 
-CCFs_cary$forest <- predict(rtrees, newdata = CCFs_cary, type = "prob")[,2]
+CCFs_cary$forest <- predict(rtrees_252, newdata = CCFs_cary, type = "prob")[,2]
 imp <- data.frame(importance(rtrees))
 xtabs(~(forest > 0.5) + match, data = CCFs_cary)
 
@@ -372,22 +382,3 @@ CCFs_set252 %>%
     filter(match) %>%
     arrange(forest) %>%
     head
-
-mylag <- CCFs_set252 %>%
-    filter(profile1_id == 33984, profile2_id == 48069) %>%
-    mutate(lag = lag * 1000)
-plotdat <- filter(bullets_smoothed, profile_id %in% c(33984, 48069))
-plotdat$y[plotdat$profile_id == 33984] <- plotdat$y[plotdat$profile_id == 33984] - mylag$lag
-
-qplot(y, l30, data = plotdat, colour = factor(profile_id), geom = "line") +
-    theme_bw() +
-    theme(legend.position = "bottom")
-
-###
-### XGBoost
-###
-mymat <- as.matrix(CCFs[,setdiff(includes, c("match", "forest"))])
-mylab <-  as.numeric(CCFs$match)
-xgmodel <- xgboost(data = mymat, label = mylab, nrounds = 100)
-CCFs$xgboost <- predict(xgmodel, mymat)
-xtabs(~(xgboost > 0.5) + match, data = CCFs)
