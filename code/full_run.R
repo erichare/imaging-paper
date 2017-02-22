@@ -329,15 +329,18 @@ my_matches <- dbReadTable(con, "matches")
 profiles <- dbReadTable(con, "profiles")
 
 CCFs_withlands <- ccf %>%
-    left_join(select(profiles, profile_id, land_id), by = c("profile1_id" = "profile_id")) %>%
-    left_join(select(profiles, profile_id, land_id), by = c("profile2_id" = "profile_id")) %>%
+    left_join(dplyr::select(profiles, profile_id, land_id), by = c("profile1_id" = "profile_id")) %>%
+    left_join(dplyr::select(profiles, profile_id, land_id), by = c("profile2_id" = "profile_id")) %>%
     left_join(my_matches, by = c("land_id.x" = "land1_id", "land_id.y" = "land2_id")) %>%
     mutate(match = as.logical(match)) 
 
 CCFs <- CCFs_withlands %>%
-    select(-land_id.x, -land_id.y)
+    dplyr::select(-land_id.x, -land_id.y)
 
 includes <- setdiff(names(CCFs), c("compare_id", "profile1_id", "profile2_id"))
+
+##
+## TODO: Split train test, assess accuracy. Refit with less smoothing
 
 rtrees <- randomForest(factor(match) ~ ., data = CCFs[,includes], ntree = 300)
 CCFs$forest <- predict(rtrees, type = "prob")[,2]
@@ -345,9 +348,13 @@ imp <- data.frame(importance(rtrees))
 xtabs(~(forest > 0.5) + match, data = CCFs)
 
 CCFs_set252 <- CCFs_withlands %>%
-    left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
-    left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
+    left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
+    left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
     filter(study.x == "Hamby252", study.y == "Hamby252")
+
+ggplot(CCFs_set252, aes(x = ccf, y = double_cor, color = factor(match))) +
+    facet_wrap(~match) +
+    geom_point()
 
 rtrees_252 <- randomForest(factor(match) ~ ., data = CCFs_set252[,includes], ntree = 300)
 CCFs_set252$forest <- predict(rtrees_252, type = "prob")[,2]
@@ -355,8 +362,8 @@ imp <- data.frame(importance(rtrees_252))
 xtabs(~(forest > 0.5) + match, data = CCFs_set252)
 
 CCFs_set44 <- CCFs_withlands %>%
-    left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
-    left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
+    left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
+    left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
     filter(study.x == "Hamby44", study.y == "Hamby44")
 
 rtrees_44 <- randomForest(factor(match) ~ ., data = CCFs_set44[,includes], ntree = 300)
