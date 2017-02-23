@@ -3,18 +3,20 @@ library(RMySQL)
 library(dplyr)
 library(ggplot2)
 
-load("ccf_set252.RData")
+load("ccf_test.RData")
 
 dbname <- "bullets"
 user <- "buser"
-password <- readLines("buser_pass.txt")
-host <- "10.25.122.176"
+password <- "mFGy7P^BTWxnDW"
+host <- "50.81.214.252"
 port <- 3306
 
 my_db <- src_mysql(dbname, host, port, user, password)
 
+my_metadata <- tbl(my_db, "metadata")
 my_signatures <- tbl(my_db, "signatures")
 my_profiles <- tbl(my_db, "profiles")
+my_ccf <- tbl(my_db, "ccf") %>% filter(compare_id == 2)
 
 ui <- fluidPage(
    
@@ -22,8 +24,8 @@ ui <- fluidPage(
    
    sidebarLayout(
       sidebarPanel(
-          numericInput("profile1", "Profile 1", value = 11261),
-          numericInput("profile2", "Profile 2", value = 195067)
+          numericInput("profile1", "Profile 1", value = 44211),
+          numericInput("profile2", "Profile 2", value = 168636)
       ),
       
       mainPanel(
@@ -48,7 +50,7 @@ server <- function(input, output) {
     })
     
     mylag <- reactive({
-        result <- CCFs_set252 %>%
+        result <- CCFs_test %>%
             filter(profile1_id == input$profile1, profile2_id == input$profile2)
         return(result$lag * 1000)
     })
@@ -72,7 +74,7 @@ server <- function(input, output) {
     })
     
     output$ccf <- renderDataTable({
-        return(CCFs_set252)
+        return(CCFs_test)
     })
     
 }

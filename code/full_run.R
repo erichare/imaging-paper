@@ -14,8 +14,8 @@ library(stringr)
 ###
 dbname <- "bullets"
 user <- "buser"
-password <- readLines("buser_pass.txt")
-host <- "10.25.122.176"
+password <- "mFGy7P^BTWxnDW"
+host <- "50.81.214.252"
 
 con <- dbConnect(MySQL(), user = user, password = password,
                  dbname = dbname, host = host)
@@ -263,7 +263,7 @@ compare_doublesmooth <- compares$peaks_doublesmooth[1]
 clusterExport(cl, varlist = c("compare_doublesmooth"), envir = environment())
 
 ###
-### Random Forest
+### Feature Extraction
 ###
 ccf_temp <- parLapply(cl, all_comparisons, function(res) {
     if (is.null(res)) return(NULL)
@@ -318,74 +318,98 @@ ccf_temp <- parLapply(cl, all_comparisons, function(res) {
                sumpeaks = sum(abs(res$lines$heights[res$lines$match])) * (1000 / 1.5625) / length(ys)
     )
 })
+
 ccf <- as.data.frame(do.call(rbind, ccf_temp)) %>%
     mutate(compare_id = compares$compare_id[1]) %>%
     select(compare_id, profile1_id = b1, profile2_id = b2, ccf, double_cor, lag, D, sd_D, signature_length, overlap,
            matches, mismatches, cms, non_cms, sumpeaks)
-save(ccf, file = "ccf_compare2.RData")
 dbWriteTable(con, "ccf", ccf, row.names = FALSE, append = TRUE)
 
+###
+### Random Forest
+###
+all_bullets_metadata <- dbReadTable(con, "metadata")
 my_matches <- dbReadTable(con, "matches")
 profiles <- dbReadTable(con, "profiles")
+ccf <- dbReadTable(con, "ccf") %>% filter(compare_id == max(compare_id))
 
 CCFs_withlands <- ccf %>%
     left_join(dplyr::select(profiles, profile_id, land_id), by = c("profile1_id" = "profile_id")) %>%
     left_join(dplyr::select(profiles, profile_id, land_id), by = c("profile2_id" = "profile_id")) %>%
     left_join(my_matches, by = c("land_id.x" = "land1_id", "land_id.y" = "land2_id")) %>%
+    left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
+    left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
     mutate(match = as.logical(match)) 
-
-CCFs <- CCFs_withlands %>%
-    dplyr::select(-land_id.x, -land_id.y)
-
-includes <- setdiff(names(CCFs), c("compare_id", "profile1_id", "profile2_id"))
-
-##
-## TODO: Split train test, assess accuracy. Refit with less smoothing
-
-rtrees <- randomForest(factor(match) ~ ., data = CCFs[,includes], ntree = 300)
-CCFs$forest <- predict(rtrees, type = "prob")[,2]
-imp <- data.frame(importance(rtrees))
-xtabs(~(forest > 0.5) + match, data = CCFs)
+CCFs_withlands_nocary <- CCFs_withlands %>%
+    filter(study.x != "Cary", study.y != "Cary")
 
 CCFs_set252 <- CCFs_withlands %>%
-    left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
-    left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
     filter(study.x == "Hamby252", study.y == "Hamby252")
-
-ggplot(CCFs_set252, aes(x = ccf, y = double_cor, color = factor(match))) +
-    facet_wrap(~match) +
-    geom_point()
-
-rtrees_252 <- randomForest(factor(match) ~ ., data = CCFs_set252[,includes], ntree = 300)
-CCFs_set252$forest <- predict(rtrees_252, type = "prob")[,2]
-imp <- data.frame(importance(rtrees_252))
-xtabs(~(forest > 0.5) + match, data = CCFs_set252)
-
 CCFs_set44 <- CCFs_withlands %>%
-    left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
-    left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
     filter(study.x == "Hamby44", study.y == "Hamby44")
+## TODO: Compare feature distributions of set44 / set252
+## RF with study x study as predictor
+## Start markdown for how to use database
+## DISSERTATION: Feature analysis, 3 sources. ASSUMPTION: Features allow distinguishing of matches and non-matches
+## We showed this with 252. Show that we can't distinguish source. If we CAN, we need noramlization before the analysis.
 
-rtrees_44 <- randomForest(factor(match) ~ ., data = CCFs_set44[,includes], ntree = 300)
-CCFs_set44$forest <- predict(rtrees_44, type = "prob")[,2]
-imp <- data.frame(importance(rtrees_44))
-xtabs(~(forest > 0.5) + match, data = CCFs_set44)
+set.seed(20170222)
+CCFs_train <- sample_frac(CCFs_withlands_nocary, size = .8)
+CCFs_test = setdiff(CCFs_withlands_nocary, CCFs_train)
 
-CCFs_cary <- CCFs_withlands %>%
-    left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
-    left_join(select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
-    filter(study.x == "Cary", study.y == "Cary")
+includes <- setdiff(names(CCFs_train), c("compare_id", "profile1_id", "profile2_id",
+                                         "study.x", "study.y", "barrel.x", "barrel.y",
+                                         "bullet.x", "bullet.y", "land.x", "land.y",
+                                         "land_id.x", "land_id.y"))
 
-CCFs_cary$forest <- predict(rtrees_252, newdata = CCFs_cary, type = "prob")[,2]
+rtrees <- randomForest(factor(match) ~ ., data = CCFs_train[,includes], ntree = 300)
+CCFs_test$forest <- predict(rtrees, newdata = CCFs_test, type = "prob")[,2]
 imp <- data.frame(importance(rtrees))
-xtabs(~(forest > 0.5) + match, data = CCFs_cary)
+xtabs(~(forest > 0.5) + match, data = CCFs_test)
 
-CCFs_set252 %>%
+CCFs_test %>%
     filter(!match) %>%
     arrange(desc(forest)) %>%
     head
 
-CCFs_set252 %>%
+CCFs_test %>%
     filter(match) %>%
     arrange(forest) %>%
     head
+
+###
+### Study as Response
+###
+CCFs_train_withcary <- sample_frac(CCFs_withlands, size = .8)
+CCFs_test_withcary = setdiff(CCFs_withlands, CCFs_train_withcary)
+CCFs_train_withcary$study <- factor(paste(CCFs_train_withcary$study.x, CCFs_train_withcary$study.y, sep = "_"))
+CCFs_test_withcary$study <- factor(paste(CCFs_test_withcary$study.x, CCFs_test_withcary$study.y, sep = "_"))
+
+includes_study <- setdiff(names(CCFs_train_withcary), c("compare_id", "profile1_id", "profile2_id",
+                                         "barrel.x", "barrel.y", "match",
+                                         "bullet.x", "bullet.y", "land.x", "land.y",
+                                         "land_id.x", "land_id.y", "study.x", "study.y"))
+
+rtrees_study <- randomForest(study ~ ., data = CCFs_train_withcary[,includes_study], ntree = 300)
+CCFs_test_withcary$study_forest <- predict(rtrees_study, newdata = CCFs_test_withcary)
+mytbl <- xtabs(~study_forest + study, data = CCFs_test_withcary)
+mytbl / sum(mytbl)
+mytbl / colSums(mytbl)
+
+ggplot(CCFs_train_withcary, aes(x = ccf, fill = match)) +
+    geom_histogram() +
+    facet_wrap(~study) +
+    theme_bw() +
+    scale_y_log10()
+
+ggplot(CCFs_train_withcary, aes(x = double_cor, fill = match)) +
+    geom_histogram() +
+    facet_wrap(~study) +
+    theme_bw() +
+    scale_y_log10()
+
+ggplot(CCFs_train_withcary, aes(x = matches, fill = match)) +
+    geom_histogram() +
+    facet_wrap(~study) +
+    theme_bw() +
+    scale_y_log10()
