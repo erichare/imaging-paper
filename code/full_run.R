@@ -305,7 +305,7 @@ ccf_temp <- parLapply(cl, all_comparisons, function(res) {
                sd_D = distr.sd,
                b1=b12[1], b2=b12[2],
                signature_length = signature.length * 1.5625 / 1000,
-               overlap = length(ys) * 1.5625 / signature.length / 1000,
+               overlap = length(ys) / signature.length,
                matches = sum(res$lines$match) * (1000 / 1.5625) / length(ys),
                mismatches = sum(!res$lines$match) * (1000 / 1.5625) / length(ys),
                cms = res$maxCMS * (1000 / 1.5625) / length(ys),
