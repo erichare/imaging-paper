@@ -347,11 +347,6 @@ CCFs_set252 <- CCFs_withlands %>%
     filter(study.x == "Hamby252", study.y == "Hamby252")
 CCFs_set44 <- CCFs_withlands %>%
     filter(study.x == "Hamby44", study.y == "Hamby44")
-## TODO: Compare feature distributions of set44 / set252
-## RF with study x study as predictor
-## Start markdown for how to use database
-## DISSERTATION: Feature analysis, 3 sources. ASSUMPTION: Features allow distinguishing of matches and non-matches
-## We showed this with 252. Show that we can't distinguish source. If we CAN, we need noramlization before the analysis.
 
 set.seed(20170222)
 CCFs_train <- sample_frac(CCFs_withlands_nocary, size = .8)
