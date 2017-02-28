@@ -186,6 +186,11 @@ derived_metadata <- grooves_robust %>%
     mutate(ideal_crosscut = unlist(crosscuts)) %>%
     select(id = id.y, run_id, ideal_crosscut, left_twist, right_twist, left_sample, right_sample)
 
+# derived_metadata <- dbReadTable(con, "metadata_derived")
+# derived_metadata_newrun <- derived_metadata
+# derived_metadata_newrun$run_id <- runs$run_id
+# derived_metadata_newrun$ideal_crosscut <- unlist(crosscuts) 
+
 dbWriteTable(con, "metadata_derived", derived_metadata, row.names = FALSE, append = TRUE)
 dbWriteTable(con, "profiles", profiles, row.names = FALSE, append = TRUE)
 
@@ -193,9 +198,10 @@ dbWriteTable(con, "profiles", profiles, row.names = FALSE, append = TRUE)
 ### Signatures
 ###
 new_derived <- dbReadTable(con, "metadata_derived") %>%
-    left_join(select(all_bullets_metadata, land_id, name))
+    left_join(dplyr::select(all_bullets_metadata, land_id, name)) %>%
+    filter(run_id == runs$run_id[1])
 new_grooves <- dbReadTable(con, "profiles") %>%
-    left_join(select(all_bullets_metadata, land_id, name))
+    left_join(dplyr::select(all_bullets_metadata, land_id, name))
 clusterExport(cl, varlist = c("new_derived", "new_grooves", "crosscut_window"), envir = environment())
 
 all_bullets_included <- all_bullets[which(!is.na(new_derived$ideal_crosscut))]
@@ -220,12 +226,12 @@ maxsigid <- max(dbReadTable(con, "signatures")$signature_id)
 bullets_smoothed <- bullets_processed %>% 
     bind_rows %>%
     bulletSmooth(span = bullet_span) %>%
-    left_join(select(all_bullets_metadata, land_id, name), by = c("bullet" = "name")) %>%
-    left_join(select(new_grooves, profile_id, land_id, x), by = c("land_id" = "land_id", "x" = "x")) %>%
+    left_join(dplyr::select(all_bullets_metadata, land_id, name), by = c("bullet" = "name")) %>%
+    left_join(dplyr::select(new_grooves, profile_id, land_id, x), by = c("land_id" = "land_id", "x" = "x")) %>%
     ungroup() %>%
-    select(-bullet, -land_id, -x, -abs_resid, -chop) %>%
-    mutate(signature_id = (maxsigid + 1):(maxsigid + nrow(.)), run_id = runs$run_id[1]) %>%
-    select(signature_id, profile_id, run_id, everything())
+    dplyr::select(-bullet, -land_id, -x, -abs_resid, -chop) %>%
+    mutate(run_id = runs$run_id[1]) %>%
+    dplyr::select(profile_id, run_id, everything())
 dbWriteTable(con, "signatures", bullets_smoothed, row.names = FALSE, append = TRUE)
 
 ###
@@ -248,11 +254,11 @@ all_comparisons <- parLapply(cl, all_combinations, function(x) {
     cat(x, "\n")
     
     br1 <- filter(bullets_smoothed, profile_id == x[1]) %>%
-        select(-signature_id, -run_id) %>%
+        dplyr::select(-run_id) %>%
         rename(bullet = profile_id) %>%
         filter(!is.na(l30))
     br2 <- filter(bullets_smoothed, profile_id == x[2]) %>%
-        select(-signature_id, -run_id) %>%
+        dplyr::select(-run_id) %>%
         rename(bullet = profile_id) %>%
         filter(!is.na(l30))
     
@@ -266,6 +272,9 @@ clusterExport(cl, varlist = c("compare_doublesmooth"), envir = environment())
 ### Feature Extraction
 ###
 ccf_temp <- parLapply(cl, all_comparisons, function(res) {
+    library(dplyr)
+    library(bulletr)
+    
     if (is.null(res)) return(NULL)
     lofX <- res$bullets
     b12 <- unique(lofX$bullet)
@@ -276,8 +285,8 @@ ccf_temp <- parLapply(cl, all_comparisons, function(res) {
     ys <- intersect(subLOFx1$y, subLOFx2$y)
     idx1 <- which(subLOFx1$y %in% ys)
     idx2 <- which(subLOFx2$y %in% ys)
-    distr.dist <- mean((subLOFx1$val[idx1] - subLOFx2$val[idx2])^2, na.rm=TRUE)
-    distr.sd <- sd(subLOFx1$val, na.rm=TRUE) + sd(subLOFx2$val, na.rm=TRUE)
+    distr.dist <- sqrt(mean(((subLOFx1$val[idx1] - subLOFx2$val[idx2]) * 1.5625 / 1000)^2, na.rm=TRUE))
+    distr.sd <- sd(subLOFx1$val * 1.5625 / 1000, na.rm=TRUE) + sd(subLOFx2$val * 1.5625 / 1000, na.rm=TRUE)
     km <- which(res$lines$match)
     knm <- which(!res$lines$match)
     if (length(km) == 0) km <- c(length(knm)+1,0)
@@ -296,11 +305,11 @@ ccf_temp <- parLapply(cl, all_comparisons, function(res) {
     final_doublesmoothed <- doublesmoothed %>%
         filter(y %in% ys)
     
-    double_cor <- cor(na.omit(final_doublesmoothed$l50[final_doublesmoothed$bullet == b12[1]]), 
+    rough_cor <- cor(na.omit(final_doublesmoothed$l50[final_doublesmoothed$bullet == b12[1]]), 
                       na.omit(final_doublesmoothed$l50[final_doublesmoothed$bullet == b12[2]]),
                       use = "pairwise.complete.obs")
     
-    c(ccf=res$ccf, double_cor = double_cor, lag=res$lag / 1000, 
+    c(ccf=res$ccf, rough_cor = rough_cor, lag=res$lag / 1000, 
                D=distr.dist, 
                sd_D = distr.sd,
                b1=b12[1], b2=b12[2],
@@ -315,14 +324,14 @@ ccf_temp <- parLapply(cl, all_comparisons, function(res) {
                right_cms = max(km[length(km)] - knm[length(knm)],0) * (1000 / 1.5625) / length(ys),
                left_noncms = max(km[1] - knm[1], 0) * (1000 / 1.5625) / length(ys),
                right_noncms = max(knm[length(knm)]-km[length(km)],0) * (1000 / 1.5625) / length(ys),
-               sumpeaks = sum(abs(res$lines$heights[res$lines$match])) * (1000 / 1.5625) / length(ys)
+               sum_peaks = sum(abs(res$lines$heights[res$lines$match])) * (1000 / 1.5625) / length(ys)
     )
 })
 
 ccf <- as.data.frame(do.call(rbind, ccf_temp)) %>%
     mutate(compare_id = compares$compare_id[1]) %>%
-    select(compare_id, profile1_id = b1, profile2_id = b2, ccf, double_cor, lag, D, sd_D, signature_length, overlap,
-           matches, mismatches, cms, non_cms, sumpeaks)
+    dplyr::select(compare_id, profile1_id = b1, profile2_id = b2, ccf, rough_cor, lag, D, sd_D, signature_length, overlap,
+           matches, mismatches, cms, non_cms, sum_peaks)
 dbWriteTable(con, "ccf", ccf, row.names = FALSE, append = TRUE)
 
 ###
@@ -397,7 +406,7 @@ ggplot(CCFs_train_withcary, aes(x = ccf, fill = match)) +
     theme_bw() +
     scale_y_log10()
 
-ggplot(CCFs_train_withcary, aes(x = double_cor, fill = match)) +
+ggplot(CCFs_train_withcary, aes(x = rough_cor, fill = match)) +
     geom_histogram() +
     facet_wrap(~study) +
     theme_bw() +
