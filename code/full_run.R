@@ -237,7 +237,9 @@ dbWriteTable(con, "signatures", bullets_smoothed, row.names = FALSE, append = TR
 ###
 ### Comparisons
 ###
-compares <- dbReadTable(con, "compares") %>% filter(compare_id == max(compare_id))
+for (cid in 8:19) {
+    
+compares <- dbReadTable(con, "compares") %>% filter(compare_id == cid)
 
 bullets_smoothed <- dbReadTable(con, "signatures") %>% filter(run_id %in% c(compares$run1_id[1], compares$run2_id[1]))
 
@@ -246,7 +248,9 @@ relevant_ids2 <- filter(bullets_smoothed, run_id == compares$run2_id)
 all_combinations <- combn(unique(c(relevant_ids1$profile_id, relevant_ids2$profile_id)), 2, simplify = FALSE)
 
 peaks_smoothfactor <- compares$peaks_smoothfactor[1]
-clusterExport(cl, varlist = c("peaks_smoothfactor", "bullets_smoothed"), envir = environment())
+degrade_left <- compares$degrade_left[1]
+degrade_right <- compares$degrade_right[1]
+clusterExport(cl, varlist = c("peaks_smoothfactor", "bullets_smoothed", "degrade_left", "degrade_right"), envir = environment())
 all_comparisons <- parLapply(cl, all_combinations, function(x) {
     library(dplyr)
     library(bulletr)
@@ -260,7 +264,9 @@ all_comparisons <- parLapply(cl, all_combinations, function(x) {
     br2 <- filter(bullets_smoothed, profile_id == x[2]) %>%
         dplyr::select(-run_id) %>%
         rename(bullet = profile_id) %>%
-        filter(!is.na(l30))
+        filter(!is.na(l30),
+               y >= quantile(y, degrade_left),
+               y <= quantile(y, degrade_right))
     
     bulletGetMaxCMS(br1, br2, column = "l30", span = peaks_smoothfactor)
 })
@@ -283,6 +289,8 @@ ccf_temp <- parLapply(cl, all_comparisons, function(res) {
     subLOFx2 <- subset(lofX, bullet==b12[2]) 
     
     ys <- intersect(subLOFx1$y, subLOFx2$y)
+    if (length(ys) == 0) return(NULL)
+    
     idx1 <- which(subLOFx1$y %in% ys)
     idx2 <- which(subLOFx2$y %in% ys)
     distr.dist <- sqrt(mean(((subLOFx1$val[idx1] - subLOFx2$val[idx2]) * 1.5625 / 1000)^2, na.rm=TRUE))
@@ -316,14 +324,14 @@ ccf_temp <- parLapply(cl, all_comparisons, function(res) {
                signature_length = signature.length * 1.5625 / 1000,
                overlap = length(ys) / signature.length,
                matches = sum(res$lines$match) * (1000 / 1.5625) / length(ys),
-               mismatches = sum(!res$lines$match) * (1000 / 1.5625) / length(ys),
+               mismatches = sum(!res$lines$match) * 1000 / abs(diff(range(c(subLOFx1$y, subLOFx2$y)))),
                cms = res$maxCMS * (1000 / 1.5625) / length(ys),
                cms2 = bulletr::maxCMS(subset(res$lines, type==1 | is.na(type))$match) * (1000 / 1.5625) / length(ys),
-               non_cms = bulletr::maxCMS(!res$lines$match) * (1000 / 1.5625) / length(ys),
+               non_cms = bulletr::maxCMS(!res$lines$match) * 1000 / abs(diff(range(c(subLOFx1$y, subLOFx2$y)))),
                left_cms = max(knm[1] - km[1], 0) * (1000 / 1.5625) / length(ys),
                right_cms = max(km[length(km)] - knm[length(knm)],0) * (1000 / 1.5625) / length(ys),
-               left_noncms = max(km[1] - knm[1], 0) * (1000 / 1.5625) / length(ys),
-               right_noncms = max(knm[length(knm)]-km[length(km)],0) * (1000 / 1.5625) / length(ys),
+               left_noncms = max(km[1] - knm[1], 0) * 1000 / abs(diff(range(c(subLOFx1$y, subLOFx2$y)))),
+               right_noncms = max(knm[length(knm)]-km[length(km)],0) * 1000 / abs(diff(range(c(subLOFx1$y, subLOFx2$y)))),
                sum_peaks = sum(abs(res$lines$heights[res$lines$match])) * (1000 / 1.5625) / length(ys)
     )
 })
@@ -333,6 +341,8 @@ ccf <- as.data.frame(do.call(rbind, ccf_temp)) %>%
     dplyr::select(compare_id, profile1_id = b1, profile2_id = b2, ccf, rough_cor, lag, D, sd_D, signature_length, overlap,
            matches, mismatches, cms, non_cms, sum_peaks)
 dbWriteTable(con, "ccf", ccf, row.names = FALSE, append = TRUE)
+
+}
 
 ###
 ### Random Forest
@@ -348,9 +358,9 @@ CCFs_withlands <- ccf %>%
     left_join(my_matches, by = c("land_id.x" = "land1_id", "land_id.y" = "land2_id")) %>%
     left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
     left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
-    mutate(match = as.logical(match)) 
-CCFs_withlands_nocary <- CCFs_withlands %>%
-    filter(study.x != "Cary", study.y != "Cary")
+    filter(study.x != "Cary", study.y != "Cary") %>%
+    arrange(study.x, study.y) %>%
+    mutate(match = as.logical(replace(match, is.na(match), 0)))
 
 CCFs_set252 <- CCFs_withlands %>%
     filter(study.x == "Hamby252", study.y == "Hamby252")
