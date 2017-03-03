@@ -237,8 +237,7 @@ dbWriteTable(con, "signatures", bullets_smoothed, row.names = FALSE, append = TR
 ###
 ### Comparisons
 ###
-for (cid in 8:19) {
-    
+cid <- 19
 compares <- dbReadTable(con, "compares") %>% filter(compare_id == cid)
 
 bullets_smoothed <- dbReadTable(con, "signatures") %>% filter(run_id %in% c(compares$run1_id[1], compares$run2_id[1]))
@@ -341,8 +340,6 @@ ccf <- as.data.frame(do.call(rbind, ccf_temp)) %>%
     dplyr::select(compare_id, profile1_id = b1, profile2_id = b2, ccf, rough_cor, lag, D, sd_D, signature_length, overlap,
            matches, mismatches, cms, non_cms, sum_peaks)
 dbWriteTable(con, "ccf", ccf, row.names = FALSE, append = TRUE)
-
-}
 
 ###
 ### Random Forest
