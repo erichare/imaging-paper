@@ -344,10 +344,13 @@ dbWriteTable(con, "ccf", ccf, row.names = FALSE, append = TRUE)
 ###
 ### Random Forest
 ###
+con <- dbConnect(MySQL(), user = user, password = password,
+                 dbname = dbname, host = host)
+
 all_bullets_metadata <- dbReadTable(con, "metadata")
-my_matches <- dbReadTable(con, "matches")
+my_matches <- dbReadTable(con, "matches") %>% mutate(match = 1)
 profiles <- dbReadTable(con, "profiles")
-ccf <- dbReadTable(con, "ccf") %>% filter(compare_id == max(compare_id))
+ccf <- dbReadTable(con, "ccf") %>% filter(compare_id == 4)
 
 CCFs_withlands <- ccf %>%
     left_join(dplyr::select(profiles, profile_id, land_id), by = c("profile1_id" = "profile_id")) %>%
@@ -356,6 +359,8 @@ CCFs_withlands <- ccf %>%
     left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
     left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
     filter(study.x != "Cary", study.y != "Cary") %>%
+    filter(study.y != "Hamby44" | barrel.y != "E") %>%
+    filter(study.x != "Hamby44" | barrel.x != "E") %>%
     arrange(study.x, study.y) %>%
     mutate(match = as.logical(replace(match, is.na(match), 0)))
 
@@ -365,15 +370,15 @@ CCFs_set44 <- CCFs_withlands %>%
     filter(study.x == "Hamby44", study.y == "Hamby44")
 
 set.seed(20170222)
-CCFs_train <- sample_frac(CCFs_withlands_nocary, size = .8)
-CCFs_test = setdiff(CCFs_withlands_nocary, CCFs_train)
+CCFs_train <- sample_frac(CCFs_withlands, size = .8)
+CCFs_test = setdiff(CCFs_withlands, CCFs_train)
 
-includes <- setdiff(names(CCFs_train), c("compare_id", "profile1_id", "profile2_id",
+includes <- setdiff(names(CCFs_withlands), c("compare_id", "profile1_id", "profile2_id",
                                          "study.x", "study.y", "barrel.x", "barrel.y",
                                          "bullet.x", "bullet.y", "land.x", "land.y",
-                                         "land_id.x", "land_id.y"))
+                                         "land_id.x", "land_id.y", "signature_length", "lag", "overlap"))
 
-rtrees <- randomForest(factor(match) ~ ., data = CCFs_train[,includes], ntree = 300)
+rtrees <- randomForest(factor(match) ~ ., data = CCFs_withlands[,includes], ntree = 300)
 CCFs_test$forest <- predict(rtrees, newdata = CCFs_test, type = "prob")[,2]
 imp <- data.frame(importance(rtrees))
 xtabs(~(forest > 0.5) + match, data = CCFs_test)
