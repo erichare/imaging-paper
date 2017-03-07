@@ -237,7 +237,7 @@ dbWriteTable(con, "signatures", bullets_smoothed, row.names = FALSE, append = TR
 ###
 ### Comparisons
 ###
-cid <- 19
+cid <- 22
 compares <- dbReadTable(con, "compares") %>% filter(compare_id == cid)
 
 bullets_smoothed <- dbReadTable(con, "signatures") %>% filter(run_id %in% c(compares$run1_id[1], compares$run2_id[1]))
