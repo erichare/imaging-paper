@@ -186,6 +186,11 @@ derived_metadata <- grooves_robust %>%
     mutate(ideal_crosscut = unlist(crosscuts)) %>%
     select(id = id.y, run_id, ideal_crosscut, left_twist, right_twist, left_sample, right_sample)
 
+# derived_metadata <- dbReadTable(con, "metadata_derived")
+# derived_metadata_newrun <- derived_metadata
+# derived_metadata_newrun$run_id <- runs$run_id
+# derived_metadata_newrun$ideal_crosscut <- unlist(crosscuts) 
+
 dbWriteTable(con, "metadata_derived", derived_metadata, row.names = FALSE, append = TRUE)
 dbWriteTable(con, "profiles", profiles, row.names = FALSE, append = TRUE)
 
@@ -193,13 +198,11 @@ dbWriteTable(con, "profiles", profiles, row.names = FALSE, append = TRUE)
 ### Signatures
 ###
 new_derived <- dbReadTable(con, "metadata_derived") %>%
-    filter(run_id == 3) %>%
-    left_join(dplyr::select(all_bullets_metadata, land_id, name))
+    left_join(dplyr::select(all_bullets_metadata, land_id, name)) %>%
+    filter(run_id == runs$run_id[1])
 new_grooves <- dbReadTable(con, "profiles") %>%
-    filter(run_id == 1) %>%
     left_join(dplyr::select(all_bullets_metadata, land_id, name))
-loess_span <- runs$loess_span[1]
-clusterExport(cl, varlist = c("new_derived", "new_grooves", "crosscut_window", "loess_span"), envir = environment())
+clusterExport(cl, varlist = c("new_derived", "new_grooves", "crosscut_window"), envir = environment())
 
 all_bullets_included <- all_bullets[which(!is.na(new_derived$ideal_crosscut))]
 bullets_processed <- parLapply(cl, all_bullets_included, function(bul) {
@@ -339,6 +342,9 @@ dbWriteTable(con, "ccf", ccf, row.names = FALSE, append = TRUE)
 ###
 ### Random Forest
 ###
+con <- dbConnect(MySQL(), user = user, password = password,
+                 dbname = dbname, host = host)
+
 all_bullets_metadata <- dbReadTable(con, "metadata")
 my_matches <- dbReadTable(con, "matches") %>% mutate(match = 1)
 profiles <- dbReadTable(con, "profiles")
@@ -367,17 +373,19 @@ CCFs_withlands <- ccf %>%
                               1, 16, 123, 151, 214, 269, 301, 305, 314, 333, 334))) %>%
     arrange(study.x, study.y) %>%
     mutate(match = as.logical(replace(match, is.na(match), 0)))
+    arrange(study.x, study.y) %>%
+    mutate(match = as.logical(replace(match, is.na(match), 0)))
 
 set.seed(20170222)
 CCFs_train <- sample_frac(CCFs_withlands, size = .8)
 CCFs_test = setdiff(CCFs_withlands, CCFs_train)
 
-includes <- setdiff(names(CCFs_train), c("compare_id", "profile1_id", "profile2_id",
+includes <- setdiff(names(CCFs_withlands), c("compare_id", "profile1_id", "profile2_id",
                                          "study.x", "study.y", "barrel.x", "barrel.y",
                                          "bullet.x", "bullet.y", "land.x", "land.y",
-                                         "land_id.x", "land_id.y"))
+                                         "land_id.x", "land_id.y", "signature_length", "lag", "overlap"))
 
-rtrees <- randomForest(factor(match) ~ ., data = CCFs_train[,includes], ntree = 300)
+rtrees <- randomForest(factor(match) ~ ., data = CCFs_withlands[,includes], ntree = 300)
 CCFs_test$forest <- predict(rtrees, newdata = CCFs_test, type = "prob")[,2]
 imp <- data.frame(importance(rtrees))
 xtabs(~(forest > 0.5) + match, data = CCFs_test)
