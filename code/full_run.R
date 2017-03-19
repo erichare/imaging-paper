@@ -193,10 +193,13 @@ dbWriteTable(con, "profiles", profiles, row.names = FALSE, append = TRUE)
 ### Signatures
 ###
 new_derived <- dbReadTable(con, "metadata_derived") %>%
-    left_join(select(all_bullets_metadata, land_id, name))
+    filter(run_id == 3) %>%
+    left_join(dplyr::select(all_bullets_metadata, land_id, name))
 new_grooves <- dbReadTable(con, "profiles") %>%
-    left_join(select(all_bullets_metadata, land_id, name))
-clusterExport(cl, varlist = c("new_derived", "new_grooves", "crosscut_window"), envir = environment())
+    filter(run_id == 1) %>%
+    left_join(dplyr::select(all_bullets_metadata, land_id, name))
+loess_span <- runs$loess_span[1]
+clusterExport(cl, varlist = c("new_derived", "new_grooves", "crosscut_window", "loess_span"), envir = environment())
 
 all_bullets_included <- all_bullets[which(!is.na(new_derived$ideal_crosscut))]
 bullets_processed <- parLapply(cl, all_bullets_included, function(bul) {
@@ -212,26 +215,25 @@ bullets_processed <- parLapply(cl, all_bullets_included, function(bul) {
     left <- grooves_sub$groove_left_pred[which.min(abs(xval - grooves_sub$x))]
     right <- grooves_sub$groove_right_pred[which.min(abs(xval - grooves_sub$x))]
     
-    processBullets(bullet = bul, name = bul$path, x = grooves_sub$x[which.min(abs(xval - grooves_sub$x))], grooves = c(left, right), window = crosscut_window)
+    processBullets(bullet = bul, name = bul$path, x = grooves_sub$x[which.min(abs(xval - grooves_sub$x))], span = loess_span, grooves = c(left, right), window = crosscut_window)
 })
 
-bullet_span <- runs$bullet_span[1]
-maxsigid <- max(dbReadTable(con, "signatures")$signature_id)
 bullets_smoothed <- bullets_processed %>% 
-    bind_rows %>%
-    bulletSmooth(span = bullet_span) %>%
-    left_join(select(all_bullets_metadata, land_id, name), by = c("bullet" = "name")) %>%
-    left_join(select(new_grooves, profile_id, land_id, x), by = c("land_id" = "land_id", "x" = "x")) %>%
-    ungroup() %>%
-    select(-bullet, -land_id, -x, -abs_resid, -chop) %>%
-    mutate(signature_id = (maxsigid + 1):(maxsigid + nrow(.)), run_id = runs$run_id[1]) %>%
-    select(signature_id, profile_id, run_id, everything())
+  bind_rows %>%
+  bulletSmooth(span = bullet_span) %>%
+  left_join(dplyr::select(all_bullets_metadata, land_id, name), by = c("bullet" = "name")) %>%
+  left_join(dplyr::select(new_grooves, profile_id, land_id, x), by = c("land_id" = "land_id", "x" = "x")) %>%
+  ungroup() %>%
+  dplyr::select(-bullet, -land_id, -x, -abs_resid, -chop) %>%
+  mutate(run_id = runs$run_id[1]) %>%
+  dplyr::select(profile_id, run_id, everything())
 dbWriteTable(con, "signatures", bullets_smoothed, row.names = FALSE, append = TRUE)
 
 ###
 ### Comparisons
 ###
-compares <- dbReadTable(con, "compares") %>% filter(compare_id == max(compare_id))
+cid <- 23
+compares <- dbReadTable(con, "compares") %>% filter(compare_id == cid)
 
 bullets_smoothed <- dbReadTable(con, "signatures") %>% filter(run_id %in% c(compares$run1_id[1], compares$run2_id[1]))
 
@@ -240,23 +242,27 @@ relevant_ids2 <- filter(bullets_smoothed, run_id == compares$run2_id)
 all_combinations <- combn(unique(c(relevant_ids1$profile_id, relevant_ids2$profile_id)), 2, simplify = FALSE)
 
 peaks_smoothfactor <- compares$peaks_smoothfactor[1]
-clusterExport(cl, varlist = c("peaks_smoothfactor", "bullets_smoothed"), envir = environment())
+degrade_left <- compares$degrade_left[1]
+degrade_right <- compares$degrade_right[1]
+clusterExport(cl, varlist = c("peaks_smoothfactor", "bullets_smoothed", "degrade_left", "degrade_right"), envir = environment())
 all_comparisons <- parLapply(cl, all_combinations, function(x) {
-    library(dplyr)
-    library(bulletr)
-    
-    cat(x, "\n")
-    
-    br1 <- filter(bullets_smoothed, profile_id == x[1]) %>%
-        select(-signature_id, -run_id) %>%
-        rename(bullet = profile_id) %>%
-        filter(!is.na(l30))
-    br2 <- filter(bullets_smoothed, profile_id == x[2]) %>%
-        select(-signature_id, -run_id) %>%
-        rename(bullet = profile_id) %>%
-        filter(!is.na(l30))
-    
-    bulletGetMaxCMS(br1, br2, column = "l30", span = peaks_smoothfactor)
+  library(dplyr)
+  library(bulletr)
+  
+  cat(x, "\n")
+  
+  br1 <- filter(bullets_smoothed, profile_id == x[1]) %>%
+    dplyr::select(-run_id) %>%
+    rename(bullet = profile_id) %>%
+    filter(!is.na(l30))
+  br2 <- filter(bullets_smoothed, profile_id == x[2]) %>%
+    dplyr::select(-run_id) %>%
+    rename(bullet = profile_id) %>%
+    filter(!is.na(l30),
+           y >= quantile(y, degrade_left),
+           y <= quantile(y, degrade_right))
+  
+  bulletGetMaxCMS(br1, br2, column = "l30", span = peaks_smoothfactor)
 })
 
 compare_doublesmooth <- compares$peaks_doublesmooth[1]
@@ -266,72 +272,79 @@ clusterExport(cl, varlist = c("compare_doublesmooth"), envir = environment())
 ### Feature Extraction
 ###
 ccf_temp <- parLapply(cl, all_comparisons, function(res) {
-    if (is.null(res)) return(NULL)
-    lofX <- res$bullets
-    b12 <- unique(lofX$bullet)
-    
-    subLOFx1 <- subset(lofX, bullet==b12[1])
-    subLOFx2 <- subset(lofX, bullet==b12[2]) 
-    
-    ys <- intersect(subLOFx1$y, subLOFx2$y)
-    idx1 <- which(subLOFx1$y %in% ys)
-    idx2 <- which(subLOFx2$y %in% ys)
-    distr.dist <- mean((subLOFx1$val[idx1] - subLOFx2$val[idx2])^2, na.rm=TRUE)
-    distr.sd <- sd(subLOFx1$val, na.rm=TRUE) + sd(subLOFx2$val, na.rm=TRUE)
-    km <- which(res$lines$match)
-    knm <- which(!res$lines$match)
-    if (length(km) == 0) km <- c(length(knm)+1,0)
-    if (length(knm) == 0) knm <- c(length(km)+1,0)
-    #browser()    
-    # feature extraction
-    signature.length <- min(nrow(subLOFx1), nrow(subLOFx2))
-    
-    doublesmoothed <- lofX %>%
-        group_by(y) %>%
-        mutate(avgl30 = mean(l30, na.rm = TRUE)) %>%
-        ungroup() %>%
-        mutate(smoothavgl30 = smoothloess(x = y, y = avgl30, span = compare_doublesmooth),
-               l50 = l30 - smoothavgl30)
-    
-    final_doublesmoothed <- doublesmoothed %>%
-        filter(y %in% ys)
-    
-    double_cor <- cor(na.omit(final_doublesmoothed$l50[final_doublesmoothed$bullet == b12[1]]), 
-                      na.omit(final_doublesmoothed$l50[final_doublesmoothed$bullet == b12[2]]),
-                      use = "pairwise.complete.obs")
-    
-    c(ccf=res$ccf, double_cor = double_cor, lag=res$lag / 1000, 
-               D=distr.dist, 
-               sd_D = distr.sd,
-               b1=b12[1], b2=b12[2],
-               signature_length = signature.length * 1.5625 / 1000,
-               overlap = length(ys) / signature.length,
-               matches = sum(res$lines$match) * (1000 / 1.5625) / length(ys),
-               mismatches = sum(!res$lines$match) * (1000 / 1.5625) / length(ys),
-               cms = res$maxCMS * (1000 / 1.5625) / length(ys),
-               cms2 = bulletr::maxCMS(subset(res$lines, type==1 | is.na(type))$match) * (1000 / 1.5625) / length(ys),
-               non_cms = bulletr::maxCMS(!res$lines$match) * (1000 / 1.5625) / length(ys),
-               left_cms = max(knm[1] - km[1], 0) * (1000 / 1.5625) / length(ys),
-               right_cms = max(km[length(km)] - knm[length(knm)],0) * (1000 / 1.5625) / length(ys),
-               left_noncms = max(km[1] - knm[1], 0) * (1000 / 1.5625) / length(ys),
-               right_noncms = max(knm[length(knm)]-km[length(km)],0) * (1000 / 1.5625) / length(ys),
-               sumpeaks = sum(abs(res$lines$heights[res$lines$match])) * (1000 / 1.5625) / length(ys)
-    )
+  library(dplyr)
+  library(bulletr)
+  
+  if (is.null(res)) return(NULL)
+  lofX <- res$bullets
+  b12 <- unique(lofX$bullet)
+  
+  subLOFx1 <- subset(lofX, bullet==b12[1])
+  subLOFx2 <- subset(lofX, bullet==b12[2]) 
+  
+  ys <- intersect(subLOFx1$y, subLOFx2$y)
+  if (length(ys) == 0) return(NULL)
+  
+  idx1 <- which(subLOFx1$y %in% ys)
+  idx2 <- which(subLOFx2$y %in% ys)
+  distr.dist <- sqrt(mean(((subLOFx1$val[idx1] - subLOFx2$val[idx2]) * 1.5625 / 1000)^2, na.rm=TRUE))
+  distr.sd <- sd(subLOFx1$val * 1.5625 / 1000, na.rm=TRUE) + sd(subLOFx2$val * 1.5625 / 1000, na.rm=TRUE)
+  km <- which(res$lines$match)
+  knm <- which(!res$lines$match)
+  if (length(km) == 0) km <- c(length(knm)+1,0)
+  if (length(knm) == 0) knm <- c(length(km)+1,0)
+  #browser()    
+  # feature extraction
+  signature.length <- min(nrow(subLOFx1), nrow(subLOFx2))
+  
+  doublesmoothed <- lofX %>%
+    group_by(y) %>%
+    mutate(avgl30 = mean(l30, na.rm = TRUE)) %>%
+    ungroup() %>%
+    mutate(smoothavgl30 = smoothloess(x = y, y = avgl30, span = compare_doublesmooth),
+           l50 = l30 - smoothavgl30)
+  
+  final_doublesmoothed <- doublesmoothed %>%
+    filter(y %in% ys)
+  
+  rough_cor <- cor(na.omit(final_doublesmoothed$l50[final_doublesmoothed$bullet == b12[1]]), 
+                   na.omit(final_doublesmoothed$l50[final_doublesmoothed$bullet == b12[2]]),
+                   use = "pairwise.complete.obs")
+  
+  c(ccf=res$ccf, rough_cor = rough_cor, lag=res$lag / 1000, 
+    D=distr.dist, 
+    sd_D = distr.sd,
+    b1=b12[1], b2=b12[2],
+    signature_length = signature.length * 1.5625 / 1000,
+    overlap = length(ys) / signature.length,
+    matches = sum(res$lines$match) * (1000 / 1.5625) / length(ys),
+    mismatches = sum(!res$lines$match) * 1000 / abs(diff(range(c(subLOFx1$y, subLOFx2$y)))),
+    cms = res$maxCMS * (1000 / 1.5625) / length(ys),
+    cms2 = bulletr::maxCMS(subset(res$lines, type==1 | is.na(type))$match) * (1000 / 1.5625) / length(ys),
+    non_cms = bulletr::maxCMS(!res$lines$match) * 1000 / abs(diff(range(c(subLOFx1$y, subLOFx2$y)))),
+    left_cms = max(knm[1] - km[1], 0) * (1000 / 1.5625) / length(ys),
+    right_cms = max(km[length(km)] - knm[length(knm)],0) * (1000 / 1.5625) / length(ys),
+    left_noncms = max(km[1] - knm[1], 0) * 1000 / abs(diff(range(c(subLOFx1$y, subLOFx2$y)))),
+    right_noncms = max(knm[length(knm)]-km[length(km)],0) * 1000 / abs(diff(range(c(subLOFx1$y, subLOFx2$y)))),
+    sum_peaks = sum(abs(res$lines$heights[res$lines$match])) * (1000 / 1.5625) / length(ys)
+  )
 })
 
 ccf <- as.data.frame(do.call(rbind, ccf_temp)) %>%
-    mutate(compare_id = compares$compare_id[1]) %>%
-    select(compare_id, profile1_id = b1, profile2_id = b2, ccf, double_cor, lag, D, sd_D, signature_length, overlap,
-           matches, mismatches, cms, non_cms, sumpeaks)
+  mutate(compare_id = compares$compare_id[1]) %>%
+  dplyr::select(compare_id, profile1_id = b1, profile2_id = b2, ccf, rough_cor, lag, D, sd_D, signature_length, overlap,
+                matches, mismatches, cms, non_cms, sum_peaks)
 dbWriteTable(con, "ccf", ccf, row.names = FALSE, append = TRUE)
 
 ###
 ### Random Forest
 ###
 all_bullets_metadata <- dbReadTable(con, "metadata")
-my_matches <- dbReadTable(con, "matches")
+my_matches <- dbReadTable(con, "matches") %>% mutate(match = 1)
 profiles <- dbReadTable(con, "profiles")
-ccf <- dbReadTable(con, "ccf") %>% filter(compare_id == max(compare_id))
+ccf <- dbReadTable(con, "ccf") %>% filter(compare_id == 4)
+
+# land id: 225, 238, 253, 257, 258, 265, 270, 289, 304, 322, 362, 383, 386, 394, 409, 415 (chunk)
 
 CCFs_withlands <- ccf %>%
     left_join(dplyr::select(profiles, profile_id, land_id), by = c("profile1_id" = "profile_id")) %>%
@@ -339,23 +352,25 @@ CCFs_withlands <- ccf %>%
     left_join(my_matches, by = c("land_id.x" = "land1_id", "land_id.y" = "land2_id")) %>%
     left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.x" = "land_id")) %>%
     left_join(dplyr::select(all_bullets_metadata, land_id, study, barrel, bullet, land), by = c("land_id.y" = "land_id")) %>%
-    mutate(match = as.logical(match)) 
-CCFs_withlands_nocary <- CCFs_withlands %>%
-    filter(study.x != "Cary", study.y != "Cary")
-
-CCFs_set252 <- CCFs_withlands %>%
-    filter(study.x == "Hamby252", study.y == "Hamby252")
-CCFs_set44 <- CCFs_withlands %>%
-    filter(study.x == "Hamby44", study.y == "Hamby44")
-## TODO: Compare feature distributions of set44 / set252
-## RF with study x study as predictor
-## Start markdown for how to use database
-## DISSERTATION: Feature analysis, 3 sources. ASSUMPTION: Features allow distinguishing of matches and non-matches
-## We showed this with 252. Show that we can't distinguish source. If we CAN, we need noramlization before the analysis.
+    filter(study.x != "Cary", study.y != "Cary") %>%
+    filter(study.y != "Hamby44" | barrel.y != "E") %>%
+    filter(study.x != "Hamby44" | barrel.x != "E") %>%
+    filter(!(land_id.x %in% c(7, 14, 21, 24, 31, 34, 45, 79, 88, 108, 130, 146, 157, 168, 173,
+                              179, 225, 238, 253, 257, 258, 265, 270, 289, 304, 322, 362, 383,
+                              386, 394, 409, 415)),
+           !(land_id.y %in% c(7, 14, 21, 24, 31, 34, 45, 79, 88, 108, 130, 146, 157, 168, 173,
+                              179, 225, 238, 253, 257, 258, 265, 270, 289, 304, 322, 362, 383,
+                              386, 394, 409, 415))) %>%
+    filter(!(land_id.x %in% c(15, 25, 42, 53, 96, 105, 178, 199, 244, 306, 323, 336, 380, 
+                              1, 16, 123, 151, 214, 269, 301, 305, 314, 333, 334)),
+           !(land_id.y %in% c(15, 25, 42, 53, 96, 105, 178, 199, 244, 306, 323, 336, 380, 
+                              1, 16, 123, 151, 214, 269, 301, 305, 314, 333, 334))) %>%
+    arrange(study.x, study.y) %>%
+    mutate(match = as.logical(replace(match, is.na(match), 0)))
 
 set.seed(20170222)
-CCFs_train <- sample_frac(CCFs_withlands_nocary, size = .8)
-CCFs_test = setdiff(CCFs_withlands_nocary, CCFs_train)
+CCFs_train <- sample_frac(CCFs_withlands, size = .8)
+CCFs_test = setdiff(CCFs_withlands, CCFs_train)
 
 includes <- setdiff(names(CCFs_train), c("compare_id", "profile1_id", "profile2_id",
                                          "study.x", "study.y", "barrel.x", "barrel.y",
@@ -372,44 +387,25 @@ CCFs_test %>%
     arrange(desc(forest)) %>%
     head
 
-CCFs_test %>%
-    filter(match) %>%
-    arrange(forest) %>%
-    head
+mytest <- filter(CCFs_test, match, forest < .5) %>% arrange(forest)
+table(c(mytest$land_id.x, mytest$land_id.y))
 
-###
-### Study as Response
-###
-CCFs_train_withcary <- sample_frac(CCFs_withlands, size = .8)
-CCFs_test_withcary = setdiff(CCFs_withlands, CCFs_train_withcary)
-CCFs_train_withcary$study <- factor(paste(CCFs_train_withcary$study.x, CCFs_train_withcary$study.y, sep = "_"))
-CCFs_test_withcary$study <- factor(paste(CCFs_test_withcary$study.x, CCFs_test_withcary$study.y, sep = "_"))
+get_align <- function(prof1, prof2) {
+    mydat <- filter(bullets_smoothed, profile_id == prof1 | profile_id == prof2)
+    mydat$y[mydat$profile_id == prof2] <- mydat$y[mydat$profile_id == prof2] - min(mydat$y[mydat$profile_id == prof2])
+    mydat$y[mydat$profile_id == prof1] <- mydat$y[mydat$profile_id == prof1] - min(mydat$y[mydat$profile_id == prof1])
+    mydat$y[mydat$profile_id == prof2] <- mydat$y[mydat$profile_id == prof2] + filter(CCFs_withlands, profile1_id == prof1, profile2_id == prof2)$lag[1] * 1000
+    
+    print(filter(CCFs_withlands, profile1_id == prof1, profile2_id == prof2)$land_id.x)
+    print(filter(CCFs_withlands, profile1_id == prof1, profile2_id == prof2)$land_id.y)
+    
+    ggplot(data = mydat, aes(x = y, y = l30, colour = factor(profile_id))) +
+        geom_line() +
+        theme_bw()
+}
 
-includes_study <- setdiff(names(CCFs_train_withcary), c("compare_id", "profile1_id", "profile2_id",
-                                         "barrel.x", "barrel.y", "match",
-                                         "bullet.x", "bullet.y", "land.x", "land.y",
-                                         "land_id.x", "land_id.y", "study.x", "study.y"))
-
-rtrees_study <- randomForest(study ~ ., data = CCFs_train_withcary[,includes_study], ntree = 300)
-CCFs_test_withcary$study_forest <- predict(rtrees_study, newdata = CCFs_test_withcary)
-mytbl <- xtabs(~study_forest + study, data = CCFs_test_withcary)
-mytbl / sum(mytbl)
-mytbl / colSums(mytbl)
-
-ggplot(CCFs_train_withcary, aes(x = ccf, fill = match)) +
-    geom_histogram() +
-    facet_wrap(~study) +
-    theme_bw() +
-    scale_y_log10()
-
-ggplot(CCFs_train_withcary, aes(x = double_cor, fill = match)) +
-    geom_histogram() +
-    facet_wrap(~study) +
-    theme_bw() +
-    scale_y_log10()
-
-ggplot(CCFs_train_withcary, aes(x = matches, fill = match)) +
-    geom_histogram() +
-    facet_wrap(~study) +
-    theme_bw() +
-    scale_y_log10()
+for (i in 1:nrow(mytest)) {
+    print(get_align(mytest$profile1_id[i], mytest$profile2_id[i]))
+    value <- readline("Press Enter to Continue, or q to Quit")
+    if (value == "q") break;    
+}
