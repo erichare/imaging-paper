@@ -385,7 +385,7 @@ includes <- setdiff(names(CCFs_withlands), c("compare_id", "profile1_id", "profi
                                          "bullet.x", "bullet.y", "land.x", "land.y",
                                          "land_id.x", "land_id.y", "signature_length", "lag", "overlap"))
 
-rtrees <- randomForest(factor(match) ~ ., data = CCFs_withlands[,includes], ntree = 300)
+rtrees <- randomForest(factor(match) ~ ., data = CCFs_train[,includes], ntree = 300)
 CCFs_test$forest <- predict(rtrees, newdata = CCFs_test, type = "prob")[,2]
 imp <- data.frame(importance(rtrees))
 xtabs(~(forest > 0.5) + match, data = CCFs_test)
