@@ -14,8 +14,8 @@ library(stringr)
 ###
 dbname <- "bullets"
 user <- "buser"
-password <- "mFGy7P^BTWxnDW"
-host <- "50.81.214.252"
+password <- readLines("buser_pass.txt")
+host <- "127.0.0.1"
 
 con <- dbConnect(MySQL(), user = user, password = password,
                  dbname = dbname, host = host)
@@ -235,7 +235,7 @@ dbWriteTable(con, "signatures", bullets_smoothed, row.names = FALSE, append = TR
 ###
 ### Comparisons
 ###
-cid <- 23
+cid <- 24
 compares <- dbReadTable(con, "compares") %>% filter(compare_id == cid)
 
 bullets_smoothed <- dbReadTable(con, "signatures") %>% filter(run_id %in% c(compares$run1_id[1], compares$run2_id[1]))
@@ -361,18 +361,16 @@ CCFs_withlands <- ccf %>%
     filter(study.x != "Cary", study.y != "Cary") %>%
     filter(study.y != "Hamby44" | barrel.y != "E") %>%
     filter(study.x != "Hamby44" | barrel.x != "E") %>%
-    filter(!(land_id.x %in% c(7, 14, 21, 24, 31, 34, 45, 79, 88, 108, 130, 146, 157, 168, 173,
-                              179, 225, 238, 253, 257, 258, 265, 270, 289, 304, 322, 362, 383,
-                              386, 394, 409, 415)),
-           !(land_id.y %in% c(7, 14, 21, 24, 31, 34, 45, 79, 88, 108, 130, 146, 157, 168, 173,
-                              179, 225, 238, 253, 257, 258, 265, 270, 289, 304, 322, 362, 383,
-                              386, 394, 409, 415))) %>%
-    filter(!(land_id.x %in% c(15, 25, 42, 53, 96, 105, 178, 199, 244, 306, 323, 336, 380, 
-                              1, 16, 123, 151, 214, 269, 301, 305, 314, 333, 334)),
-           !(land_id.y %in% c(15, 25, 42, 53, 96, 105, 178, 199, 244, 306, 323, 336, 380, 
-                              1, 16, 123, 151, 214, 269, 301, 305, 314, 333, 334))) %>%
-    arrange(study.x, study.y) %>%
-    mutate(match = as.logical(replace(match, is.na(match), 0)))
+    # filter(!(land_id.x %in% c(7, 14, 21, 24, 31, 34, 45, 79, 88, 108, 130, 146, 157, 168, 173,
+    #                           179, 225, 238, 253, 257, 258, 265, 270, 289, 304, 322, 362, 383,
+    #                           386, 394, 409, 415)),
+    #        !(land_id.y %in% c(7, 14, 21, 24, 31, 34, 45, 79, 88, 108, 130, 146, 157, 168, 173,
+    #                           179, 225, 238, 253, 257, 258, 265, 270, 289, 304, 322, 362, 383,
+    #                           386, 394, 409, 415))) %>%
+    # filter(!(land_id.x %in% c(15, 25, 42, 53, 96, 105, 178, 199, 244, 306, 323, 336, 380, 
+    #                           1, 16, 123, 151, 214, 269, 301, 305, 314, 333, 334)),
+    #        !(land_id.y %in% c(15, 25, 42, 53, 96, 105, 178, 199, 244, 306, 323, 336, 380, 
+    #                           1, 16, 123, 151, 214, 269, 301, 305, 314, 333, 334))) %>%
     arrange(study.x, study.y) %>%
     mutate(match = as.logical(replace(match, is.na(match), 0)))
 
