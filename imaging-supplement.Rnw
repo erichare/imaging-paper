@@ -191,7 +191,7 @@ The solution to the system is:
 
 The scatterplot in Figure~\ref{fig:residual} shows the residuals of such a fit.
 In this instance, the radius is estimated as $\hat{r} = \Sexpr{pars$radius}\mu m = \Sexpr{pars$radius/1000}mm$ and the land covers about \Sexpr{diff(range(dbr111$theta))} degrees.  Both of these estimates are consistent with a 9 mm bullet fired by a Ruger P-85.
-The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For a profile at height $x = 100\mu m$ there is a residual circular structure that does not show up for all signatures. 
+The residuals are dominated, as expected, by the shoulders, which show up as large positive residuals. For a profile at height $x = 100\mu m$ there is a residual circular structure that does not show up for all signatures. 
 
 \begin{figure}[hbtp]
   \centering
@@ -421,7 +421,7 @@ At larger heights  individual characteristics become less distinctive, making tr
 %
 \begin{figure}[hbtp]
 \centering
-<<crosscuts-sd, echo=FALSE, fig.height=5, fig.width=8, out.width='.7\\textwidth', dependson='setup-signatures'>>=
+<<crosscuts-sd, message=FALSE, echo=FALSE, fig.height=5, fig.width=8, out.width='.7\\textwidth', dependson='setup-signatures'>>=
 qplot(x, sd, data=stats, geom="line", group=bullet, alpha=I(0.5)) + theme_bw() +
   geom_smooth(group=1) + 
   xlab("Height (from the bottom of the bullet)") +

@@ -67,7 +67,7 @@ Ames Iowa 50011-1210\\
 \end{aug}
 %
 \begin{abstract}
-In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is one of the primary goals of firearm examination. We propose an automated framework for the analysis of the 3D surface measurements of bullet lands that first transcribes the markings into a 2D plotting framework. This makes identification of matches easier and allows for a quantification of both matches and matchability of barrels. The automatic matching routine we propose manages to (a) correctly identify lands (the surface between two bullet grooves) with too much damage to be suitable for comparison, and (b) correctly identify all 10,384 land-to-land matches of the James Hamby study \citep{hamby:2009}.
+In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is one of the primary goals of firearm examination. We propose an automated framework for the analysis of the 3D surface measurements of bullet lands that first transcribes the markings into a 2D plotting framework. This makes identification of matches easier and allows for a quantification of both matches and matchability of barrels. The automatic matching routine we propose manages to (a) correctly identify land impressions (the surface between two bullet groove impressions) with too much damage to be suitable for comparison, and (b) correctly identify all 10,384 land-to-land matches of the James Hamby study \citep{hamby:2009}.
 \end{abstract}
 
 %\begin{keyword}[class=MSC]
@@ -158,7 +158,7 @@ From a statistical standpoint, identification of the gun that fired the bullet(s
 
 Current firearm examination practice relies mostly on visual assessment and comparison of striation. Indeed, the AFTE Theory of Identification (https://afte.org/about-us/what-is-afte/afte-theory-of-identification) explicitly requires that examiners evaluate the strength of similarity between two samples relative to other comparisons they may have carried out in the past. An attempt to quantify the degree of similarity consists in counting the number of consecutively matching striae (CMS) between two bullets, first proposed by \citet{biasotti:1959}. This approach has two drawbacks, however. First, determining matching striae is still a subjective activity. Second, as discussed by \citet{miller:1998}, the number of CMS may be high even if the bullets were not fired by the same gun.
 
-Here, we focus on the question of defining a metric that can be used to objectively compare two bullets. We propose a framework which allows for the automatic analysis of the surface topologies of bullets, and the transcription of the individual characteristics into a 2D plotting framework. 
+Here, we focus on the question of defining a metric that can be used to objectively compare two bullets. We propose a framework which allows for the automatic analysis of the surface topologies of bullets, and the transcription of the individual characteristics into a set of features that quantify their similarities.
 This allows for an objective and quantitative assessment of striae-based bullet matches.
 
 %\hh{XXX More detailed discussion of automatic approaches and database discussion XXX}
@@ -182,6 +182,7 @@ We work with images from the James Hamby Consecutively Rifled Ruger Barrel Study
     }
 \end{subfigure}
 \caption{Example of a groove-to-groove scan of a bullet land. The red-dotted rectangle on the right shows the location and orientation of the segment. }
+\label{fig:allx3p}
 \end{figure}
 
 <<width, echo=FALSE>>=
@@ -191,7 +192,7 @@ typical_width <- read.csv("csvs/grooves.csv") %>%
     round(digits = 2)
 @
 
-Each fired bullet is provided in the form of a set of six x3p files, where each file is a surface scan between adjacent grooves on the bullet, called a ``land". In the Hamby data, typical length (groove-to-groove) of a land is about \Sexpr{typical_width} micrometers or \Sexpr{typical_width / 1000} millimeters. For notational simplicity, we refer to a particular land of a bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
+Each fired bullet is provided in the form of a set of six x3p files, where each file is a surface scan between adjacent groove impressions on the bullet, called a ``land" or land impression. The shoulders are the raised portion of the surface between the groove impression and the land impression. In the Hamby data, typical length (shoulder-to-shoulder) of a land is about \Sexpr{typical_width} micrometers or \Sexpr{typical_width / 1000} millimeters. For notational simplicity, we refer to a particular land of a bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
 
 The typical number and width of striation markings on bullets varies significantly depending on the gun barrel. For instance, a Smith and Wesson barrel with a land-width of 2.4 millimeters contained an average 60 striae, with an average width of about 0.08 millimeters~\citep{chu:2011}.
 
@@ -217,9 +218,9 @@ Other work on 3D images has been described by \citet{petraco:2012}, who also foc
 
 \section{Bullet signatures}
 
-To analyze the striation pattern, we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section of the surface measurements at a fixed height $x$ along the bullet land.
+To analyze the striation pattern, we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section of the surface measurements at a fixed height $x$ along the bullet land, as illustrated in Figure \ref{fig:allx3p}.
 %An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the surface measurements across. 
-Figure \ref{fig:fixedX} shows a plot of the side profile of a bullet land. It can be seen that the global structure of the land dominates the appearance of the plot. The grooves can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
+Figure \ref{fig:fixedX} shows a plot of the side profile of a bullet land. It can be seen that the global structure of the land dominates the appearance of the plot. The shoulders can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
 \begin{figure}[hbtp]
   \centering
@@ -254,27 +255,27 @@ The smooth curve on the plot represents a segment of a perfect circle with the s
 %\subsection{Loess Fit}
 Instead of a circular fit, we use multiple loess fits to model the overall structure and extract the bullet markings. 
 
-\subsection{Identifying groove locations}
+\subsection{Identifying shoulder locations}
 %In an attempt to improve upon the previous algorithm, w
-We first identify the location of the left and right grooves in the image. The grooves are assumed to contain no information relevant for determining matches. They also dominate the structure, and therefore need to be removed.  
-Fortunately, the location and appearance of the grooves in the surface profiles is quite consistent.
-Surface measurements reach local maxima around the peak of the groove at either end of the range of $y$, and we can then follow the descent of the surface measurements inwards to the valley of the groove. 
+We first identify the location of the left and right shoulders in the image. The groove impressions are assumed to contain no information relevant for determining matches, and the shoulders identify the location at which the land impression begins. The shoulders also dominate the structure, and therefore need to be removed.  
+Fortunately, the location and appearance of the shoulders in the surface profiles is quite consistent.
+Surface measurements reach local maxima around the peak of the shoulder at either end of the range of $y$, and we can then follow the descent of the surface measurements inwards to the valley of the shoulder. 
 The location of the valleys mark the points at which we trim the image. The procedure can be described as follows:
 
 \begin{enumerate}
     \item At a fixed height $x$ extract a bullet's profile (Figure~\ref{fig:loess_step1}, with $x = 243.75\mu m$).
-    \item For each $y$ value, smooth out any deviations occurring near the minima by twice applying a rolling average with a pre-set \emph{smoothing factor} $s$. (Figure~\ref{fig:loess_step3}, smoothing factor $s = 35$ corresponding to 55$\mu m$).
+    \item For each $y$ value, smooth out any deviations occurring near the minima by twice applying a rolling average with a pre-set \emph{smoothing factor} $s$. (Figure~\ref{fig:loess_step3}, smoothing factor $s = 35$(data points) corresponding to 55$\mu m$).
 %    \item For each smoothed $y$ value, compute another rolling average using the same smoothing factor as above. (Figure~\ref{fig:loess_step3}).
-    \item Determine the location of the peak of the left groove by finding the first doubly-smoothed value $y_i$ that is the maximum within its smoothing window (e.g.\ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$, where $i$ is between 1  and $\lfloor s/2 \rfloor$). We call the location of this peak $p_{\ell}$ (see Figure~\ref{fig:loess_step47}). 
-    \item Similarly, determine the location of the valley of the left groove by finding the first double-smoothed $y_j$ that is the minimum within its smoothing window. Call the location of this valley $v_{\ell}$.
-    \item Reverse the order of the $y$ values and repeat the previous two steps to find the peak and valley of the right groove, $(p_{r}, v_{r})$.
-    \item Trim the surface measurements to values within the two grooves (i.e.\ remove all records with $y_i < v_{\ell}$ and $y_i > v_{r}$) (see Figure~\ref{fig:loess_step47}).
+    \item Determine the location of the peak of the left shoulder by finding the first doubly-smoothed value $y_i$ that is the maximum within its smoothing window (e.g.\ such that $y_i > y_{i - 1}$ and $y_i > y_{i + 1}$, where $i$ is between 1  and $\lfloor s/2 \rfloor$). We call the location of this peak $p_{\ell}$ (see Figure~\ref{fig:loess_step47}). 
+    \item Similarly, determine the location of the valley of the left shoulder by finding the first double-smoothed $y_j$ that is the minimum within its smoothing window. Call the location of this valley $v_{\ell}$.
+    \item Reverse the order of the $y$ values and repeat the previous two steps to find the peak and valley of the right shoulder, $(p_{r}, v_{r})$.
+    \item Trim the surface measurements to values within the two shoulder valleys (i.e.\ remove all records with $y_i < v_{\ell}$ and $y_i > v_{r}$) (see Figure~\ref{fig:loess_step47}).
 \end{enumerate}
 
 \begin{figure}[hbtp]
   \centering
 \begin{subfigure}[t]{\textwidth}\centering
-\caption{\label{fig:loess_step1}Step 1 of identifying groove locations: For a fixed height ($x = 243.75\mu m$)  surface measurements for bullet~1-5 are plotted across the range of $y$.}
+\caption{\label{fig:loess_step1}Step 1 of identifying shoulder locations: For a fixed height ($x = 243.75\mu m$)  surface measurements for bullet~1-5 are plotted across the range of $y$.}
 <<loess_step1, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE,  message=FALSE>>=
 br111_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 1-5.x3p", sep = "/"))
 br121_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-1.x3p", sep = "/"))
@@ -289,7 +290,7 @@ p1
 @
 \end{subfigure}
 \begin{subfigure}[t]{\textwidth}\centering
-\caption{\label{fig:loess_step3}Step 2 of identifying groove locations: The  surface measurements are smoothed twice with a smoothing factor of $s = 35$. The orange rectangle shows an example of the smoothing window. Valleys and peaks are detected, if they are not within the same window.}
+\caption{\label{fig:loess_step3}Step 2 of identifying shoulder locations: The  surface measurements are smoothed twice with a smoothing factor of $s = 35$. The orange rectangle shows an example of the smoothing window. Valleys and peaks are detected, if they are not within the same window.}
 <<loess_step3, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE,  message=FALSE>>=
 subdata <- br111_bullet
 smoothfactor <- 35
@@ -308,7 +309,7 @@ p3
 @
 \end{subfigure}
 \begin{subfigure}[t]{\textwidth}\centering
-\caption{\label{fig:loess_step47}Steps 3 -- 6 of identifying groove locations: After smoothing the surface measurements extrema on the left and right are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside the blue boundaries are removed (shown in grey)}
+\caption{\label{fig:loess_step47}Steps 3 -- 6 of identifying shoulder locations: After smoothing the surface measurements extrema on the left and right are detected (marked by vertical lines, red indicating peaks and blue indicating valleys). Values outside the blue boundaries are removed (shown in grey)}
 <<loess_step47, echo=FALSE, fig.width=10, fig.height=3.5, out.width='.5\\textwidth', warning=FALSE,  message=FALSE>>=
     lengthdiff <- length(subdata$value) - length(smoothed_truefalse)
     
@@ -338,7 +339,7 @@ p3
     p4
 @
 \end{subfigure}
-\caption{Overview of all six steps of the smoothing algorithm to identify and remove grooves from the bullet images.}
+\caption{Overview of all six steps of the smoothing algorithm to identify and remove shoulders and groove impressions from the bullet images.}
 \end{figure}
 
 The smoothing factor $s$ introduced in the algorithm represents the window size to use for a rolling average. Higher values of $s$ therefore lead to more smoothing. Empirically, a value of $s = 35$ for the smoothing factor seems to work well (the smoothing factor is further discussed in Section~\ref{sec:smoothing}). It is important to note that the smoothing pass is done twice. That is, the smoothed data are once again smoothed by computing a new rolling average with the same smoothing factor. This bears some similarities to the ideas of John Tukey in his book Exploratory Data Analysis, where he describes a smoothing process called ``twicing" in which a second pass is made on the residuals computed from the first pass and then added back to the result~\citep{tukey:1977}. This has the effect of introducing a bit more variance back into the smoothed data. 
@@ -347,7 +348,7 @@ We instead performed a second smoothing pass on the smoothed data, which has the
 \subsection{Removing curvature}
 Next, we fit a loess regression to the data. Loess regression \citep{cleveland:1979} is based on the assumption that the relationship between two random variables $X$ and $Y$ can be described in the form of a smooth, continuous function $f$ with $y_i = f(x_i) + \varepsilon_i$ for all values $i = 1, ..., n$. The function $f$ is approximated via locally weighted polynomial regressions. Parameters of the estimation are $\alpha$, the proportion of all points included in the fit (here, $\alpha = 0.75$), the weighting function and the degree of the polynomial (here, we fit a quadratic regression). 
 
-The main idea of locally weighted regression is to use a weighting routine that  emphasizes the effect of points close to the fitting location and de-emphasizes the effect of points as they are further away. The weighting function used here is the tricubic function $w(d) = \left(1 - d^3\right)^3$, for $d \in [0,1]$ and $w(d) = 0$ otherwise. Here, $d$ is defined as the distance between $x_i$ and the location of the fit $x_o$ and the maximum distance of the range of the $x$-values for span $\alpha$ in $x_o$. 
+The main idea of locally weighted regression is to use a weighting routine that emphasizes the effect of points close to the fitting location and de-emphasizes the effect of points as they are further away. The weighting function used here is the tricubic function $w(d) = \left(1 - d^3\right)^3$, for $d \in [0,1]$ and $w(d) = 0$ otherwise. Here, $d$ is defined as the distance between $x_i$ and the location of the fit $x_o$, divided by the overall range of the included data, so as to map the results to a $[0,1]$ range as the definition requires.
 
 %\hh{XXX standard errors: are based on independence of errors (which we don't have because of the high autocorrelation) and the assumption that the amount of bias is neglible. Which we don't know. We can produce standard errors, but (a) the nominal confidence level will be violated, and (b) the errors only allow for pointwise errors. We need a different approach. XXX}
 
@@ -411,7 +412,7 @@ subLOFx1 <- processBullets(read_x3p(im1), name = im1, x = 100)
 subLOFx2 <- processBullets(read_x3p(im2), name = im2, x = 100)
 #subLOFx1 <- subset(lof, bullet=="Br1 Bullet 1-5")
 #subLOFx2 <- subset(lof, bullet=="Br1 Bullet 2-1")
-subLOFx1$y <- subLOFx1$y + 23*1.5625 # working now!!!
+#subLOFx1$y <- subLOFx1$y + 23*1.5625 # working now!!!
 lofX <- rbind(data.frame(subLOFx1), data.frame(subLOFx2))
 
 # smooth
@@ -570,7 +571,7 @@ All of the other steps are done on pairs of bullet lands:
 \begin{enumerate}
 \item {\bf Smooth the two signatures} using a loess with a very small span (see Figure~\ref{fig:smooth}). 
 \item Use cross-correlation to {\bf find the best alignment} of the two signatures: shift one of the signatures by the lag indicated by the cross-correlation function (see Figure~\ref{fig:ccf} for the cross-correlation function and Figure~\ref{fig:crosscutX} for the resulting shift).
-\item Using a rolling average, {\bf identify peaks and valleys} for each of the signatures. We then define an interval around the location of the extrema on each side as one third of the distance to the location of the next extrema (see Figure~\ref{fig:smoothcutb}). Peaks and valleys constitute the \emph{striation marks} on the bullet.
+\item Using a rolling average, {\bf identify peaks and valleys} for each of the signatures by identifying points at which the derivative of the signature is equal to zero. We then define an interval around the location of the extrema on each side as one third of the distance to the location of the next extrema (see Figure~\ref{fig:smoothcutb}). Peaks and valleys constitute the \emph{striation marks} on the bullet.
 \item {\bf Match striations across signatures:} based on the intervals around the extrema as defined above, we identify common intervals as the areas in which two or more of the individual intervals overlap: a joint interval is defined as the smallest interval that encompasses all of the overlapping intervals. A joint interval is then called a match(ing stria) between the signatures, if all of the intervals are of the same type of extrema, i.e.\ they are either all peaks or all valleys. In Figure~\ref{fig:match} all matches are shown as color-filled rectangles corresponding to their type of extrema (peaks are shown in orange, and valleys in green). Non-matching intervals are left grey. 
 \item {\bf Extract features from the aligned signatures and the matches between them:} many different features can be extracted from the aligned signatures. Here, we describe a few of the ones that can be found in the literature and some that we found to be of practical relevance:
 \begin{enumerate}[label=(\roman*)]
@@ -687,9 +688,8 @@ qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I(
   scale_x_continuous(breaks = c(-100, -50, lag, 0, 50, 100),
                      minor_breaks = c(-75,-25,25, 75))
 @
-\caption{\label{fig:ccf}Cross-correlation function between the two signatures shown in Figure~\ref{fig:crosscut} at lags between -100 and 100. The correlation is maximized at a lag of -17, indicating the largest amount of agreement between the signatures. Figure~\ref{fig:crosscutX} shows the lag-shifted signatures.}
+\caption{\label{fig:ccf}Cross-correlation function between the two signatures shown in Figure~\ref{fig:crosscut} at lags between -100 and 100. The correlation is maximized at a lag of -2, indicating the largest amount of agreement between the signatures. Figure~\ref{fig:crosscutX} shows the slight change resulting from the lag-shifted signatures.}
 \end{figure}
-
 
 \subsection{Impact of bullet height}\label{sec:heights}
 The height at which signatures are extracted for a comparison between bullet lands matters -- signatures taken from heights that are further apart, show more pronounced differences between the signatures. 
@@ -751,7 +751,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
 %An opportunity that arises from comparing multiple cross sections of a bullet's surface measurements is the following:
 
 \subsection{Varying smoothing factor}\label{sec:smoothing}
-As mentioned earlier, the algorithm for detecting peaks and valleys depends on the selection of a smoothing window, called the smoothing factor or span. A smoothing factor of $k$ means that the  $k$ closest observations to $x_o$ are considered for a fit for $x_o$. Because surface measurements are recorded at an equidistant resolution (here, of 1.5625$\mu m$), we decided to only consider odd smoothing factors $2k + 1$, which means that the  $k$ observations to the left and right of $x_o$ are considered for a local fit of $x_o$. For detecting and removing the grooves prior to fitting a loess regression we selected a smoothing factor  of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 25 seems more appropriate. %We can investigate the performance of peak/valley detection across different smoothing factors.
+As mentioned earlier, the algorithm for detecting peaks and valleys depends on the selection of a smoothing window, called the smoothing factor or span. A smoothing factor of $k$ means that the  $k$ closest observations to $x_o$ are considered for a fit for $x_o$. Because surface measurements are recorded at equal sampling intervals (here, of 1.5625$\mu m$), we decided to only consider odd smoothing factors $2k + 1$, which means that the  $k$ observations to the left and right of $x_o$ are considered for a local fit of $x_o$. For detecting and removing the shoulders prior to fitting a loess regression we selected a smoothing factor of 35, while for detecting the peaks/valleys of the loess residuals a smoothing factor of 25 seems more appropriate. %We can investigate the performance of peak/valley detection across different smoothing factors.
 
 Figure~\ref{fig:varysmooth} displays the  peaks and valleys detected in the same signature at smoothing factors of 5, 25, and 45, respectively. The dark line corresponds to the smoothed values, while the grey line in the back shows the raw signature. The choice of smoothing factor is a classical decision of a bias/variance trade-off. It is immediately clear that a small smoothing factor like 5 is a poor choice. It results in a significant amount of noise in the data such that even just a point or two can skew the rolling average enough for a peak or valley to be detected. Given that striation widths are typically much larger, we are in effect muddying the waters by performing such minimal smoothing. Another consideration is that the smoothing should not fall below the  resolution of the equipment at which the surface measurements are taken -- so as to not introduce artifacts in the analysis. 
 
@@ -793,7 +793,7 @@ ggplot() + theme_bw() +
 
 
 \section{Evaluation}
-In order to get a better understanding of  how  the matching algorithm works in known matches and non-matches, we investigate its performance using the James Hamby study data. As a first step, we automatically assess the quality of each of the lands by  checking that we can identify a stable region on each land. For this, we compute the cross-correlation of signatures extracted from heights 25$\mu m$ apart. For a stable region, we require a minimum of 0.95 for the cross correlation. Four lands from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these lands has scratch marks across the surface, also known as `tank rash'.
+In order to get a better understanding of  how  the matching algorithm works in known matches and non-matches, we investigate its performance using the James Hamby study data. As a first step, we automatically assess the quality of each of the lands by  checking that we can identify a stable region on each land. For this, we compute the cross-correlation of signatures extracted from heights 25$\mu m$ apart. For a stable region, we require a minimum of 0.95 for the cross correlation. Four lands from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these lands has scratch marks across the surface, also known as `tank rash' \citep{hamby:2009}.
 %
 \begin{figure}
   \centering
@@ -828,7 +828,7 @@ It might not be reasonable to assume that we can match all lands, but the idea i
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\textwidth}\centering
-\caption{Maximal number of CMS between unknown bullet C-3 and all of the other 118 considered (known) lands. For two lands the number of maximum CMS is high. }
+\caption{Maximal number of CMS between unknown bullet land C-3 and all of the other 118 considered (known) lands. For two lands the number of maximum CMS is high. }
 <<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
 load("data/data-25-25/unkn9.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
@@ -1117,7 +1117,7 @@ levels(rocs$varLabel) <- c(
 
 
 labels <- unique(subset(rocs, auc > 0.5)[,c("variable", "auc")])
-labels$labels <- sprintf("AUC: %.2f", labels$auc)
+labels$lbls <- sprintf("AUC: %.2f", labels$auc)
 labels$type <- NA
 
 eer <- rocs %>% filter(auc > 0.5) %>% 
@@ -1126,13 +1126,14 @@ eer <- eer %>% group_by(variable) %>% mutate(
   minerror = differror==min(differror),
   labels = sprintf("EER: %.2f", 0.5*(`FALSE`+1-`TRUE`))
 ) %>% filter(minerror==TRUE)
+eer <- eer %>% left_join(select(labels, variable, auc_lbl = lbls), by = c("variable" = "variable"))
   
 ggplot(data=subset(rocs, auc > 0.5)) +
   geom_ribbon(aes(x=`FALSE`, ymax=`TRUE`, ymin=0), alpha=0.2) +
   geom_line(aes(x=`FALSE`,y=`TRUE`))+ theme_bw() + 
   xlab("False negative rate") + 
   ylab("False positive rate") + facet_wrap(facets=~varLabel, ncol=4) + 
-  geom_label(x=1, y=0, aes(label=labels), data=labels, hjust=1, vjust=0) + 
+  geom_label(x=1, y=0, aes(label=auc_lbl), data=eer, hjust=1, vjust=0) + 
   geom_abline(linetype=2) + 
   geom_point(aes(x=`FALSE`, y=`TRUE`), data=eer, size=2.5) +
   geom_label(x=1, y=0.125, aes(label=labels), data=eer, hjust=1, vjust=0)
@@ -1367,7 +1368,7 @@ qplot(data=predm, value, match, geom="jitter", colour=match, shape=match) + them
   theme(legend.position="none")
 
 @
-\caption{\label{fig:tree-forest}Prediction results from the tree and the forest. Using a cut-off probability of 0.5 the forest correctly predicts every single comparison. Compared to the tree, the forest's prediction probabilities are  shrunk towards either end of the prediction range. }
+\caption{\label{fig:tree-forest}Prediction results from the tree and the forest. Using a cut-off probability of 0.5 the forest correctly predicts every single comparison. Compared to the tree, the forest's prediction probabilities are  shrunk towards either end of the prediction range.}
 \end{figure}
 
 Besides resulting in a probabilistic quantification of matches, random forests also provide an assessment of the importance of each of the features derived from the bullets' 3D topological surface measurements. Figure~\ref{fig:importance} shows an overview of the importance of each variable measured as the mean decrease in the Gini index when the variable in question is included in a tree (for the exact values please refer to Supplement Section~\ref{supp:randomforest}). 
@@ -1400,7 +1401,7 @@ Besides including results from known matches against known non-matches, we can i
 
 We present an algorithm which detects the most prominent but least relevant structure of a bullet from a firearms identification perspective, removes these features, and produces residuals which allow for the easy identification of markings. We have generalized this algorithm to align the residuals from two bullets to automatically determine whether they are indistinguishable. A random forest model provides a probabilistic assessment of the strength of a match, along with an ordering of the relevance of features. Matching bullets is clearly not a one-step process, but rather a sequence of data analysis tasks each deserving attention. As there is no scientific standard in place at this point in time, our intent is to explain an approach to addressing these tasks, while documenting all steps and providing all code so other researchers and forensic scientists can reproduce and expand on our findings.
 
-The matching algorithm is sensitive to the parameter choices made. The heights at which signatures are extracted (currently 25$\mu m$ apart) to evaluate stability, as well as the cross-correlation factor (currently 0.95) we set as a minimum threshold do affect the final outcome. Another parameter that must be selected is the amount of smoothing when identifying peaks and grooves (currently, a window of 23.4375$\mu m$ is used, corresponding to a window of 7 values to the left and the right of an observation). We try to lay out in the paper the impact that each of the parameter choices has on the matching performance, but more research and better data are needed to define an optimized scenario.
+The matching algorithm is sensitive to the parameter choices made. The heights at which signatures are extracted (currently 25$\mu m$ apart) to evaluate stability, as well as the cross-correlation factor (currently 0.95) we set as a minimum threshold do affect the final outcome. Another parameter that must be selected is the amount of smoothing when identifying peaks and valleys (currently, a window of 23.4375$\mu m$ is used, corresponding to a window of 7 values to the left and the right of an observation). We try to lay out in the paper the impact that each of the parameter choices has on the matching performance, but more research and better data are needed to define an optimized scenario.
 
 The Hamby study serves as our evaluation `database'. It consists of only  35 bullets -- this is obviously not a particularly realistic scenario for an automatic matching procedure, but for now we are unaware of other databases containing bullets in the x3p format that we could add to our study.
  
@@ -1408,7 +1409,7 @@ The feasibility of creating a database of images that could be used to identify 
 The findings of the NRC report on imaging are based on two-dimensional greyscale images, which the committee argued were not reliable enough for distinguishing between fine marks. This finding coincides with the assessment by \citet{dekinder:2004} based on the IBIS Heritage system. A further re-assessment by \citet{deceuster:2015} came to the same conclusions based on the EvoFinder system. 
 The NRC report also found that results from 2D images can be improved when matches are based on 3D images. This is consistent with the importance of features found here: out of the top five features (see Figure~\ref{fig:importance}), only the total number of matches and mismatches are available for a match based on 2D features.
 
-By suggesting an automated algorithm that first removes class characteristics, such as the grooves and the curvature of the bullet to reveal the region of the  land, then identifies peaks and valleys on this land, we reduce subjectivity and with it possible sources of bias. In particular, `the concept of counting striations is subjective and based on experience'~\citep{miller:1998}. The steps outlined in this paper could also help explore other important forensic science problems. In particular, more general toolmark examination can benefit from the approach we discuss.
+By suggesting an automated algorithm that first removes class characteristics, such as the groove impressions, shoulders, and the curvature of the bullet to reveal the region of the land, then identifies peaks and valleys on this land, we reduce subjectivity and with it possible sources of bias. In particular, `the concept of counting striations is subjective and based on experience'~\citep{miller:1998}. The steps outlined in this paper could also help explore other important forensic science problems. In particular, more general toolmark examination can benefit from the approach we discuss.
 
 For a fair assessment of the performance of an algorithm, we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package bulletr~\citep{bulletr}, and the code to produce this paper is available at \url{http://www.github.com/erichare/imaging-paper}. To understand whether an automated approach along the lines of the one we propose can accurately identify sets of bullets with undistinguishable markings, it will be necessary to assemble a much larger database that includes a wide range of ammunition types, degrees of damage, gun makes, etc. We are unaware of the existence of any such database. In addition to serving as a realistic testbed for the performance of the automated matching algorithm, such a database would also permit testing the underlying, as of yet untested, assumptions of uniqueness and reproducibility of the markings left by a gun on bullets.
 

@@ -192,7 +192,7 @@ The solution to the system is:
 
 The scatterplot in Figure~\ref{fig:residual} shows the residuals of such a fit.
 In this instance, the radius is estimated as $\hat{r} = 4666.49\mu m = 4.67mm$ and the land covers about 29.5 degrees.  Both of these estimates are consistent with a 9 mm bullet fired by a Ruger P-85.
-The residuals are dominated, as expected, by the grooves, which show up as large positive residuals. For a profile at height $x = 100\mu m$ there is a residual circular structure that does not show up for all signatures. 
+The residuals are dominated, as expected, by the shoulders, which show up as large positive residuals. For a profile at height $x = 100\mu m$ there is a residual circular structure that does not show up for all signatures. 
 
 \begin{figure}[hbtp]
   \centering
@@ -264,10 +264,7 @@ At larger heights  individual characteristics become less distinctive, making tr
 \begin{figure}[hbtp]
 \centering
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# `geom\_smooth()` using method = 'gam'}}\end{kframe}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
 \includegraphics[width=.7\textwidth]{figure/crosscuts-sd-1} 
 
 \end{knitrout}
@@ -325,8 +322,8 @@ Table~\ref{tab:importance} shows the results for feature importance for both of 
 \begin{table}[tbhp]
 \caption{\label{tab:importance}Table of  features derived from bullet image ordered by importance in predicting matches. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree. Averages (and standard deviations) for known matches (KM) and known non-matches (KNM) are shown in the last four columns.}
 \centering
-% latex table generated in R 3.3.3 by xtable 1.8-2 package
-% Wed Mar 22 20:16:12 2017
+% latex table generated in R 3.4.0 by xtable 1.8-2 package
+% Sun Jun 18 09:28:49 2017
 \begin{tabular}{clrrrd{3.2}rd{3.2}}
   \hline
  & Variable & Importance 1 & Importance 2 & KM & (sd) & KNM & (sd).1 \\ 
