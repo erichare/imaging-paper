@@ -421,8 +421,8 @@ In this section, we describe the algorithm for matching signatures first, and th
 images <- file.path(datadir, dir(datadir))
 images <- images[grep(" ", images)]
 
-im1 <- "images/Hamby (2009) Barrel/bullets/Br1 Bullet 1-5.x3p"
-im2 <- "images/Hamby (2009) Barrel/bullets/Br1 Bullet 2-1.x3p"
+im1 <- file.path(datadir, "Br1 Bullet 1-5.x3p")
+im2 <- file.path(datadir, "Br1 Bullet 2-1.x3p")
 
 #lof <- processBullets(paths = images[c(5,7)], x = 100)
 subLOFx1 <- processBullets(read_x3p(im1), name = im1, x = 100)
@@ -511,8 +511,12 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
   geom_line(aes(y=l30), colour="grey70", size=0.5) +
   facet_grid(bulletname~.) +
 #  scale_colour_manual("", values=cols) +
-  theme_bw() + ylab("") + 
-  theme(legend.position="none")
+  theme_bw() + #ylab("") + 
+  theme(legend.position="none") +
+    ylab(expression(paste("Residuals (in ",mu,m,")", sep=""))) + 
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=12))
+
 @
     }
 \end{subfigure}
@@ -549,7 +553,9 @@ qplot(data=lofX, y, resid, colour=I("grey30"), size=I(0.75), geom="line", group=
     theme(legend.position="none") + 
     facet_grid(bulletname~.) +
     geom_line(aes(x=y, y=l30, group=bulletname), data=lofX) +
-  ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) 
+    ylab(expression(paste("Residuals (in ",mu,m,")", sep=""))) + 
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=12))
 @
 }
 \end{subfigure}    
@@ -574,7 +580,8 @@ ggplot() +
     theme(legend.position = c(1,1.1), legend.justification=c(1,1),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) +
-  xlab("y")
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=12)) 
 @
     }
 \end{subfigure}
@@ -667,7 +674,9 @@ qplot(y, resid, group=bulletname, colour=bulletname, data=lof,
   scale_colour_manual("", values=cols) + theme_bw() +
   theme(legend.position = c(1, 1.1), legend.justification=c("right", "top"),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
-  ylab("Residuals of loess fit")
+ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) +
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=20)) 
 @
     }
 \end{subfigure}    
@@ -680,7 +689,9 @@ qplot(y+min(lof$y), resid, group=bulletname, colour=bulletname, data=lofY,
   scale_colour_manual("", values=cols) + theme_bw() +
   theme(legend.position = c(1, 1.1), legend.justification=c("right", "top"),
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
-  ylab("Residuals of loess fit")
+  ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) +
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=20)) 
 @
     }
 \end{subfigure}
@@ -698,12 +709,14 @@ with suitably defined limits for the summation. % (because variances of $f$ and 
 \begin{figure}[hbtp]
   \centering
 <<ccf, echo=FALSE, fig.width = 8, fig.height = 3, out.width = '.65\\textwidth'>>=
-lag <- ccf$lag[which.max(ccf$acf)]
-qplot(x=ccf$lag, xend=ccf$lag, y = 0, yend= ccf$acf, geom="segment", colour = I("grey50")) + 
+maxlag <- ccf$lag[which.max(ccf$acf)]
+dframe <- data.frame(lag = ccf$lag, acf = ccf$acf)
+qplot(data = dframe, x=lag, xend=lag, y = 0, yend= acf, geom="segment", colour = I("grey50")) + 
   theme_bw() + ylab("Correlation") + xlab("Lag k") +
-  geom_segment(aes(x = lag, xend = lag, y = 0, yend =  max(ccf$acf)), colour="black") + 
-  scale_x_continuous(breaks = c(-100, -50, lag, 0, 50, 100),
-                     minor_breaks = c(-75,-25,25, 75))
+  geom_segment(aes(x = maxlag, xend = maxlag, y = 0, yend =  max(ccf$acf)), colour="black") + 
+  scale_x_continuous(breaks = c(-100, -50, maxlag, 0, 50, 100),
+                     minor_breaks = c(-75,-25,25, 75)) +
+  theme(text = element_text(size=20)) 
 @
 \caption{\label{fig:ccf}Cross-correlation function between the two signatures shown in Figure~\ref{fig:crosscut} at lags between -100 and 100. The correlation is maximized at a lag of -2, indicating the largest amount of agreement between the signatures. Figure~\ref{fig:crosscutX} shows the slight change resulting from the lag-shifted signatures.}
 \end{figure}
@@ -756,7 +769,10 @@ ggplot() +
         legend.background = element_rect(fill=alpha('white', 0.4))) + 
   ylim(c(-6,6.5)) + ylab("") + xlab("") + 
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
-  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match))
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)) +
+#      ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) +
+#  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=20)) 
 })
 
 grid.arrange(lop[[1]], lop[[2]], lop[[3]], 
@@ -776,7 +792,7 @@ A larger smoothing factor on the other hand (like 45), seems to be a more plausi
 
 \begin{figure}[hbtp]
   \centering
-<<smoothfac1, echo=FALSE, fig.width=7, fig.height=5.2, out.width='.5\\textwidth', warning=FALSE>>=
+<<smoothfac1, echo=FALSE, fig.width=10, fig.height=5.2, out.width='.75\\textwidth', warning=FALSE>>=
 br111.groove <- get_grooves(br111_bullet)
 br111.loess <- fit_loess(br111_bullet, br111.groove)
 
@@ -802,7 +818,9 @@ ggplot() + theme_bw() +
   geom_line(aes(x=y, y=resid, group=x), data=br111.loess$data,  
             colour="grey50") +
   geom_line(aes(x=y, y=smoothed), data=smooths) +
-  ylab(expression(paste("Signature values (in ",mu,"m)", sep=""))) 
+  ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) +
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=20)) 
 @
 \caption{\label{fig:varysmooth} Peak/valley detection at smoothing factors of 5, 25, and 45, respectively. Note that a smoothing factor of 5 yields enough noise that many very minimal overlapping peaks and valleys are detected, while a smoothing factor of 45 might over-smooth and cause the peaks/valleys to either end disappear or shift  horizontally from their original position in the signature.}
 \end{figure}
@@ -850,45 +868,51 @@ It might not be reasonable to assume that we can match all lands, but the idea i
 load("data/data-25-25/unkn9.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
 
-qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS")
+qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS") + 
+  theme(text = element_text(size=20)) 
 @
 \end{subfigure}
 \begin{subfigure}[b]{.49\textwidth}\centering
 \caption{Overlaid signatures of C-3 and the land with the top matching CMS.}
-<<top, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\textwidth', warning = FALSE>>=
+<<top, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth', warning = FALSE>>=
 res <- reslist[[which.max(cmsdist)]]  
 #res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
 
-print(ggplot() +
+ggplot() +
   theme_bw() + 
-  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=5, data=res$lines, alpha=0.2, show.legend=FALSE) +
+  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, data=res$lines, alpha=0.2, show.legend=FALSE) +
   geom_line(aes(x = y, y = l30, linetype = bullet),  data = res$bullets) +
   scale_linetype_discrete("") + ylab("") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
-  ylim(c(-6,6)) +
+  ylim(c(-6,7)) +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
-  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
-
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)) +
+    ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) +
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=20))
 @
 \end{subfigure}
 \begin{subfigure}[b]{.49\textwidth}\centering
 \caption{Top 2 match with C-3 based on CMS.}
-<<top2, echo=FALSE, fig.width=7, fig.height=3.25, out.width='\\textwidth', warning = FALSE>>=
+<<top2, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth', warning = FALSE>>=
 res <- reslist[[which(cmsdist==14)]]  # number 2
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
 
-print(ggplot() +
+ggplot() +
   theme_bw() + 
-  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=5, data=res$lines, alpha=0.2, show.legend=FALSE) +
+  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, data=res$lines, alpha=0.2, show.legend=FALSE) +
   geom_line(aes(x = y, y = l30, linetype = bullet),  data = res$bullets) +
   scale_linetype_discrete("") + ylab("") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
-  ylim(c(-6,6)) +
+  ylim(c(-6,7)) +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
-  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)) +
+    ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) +
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=20))
 
 @
 \end{subfigure}
@@ -906,7 +930,8 @@ Figure~\ref{fig:cms} shows the strong connection between the maximal number of c
 ggplot(data=subset(bstats, !flagged)) + 
   geom_bar(aes(x=factor(CMS))) + theme_bw() +
   theme(legend.position="bottom") + 
-  xlab("maximum CMS")
+  xlab("maximum CMS") +
+  theme(text = element_text(size=20)) 
 @
 %\end{subfigure}
 %\begin{subfigure}[b]{\textwidth}\centering
@@ -918,7 +943,8 @@ ggplot(data=subset(bstats, !flagged)) +
   geom_bar(aes(x=factor(CMS), fill=km), position="fill") +
   theme(legend.position="bottom") + 
   scale_fill_brewer("", palette="Paired") +
-  xlab("maximum CMS") + ylab("Proportion")
+  xlab("maximum CMS") + ylab("Proportion") +
+  theme(text = element_text(size=20)) 
 @
 \end{minipage}
 %' \end{subfigure}
@@ -965,21 +991,24 @@ There are two things that should be noted at this point: the automated algorithm
 
 \begin{figure}[hbtp]
   \centering
-<<strange-res, echo=FALSE, fig.width=7, fig.height=3.25, out.width='.65\\textwidth', warning=FALSE>>=
+<<strange-res, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.65\\textwidth', warning=FALSE>>=
 load("data/data-25-25/unkn47.RData")
 res <- reslist[[106]]
 res$bullets$bullet <- scrubPath(res$bullets$bullet)
 
-print(ggplot() +
+ggplot() +
   theme_bw() + 
-  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=5, data=res$lines, alpha=0.2, show.legend=FALSE) +
+  geom_rect(aes(xmin=xmin, xmax=xmax, fill=factor(type)), ymin=-6, ymax=6, data=res$lines, alpha=0.2, show.legend=FALSE) +
   geom_line(aes(x = y, y = l30, linetype = bullet),  data = res$bullets) +
   scale_linetype_discrete("") + ylab("") +
   scale_fill_brewer("", palette="Set2", na.value=alpha("grey50", alpha=0.5)) +
   theme(legend.position = c(1,1), legend.justification=c(1,1)) + 
-  ylim(c(-6,6)) +
+  ylim(c(-6,7)) +
   geom_text(aes(x = meany), y= -5.5, label= "x", data = subset(res$lines, !match)) +
-  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)))
+  geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)) +
+    ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) +
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=15))
 @
 \caption{\label{fig:mismatch}Known mismatch with a relatively large number of maximal consecutive matching striae (twelve) in the middle. The pattern in the middle does look surprisingly similar, however the outer ends of the signatures easily reveals this comparison as mismatch. }
 \end{figure}
@@ -1008,16 +1037,16 @@ densities <- plyr::ldply(features, function(x) {
 dm <- melt(densities, measure.var=c("KM", "KNM"))
 dm$var <- factor(dm$var, levels=features)
 levels(dm$var)[3:4] <- c("#matches", "#non-matches")
-levels(dm$variable) <- c("Known matches (KM)", "Known non-matches (KNM)")
+levels(dm$variable) <- c("Known matches (KM)", "Known non-matches\n (KNM)")
 dm$varLabel <- dm$var
 levels(dm$varLabel) <- c(
-  "Consecutive Matching Striae (CMS)", 
-  "Consecutive Non-Matching Striae (CNMS)",
+  "Consecutive Matching\n Striae (CMS)", 
+  "Consecutive Non-Matching\n Striae (CNMS)",
   "#matches",
   "#non-matches",
   "Average difference (D)",
   "Sum of peaks (S)",
-  "Cross-correlation function (ccf)")
+  "Cross-correlation\n function (ccf)")
 
 qplot(x, value, group=variable, geom="polygon", data=dm, fill=variable, 
       alpha=I(0.6), colour=I("grey20")) + 
@@ -1028,7 +1057,8 @@ qplot(x, value, group=variable, geom="polygon", data=dm, fill=variable,
         legend.justification = c("right", "bottom"),
         legend.background = element_rect(colour="grey75"),
         axis.title.y=element_blank(),
-        plot.margin = unit(c(0,0,0,0), unit="cm"))
+        plot.margin = unit(c(0,0,0,0), unit="cm")) +
+  theme(text = element_text(size=20)) 
 @
 \caption{\label{fig:densities}Overview of all the marginal densities for features described in section~\ref{sec:algorithm}. Shifts in the mode of the density functions between known matches and known non-matches indicate the variable's predictive power in distinguishing matches and non-matches. Predictive power is shown in more detail in Figure~\ref{fig:rocs}.}
 \end{figure}
@@ -1124,11 +1154,11 @@ levels(rocs$variable)[3:4] <- c("#non-matches", "#matches")
 rocs$varLabel <- rocs$variable
 levels(rocs$varLabel) <- c(
   "Sum of peaks (S)",
-  "Cross-correlation function (ccf)",
+  "Cross-correlation\n function (ccf)",
   "#non-matches",
   "#matches",
-  "Consecutive Non-Matching Striae (CNMS)",
-  "Consecutive Matching Striae (CMS)", 
+  "Consecutive Non-Matching\n Striae (CNMS)",
+  "Consecutive Matching\n Striae (CMS)", 
   "Average difference (D)"
   )
 
@@ -1153,7 +1183,8 @@ ggplot(data=subset(rocs, auc > 0.5)) +
   geom_label(x=1, y=0, aes(label=auc_lbl), data=eer, hjust=1, vjust=0) + 
   geom_abline(linetype=2) + 
   geom_point(aes(x=`FALSE`, y=`TRUE`), data=eer, size=2.5) +
-  geom_label(x=1, y=0.125, aes(label=labels), data=eer, hjust=1, vjust=0)
+  geom_label(x=1, y=0.125, aes(label=labels), data=eer, hjust=1, vjust=0) +
+  theme(text = element_text(size=20)) 
 @
 \caption{\label{fig:rocs}ROC curves for all of the features described in section~\ref{sec:algorithm}. Variables are sorted according to their area under the curve (AUC). The equal error rate (EER) is marked by a point on the ROC curve. Except for the distance $D$ between signatures, all individual features derived from the surface measurements and the aligned striation marks are more predictive than the maximal CMS. }
 \end{figure}
@@ -1403,7 +1434,8 @@ qplot(MeanDecreaseGini,1, data=imp3, geom="point") +
   ylim(c(0, 2.75)) + theme_bw() + ylab("") +
   theme(axis.ticks.y=element_blank(), axis.text.y=element_blank(),
         panel.grid.major.y=element_blank(), panel.grid.minor.y=element_blank()) +
-  xlab("Importance (mean decrease in Gini index)")
+  xlab("Importance (mean decrease in Gini index)") +
+   theme(text = element_text(size=15)) 
 @
 \caption{\label{fig:importance}Importance of features in the random forest. Importance is measured in terms of mean decrease in gini index when including the variable in a decision tree.}
 \end{figure}
