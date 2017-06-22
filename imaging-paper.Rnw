@@ -891,7 +891,7 @@ ggplot() +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)) +
     ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) +
   xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
-  theme(text = element_text(size=20))
+  theme(text = element_text(size=18), legend.background = element_rect(fill="transparent"))
 @
 \end{subfigure}
 \begin{subfigure}[b]{.49\textwidth}\centering
@@ -912,7 +912,7 @@ ggplot() +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)) +
     ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) +
   xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
-  theme(text = element_text(size=20))
+  theme(text = element_text(size=18), legend.background = element_rect(fill="transparent"))
 
 @
 \end{subfigure}
@@ -927,8 +927,12 @@ Figure~\ref{fig:cms} shows the strong connection between the maximal number of c
 %' \caption{}
 \begin{minipage}[t]{.47\textwidth}
 <<cms-bars, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth'>>=
+bstats$cmstop <- bstats$CMS
+bstats$cmstop[bstats$CMS >=20] <- "20+"
+bstats$cmstop <- factor(bstats$cmstop)
+bstats$cmstop <- reorder(bstats$cmstop, bstats$CMS)
 ggplot(data=subset(bstats, !flagged)) + 
-  geom_bar(aes(x=factor(CMS))) + theme_bw() +
+  geom_bar(aes(x=cmstop)) + theme_bw() +
   theme(legend.position="bottom") + 
   xlab("maximum CMS") +
   theme(text = element_text(size=20)) 
@@ -940,7 +944,7 @@ ggplot(data=subset(bstats, !flagged)) +
 <<cms-spines, echo=FALSE,  fig.width=7, fig.height=4, out.width='\\textwidth'>>=
 bstats$km <- c( "Known non-match", "Known match")[as.numeric(bstats$match)+1]
 ggplot(data=subset(bstats, !flagged)) + 
-  geom_bar(aes(x=factor(CMS), fill=km), position="fill") +
+  geom_bar(aes(x=cmstop, fill=km), position="fill") +
   theme(legend.position="bottom") + 
   scale_fill_brewer("", palette="Paired") +
   xlab("maximum CMS") + ylab("Proportion") +
@@ -1037,7 +1041,7 @@ densities <- plyr::ldply(features, function(x) {
 dm <- melt(densities, measure.var=c("KM", "KNM"))
 dm$var <- factor(dm$var, levels=features)
 levels(dm$var)[3:4] <- c("#matches", "#non-matches")
-levels(dm$variable) <- c("Known matches (KM)", "Known non-matches\n (KNM)")
+levels(dm$variable) <- c("Known matches\n(KM)", "Known non-matches\n(KNM)")
 dm$varLabel <- dm$var
 levels(dm$varLabel) <- c(
   "Consecutive Matching\n Striae (CMS)", 
