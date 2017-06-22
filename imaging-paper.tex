@@ -348,38 +348,134 @@ Applying the loess fit to a range of different signatures (see Figure~\ref{fig:m
 In this section, we describe the algorithm for matching signatures first, and the impact of parameter choices in the subsections thereafter.
 
 \subsection{Algorithm}\label{sec:algorithm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
 
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in unzip(path, exdir = mydir): error 1 in extracting from zip file}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: 'NA' does not exist in current working directory ('/Users/heike/papers/2015-imaging-paper').}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in unzip(path, exdir = mydir): error 1 in extracting from zip file}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: 'NA' does not exist in current working directory ('/Users/heike/papers/2015-imaging-paper').}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in data.frame(subLOFx1): object 'subLOFx1' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in factor(lofX\$r05): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in levels(lofX\$type) <- c("{}groove"{}, NA, "{}peak"{}): object 'lofX' not found}}\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
 
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in unzip(path, exdir = mydir): error 1 in extracting from zip file}}
 
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: 'NA' does not exist in current working directory ('/Users/heike/papers/2015-imaging-paper').}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in unzip(path, exdir = mydir): error 1 in extracting from zip file}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: 'NA' does not exist in current working directory ('/Users/heike/papers/2015-imaging-paper').}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'subLOFx1' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'subLOFx2' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in ccf(subLOFx1\$resid, subLOFx2\$resid, lag.max = 100, plot = FALSE): object 'subLOFx1' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in ccf\$lag: object of type 'closure' is not subsettable}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'subLOFx1' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in data.frame(subLOFx1): object 'subLOFx1' not found}}\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in matches\$allnas: object of type 'closure' is not subsettable}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in matches\$allnas: object of type 'closure' is not subsettable}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in UseMethod("{}group\_by\_"{}): no applicable method for 'group\_by\_' applied to an object of class "{}function"{}}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in subset.default(lines, lineid != 0): object 'lineid' not found}}\end{kframe}
+\end{knitrout}
 
 \begin{figure}[hbtp]
 \centering
     \begin{subfigure}[t]{\textwidth}\centering
 \caption{Loess smooth of signatures  at a height of $x = 100\mu m$ (span is 0.03).\label{fig:smooth}}{%
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=.65\textwidth]{figure/smooth-1} 
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in ggplot(data, aesthetics, environment = env): object 'lofX' not found}}\end{kframe}
 \end{knitrout}
     }
 \end{subfigure}
 \begin{subfigure}[t]{\textwidth}\centering
 \caption{Using a rolling median peaks and valleys are identified for each signature. Peaks and valleys on the signature correspond to striation marks on the bullet's surface. \label{fig:smoothcutb}}{%
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=.65\textwidth]{figure/smoothcut-1} 
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: 'NA' does not exist in current working directory ('/Users/heike/papers/2015-imaging-paper').}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: 'NA' does not exist in current working directory ('/Users/heike/papers/2015-imaging-paper').}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in rbind(subLOFx1, subLOFx2): object 'subLOFx1' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'lof' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in unique(data\$bullet): object 'lof' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'bAlign' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in unique(lof\$bullet): object 'lof' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in subset(lofX, bullet == b12[1]): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in subset(lofX, bullet == b12[2]): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'b12' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'b12' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in rbind(peaks1\$lines, peaks2\$lines): object 'peaks1' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'peaks' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'lofX' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in fortify(data): object 'peaks' not found}}\end{kframe}
 \end{knitrout}
 }
 \end{subfigure}    
 \begin{subfigure}[t]{\textwidth}\centering
     \caption{Rectangles in the back identify a striation mark on one of the bullets.  Matching striation marks are indicated by color filled rectangles and marked by an `o'. Mismatches are filled in grey and  marked by an `x'.   \label{fig:smoothcutd}}{%
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=.65\textwidth]{figure/smoothmatch-1} 
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'b12' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'b12' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in rbind(lines1, lines2): object 'peaks1' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in !match: invalid argument type}}\end{kframe}
 \end{knitrout}
     }
 \end{subfigure}
@@ -466,18 +562,24 @@ Signatures of each of the two lands, 1-5 and 2-1,  in Figure~\ref{fig:manualmatc
 \begin{subfigure}[b]{.49\textwidth}\centering
 \caption{Raw bullet land signatures.\label{fig:crosscut}}{%
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\textwidth]{figure/crosscuts-1} 
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'lof' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in ggplot(data, aesthetics, environment = env): object 'lof' not found}}\end{kframe}
 \end{knitrout}
     }
 \end{subfigure}    
 \begin{subfigure}[b]{.49\textwidth}\centering
     \caption{Aligned signatures.\label{fig:crosscutX}}{%
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\textwidth]{figure/crosscutsX-1} 
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in strsplit(as.character(x), split = "{}/"{}): object 'lofY' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in ggplot(data, aesthetics, environment = env): object 'lofY' not found}}\end{kframe}
 \end{knitrout}
     }
 \end{subfigure}
@@ -495,7 +597,12 @@ with suitably defined limits for the summation. % (because variances of $f$ and 
 \begin{figure}[hbtp]
   \centering
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in ccf\$lag: object of type 'closure' is not subsettable}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in ccf\$lag: object of type 'closure' is not subsettable}}\end{kframe}
 \includegraphics[width=.65\textwidth]{figure/ccf-1} 
 
 \end{knitrout}

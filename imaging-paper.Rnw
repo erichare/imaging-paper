@@ -96,7 +96,8 @@ library(extrafont)
 library(knitr)
 imgdir <- "Figure/"
 codedir <- "code"
-datadir <- "images/Hamby (2009) Barrel/bullets"
+datadir <- "/Users/heike/papers/dissertations/eric-dissertation/images/Hamby (2009) Barrel/bullets/"
+#datadir <- "images/Hamby (2009) Barrel/bullets"
 
 options(replace.assign=TRUE,scipen=3, digits=2)
 bstats <- read.csv("data/data-25-25/bullet-stats-old.csv")
@@ -241,8 +242,9 @@ dbr111 <- dbr111 %>% mutate(
 qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom="line", size=I(1)) +
   geom_line(aes(x=xpred, y=ypred, group=x), 
             colour="grey30", size=0.25) +
-#  ylab(expression(paste("Surface Measurements (in ",mu,m,")", sep=""))) + 
-  ylab("") +
+  ylab(expression(paste("Relative Height (in ",mu,m,")", sep=""))) + 
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+#  ylab("") +
   theme_bw() + 
   theme(legend.position="bottom") #+ coord_equal()
 @
@@ -285,7 +287,11 @@ br124_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-4.x3p", sep = "/"))
 br125_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-5.x3p", sep = "/"))
 br126_bullet <- get_crosscut(paste(datadir,"Br1 Bullet 2-6.x3p", sep = "/"))
 
-p1 <- qplot(y, value, data = br111_bullet, size=I(1)) + theme_bw() + ylab("Surface measurements")
+p1 <- qplot(y, value, data = br111_bullet, size=I(1)) + theme_bw() + 
+    ylab(expression(paste("Relative Height (in ",mu,m,")", sep=""))) + 
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=20))
+
 p1
 @
 \end{subfigure}
@@ -303,7 +309,10 @@ xloc=250
 p3 <- ggplot() +
   annotate("rect",xmin=xloc-17*1.5625, xmax=xloc+18*1.5625, ymin=80, ymax=200, fill=alpha("orange", alpha=0.5)) + 
   geom_point(aes(x=(1:length(smoothed_truefalse))*1.5625, y=smoothed_truefalse)) + theme_bw() +
-    geom_vline(xintercept=xloc, colour="grey50") + xlab("y") + ylab("Surface measurements")
+    geom_vline(xintercept=xloc, colour="grey50") + 
+    ylab(expression(paste("Relative Height (in ",mu,m,")", sep=""))) + 
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=20))
 
 p3
 @
@@ -334,7 +343,9 @@ p3
         geom_vline(xintercept = subdata$y[groove_ind], colour = "blue") +
         geom_vline(xintercept = subdata$y[peak_ind2], colour = "red") +
         geom_vline(xintercept = subdata$y[groove_ind2], colour = "blue") +
-      xlab("y") + ylab("Surface measurements")
+      ylab(expression(paste("Relative Height (in ",mu,m,")", sep=""))) + 
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=20))
 
     p4
 @
@@ -365,7 +376,9 @@ br111.groove <- get_grooves(br111_bullet)
 
 my.loess <- fit_loess(br111_bullet, br111.groove)
 
-my.loess$fitted + ylab("Surface measurements")
+my.loess$fitted + ylab(expression(paste("Relative Height (in ",mu,m,")", sep=""))) + 
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=20))
 @
 \end{subfigure}
 \begin{subfigure}[b]{.49\textwidth}\centering
@@ -380,7 +393,11 @@ my.loess$fitted + ylab("Surface measurements")
 #qplot(x=x, y=y, geom="polygon", fill=I("steelblue"), data=poly) +
 ggplot() +
   geom_line(aes(x=y, y=resid), data=my.loess$data) +
-  ylab("Residuals of loess fit") + xlab("y") + theme_bw()
+  theme_bw() +
+  ylab(expression(paste("Residuals (in ",mu,m,")", sep=""))) + 
+  xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
+  theme(text = element_text(size=20))
+
 @
 \end{subfigure}
 \caption{Fit and residuals of a loess fit to bullet~1-5 (Barrel~1). The residuals define the {\it signature} of bullet~1-5. %Blue areas around the residuals show  95\% bootstrap confidence intervals (based on $B=1,000$ bootstrap samples).
