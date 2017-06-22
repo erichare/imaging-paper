@@ -1012,7 +1012,7 @@ ggplot() +
   geom_text(aes(x = meany), y= -5.5, label= "o", data = subset(res$lines, match)) +
     ylab(expression(paste("Signatures (in ",mu,"m)", sep=""))) +
   xlab(expression(paste("Relative Location (in ",mu,m,")", sep=""))) + 
-  theme(text = element_text(size=15))
+  theme(text = element_text(size=15), legend.background = element_rect(fill="transparent"))
 @
 \caption{\label{fig:mismatch}Known mismatch with a relatively large number of maximal consecutive matching striae (twelve) in the middle. The pattern in the middle does look surprisingly similar, however the outer ends of the signatures easily reveals this comparison as mismatch. }
 \end{figure}
@@ -1045,7 +1045,7 @@ levels(dm$variable) <- c("Known matches\n(KM)", "Known non-matches\n(KNM)")
 dm$varLabel <- dm$var
 levels(dm$varLabel) <- c(
   "Consecutive Matching\n Striae (CMS)", 
-  "Consecutive Non-Matching\n Striae (CNMS)",
+  "Consecutive Non-Match-\ning Striae (CNMS)",
   "#matches",
   "#non-matches",
   "Average difference (D)",
