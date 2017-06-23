@@ -7,10 +7,6 @@ output:
 bibliography: references.bib
 ---
 
-# Reviewer 1
-
-# Reviewer 2
-
 1. Page 2, line 46-47: I do not understand the phrase, “the transcription of the individual characteristics into a 2D plotting framework.” Please write the idea more clearly. 
 
     **Thank you. We have clarified this statement.**
