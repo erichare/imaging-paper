@@ -17,7 +17,7 @@ bibliography: references.bib
 
 2. Figures. 1, 3, 4, 5, 6, 7, 8, 9, 10, 12b, 12c, 14: These figures all have labels that are too small to be readable or they lack units or both.  The authors must fix all of them in one way or the other.  Without the units, the reader cannot be sure whether the scales along the x direction represent pixels (data points) or um. 
 
-    **XXX TODO: Heike, could you take a stab at this?**
+    **We have updated the figures with more readable labels and with units. Thanks for the suggestion.**
 
 3. Page 8, lines 207-209: I do not understand the sentence, “Here, d is defined as the distance between xi and the location of the fit xo and the maximum distance of the range of the x-values for span alpha in xo.” It appears that the quantity d has two definitions, “distance between xi and the location of the fit xo” and “maximum distance of the range of the x-values”.  This cannot be correct. Please re-write. 
 
@@ -41,8 +41,6 @@ bibliography: references.bib
 
 8. Page 22, figure 19: The perfect separation observed between matching and non-matching data points is not consistent with the modest predicted probabilities shown on the abscissa.  For example, at predicted probabilities of 0.6 to 0.75, I would have expected some dark blue non-matching data points to appear on the right side of the graph.  It would be good to explain what “predicted probability” means precisely for this graph.
 
-    **XXX TODO: Heike, can we explain this better in the paper?**
-    
     **The primary difference in the numbers comes from the fact that one is an out-of-bag error rate, i.e., an error rate computed on the land comparisons that were held out of the trees during the computation of the random forest. Meanwhile, figure 19 is the predicted probability on all land-to-land comparisons provided by our final forest.**
 
 9. Page 3, lines 68-70: The authors’ term for the transition region between land impressions and groove impressions on a bullet surface is unconventional. The authors have chosen to use the word “groove” instead of “shoulder” to describe the transition region between the land impression and the groove impression areas. This could be confusing to a firearms examiner.

@@ -96,8 +96,7 @@ library(extrafont)
 library(knitr)
 imgdir <- "Figure/"
 codedir <- "code"
-datadir <- "/Users/heike/papers/dissertations/eric-dissertation/images/Hamby (2009) Barrel/bullets/"
-#datadir <- "images/Hamby (2009) Barrel/bullets"
+datadir <- "images/Hamby (2009) Barrel/bullets"
 
 options(replace.assign=TRUE,scipen=3, digits=2)
 bstats <- read.csv("data/data-25-25/bullet-stats-old.csv")
