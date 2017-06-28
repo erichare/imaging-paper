@@ -43,9 +43,9 @@
 \begin{frontmatter}
 
 % "Title of the paper"
-\title{Automatic Matching of Bullet Lands}\thanksref{T1}
+\title{Automatic Matching of Bullet Land Impressions}\thanksref{T1}
 \thankstext{T1}{Resources for this manuscript, including R code to reproduce all of the models, tables and figures, can be found at  \url{https://github.com/erichare/imaging-paper}.}
-\runtitle{Automatic Matching of Bullet Lands}
+\runtitle{Automatic Matching of Bullet Land Impressions}
 \runauthor{E. Hare et al.}
 
 % indicate corresponding author with \corref{}
@@ -67,7 +67,7 @@ Ames Iowa 50011-1210\\
 \end{aug}
 %
 \begin{abstract}
-In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is one of the primary goals of firearm examination. We propose an automated framework for the analysis of the 3D surface measurements of bullet lands that first transcribes the markings into a 2D plotting framework. This makes identification of matches easier and allows for a quantification of both matches and matchability of barrels. The automatic matching routine we propose manages to (a) correctly identify land impressions (the surface between two bullet groove impressions) with too much damage to be suitable for comparison, and (b) correctly identify all 10,384 land-to-land matches of the James Hamby study \citep{hamby:2009}.
+In 2009, the National Academy of Sciences published a report questioning the scientific validity of many forensic methods including firearm examination. Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel. During the firing process, rifling, manufacturing defects, and impurities in the barrel create striation marks on the bullet. Identifying these striation markings in an attempt to match two bullets is one of the primary goals of firearm examination. We propose an automated framework for the analysis of the 3D surface measurements of bullet land impressions which transcribes the individual characteristics into a set of features that quantify their similarities. This makes identification of matches easier and allows for a quantification of both matches and matchability of barrels. The automatic matching routine we propose manages to (a) correctly identify land impressions (the surface between two bullet groove impressions) with too much damage to be suitable for comparison, and (b) correctly identify all 10,384 land-to-land matches of the James Hamby study \citep{hamby:2009}.
 \end{abstract}
 
 %\begin{keyword}[class=MSC]
@@ -150,11 +150,11 @@ library(randomForest)
 %}
 Firearm examination is a forensic tool used to help the court determine whether two bullets were fired from the same gun barrel. This process has broad applicability in terms of convictions in the United States criminal justice system. Firearms identification has long been considered an accepted and reliable procedure, but in the past ten years has undergone more significant scrutiny. In 2005, in \emph{United States vs. Green}, the court ruled that the forensic expert could not confirm that the bullet casings came from a specific weapon with certainty, but could merely ``describe" other casings which are similar. Further court cases in the late 2000s expressed caution about the use of firearms identification evidence~\citep{giannelli:2011}.
 
-In 2009, the National Academy of Sciences published a report~\citep{NAS:2009} questioning the scientific validity of many forensic methods including firearm examination. The report states that ``[m]uch forensic evidence -- including, for example, bite marks and firearm and toolmark identification is introduced in criminal trials without any meaningful scientific validation, determination of error rates, or reliability testing to explain the limits of the discipline."
+In 2009, the National Academy of Sciences published a report~\citep{NAS:2009} questioning the scientific validity of many forensic methods including firearm examination. The report states that ``[m]uch forensic evidence -- including, for example, bite marks and firearm and toolmark identification -- is introduced in criminal trials without any meaningful scientific validation, determination of error rates , or reliability testing to explain the limits of the discipline."
 
 Rifling, manufacturing defects, and impurities in a barrel create striation marks on the bullet during the firing process. These marks are assumed to be unique to the barrel, as described in a 1992 AFTE article~\citep{afte:1992}. ``The theory of identification as it pertains to the comparison of toolmarks enables opinions of common origin to be made when the \emph{unique surface contours} of two toolmarks are in sufficient agreement". The article goes on to state that ``Significance is determined by the comparative examination of two or more sets of surface contour patterns comprised of individual peaks, ridges and furrows."
 
-From a statistical standpoint, identification of the gun that fired the bullet(s) requires that we compare the probabilities of observing matching striae under the competing hypotheses that the gun fired, or did not fire, the crime scene bullet. If indeed the uniqueness assumption is plausible, the latter probability approaches zero.
+From a statistical standpoint, identification of the gun that fired the bullet(s) requires that we compare the probabilities of observing matching striae under the competing hypotheses that the gun fired, or did not fire, the crime scene bullet. If indeed the uniqueness assumption is plausible, the latter probability approaches zero and the former approaches (but never reaches) one.
 
 Current firearm examination practice relies mostly on visual assessment and comparison of striation. Indeed, the AFTE Theory of Identification (https://afte.org/about-us/what-is-afte/afte-theory-of-identification) explicitly requires that examiners evaluate the strength of similarity between two samples relative to other comparisons they may have carried out in the past. An attempt to quantify the degree of similarity consists in counting the number of consecutively matching striae (CMS) between two bullets, first proposed by \citet{biasotti:1959}. This approach has two drawbacks, however. First, determining matching striae is still a subjective activity. Second, as discussed by \citet{miller:1998}, the number of CMS may be high even if the bullets were not fired by the same gun.
 
@@ -164,7 +164,7 @@ This allows for an objective and quantitative assessment of striae-based bullet 
 %\hh{XXX More detailed discussion of automatic approaches and database discussion XXX}
 
 We work with images from the James Hamby Consecutively Rifled Ruger Barrel Study~\citep{hamby:2009}. Ten consecutively rifled Ruger P-85 pistol barrels were obtained from the manufacturer and fired to produce 20 known test bullets and 15 unknown bullets for comparison. 
-3D topographical images of each bullet were obtained using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). The x3p format conforms to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}}, implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. It was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government firearm forensics researchers whose aim is to establish best practices for researchers using metrology in forensic science. We have developed an open-source package for analyzing bullet lands written in R \citep{R}. This package is called bulletr \citep{bulletr} and enables direct reading and manipulation of x3p files. It also implements all of the methods we propose in this paper. A different package exists for reading x3p files called x3pr \citep{x3pr}, developed by Petraco (2014), but it is not designed to carry out calculations like the ones we propose after the x3p files have been read.
+3D topographical images of each bullet were obtained using a NanoFocus lens at 20x magnification and made publicly available on the NIST Ballistics Database Project\footnote{\url{http://www.nist.gov/forensics/ballisticsdb/hamby-consecutively-rifled-barrels.cfm}} in a format called x3p (XML 3-D Surface Profile). The x3p format conforms to the ISO5436-2 standard\footnote{\url{http://sourceforge.net/p/open-gps/mwiki/X3p/}} and is implemented to provide a simple and standard conforming way to exchange 2D and 3D profile data. It was adopted by the OpenFMC (Open Forensic Metrology Consortium\footnote{\url{http://www.openfmc.org/}}), a group of academic, industry, and government firearm forensics researchers whose aim is to establish best practices for researchers using metrology in forensic science. We have developed an open-source package for analyzing bullet land impressions written in R \citep{R}. This package is called bulletr \citep{bulletr} and enables direct reading and manipulation of x3p files. It also implements all of the methods we propose in this paper. A different package exists for reading x3p files called x3pr \citep{x3pr}, developed by Petraco (2014), but it is not designed to carry out calculations like the ones we propose after the x3p files have been read.
 
 \begin{figure}[hbtp]
   \centering
@@ -176,12 +176,12 @@ We work with images from the James Hamby Consecutively Rifled Ruger Barrel Study
     }
 \end{subfigure}    
 \begin{subfigure}[t]{\textwidth}\centering
-    \caption{Frontal view of a bullet land (lower end of the view is the bottom of the bullet). \label{fig:topx3p}}{%
+    \caption{Frontal view of a bullet land impression (lower end of the view is the bottom of the bullet). \label{fig:topx3p}}{%
     \includegraphics[width=.65\textwidth]{images/topx3p.png} \hspace{1cm}
     \includegraphics[width=.15\textwidth]{images/top-sketch.png}
     }
 \end{subfigure}
-\caption{Example of a groove-to-groove scan of a bullet land. The red-dotted rectangle on the right shows the location and orientation of the segment. }
+\caption{Example of a groove-to-groove scan of a bullet land impression. The red-dotted rectangle on the right shows the location and orientation of the segment. }
 \label{fig:allx3p}
 \end{figure}
 
@@ -192,15 +192,15 @@ typical_width <- read.csv("csvs/grooves.csv") %>%
     round(digits = 2)
 @
 
-Each fired bullet is provided in the form of a set of six x3p files, where each file is a surface scan between adjacent groove impressions on the bullet, called a ``land" or land impression. The shoulders are the raised portion of the surface between the groove impression and the land impression. In the Hamby data, typical length (shoulder-to-shoulder) of a land is about \Sexpr{typical_width} micrometers or \Sexpr{typical_width / 1000} millimeters. For notational simplicity, we refer to a particular land of a bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these lands is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
+Each fired bullet is provided in the form of a set of six x3p files, where each file is a surface scan between adjacent groove impressions on the bullet, called a ``land" or land impression. The shoulders are the raised portion of the surface between the groove impression and the land impression. In the Hamby data, typical length (shoulder-to-shoulder) of a land impression is about \Sexpr{typical_width} micrometers or \Sexpr{typical_width / 1000} millimeters. For notational simplicity, we refer to a particular land impression of a bullet as bullet X-Y, where X is the bullet identifier, and Y is the land number. An example of plotting one of these land impressions is given in Figures~\ref{fig:sidex3p} and~\ref{fig:topx3p}. These figures show side and top profiles of the land respectively. The tilt of the lines to the left in Figure~\ref{fig:topx3p} is not an artifact, but a direct and expected consequence of the spin induced by the rifling during the firing process. Depending on whether a barrel is rifled clockwise or counter-clockwise, the striations have a left or right tilt. The direction of the rifling is a class characteristic, i.e.\ a feature that pertains to a particular class of firearms, and is not unique at the individual barrel/bullet level.
 
 The typical number and width of striation markings on bullets varies significantly depending on the gun barrel. For instance, a Smith and Wesson barrel with a land-width of 2.4 millimeters contained an average 60 striae, with an average width of about 0.08 millimeters~\citep{chu:2011}.
 
-The purpose of our paper is to present an automatic matching routine that allows for a completely objective assessment of the strength of a match between two bullet lands. While we assess the performance of the algorithm in terms of a binary decision of match vs. non-match using a 50\% probability cut-off, our primary goal is to highlight the features that are statistically associated with matches and non-matches, and to provide a quantitative assessment of this association. In a real-world application of our algorithm, the raw scores would need further analysis and scrutiny, and it is likely a 50\% cut-off would be an inappropriate choice on the basis of reasonable doubt.
+The purpose of our paper is to present an automatic matching routine that allows for a completely objective assessment of the strength of a match between two bullet land impressions. While we assess the performance of the algorithm in terms of a binary decision of match vs. non-match using a 50\% probability cut-off, our primary goal is to highlight the features that are statistically associated with matches and non-matches, and to provide a quantitative assessment of this association. In a real-world application of our algorithm, the raw scores would need further analysis and scrutiny, and it is likely that a 50\% cut-off would be an inappropriate choice on the basis of reasonable doubt.
 
-Our algorithm is fully open source and available on GitHub \citep{bulletr}. This transparency allows for a greater understanding of the individual steps involved in the bullet matching process, and allows other forensic examiners, as well as outside observers, to examine the factors that discriminate between known bullet matches and non-matches. We have chosen to perform the matching on a land-to-land level, rather than bullet-to-bullet level. Although doing so introduces an implicit assumption of independence between lands, assuming independence only serves to make the task more challenging.
+Our algorithm is fully open source and available on GitHub \citep{bulletr}. This transparency allows for a greater understanding of the individual steps involved in the bullet matching process, and allows other forensic examiners, as well as outside observers, to examine the factors that discriminate between known bullet matches and non-matches. We have chosen to perform the matching on a land-to-land level, rather than bullet-to-bullet level. Although doing so introduces an implicit assumption of independence between land impressions, assuming independence only serves to make the task more challenging.
 
-The remainder of this paper is structured as follows: We first briefly review some earlier work. We then discuss two methods of modeling the class structure of the bullet surfaces. Finally, we proceed to describing an automatic matching routine which we evaluate on the bullets made available through the Hamby study.
+The remainder of this paper is structured as follows: We first briefly review some earlier work. We then discuss two methods for modeling the class structure of the bullet surfaces. Finally, we proceed to describing an automatic matching routine which we evaluate on the bullets made available through the Hamby study.
 
 \section{Previous work}
 
@@ -212,15 +212,15 @@ The original paper on the complete Hamby study already reports the successful us
 
 A procedure for bullet matching using the BulletTrax3D system is described in \citet{roberge:2006}. Their study used a different set of ten consecutively rifled barrels; matches are identified based on a bullet-to-bullet correlation score. The authors state that this process `could be automated', but no implementation of the algorithm is available. 
 
-Modern automated techniques using 3D images have also been proposed by \citet{riva:2014}. However, the authors focused on cartridge cases and not bullets. This might seem like a trivial distinction, but it has implications for the development of the algorithm. The algorithm performs alignment of striae by rotation of the XY plane, which is not generalizable to bullets in which the XY plane is not flat. 
+Modern automated techniques using 3D images have also been proposed by \citet{riva:2014}. However, the authors focused on cartridge cases and not bullets. This might seem like a trivial distinction, but it has implications for the development of the algorithm. Their algorithm performs alignment of striae by rotation of the XY plane, which is not generalizable to bullets in which the XY plane is not flat. 
 
 Other work on 3D images has been described by \citet{petraco:2012}, who also focus on cartridge cases, as well as screwdriver striation patterns, and by others \citep[e.g.,][]{chu:2010, chu:2011, vorburger:2011}.
 
 \section{Bullet signatures}
 
-To analyze the striation pattern, we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section of the surface measurements at a fixed height $x$ along the bullet land, as illustrated in Figure \ref{fig:allx3p}.
+To analyze the striation pattern, we extract a \emph{bullet profile} \citep{ma:2004} by taking a cross section of the surface measurements at a fixed height $x$ along the bullet land impression, as previously illustrated in Figure \ref{fig:allx3p}.
 %An initial naive approach to analyzing the striation patterns leads us to fixing a particular value of a coordinate, and then producing a plot of the surface measurements across. 
-Figure \ref{fig:fixedX} shows a plot of the side profile of a bullet land. It can be seen that the global structure of the land dominates the appearance of the plot. The shoulders can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
+Figure \ref{fig:fixedX} shows a plot of the side profile of a bullet land impression. It can be seen that the global structure of the land dominates the appearance of the plot. The shoulders can be clearly identified on the left and right side, and the curvature of the surface is the most visible feature in the middle.
 
 \begin{figure}[hbtp]
   \centering
@@ -247,7 +247,7 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
   theme_bw() + 
   theme(legend.position="bottom") #+ coord_equal()
 @
-\caption{\label{fig:fixedX}Side profile of the surface measurements (in~$\mu m$) of a bullet land at a fixed height $x$. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
+\caption{\label{fig:fixedX}Side profile of the surface measurements (in~$\mu m$) of a bullet land impression at a fixed height $x$. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
 The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in Supplement Section~\ref{supp:cylindrical}.
@@ -405,7 +405,7 @@ ggplot() +
 %
 
 \section{Automatic matching}
-Applying the loess fit to a range of different signatures (see Figure~\ref{fig:manualmatch-rgl} for signatures extracted at heights between 50$\mu m$ and 150~$\mu m$) shows the 3D striation marks from two bullets. Signatures of bullet~1 are shown on the left (all extracted from heights below 100$\mu m$) and signatures of bullet 2 are shown on the right (extracted at heights above 100$\mu m$). Signatures are manually aligned, resulting in many of the striation marks to continuously pass from one side to the other. Visually, this allows for an easy assessment of these two bullet lands as a match. However, this match relies on visual inspection and is therefore subjective.  The goal of this section is to eliminate the need for a visual inspection during the matching process and replace it by an automatic algorithm. This also allows for a quantification of the strength of the match.
+Applying the loess fit to a range of different signatures (see Figure~\ref{fig:manualmatch-rgl} for signatures extracted at heights between 50$\mu m$ and 150~$\mu m$) shows the 3D striation marks from two bullets. Signatures of bullet~1 are shown on the left (all extracted from heights below 100$\mu m$) and signatures of bullet 2 are shown on the right (extracted at heights above 100$\mu m$). Signatures are manually aligned, resulting in many of the striation marks to continuously pass from one side to the other. Visually, this allows for an easy assessment of these two bullet land impressions as a match. However, this match relies on visual inspection and is therefore subjective.  The goal of this section is to eliminate the need for a visual inspection during the matching process and replace it by an automatic algorithm. This also allows for a quantification of the strength of the match.
 
 \begin{figure}[hbtp]
 \centering
@@ -590,7 +590,7 @@ ggplot() +
 Figure~\ref{fig:match} gives an overview of the automated matching routine: 
 We first identify a stable region for each bullet land and extract the signature at the lowest height in this region, because typically, individual characteristics are best expressed at the lower end of the bullet (see Supplement Section~\ref{supp:bulletbottom} for a more detailed discussion). 
 
-All of the other steps are done on pairs of bullet lands:
+All of the other steps are done on pairs of bullet land impressions:
 \begin{enumerate}
 \item {\bf Smooth the two signatures} using a loess with a very small span (see Figure~\ref{fig:smooth}). 
 \item Use cross-correlation to {\bf find the best alignment} of the two signatures: shift one of the signatures by the lag indicated by the cross-correlation function (see Figure~\ref{fig:ccf} for the cross-correlation function and Figure~\ref{fig:crosscutX} for the resulting shift).
@@ -612,7 +612,7 @@ D^2 = \frac{1}{\text{\#}t}\sum_t \left[f(t) - g(t)\right]^2,
 The difference $D$ between signatures is here defined as the Euclidean distance (in $\mu m$). In the paper by \citet{ma:2004}, distance is defined as a measure relative to the first signature, which serves as a comparison reference and is therefore a unitless quantity. 
 
 Counting the maximal number of CMS is part of the current practice to identify bullet matches~\citep{nichols:1997, nichols:2003, nichols:2003b}. 
-In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a high number suggestive of a match between the lands. Note that the definition of CMS we use does not match the one given in \citet{thompson:2013}. There, CMS is defined only in terms of matching peaks without regarding valleys. Additionally, peaks in  \citet{thompson:2013} are  used only if they can be identified and matched `within a tolerable range' between lands. The definition given here is computationally less complex, but should yield highly correlated values, because of the requirement to only consider signatures from a stable region in the land (see Section~\ref{sec:heights} for further details on stability of regions). In the Hamby study, the definition of CMS by \citet{thompson:2013} leads to approximately half of the values of CMS defined in this paper (with a correlation coefficient between the values of the two definitions of about 0.92). 
+In the example of Figure~\ref{fig:match}, the number of consecutive matching striations (CMS) is fifteen, a high number suggestive of a match between the land impressions. Note that the definition of CMS we use does not match the one given in \citet{thompson:2013}. There, CMS is defined only in terms of matching peaks without regarding valleys. Additionally, peaks in  \citet{thompson:2013} are  used only if they can be identified and matched `within a tolerable range' between land impressions. The definition given here is computationally less complex, but should yield highly correlated values, because of the requirement to only consider signatures from a stable region in the land (see Section~\ref{sec:heights} for further details on stability of regions). In the Hamby study, the definition of CMS by \citet{thompson:2013} leads to approximately half of the values of CMS defined in this paper (with a correlation coefficient between the values of the two definitions of about 0.92). 
 For lead bullets, such as used in the Hamby study, \citet{biasotti:1959} considered four or more consecutive peaks (corresponding to eight or more consecutive lines in our definition) to be sufficient evidence of a match.  %We will assess the claim that eight or more consecutive lines are sufficient for a match in the next section. 
 
 Determining a threshold such that CMS values above the threshold indicate a match with high reliability is beyond the scope of this work, even though it is critically important in practice. We provide some ideas in the next section, but first we assess the robustness of the matching algorithm to different choices of the parameter values. 
@@ -660,12 +660,12 @@ Determining a threshold such that CMS values above the threshold indicate a matc
 %' \end{figure}
 
 \subsection{Horizontal alignment}
-Signatures of each of the two lands, 1-5 and 2-1,  in Figure~\ref{fig:manualmatch-rgl} are shown in Figure~\ref{fig:cross100} extracted at a height of $x = 100\mu m$. Striation marks show up in these representations as peaks and valleys.  The individual characteristics are prominent and, again, suggest a match between the lands. A horizontal shift of one of the signatures (result shown in Fig~\ref{fig:crosscutX}) emphasizes the strong similarities between signatures. 
+Signatures of each of the two land impressions, 1-5 and 2-1,  in Figure~\ref{fig:manualmatch-rgl} are shown in Figure~\ref{fig:cross100} extracted at a height of $x = 100\mu m$. Striation marks show up in these representations as peaks and valleys.  The individual characteristics are prominent and, again, suggest a match between the land impressions. A horizontal shift of one of the signatures (result shown in Fig~\ref{fig:crosscutX}) emphasizes the strong similarities between signatures. 
 %
 \begin{figure}[hbtp]
 \centering
 \begin{subfigure}[b]{.49\textwidth}\centering
-\caption{Raw bullet land signatures.\label{fig:crosscut}}{%
+\caption{Raw bullet land impression signatures.\label{fig:crosscut}}{%
 <<crosscuts, echo=FALSE, dependson='twolands100', fig.width=7, fig.height=3, out.width='\\textwidth'>>=
 lof$bulletname <- scrubPath(lof$bullet)
 qplot(y, resid, group=bulletname, colour=bulletname, data=lof, 
@@ -713,7 +713,7 @@ dframe <- data.frame(lag = ccf$lag, acf = ccf$acf)
 qplot(data = dframe, x=lag, xend=lag, y = 0, yend= acf, geom="segment", colour = I("grey50")) + 
   theme_bw() + ylab("Correlation") + xlab("Lag k") +
   geom_segment(aes(x = maxlag, xend = maxlag, y = 0, yend =  max(ccf$acf)), colour="black") + 
-  scale_x_continuous(breaks = c(-100, -50, maxlag, 0, 50, 100),
+  scale_x_continuous(breaks = c(-100, -50, 0, 50, 100),
                      minor_breaks = c(-75,-25,25, 75)) +
   theme(text = element_text(size=20)) 
 @
@@ -721,8 +721,8 @@ qplot(data = dframe, x=lag, xend=lag, y = 0, yend= acf, geom="segment", colour =
 \end{figure}
 
 \subsection{Impact of bullet height}\label{sec:heights}
-The height at which signatures are extracted for a comparison between bullet lands matters -- signatures taken from heights that are further apart, show more pronounced differences between the signatures. 
-This poses both a caveat to matching attempts as well as an opportunity for quality control: we have to be aware of the height that was used in a matching. Visually, matches degrade if the signatures upon which the match is based are from heights further than 200$\mu m$ apart  (see Supplement Section~\ref{supp:ccf} for more discussion). However, we can extract signatures from multiple heights of the same bullet land for an initial assessment of its quality. By comparing signatures from heights that are not too far apart --  25~$\mu m$ to 50~$\mu m$ -- we get an indication whether the signatures come from a rapidly changing section of the surface, indicative of a break-off or some other damage, or from a stable section, where we have a reasonable expectation of finding matches to other signatures. In the approach here, we keep increasing the height $x$ at which the signature is taken until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet~1-1 from barrel 3, where `stability' is  defined as two aligned signatures from heights chosen 25$\mu m$ apart having a cross-correlation of at least 0.95. 
+The height at which signatures are extracted for a comparison between bullet land impressions matters -- signatures taken from heights that are further apart, show more pronounced differences between the signatures. 
+This poses both a caveat to matching attempts as well as an opportunity for quality control: we have to be aware of the height that was used in a matching. Visually, matches degrade if the signatures upon which the match is based are from heights further than 200$\mu m$ apart  (see Supplement Section~\ref{supp:ccf} for more discussion). However, we can extract signatures from multiple heights of the same bullet land impression for an initial assessment of its quality. By comparing signatures from heights that are not too far apart --  25~$\mu m$ to 50~$\mu m$ -- we get an indication whether the signatures come from a rapidly changing section of the surface, indicative of a break-off or some other damage, or from a stable section, where we have a reasonable expectation of finding matches to other signatures. In the approach here, we keep increasing the height $x$ at which the signature is taken until we find a section with a stable pattern. This process is shown in Figure~\ref{fig:crosscuts2} at the example of bullet~1-1 from barrel 3, where `stability' is  defined as two aligned signatures from heights chosen 25$\mu m$ apart having a cross-correlation of at least 0.95. 
 
 \begin{figure}[hbtp]
   \centering
@@ -778,7 +778,7 @@ grid.arrange(lop[[1]], lop[[2]], lop[[3]],
              lop[[4]], lop[[5]], lop[[6]],
              ncol=2)
 @
-\caption{\label{fig:crosscuts2}Signatures  for barrel 3, bullet~1-1 extracted from varying heights. Initially, the match between signatures taken at heights 25$\mu m$ apart is affected strongly by some break off at the bottom of the bullet. At a  level of $175\mu m$ the bullet's signature stabilizes. For this land, matches should not be attempted at lower heights. }
+\caption{\label{fig:crosscuts2}Signatures  for barrel 3, bullet~1-1 extracted from varying heights. Initially, the match between signatures taken at heights 25$\mu m$ apart is affected strongly by some break off at the bottom of the bullet. At a  level of $175\mu m$ the bullet's signature stabilizes. For this land impression, matches should not be attempted at lower heights. }
 \end{figure}
 %An opportunity that arises from comparing multiple cross sections of a bullet's surface measurements is the following:
 
@@ -827,7 +827,7 @@ ggplot() + theme_bw() +
 
 
 \section{Evaluation}
-In order to get a better understanding of  how  the matching algorithm works in known matches and non-matches, we investigate its performance using the James Hamby study data. As a first step, we automatically assess the quality of each of the lands by  checking that we can identify a stable region on each land. For this, we compute the cross-correlation of signatures extracted from heights 25$\mu m$ apart. For a stable region, we require a minimum of 0.95 for the cross correlation. Four lands from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these lands has scratch marks across the surface, also known as `tank rash' \citep{hamby:2009}.
+In order to get a better understanding of  how  the matching algorithm works in known matches and non-matches, we investigate its performance using the James Hamby study data. As a first step, we automatically assess the quality of each of the land impressions by checking that we can identify a stable region. For this, we compute the cross-correlation of signatures extracted from heights 25$\mu m$ apart. For a stable region, we require a minimum of 0.95 for the cross correlation. Four land impressions from different bullets are flagged as problematic in this respect. A visual inspection (see Figure~\ref{fig:fourflags}) shows that each one of these land impressions has scratch marks across the surface, also known as `tank rash' \citep{hamby:2009}.
 %
 \begin{figure}
   \centering
@@ -851,18 +851,18 @@ In order to get a better understanding of  how  the matching algorithm works in 
 \caption{Unknown Bullet Q-4}
 \includegraphics[width=\textwidth]{images/q-4-grey.png}
 \end{subfigure}
-\caption{\label{fig:fourflags}Images of the four lands that got flagged during the quality assessment. All of them show scratch marks (tank rash) across the striation marks from the barrel. They are excluded from the remainder of the analysis.}
+\caption{\label{fig:fourflags}Images of the four land impressions that got flagged during the quality assessment. All of them show scratch marks (tank rash) across the striation marks from the barrel. They are excluded from the remainder of the analysis.}
 \end{figure}
 %
-We exclude these four lands from further matching considerations and
- run all remaining lands from the unknown bullets against all remaining lands from known bullets for matches, i.e. we are comparing $15 \times 6 -2 = 90 - 2 = 88$ lands from unknown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ lands from known bullets, yielding a total of $10,384$ land-to-land comparisons. Out of these comparisons, there are 172 known matches (KM), while the rest are known non-matches (KNM). 
-Ideally, results look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the distribution of the number of maximum consecutive matching striae between land C-3 and all 118 lands from known bullets. Two lands show a high CMS. These correspond to the known matches with C-3, shown in Figures~\ref{fig:hamby-perfect}b and~\ref{fig:hamby-perfect}c. 
+We exclude these four land impressions from further matching considerations and
+ run all remaining land impressions from the unknown bullets against all remaining land impressions from known bullets for matches, i.e. we are comparing $15 \times 6 -2 = 90 - 2 = 88$ land impressions from unknown bullets against $2 \times 10 \times 6 -2 = 120 - 2 = 118$ land impressions from known bullets, yielding a total of $10,384$ land-to-land comparisons. Out of these comparisons, there are 172 known matches (KM), while the rest are known non-matches (KNM). 
+Ideally, results look like the results in Figure~\ref{fig:hamby-perfect}: Figure~\ref{fig:hamby-perfect}a shows the distribution of the number of maximum consecutive matching striae between land impression C-3 and all 118 land impressions from known bullets. Two land impressions show a high CMS. These correspond to the known matches with C-3, shown in Figures~\ref{fig:hamby-perfect}b and~\ref{fig:hamby-perfect}c. 
  Unfortunately, not all results are as clear cut. 
-It might not be reasonable to assume that we can match all lands, but the idea is to try to maximize the number of matches to get an overview of what we might be able to expect from an automated match. 
+It might not be reasonable to assume that we can match all land impressions, but the idea is to try to maximize the number of matches to get an overview of what we might be able to expect from an automated match. 
 
 \begin{figure}[hbtp]
 \begin{subfigure}[t]{\textwidth}\centering
-\caption{Maximal number of CMS between unknown bullet land C-3 and all of the other 118 considered (known) lands. For two lands the number of maximum CMS is high. }
+\caption{Maximal number of CMS between unknown bullet land impression C-3 and all of the other 118 considered (known) land impressions. For two land impressions the number of maximum CMS is high. }
 <<cms, echo=FALSE, fig.width=7, fig.height=3.5, out.width='.5\\textwidth'>>=
 load("data/data-25-25/unkn9.RData")
 cmsdist <- sapply(reslist, function(x) x$maxCMS)
@@ -872,7 +872,7 @@ qplot(cmsdist, geom="bar") + theme_bw() + xlab("Number of CMS") +
 @
 \end{subfigure}
 \begin{subfigure}[b]{.49\textwidth}\centering
-\caption{Overlaid signatures of C-3 and the land with the top matching CMS.}
+\caption{Overlaid signatures of C-3 and the land impression with the top matching CMS.}
 <<top, echo=FALSE, fig.width=7, fig.height=3.5, out.width='\\textwidth', warning = FALSE>>=
 res <- reslist[[which.max(cmsdist)]]  
 #res <- reslist[[which.max(cmsdist[-which.max(cmsdist)])]]  # number 2
@@ -918,7 +918,7 @@ ggplot() +
 \caption{\label{fig:hamby-perfect}Showcase scenario  when matching with CMS works very well. Unfortunately the matches are not always that convincing.}
 \end{figure}
 
-Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 42 pairs of lands with at least thirteen CMS in common are matches. 
+Figure~\ref{fig:cms} shows the strong connection between the maximal number of consecutive striae and matches in the Hamby study. All 42 pairs of land impressions with at least thirteen CMS in common are matches. 
 %
 \begin{figure}[hbtp]
   \centering
@@ -990,7 +990,7 @@ ggplot(data=subset(bstats, !flagged)) +
 \caption{\label{fig:cms}Distribution of maximal CMS (left). Conditional barchart \citep{hummel} on the right: heights show probability of match/non-match given a specific CMS. All land-to-land comparisons with at least 13 CMS are matches.}
 \end{figure}
 %
-There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$CMS[!bstats$match], na.rm=T)} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$CMS[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$CMS[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$CMS[bstats$match])}. While the probability for a match increases with the number of maximal CMS, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by \citet{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch between two lands that share twelve consecutively matched striae. Visually we can easily tell that these two lands do not match well.
+There are two things that should be noted at this point: the automated algorithm finds a relatively high number of CMS even for non-matches. On average, there are \Sexpr{mean(bstats$CMS[!bstats$match], na.rm=T)} maximal CMS between known non-matches (with a standard deviation of \Sexpr{sd(bstats$CMS[!bstats$match])}). Known matches share on average \Sexpr{mean(bstats$CMS[bstats$match])} maximal CMS, with a standard deviation of \Sexpr{sd(bstats$CMS[bstats$match])}. While the probability for a match increases with the number of maximal CMS, a large number of maximal CMS by itself is not indicative of a match, as was previously pointed out by \citet{miller:1998}. Figure~\ref{fig:mismatch} shows a known mismatch between two land impressions that share twelve consecutively matched striae. Visually we can easily tell that these two land impressions do not match well.
 
 \begin{figure}[hbtp]
   \centering
@@ -1312,7 +1312,7 @@ The dots mark the equal error rate, i.e. the location on the ROC curve, where fa
 The feature with the highest individual predictive power is $S$, the sum of the average heights of two signatures at peaks and valleys. The maximal number of CMS is only in the seventh position here. The overall high AUC values indicate that we can successfully employ machine learning methods to distinguish matches from non-matches.
 %Table~\ref{tab:importance} shows an overview in the averages and corresponding standard deviations of the set of feature variables derived in section~\ref{sec:algorithm} from the 3D topological surface measurements. There are quite large differences in these averages, indicating 
 
-Using recursive partitioning, we fit a decision tree~\citep{breiman:1984, rpart, rpart.plot} to predict matches between lands based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} lands is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
+Using recursive partitioning, we fit a decision tree~\citep{breiman:1984, rpart, rpart.plot} to predict matches between land impressions based on features derived from the image files. The resulting tree is shown in Figure~\ref{fig:tree}. A total of \Sexpr{sum(bstats$match[bstats$pred>0.5])} land impressions is being matched correctly. Interestingly, the number of consecutive matching striae does not feature in this evaluation. 
 Instead of CMS, cross-correlation (ccf) between the signatures is very important in the matching process  by the decision tree. Aside from  cross correlation, the total number of matches is also included in the decision rule. 
 Between cross-correlation and CMS, cross-correlation has higher  predictive power. This  does not  contradict earlier findings emphasizing the value of CMS on visual assessments of bullet matches: in those papers, assessments were based on purely visual inspection of either actual bullets or 2D microscopic images of bullets.
 Neither one of these methods allows for an assessment of cross-correlations. This is one of the benefits of switching to a digitized version of the images that preserves the 3D surface structure. The findings about the discriminating power of cross-correlation are consistent with the results of the study by \citet{ma:2004}. However, in that study, the authors did not consider the number of matches and non-matches.
@@ -1371,7 +1371,7 @@ qplot(id, OOB, geom="line", data=errors) + theme_bw() + ylim(c(0,NA)) + xlab("Nu
 \end{figure}
 %
 After about 100 trees, the error rate of land-to-land comparisons stabilizes at 0.0039. This is a weighted average between false positive error rate of 0.0001 and an error rate of false negatives of 0.2267. This out-of-bag error rate is over-estimating the actual error in the Hamby study: here, the final random forest based on 300 trees is able to correctly predict all known  matches and non-matches (see Figure~\ref{fig:tree-forest}).
-Note that this error rate is based on land-to-land comparisons and is expected to be much lower for bullet-to-bullet comparisons. In the case of the Hamby data, even a single tree results in an overall error rate of zero, if we require that a match of two bullets occurs when at least two of the bullet's lands are matched. % (see Figure~\ref{fig:treeresult}). 
+Note that this error rate is based on land-to-land comparisons and is expected to be much lower for bullet-to-bullet comparisons. In the case of the Hamby data, even a single tree results in an overall error rate of zero, if we require that a match of two bullets occurs when at least two of the bullet's land impressions are matched. % (see Figure~\ref{fig:treeresult}). 
 %' \begin{figure}[hbtp]
 %'   \centering
 %' <<overall-tree, echo=FALSE, fig.width=7, fig.height=4, out.width='.5\\textwidth'>>=
@@ -1461,7 +1461,7 @@ The feasibility of creating a database of images that could be used to identify 
 The findings of the NRC report on imaging are based on two-dimensional greyscale images, which the committee argued were not reliable enough for distinguishing between fine marks. This finding coincides with the assessment by \citet{dekinder:2004} based on the IBIS Heritage system. A further re-assessment by \citet{deceuster:2015} came to the same conclusions based on the EvoFinder system. 
 The NRC report also found that results from 2D images can be improved when matches are based on 3D images. This is consistent with the importance of features found here: out of the top five features (see Figure~\ref{fig:importance}), only the total number of matches and mismatches are available for a match based on 2D features.
 
-By suggesting an automated algorithm that first removes class characteristics, such as the groove impressions, shoulders, and the curvature of the bullet to reveal the region of the land, then identifies peaks and valleys on this land, we reduce subjectivity and with it possible sources of bias. In particular, `the concept of counting striations is subjective and based on experience'~\citep{miller:1998}. The steps outlined in this paper could also help explore other important forensic science problems. In particular, more general toolmark examination can benefit from the approach we discuss.
+By suggesting an automated algorithm that first removes class characteristics, such as the groove impressions, shoulders, and the curvature of the bullet to reveal the region of the land impression, then identifies peaks and valleys on this land impression, we reduce subjectivity and with it possible sources of bias. In particular, `the concept of counting striations is subjective and based on experience'~\citep{miller:1998}. The steps outlined in this paper could also help explore other important forensic science problems. In particular, more general toolmark examination can benefit from the approach we discuss.
 
 For a fair assessment of the performance of an algorithm, we need transparency. Our matching  algorithm is open: the code is readily available in form of the R package bulletr~\citep{bulletr}, and the code to produce this paper is available at \url{http://www.github.com/erichare/imaging-paper}. To understand whether an automated approach along the lines of the one we propose can accurately identify sets of bullets with undistinguishable markings, it will be necessary to assemble a much larger database that includes a wide range of ammunition types, degrees of damage, gun makes, etc. We are unaware of the existence of any such database. In addition to serving as a realistic testbed for the performance of the automated matching algorithm, such a database would also permit testing the underlying, as of yet untested, assumptions of uniqueness and reproducibility of the markings left by a gun on bullets.
 
@@ -1472,9 +1472,7 @@ For a fair assessment of the performance of an algorithm, we need transparency. 
 
 \section*{Acknowledgment} 
 Thanks to David Baldwin for pointing us to the NIST database and doing a Firearms 101 for us.
-Thanks to the men and women behind the software R~\citep{R}, and the authors of the R packages  knitr~\citep{knitr} and ggplot2~\citep{ggplot2}.
-
-
+Thanks to the men and women behind the software R~\citep{R}, and the authors of the R packages  knitr~\citep{knitr} and ggplot2~\citep{ggplot2}. We also wish to thank an anonymous reviewer, whose constructive and insightful comments contributed greatly to the improvement of the manuscript.
 
 % AOS,AOAS: If there are supplements please fill:
 %\begin{supplement}[id=suppA]

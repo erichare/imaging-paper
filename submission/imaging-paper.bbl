@@ -1,4 +1,4 @@
-\begin{thebibliography}{35}
+\begin{thebibliography}{36}
 % BibTex style file: imsart-nameyear.bst, 2013-01-28
 % Default style options (sort=1,type=nameyear).
 % Used options (sort=1,type=nameyear).
@@ -197,6 +197,16 @@
 \bvolume{41}
 \bpages{99--110}.
 \end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Hofmann and Hare}{2015}]{x3prplus}
+\begin{bmanual}[author]
+\bauthor{\bsnm{Hofmann},~\bfnm{Heike}\binits{H.}} \AND
+  \bauthor{\bsnm{Hare},~\bfnm{Eric}\binits{E.}}
+(\byear{2015}).
+\btitle{x3prplus: Simple Models for x3d surface topology}
+\bnote{{R} package version 0.0.1}.
+\end{bmanual}
 \endbibitem
 
 \bibitem[\protect\citeauthoryear{Hofmann and Hare}{2016}]{bulletr}

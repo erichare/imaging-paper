@@ -1,0 +1,35 @@
+---
+author: 
+ - Eric Hare
+ - Department of Statistics 
+ - Iowa State University
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+opening: Dear Dr. Airoldi,
+closing: Best regards,
+address: 
+ - Edoardo M. Airoldi
+ - Editor
+ - The Annals of Applied Statistics
+return-address:
+ - Eric Hare
+ - Department of Statistics
+ - Iowa State University
+ - Ames, IA 50011
+output:
+  pdf_document:
+    template: template-letter.tex
+geometry: margin=1in
+---
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+Re: Manuscript reference No. AOAS1702-003
+
+We have uploaded the revised version on the manuscript as well as our response to the constructive comments of Reviewer 1.  We did not respond to Reviewer 2’s comments, but can do so if needed.  Hopefully, this version is now acceptable for publication in AoAS.  Both the data and the code used to develop the methodology have already been put in the public domain (Github), but if AoAS has a different repository, we will be happy to upload elsewhere as well (assuming that the paper is accepted).
+
+We are grateful for having had an opportunity to respond to the reviews we received in round 2.
+
+Let us know if there are any further concerns or requests.
+
+With best wishes,
