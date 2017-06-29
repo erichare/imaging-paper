@@ -250,7 +250,7 @@ qplot(data=subset(dbr111, x <= 100*1.5625^2 & x >= 99*1.5625^2), y, value, geom=
 \caption{\label{fig:fixedX}Side profile of the surface measurements (in~$\mu m$) of a bullet land impression at a fixed height $x$. Note that the global features dominate any deviations, corresponding to the individual characteristics of striation marks.}
 \end{figure}
 
-The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in Supplement Section~\ref{supp:cylindrical}.
+The smooth curve on the plot represents a segment of a perfect circle with the same radius as the bullet. While the circle is an obvious first choice for fitting the structure, it does not completely capture the bullet surface after it was fired. A discussion of a circular fit and the remaining residual structure can be found in Supplement Section~\ref{supp:cylindrical} \citep{supplement}.
 %It is clear that our next approach must be to model the overall structure in order to focus on the deviations, given that the deviations should correspond to bullet markings. 
 
 %\subsection{Loess Fit}
@@ -1475,17 +1475,16 @@ Thanks to David Baldwin for pointing us to the NIST database and doing a Firearm
 Thanks to the men and women behind the software R~\citep{R}, and the authors of the R packages  knitr~\citep{knitr} and ggplot2~\citep{ggplot2}. We also wish to thank an anonymous reviewer, whose constructive and insightful comments contributed greatly to the improvement of the manuscript.
 
 % AOS,AOAS: If there are supplements please fill:
-%\begin{supplement}[id=suppA]
-%  \sname{Supplement A}
-%  \stitle{Title}
-%  \slink[doi]{10.1214/00-AOASXXXXSUPP}
-%  \sdatatype{.pdf}" 
-%  \sdescription{Some text}
-%\end{supplement}
+\begin{supplement}[id=suppA]
+  \sname{Supplement A}
+  \stitle{Supplement to Automatic Matching of Bullet Land Impressions}
+  \slink[doi]{COMPLETED BY THE TYPESETTER}
+  \sdatatype{.pdf}" 
+  \sdescription{Supplementary derivations for Automatic matching of bullet land impressions}
+\end{supplement}
 
 \bibliographystyle{imsart-nameyear.bst}
 %\biboptions{authoryear}
 \bibliography{references}
-
 
 \end{document}
